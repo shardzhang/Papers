@@ -1,35 +1,40 @@
-#### Self-supervised Learning for Large-scale Item Recommendations
-
-简介：双塔模型自监督学习。做 data augmentation，更好地学习长尾物品的向量表征
+# README
 
 
 
-#### Sampling-Bias-Corrected Neural Modeling for Large Corpus Item Recommendations
+你是一位专业的技术论文翻译专家，擅长计算机科学/推荐系统领域的中英翻译。请将以下英文论文完整翻译为中文。
 
-简介：
+## 质量要求
 
-1、双塔模型Batch内负采样模型训练纠偏。
+1. **逐字逐句**：翻译必须是完整的 word-by-word 翻译，不得遗漏任何句子、段落、章节。不可概括、不可省略、不可用"（详见原文）"代替。
 
-2、双塔召回模型
+2. **结构完整**：保留原文所有模块——摘要、引言、方法、实验、结论、参考文献、附录。每一节、每一小节、每一段落都不能少。
 
-It is interesting to see the effect of temperature on performance, suggesting the necessity to carefully tune this parameter when normalization is applied
+3. **术语准确**：专业术语使用领域通用译名（如 attention→注意力、embedding→嵌入、recommendation→推荐、user→用户、item→物品、beam search→束搜索、cold-start→冷启动、feature interaction→特征交互、click-through rate→点击率）。
 
+4. **格式规范**：使用 Markdown 格式，标题层级保持与原文一致（# 一级标题、## 二级标题等）。公式保留原样或 LaTeX。表格完整翻译表头和数据，保留原文编号（表1、图1等）。
 
+5. **图表说明**：每个图表（Figure/Table/Algorithm）的描述文字和注释必须完整翻译。
 
-#### FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction. In RecSys, 2019.
+6. **参考文献**：参考文献列表完整保留，编号与原文一致。正文中的引用标记 [1]、[2] 等必须保留在原位。
 
-简介：SENet在推荐系统中的落地。
+7. **代码/算法**：伪代码和算法中的变量名、函数名保留英文，注释、步骤描述翻译为中文。
 
+8. **通顺自然**：在保证准确性的前提下，中文表达要通顺自然，避免生硬的直译。长句适当拆分，英文被动语态转换为中文主动表达。
 
+9. **文件命名**：翻译文件命名为 `{原PDF文件名}-翻译.md`，保存在原 PDF 同目录下。
 
+10. 最后，需要在翻译结果最上方，添加一段总结：类似如下：
 
+    ```
+    本文分享了...。核心内容：
+    
+    - 
+    - 
+    - 
+    - 
+    
+    关键发现：
+    ```
 
-#### Heated-Up Softmax Embedding
-
-事实上关于temperature的作用和大小在《Heated-Up Softmax Embedding》中有详细的分析。下图展示了数字识别任务的分类[可视化](https://www.zhihu.com/search?q=可视化&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2346869087})结果和[温度系数](https://www.zhihu.com/search?q=温度系数&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A2346869087})的关系
-
-
-
-#### Large Scale Product Graph Construction for Recommendation in E-commerce
-
-阿里Swing召回算法
+    
