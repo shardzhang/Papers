@@ -1,9 +1,15 @@
 # FiBiNET: Combining Feature Importance and Bilinear Feature Interaction for Click-Through Rate Prediction（完整翻译）
 
-> Tongwen Huang, Zhiqi Zhang, Junlin Zhang  
-> 新浪微博公司  
-> {tongwen, zhiqizhang, junlin6}@staff.weibo.com  
-> 2019
+> Tongwen Huang, Zhiqi Zhang, Junlin Zhang, 新浪微博公司 | {tongwen, zhiqizhang, junlin6}@staff.weibo.com, 2019
+
+---
+本文介绍了 FiBiNET: Combining Feature Importance and Bilinear Feature Interaction for Click-Through Rate Prediction（完整翻译）。核心内容：
+
+
+关键发现：
+
+
+
 
 ---
 
@@ -11,7 +17,7 @@
 
 广告和Feed排序对于许多互联网公司（如Facebook和新浪微博）至关重要。在许多真实的广告和Feed排序系统中，点击率（CTR）预测扮演着核心角色。该领域已有许多模型被提出，如逻辑回归、基于树的模型、基于因子分解机的模型以及基于深度学习的CTR模型。然而，当前许多方法以简单方式（如Hadamard积和内积）计算特征交互，并且较少关注特征的重要性。本文提出了一种名为FiBiNET（Feature Importance and Bilinear feature Interaction NETwork，特征重要性与双线性特征交互网络）的新模型，用于动态学习特征重要性和细粒度特征交互。一方面，FiBiNET通过Squeeze-Excitation网络（SENET）机制动态学习特征的重要性；另一方面，它能够通过双线性函数有效学习特征交互。我们在两个真实数据集上进行了大量实验，结果表明我们的浅层模型优于其他浅层模型，如因子分解机（FM）和场感知因子分解机（FFM）。为了进一步提升性能，我们将经典深度神经网络（DNN）组件与浅层模型结合为深度模型。深度FiBiNET持续优于其他最先进的深度模型，如DeepFM和极端深度因子分解机（xDeepFM）。
 
-**CCS概念**：计算机系统组织 → 因子分解方法；计算理论 → 计算广告理论。
+**CCS概念**：计算机系统组织 \rightarrow 因子分解方法；计算理论 \rightarrow 计算广告理论。
 
 **关键词**：展示广告，CTR预测，因子分解机，Squeeze-Excitation网络，神经网络，双线性函数
 
@@ -64,61 +70,61 @@ Hu等人[8]提出了"Squeeze-and-Excitation Network"（SENET），通过显式�
 
 ### 3.1 稀疏输入和嵌入层
 
-稀疏输入层和嵌入层广泛用于基于深度学习的CTR模型，如DeepFM[4]和AFM[23]。稀疏输入层采用稀疏表示处理原始输入特征。嵌入层能够将稀疏特征嵌入到低维、稠密的实值向量中。嵌入层的输出是一个宽拼接的场嵌入向量：E = [e1, e2, ..., ei, ..., ef]，其中f表示场的数量，ei ∈ Rk表示第i个场的嵌入，k是嵌入层的维度。
+稀疏输入层和嵌入层广泛用于基于深度学习的CTR模型，如DeepFM[4]和AFM[23]。稀疏输入层采用稀疏表示处理原始输入特征。嵌入层能够将稀疏特征嵌入到低维、稠密的实值向量中。嵌入层的输出是一个宽拼接的场嵌入向量：E = [e1, e2, ..., ei, ..., ef]，其中f表示场的数量，ei \in Rk表示第i个场的嵌入，k是嵌入层的维度。
 
 ### 3.2 SENET层
 
 据我们所知，不同的特征对于目标任务具有不同的重要性。例如，当我们预测一个人的收入时，职业特征比爱好特征更重要。受SENET在计算机视觉领域成功的启发，我们引入SENET机制使模型更加关注特征重要性。对于特定的CTR预测任务，我们可以通过SENET机制动态增加重要特征的权重并减少无信息特征的权重。
 
-使用特征嵌入作为输入，SENET生成场嵌入的权重向量A = {a1, ..., ai, ..., af}，然后用向量A重新缩放原始嵌入E，得到新的嵌入（类似SENET的嵌入）V = [v1, ..., vi, ..., vf]，其中ai ∈ R是标量，表示第i个场嵌入vi的权重，vi ∈ Rk表示第i个场的类似SENET的嵌入，i ∈ [1, 2, ..., f]，V ∈ Rf×k，k是嵌入大小，f是场的数量。
+使用特征嵌入作为输入，SENET生成场嵌入的权重向量A = {a1, ..., ai, ..., af}，然后用向量A重新缩放原始嵌入E，得到新的嵌入（类似SENET的嵌入）V = [v1, ..., vi, ..., vf]，其中ai \in R是标量，表示第i个场嵌入vi的权重，vi \in Rk表示第i个场的类似SENET的嵌入，i \in [1, 2, ..., f]，V \in Rf×k，k是嵌入大小，f是场的数量。
 
 如图2所示，SENET由三个步骤组成：压缩步骤、激励步骤和重新加权步骤。这些步骤的详细描述如下：
 
-**压缩（Squeeze）**：此步骤用于计算每个场嵌入的"汇总统计量"。具体来说，我们使用一些池化方法（如最大池化或均值池化）将原始嵌入E = [e1, ..., ef]压缩为统计向量Z = [z1, ..., zi, ..., zf]，其中i ∈ [1, ..., f]，zi是一个标量值，表示第i个特征表示的全局信息。zi可以通过以下全局均值池化计算：
+**压缩（Squeeze）**：此步骤用于计算每个场嵌入的"汇总统计量"。具体来说，我们使用一些池化方法（如最大池化或均值池化）将原始嵌入E = [e1, ..., ef]压缩为统计向量Z = [z1, ..., zi, ..., zf]，其中i \in [1, ..., f]，zi是一个标量值，表示第i个特征表示的全局信息。zi可以通过以下全局均值池化计算：
 
-zi = Fsq(ei) = (1/k) * Σ(t=1 to k) ei(t)   (1)
+zi = Fsq(ei) = (1/k) * \Sigma(t=1 to k) ei(t)   (1)
 
 原始SENET论文[8]中的压缩函数是最大池化。然而，我们的实验结果表明均值池化优于最大池化。
 
-**激励（Excitation）**：此步骤用于基于统计向量Z学习每个场嵌入的权重。我们使用两个全连接（FC）层来学习权重。第一个FC层是降维层，参数为W1，降维比率r是一个超参数，并使用σ1作为非线性函数。第二个FC层使用参数W2增加维度。形式上，场嵌入的权重可以计算如下：
+**激励（Excitation）**：此步骤用于基于统计向量Z学习每个场嵌入的权重。我们使用两个全连接（FC）层来学习权重。第一个FC层是降维层，参数为W1，降维比率r是一个超参数，并使用\sigma1作为非线性函数。第二个FC层使用参数W2增加维度。形式上，场嵌入的权重可以计算如下：
 
-A = Fex(Z) = σ2(W2 σ1(W1 Z))   (2)
+A = Fex(Z) = \sigma2(W2 \sigma1(W1 Z))   (2)
 
-其中A ∈ Rf是一个向量，σ1和σ2是激活函数，学习参数为W1 ∈ Rf × (f/r)，W2 ∈ R(f/r) × f，r是降维比率。
+其中A \in Rf是一个向量，\sigma1和\sigma2是激活函数，学习参数为W1 \in Rf × (f/r)，W2 \in R(f/r) × f，r是降维比率。
 
 **重新加权（Re-Weight）**：SENET的最后一步是重新加权步骤，在原始论文[8]中称为重新缩放。它在原始场嵌入E和场权重向量A之间进行逐场相乘，并输出新的嵌入（类似SENET的嵌入）V = {v1, ..., vi, ..., vf}。类似SENET的嵌入V可以计算如下：
 
 V = FReWeight(A, E) = [a1·e1, ..., af·ef] = [v1, ..., vf]   (3)
 
-其中ai ∈ R，ei ∈ Rk，vi ∈ Rk。
+其中ai \in R，ei \in Rk，vi \in Rk。
 
 简而言之，SENET使用两个全连接层动态学习特征的重要性。对于特定任务，它会增加重要特征的权重并减少无信息特征的权重。
 
 ### 3.3 双线性交互层
 
-交互层是用于计算二阶特征交互的层。交互层中特征交互的经典方法是内积和Hadamard积。内积广泛用于浅层模型（如FM和FFM），而Hadamard积通常用于深度模型（如AFM和NFM）。内积和Hadamard积的形式分别表示为{(vi·vj)xixj}(i,j)∈Rx和{(vi⊙vj)xixj}(i,j)∈Rx，其中Rx = {(i, j)} i∈{1,...,f}, j∈{1,...,f}, j>i，vi是第i个场嵌入向量，·表示常规内积，⊙表示Hadamard积，例如[a1, a2, a3]⊙[b1, b2, b3] = [a1b1, a2b2, a3b3]。交互层中的内积和Hadamard积过于简单，无法有效建模稀疏数据集中的特征交互。因此，我们提出了一种更细粒度的方法，结合内积和Hadamard积，使用额外的参数来学习特征交互。如图3.c所示，矩阵W与向量vi之间使用内积，矩阵W与向量vj之间使用Hadamard积。具体来说，我们在此层中提出了三种类型的双线性函数，并将该层称为双线性交互层。以第i个场嵌入vi和第j个场嵌入vj为例，特征交互的结果pij可以计算如下：
+交互层是用于计算二阶特征交互的层。交互层中特征交互的经典方法是内积和Hadamard积。内积广泛用于浅层模型（如FM和FFM），而Hadamard积通常用于深度模型（如AFM和NFM）。内积和Hadamard积的形式分别表示为{(vi·vj)xixj}(i,j)\inRx和{(vi\odotvj)xixj}(i,j)\inRx，其中Rx = {(i, j)} i\in{1,...,f}, j\in{1,...,f}, j>i，vi是第i个场嵌入向量，·表示常规内积，\odot表示Hadamard积，例如[a1, a2, a3]\odot[b1, b2, b3] = [a1b1, a2b2, a3b3]。交互层中的内积和Hadamard积过于简单，无法有效建模稀疏数据集中的特征交互。因此，我们提出了一种更细粒度的方法，结合内积和Hadamard积，使用额外的参数来学习特征交互。如图3.c所示，矩阵W与向量vi之间使用内积，矩阵W与向量vj之间使用Hadamard积。具体来说，我们在此层中提出了三种类型的双线性函数，并将该层称为双线性交互层。以第i个场嵌入vi和第j个场嵌入vj为例，特征交互的结果pij可以计算如下：
 
 **a. Field-All类型**
 
-pij = vi·W⊙vj   (4)
+pij = vi·W\odotvj   (4)
 
-其中W ∈ Rk×k，vi, vj ∈ Rk是第i个和第j个场嵌入，1 ≤ i ≤ f, i ≤ j ≤ f。这里W在所有(vi, vj)场交互对之间共享，双线性交互层中共有k×k个参数，因此我们将此类型称为"Field-All"。
+其中W \in Rk×k，vi, vj \in Rk是第i个和第j个场嵌入，1 \leq i \leq f, i \leq j \leq f。这里W在所有(vi, vj)场交互对之间共享，双线性交互层中共有k×k个参数，因此我们将此类型称为"Field-All"。
 
 **b. Field-Each类型**
 
-pij = vi·Wi⊙vj   (5)
+pij = vi·Wi\odotvj   (5)
 
-其中Wi ∈ Rk×k，vi, vj ∈ Rk是第i个和第j个场嵌入，1 ≤ i ≤ f, i ≤ j ≤ f。这里Wi是第i个场的对应参数矩阵，由于我们有f个不同的场，双线性交互层中共有f×k×k个参数，因此我们将此类型称为"Field-Each"。
+其中Wi \in Rk×k，vi, vj \in Rk是第i个和第j个场嵌入，1 \leq i \leq f, i \leq j \leq f。这里Wi是第i个场的对应参数矩阵，由于我们有f个不同的场，双线性交互层中共有f×k×k个参数，因此我们将此类型称为"Field-Each"。
 
 **c. Field-Interaction类型**
 
-pij = vi·Wij⊙vj   (6)
+pij = vi·Wij\odotvj   (6)
 
-其中Wij ∈ Rk×k是场i和场j之间交互的对应参数矩阵，1 ≤ i ≤ f, i ≤ j ≤ f。此层中总的学习参数数量为n×k×k，其中n是场交互数量，等于f(f-1)/2。因此我们将此类型称为"Field-Interaction"。
+其中Wij \in Rk×k是场i和场j之间交互的对应参数矩阵，1 \leq i \leq f, i \leq j \leq f。此层中总的学习参数数量为n×k×k，其中n是场交互数量，等于f(f-1)/2。因此我们将此类型称为"Field-Interaction"。
 
 如图1所示，我们有两个嵌入（原始嵌入和类似SENET的嵌入），我们可以对任意嵌入采用双线性函数或Hadamard积作为特征交互操作。因此，在此层中有几种特征交互的组合。在第4.3节中，我们将详细讨论双线性函数和Hadamard积不同组合的性能。此外，我们有三种不同类型的所提特征交互方法（Field-All、Field-Each、Field-Interaction）应用于我们的模型，我们将在第4.4节讨论不同场类型的性能。
 
-在本节中，双线性交互层可以从原始嵌入E输出交互向量p = [p1, ..., pi, ..., pn]，从类似SENET的嵌入V输出类似SENET的交互向量q = [q1, ..., qi, ..., qn]，其中pi, qi ∈ Rk是向量。
+在本节中，双线性交互层可以从原始嵌入E输出交互向量p = [p1, ..., pi, ..., pn]，从类似SENET的嵌入V输出类似SENET的交互向量q = [q1, ..., qi, ..., qn]，其中pi, qi \in Rk是向量。
 
 ### 3.4 组合层
 
@@ -130,21 +136,21 @@ c = Fconcat(p, q) = [p1, ..., pn, q1, ..., qn] = [c1, ..., c2n]   (7)
 
 ### 3.5 深度网络
 
-深度网络由几个全连接层组成，隐式捕获高阶特征交互。如图1所示，深度网络的输入是组合层的输出。设a(0) = [c1, c2, ..., c2n]表示组合层的输出，其中ci ∈ Rk，n是场交互数量。然后，a(0)被馈入深度神经网络，前馈过程为：
+深度网络由几个全连接层组成，隐式捕获高阶特征交互。如图1所示，深度网络的输入是组合层的输出。设a(0) = [c1, c2, ..., c2n]表示组合层的输出，其中ci \in Rk，n是场交互数量。然后，a(0)被馈入深度神经网络，前馈过程为：
 
-a(l) = σ(W(l)a(l-1) + b(l))   (8)
+a(l) = \sigma(W(l)a(l-1) + b(l))   (8)
 
-其中l是层深度，σ是激活函数。W(l)、b(l)、a(l)分别是第l层的模型权重、偏置和输出。之后，生成稠密的实值特征向量，最终馈入sigmoid函数进行CTR预测：yd = σ(W|L|+1a|L| + b|L|+1)，其中|L|是DNN的深度。
+其中l是层深度，\sigma是激活函数。W(l)、b(l)、a(l)分别是第l层的模型权重、偏置和输出。之后，生成稠密的实值特征向量，最终馈入sigmoid函数进行CTR预测：yd = \sigma(W|L|+1a|L| + b|L|+1)，其中|L|是DNN的深度。
 
 ### 3.6 输出层
 
 总结起来，我们给出所提模型输出的整体公式如下：
 
-ŷ = σ(w0 + Σ(i=0 to m) wixi + yd)   (9)
+ŷ = \sigma(w0 + \Sigma(i=0 to m) wixi + yd)   (9)
 
-其中ŷ ∈ (0,1)是CTR的预测值，σ是sigmoid函数，m是特征数量，x是输入，wi是线性部分中第i个特征的权重。我们模型的参数为θ = {w0, {wi}i=1^m, {ei}i=1^m, {Wi}i=1^2, {W(i)}i=1^|L|}。学习过程旨在最小化以下目标函数（交叉熵）：
+其中ŷ \in (0,1)是CTR的预测值，\sigma是sigmoid函数，m是特征数量，x是输入，wi是线性部分中第i个特征的权重。我们模型的参数为\theta = {w0, {wi}i=1^m, {ei}i=1^m, {Wi}i=1^2, {W(i)}i=1^|L|}。学习过程旨在最小化以下目标函数（交叉熵）：
 
-loss = -(1/N) * Σ(i=1 to N) (yi log(ŷi) + (1-yi) * log(1-ŷi))   (10)
+loss = -(1/N) * \Sigma(i=1 to N) (yi log(ŷi) + (1-yi) * log(1-ŷi))   (10)
 
 其中yi是第i个样本的真实标签，ŷi是预测的CTR，N是样本总数。
 

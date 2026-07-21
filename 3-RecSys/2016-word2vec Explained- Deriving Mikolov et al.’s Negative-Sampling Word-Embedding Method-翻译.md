@@ -1,8 +1,17 @@
 # word2vec Explained: Deriving Mikolov et al.'s Negative-Sampling Word-Embedding Method
 # word2vec 详解：推导 Mikolov 等人的负采样词嵌入方法
 
-Yoav Goldberg and Omer Levy
+> Yoav Goldberg, Omer Levy | Bar-Ilan University
+
 {yoav.goldberg,omerlevy}@gmail.com
+
+---
+本文介绍了 word2vec Explained: Deriving Mikolov et al.'s Negative-Sampling Word-Embedding Method。核心内容：
+
+
+关键发现：
+
+
 
 February 14, 2014
 2014 年 2 月 14 日
@@ -33,10 +42,10 @@ The departure point of the paper is the skip-gram model.
 In this model we are given a corpus of words w and their contexts c.
 在该模型中，我们给定一个包含词 w 及其上下文 c 的语料库。
 
-We consider the conditional probabilities p(c|w), and given a corpus Text, the goal is to set the parameters θ of p(c|w; θ) so as to maximize the corpus probability:
-我们考虑条件概率 p(c|w)，并且给定语料库 Text，目标是设置 p(c|w; θ) 的参数 θ，以最大化语料库概率：
+We consider the conditional probabilities p(c|w), and given a corpus Text, the goal is to set the parameters \theta of p(c|w; \theta) so as to maximize the corpus probability:
+我们考虑条件概率 p(c|w)，并且给定语料库 Text，目标是设置 p(c|w; \theta) 的参数 \theta，以最大化语料库概率：
 
-(1) arg max θ ∏_{w∈Text} [ ∏_{c∈C(w)} p(c|w; θ) ]
+(1) arg max \theta \prod_{w\inText} [ \prod_{c\inC(w)} p(c|w; \theta) ]
 
 in this equation, C(w) is the set of contexts of word w.
 在此方程中，C(w) 是词 w 的上下文集合。
@@ -44,7 +53,7 @@ in this equation, C(w) is the set of contexts of word w.
 Alternatively:
 或者：
 
-(2) arg max θ ∏_{(w,c)∈D} p(c|w; θ)
+(2) arg max \theta \prod_{(w,c)\inD} p(c|w; \theta)
 
 here D is the set of all word and context pairs we extract from the text.
 这里 D 是我们从文本中提取的所有词-上下文对的集合。
@@ -54,16 +63,16 @@ here D is the set of all word and context pairs we extract from the text.
 ### 1.1 Parameterization of the skip-gram model
 ### 1.1 Skip-gram 模型的参数化
 
-One approach for parameterizing the skip-gram model follows the neural-network language models literature, and models the conditional probability p(c|w; θ) using soft-max:
-参数化 skip-gram 模型的一种方法遵循神经网络语言模型文献，并使用 soft-max 对条件概率 p(c|w; θ) 进行建模：
+One approach for parameterizing the skip-gram model follows the neural-network language models literature, and models the conditional probability p(c|w; \theta) using soft-max:
+参数化 skip-gram 模型的一种方法遵循神经网络语言模型文献，并使用 soft-max 对条件概率 p(c|w; \theta) 进行建模：
 
-(3) p(c|w; θ) = e^{v_c·v_w} / ∑_{c'∈C} e^{v_{c'}·v_w}
+(3) p(c|w; \theta) = e^{v_c·v_w} / \sum_{c'\inC} e^{$v_{c'}$·v_w}
 
-where v_c and v_w ∈ R^d are vector representations for c and w respectively, and C is the set of all available contexts.[2]
-其中 v_c 和 v_w ∈ R^d 分别是对 c 和 w 的向量表示，C 是所有可用上下文的集合。[2]
+where v_c and v_w \in R^d are vector representations for c and w respectively, and C is the set of all available contexts.[2]
+其中 v_c 和 v_w \in R^d 分别是对 c 和 w 的向量表示，C 是所有可用上下文的集合。[2]
 
-The parameters θ are v_{c_i}, v_{w_i} for w ∈ V, c ∈ C, i ∈ 1, ···, d (a total of |C| × |V| × d parameters).
-参数 θ 是 v_{c_i}, v_{w_i}，其中 w ∈ V, c ∈ C, i ∈ 1, ···, d（总共 |C| × |V| × d 个参数）。
+The parameters \theta are $v_{c_i}$, $v_{w_i}$ for w \in V, c \in C, i \in 1, ···, d (a total of |C| × |V| × d parameters).
+参数 \theta 是 $v_{c_i}$, $v_{w_i}$，其中 w \in V, c \in C, i \in 1, ···, d（总共 |C| × |V| × d 个参数）。
 
 We would like to set the parameters such that the product (2) is maximized.
 我们希望设置参数使得乘积 (2) 最大化。
@@ -71,19 +80,19 @@ We would like to set the parameters such that the product (2) is maximized.
 Now will be a good time to take the log and switch from product to sum:
 现在是对数化并将乘积转换为求和的好时机：
 
-(4) arg max θ ∑_{(w,c)∈D} log p(c|w) = ∑_{(w,c)∈D} (log e^{v_c·v_w} - log ∑_{c'} e^{v_{c'}·v_w})
+(4) arg max \theta \sum_{(w,c)\inD} log p(c|w) = \sum_{(w,c)\inD} (log e^{v_c·v_w} - log \sum_{c'} e^{$v_{c'}$·v_w})
 
 An assumption underlying the embedding process is the following:
 嵌入过程基于以下假设：
 
-Assumption maximizing objective 4 will result in good embeddings v_w ∀ w ∈ V, in the sense that similar words will have similar vectors.
-假设 最大化目标 (4) 将产生良好的嵌入 v_w ∀ w ∈ V，即相似词将具有相似的向量。
+Assumption maximizing objective 4 will result in good embeddings v_w \forall w \in V, in the sense that similar words will have similar vectors.
+假设 最大化目标 (4) 将产生良好的嵌入 v_w \forall w \in V，即相似词将具有相似的向量。
 
 It is not clear to us at this point why this assumption holds.
 目前我们不清楚为什么这个假设成立。
 
-While objective (4) can be computed, it is computationally expensive to do so, because the term p(c|w; θ) is very expensive to compute due to the summation ∑_{c'∈C} e^{v_{c'}·v_w} over all the contexts c' (there can be hundreds of thousands of them).
-虽然目标 (4) 理论上可以计算，但计算成本非常高，因为项 p(c|w; θ) 需要对所有上下文 c' 求和 ∑_{c'∈C} e^{v_{c'}·v_w}（可能有数十万个）。
+While objective (4) can be computed, it is computationally expensive to do so, because the term p(c|w; \theta) is very expensive to compute due to the summation \sum_{c'\inC} e^{$v_{c'}$·v_w} over all the contexts c' (there can be hundreds of thousands of them).
+虽然目标 (4) 理论上可以计算，但计算成本非常高，因为项 p(c|w; \theta) 需要对所有上下文 c' 求和 \sum_{c'\inC} e^{$v_{c'}$·v_w}（可能有数十万个）。
 
 One way of making the computation more tractable is to replace the softmax with an hierarchical softmax.
 使计算更易处理的一种方法是用层次 softmax 替换 softmax。
@@ -127,39 +136,39 @@ Let's denote by p(D = 1|w, c) the probability that (w, c) came from the corpus d
 Correspondingly, p(D = 0|w, c) = 1 - p(D = 1|w, c) will be the probability that (w, c) did not come from the corpus data.
 相应地，p(D = 0|w, c) = 1 - p(D = 1|w, c) 表示 (w, c) 不来自语料库数据的概率。
 
-As before, assume there are parameters θ controlling the distribution: p(D = 1|w, c; θ).
-与之前一样，假设存在控制分布的参数 θ：p(D = 1|w, c; θ)。
+As before, assume there are parameters \theta controlling the distribution: p(D = 1|w, c; \theta).
+与之前一样，假设存在控制分布的参数 \theta：p(D = 1|w, c; \theta)。
 
 Our goal is now to find parameters to maximize the probabilities that all of the observations indeed came from the data:
 我们的目标现在是找到参数，以最大化所有观测确实来自数据的概率：
 
-arg max θ ∏_{(w,c)∈D} p(D = 1|w, c; θ)
+arg max \theta \prod_{(w,c)\inD} p(D = 1|w, c; \theta)
 
-= arg max θ log ∏_{(w,c)∈D} p(D = 1|w, c; θ)
+= arg max \theta log \prod_{(w,c)\inD} p(D = 1|w, c; \theta)
 
-= arg max θ ∑_{(w,c)∈D} log p(D = 1|w, c; θ)
+= arg max \theta \sum_{(w,c)\inD} log p(D = 1|w, c; \theta)
 
-The quantity p(D = 1|c, w; θ) can be defined using softmax:
-p(D = 1|c, w; θ) 可以使用 softmax 定义：
+The quantity p(D = 1|c, w; \theta) can be defined using softmax:
+p(D = 1|c, w; \theta) 可以使用 softmax 定义：
 
-p(D = 1|w, c; θ) = 1 / (1 + e^{-v_c·v_w})
+p(D = 1|w, c; \theta) = 1 / (1 + e^{-v_c·v_w})
 
 Leading to the objective:
 得到目标：
 
-arg max θ ∑_{(w,c)∈D} log 1/(1 + e^{-v_c·v_w})
+arg max \theta \sum_{(w,c)\inD} log 1/(1 + e^{-v_c·v_w})
 
-This objective has a trivial solution if we set θ such that p(D = 1|w, c; θ) = 1 for every pair (w, c).
-如果我们设置 θ 使得对于每一对 (w, c) 都有 p(D = 1|w, c; θ) = 1，这个目标有一个平凡解。
+This objective has a trivial solution if we set \theta such that p(D = 1|w, c; \theta) = 1 for every pair (w, c).
+如果我们设置 \theta 使得对于每一对 (w, c) 都有 p(D = 1|w, c; \theta) = 1，这个目标有一个平凡解。
 
-This can be easily achieved by setting θ such that v_c = v_w and v_c·v_w = K for all v_c, v_w, where K is large enough number (practically, we get a probability of 1 as soon as K ≈ 40).
-这可以通过设置 θ 使得对于所有 v_c, v_w，有 v_c = v_w 且 v_c·v_w = K 来轻松实现，其中 K 是足够大的数（实际上，当 K ≈ 40 时，我们就能得到概率为 1）。
+This can be easily achieved by setting \theta such that v_c = v_w and v_c·v_w = K for all v_c, v_w, where K is large enough number (practically, we get a probability of 1 as soon as K \approx 40).
+这可以通过设置 \theta 使得对于所有 v_c, v_w，有 v_c = v_w 且 v_c·v_w = K 来轻松实现，其中 K 是足够大的数（实际上，当 K \approx 40 时，我们就能得到概率为 1）。
 
 We need a mechanism that prevents all the vectors from having the same value, by disallowing some (w, c) combinations.
 我们需要一种机制通过禁止某些 (w, c) 组合来防止所有向量具有相同的值。
 
-One way to do so, is to present the model with some (w, c) pairs for which p(D = 1|w, c; θ) must be low, i.e. pairs which are not in the data.
-一种方法是向模型提供一些 p(D = 1|w, c; θ) 必须低的 (w, c) 对，即不在数据中的对。
+One way to do so, is to present the model with some (w, c) pairs for which p(D = 1|w, c; \theta) must be low, i.e. pairs which are not in the data.
+一种方法是向模型提供一些 p(D = 1|w, c; \theta) 必须低的 (w, c) 对，即不在数据中的对。
 
 This is achieved by generating the set D' of random (w, c) pairs, assuming they are all incorrect (the name "negative-sampling" stems from the set D' of randomly sampled negative examples).
 这通过生成随机 (w, c) 对的集合 D' 来实现，假设它们都是不正确的（"负采样"这个名称源于随机采样的负例集合 D'）。
@@ -167,35 +176,35 @@ This is achieved by generating the set D' of random (w, c) pairs, assuming they 
 The optimization objective now becomes:
 优化目标现在变为：
 
-arg max θ ∏_{(w,c)∈D} p(D = 1|c, w; θ) ∏_{(w,c)∈D'} p(D = 0|c, w; θ)
+arg max \theta \prod_{(w,c)\inD} p(D = 1|c, w; \theta) \prod_{(w,c)\inD'} p(D = 0|c, w; \theta)
 
-= arg max θ ∏_{(w,c)∈D} p(D = 1|c, w; θ) ∏_{(w,c)∈D'} (1 - p(D = 1|c, w; θ))
+= arg max \theta \prod_{(w,c)\inD} p(D = 1|c, w; \theta) \prod_{(w,c)\inD'} (1 - p(D = 1|c, w; \theta))
 
-= arg max θ ∑_{(w,c)∈D} log p(D = 1|c, w; θ) + ∑_{(w,c)∈D'} log(1 - p(D = 1|w, c; θ))
+= arg max \theta \sum_{(w,c)\inD} log p(D = 1|c, w; \theta) + \sum_{(w,c)\inD'} log(1 - p(D = 1|w, c; \theta))
 
-= arg max θ ∑_{(w,c)∈D} log 1/(1 + e^{-v_c·v_w}) + ∑_{(w,c)∈D'} log(1 - 1/(1 + e^{-v_c·v_w}))
+= arg max \theta \sum_{(w,c)\inD} log 1/(1 + e^{-v_c·v_w}) + \sum_{(w,c)\inD'} log(1 - 1/(1 + e^{-v_c·v_w}))
 
-= arg max θ ∑_{(w,c)∈D} log 1/(1 + e^{-v_c·v_w}) + ∑_{(w,c)∈D'} log(1/(1 + e^{v_c·v_w}))
+= arg max \theta \sum_{(w,c)\inD} log 1/(1 + e^{-v_c·v_w}) + \sum_{(w,c)\inD'} log(1/(1 + e^{v_c·v_w}))
 
-If we let σ(x) = 1/(1 + e^{-x}) we get:
-如果我们设 σ(x) = 1/(1 + e^{-x})，我们得到：
+If we let \sigma(x) = 1/(1 + e^{-x}) we get:
+如果我们设 \sigma(x) = 1/(1 + e^{-x})，我们得到：
 
-arg max θ ∑_{(w,c)∈D} log σ(v_c·v_w) + ∑_{(w,c)∈D'} log σ(-v_c·v_w)
+arg max \theta \sum_{(w,c)\inD} log \sigma(v_c·v_w) + \sum_{(w,c)\inD'} log \sigma(-v_c·v_w)
 
 which is almost equation (4) in Mikolov et al ([2]).
 这几乎就是 Mikolov 等人 ([2]) 中的方程 (4)。
 
-The difference from Mikolov et al. is that here we present the objective for the entire corpus D ∪ D', while they present it for one example (w, c) ∈ D and k examples (w, c_j) ∈ D', following a particular way of constructing D'.
-与 Mikolov 等人的不同之处在于，这里我们给出了整个语料库 D ∪ D' 的目标，而他们则针对一个样本 (w, c) ∈ D 和 k 个样本 (w, c_j) ∈ D' 给出，遵循了一种特定的构造 D' 的方式。
+The difference from Mikolov et al. is that here we present the objective for the entire corpus D \cup D', while they present it for one example (w, c) \in D and k examples (w, c_j) \in D', following a particular way of constructing D'.
+与 Mikolov 等人的不同之处在于，这里我们给出了整个语料库 D \cup D' 的目标，而他们则针对一个样本 (w, c) \in D 和 k 个样本 (w, c_j) \in D' 给出，遵循了一种特定的构造 D' 的方式。
 
-Specifically, with negative sampling of k, Mikolov et al.'s constructed D' is k times larger than D, and for each (w, c) ∈ D we construct k samples (w, c_1), ..., (w, c_k), where each c_j is drawn according to its unigram distribution raised to the 3/4 power.
-具体来说，在使用 k 个负样本的情况下，Mikolov 等人构造的 D' 比 D 大 k 倍，并且对于每个 (w, c) ∈ D，我们构造 k 个样本 (w, c_1), ..., (w, c_k)，其中每个 c_j 根据其一元分布（unigram distribution）的 3/4 次方进行抽样。
+Specifically, with negative sampling of k, Mikolov et al.'s constructed D' is k times larger than D, and for each (w, c) \in D we construct k samples (w, c_1), ..., (w, c_k), where each c_j is drawn according to its unigram distribution raised to the 3/4 power.
+具体来说，在使用 k 个负样本的情况下，Mikolov 等人构造的 D' 比 D 大 k 倍，并且对于每个 (w, c) \in D，我们构造 k 个样本 (w, c_1), ..., (w, c_k)，其中每个 c_j 根据其一元分布（unigram distribution）的 3/4 次方进行抽样。
 
-This is equivalent to drawing the samples (w, c) in D' from the distribution (w, c) ∼ p_{words}(w) p_{contexts}(c)^{3/4} / Z, where p_{words}(w) and p_{contexts}(c) are the unigram distributions of words and contexts respectively, and Z is a normalization constant.
-这等价于从分布 (w, c) ∼ p_{words}(w) p_{contexts}(c)^{3/4} / Z 中抽取 D' 中的样本 (w, c)，其中 p_{words}(w) 和 p_{contexts}(c) 分别是词和上下文的一元分布，Z 是归一化常数。
+This is equivalent to drawing the samples (w, c) in D' from the distribution (w, c) ∼ $p_{words}$(w) $p_{contexts}$(c)^{3/4} / Z, where $p_{words}$(w) and $p_{contexts}$(c) are the unigram distributions of words and contexts respectively, and Z is a normalization constant.
+这等价于从分布 (w, c) ∼ $p_{words}$(w) $p_{contexts}$(c)^{3/4} / Z 中抽取 D' 中的样本 (w, c)，其中 $p_{words}$(w) 和 $p_{contexts}$(c) 分别是词和上下文的一元分布，Z 是归一化常数。
 
-In the work of Mikolov et al. each context is a word (and all words appear as contexts), and so p_{context}(x) = p_{words}(x) = count(x)/|Text|.
-在 Mikolov 等人的工作中，每个上下文都是一个词（并且所有词都作为上下文出现），因此 p_{context}(x) = p_{words}(x) = count(x)/|Text|。
+In the work of Mikolov et al. each context is a word (and all words appear as contexts), and so $p_{context}$(x) = $p_{words}$(x) = count(x)/|Text|.
+在 Mikolov 等人的工作中，每个上下文都是一个词（并且所有词都作为上下文出现），因此 $p_{context}$(x) = $p_{words}$(x) = count(x)/|Text|。
 
 ### 2.1 Remarks
 ### 2.1 备注
@@ -215,8 +224,8 @@ In the work of Mikolov et al. each context is a word (and all words appear as co
 This section lists some peculiarities of the contexts used in the word2vec software, as reflected in the code.
 本节列举了 word2vec 软件中使用的上下文的一些特性，这些特性反映在代码中。
 
-Generally speaking, for a sentence of n words w_1, ..., w_n, contexts of a word w_i comes from a window of size k around the word: C(w) = w_{i-k}, ..., w_{i-1}, w_{i+1}, ..., w_{i+k}, where k is a parameter.
-一般来说，对于一个包含 n 个词 w_1, ..., w_n 的句子，词 w_i 的上下文来自其周围大小为 k 的窗口：C(w) = w_{i-k}, ..., w_{i-1}, w_{i+1}, ..., w_{i+k}，其中 k 是一个参数。
+Generally speaking, for a sentence of n words w_1, ..., w_n, contexts of a word w_i comes from a window of size k around the word: C(w) = $w_{i-k}$, ..., $w_{i-1}$, $w_{i+1}$, ..., $w_{i+k}$, where k is a parameter.
+一般来说，对于一个包含 n 个词 w_1, ..., w_n 的句子，词 w_i 的上下文来自其周围大小为 k 的窗口：C(w) = $w_{i-k}$, ..., $w_{i-1}$, $w_{i+1}$, ..., $w_{i+k}$，其中 k 是一个参数。
 
 However, there are two subtleties:
 然而，有两个微妙之处：
