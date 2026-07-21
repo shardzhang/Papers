@@ -54,7 +54,7 @@ $$f'(x; d) = \lim_{\alpha \downarrow 0} \frac{f(x + \alpha d) - f(x)}{\alpha}.$$
 
 定义几个特殊函数也会很方便。符号函数 $\sigma$ 根据实数值为负、零或正分别取值 $\{-1, 0, 1\}$。函数 $\pi: \mathbb{R}^n \mapsto \mathbb{R}^n$ 由 $y \in \mathbb{R}^n$ 参数化，其中
 
-$$\pi_i(x; y) = \begin{cases} x_i & \text{如果 } \sigma(x_i) = \sigma(y_i), \\ 0 & \text{否则} \end{cases}$$
+$$\pi_i(x; y) = \begin{cases} x_i & \text{if } \sigma(x_i) = \sigma(y_i), \\ 0 & \text{otherwise} \end{cases}$$
 
 可以解释为 $x$ 在由 $y$ 定义的象限上的投影。
 
@@ -96,17 +96,17 @@ $$p_k = \pi(H_k v_k; v_k). \qquad (3)$$
 
 给定一个点，可能有多个包含或邻接该点的象限，具体取决于其坐标中有多少为零。为了确定探索哪个象限 $\Omega_\xi$，我们在 $x$ 处定义 $f$ 的伪梯度 $\diamond f(x)$：
 
-$$\diamond_i f(x) = \begin{cases} \partial_i^- f(x) & \text{如果 } \partial_i^- f(x) > 0 \\ \partial_i^+ f(x) & \text{如果 } \partial_i^+ f(x) < 0 \\ 0 & \text{否则} \end{cases}, \qquad (4)$$
+$$\diamond_i f(x) = \begin{cases} \partial_i^- f(x) & \text{if } \partial_i^- f(x) > 0 \\ \partial_i^+ f(x) & \text{if } \partial_i^+ f(x) < 0 \\ 0 & \text{otherwise} \end{cases}, \qquad (4)$$
 
 其中 $f$ 的左、右偏导数为：
 
-$$\partial_i^\pm f(x) = \frac{\partial}{\partial x_i} \ell(x) + \begin{cases} C \sigma(x_i) & \text{如果 } x_i \neq 0 \\ \pm C & \text{如果 } x_i = 0 \end{cases}.$$
+$$\partial_i^\pm f(x) = \frac{\partial}{\partial x_i} \ell(x) + \begin{cases} C \sigma(x_i) & \text{if } x_i \neq 0 \\ \pm C & \text{if } x_i = 0 \end{cases}.$$
 
 注意 $\partial_i^- f(x) \leq \partial_i^+ f(x)$，因此 $\diamond$ 定义良好。伪梯度推广了梯度的概念：在 $x$ 处方向导数在 $-\diamond f(x)$ 方向上最小（局部下降率最大），且 $x$ 是局部最小值当且仅当 $\diamond f(x) = 0$。
 
 一个合理的待探索象限选择是包含 $x_k$ 且 $-\diamond f(x_k)$ 指向的象限：
 
-$$\xi_i^k = \begin{cases} \sigma(x_i^k) & \text{如果 } x_i^k \neq 0 \\ \sigma(-\diamond_i f(x_k)) & \text{如果 } x_i^k = 0 \end{cases}.$$
+$$\xi_i^k = \begin{cases} \sigma(x_i^k) & \text{if } x_i^k \neq 0 \\ \sigma(-\diamond_i f(x_k)) & \text{if } x_i^k = 0 \end{cases}.$$
 
 这一选择的一个结果是 $-\diamond f(x_k)$ 等于 $v_k$，即 $f_\xi$ 在 $x_k$ 处的负梯度在包含 $\Omega_\xi$ 的子空间上的投影。因此，无需显式确定 $\xi_k$；只需计算 $-\diamond f(x_k)$，这就是在（3）中与 $H_k$ 相乘的量。
 

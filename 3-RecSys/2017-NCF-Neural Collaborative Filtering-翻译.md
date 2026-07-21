@@ -127,7 +127,7 @@ $$
 \hat{y}_{ui} = f(\mathbf{P}^T v_u^U, \mathbf{Q}^T v_i^I | \mathbf{P}, \mathbf{Q}, \Theta_f) \qquad (3)
 $$
 
-其中 $\mathbf{P} \in \mathbb{R}^{M \times K}$ 和 $\mathbf{Q} \in \mathbb{R}^{N \times K}$ 分别表示用户和item的latent因子矩阵；$Θ_f$ 表示交互函数 $f$ 的模型参数。由于函数 $f$ 被定义为多层神经网络，它可以形式化为：
+其中 $\mathbf{P} \in \mathbb{R}^{M \times K}$ 和 $\mathbf{Q} \in \mathbb{R}^{N \times K}$ 分别表示用户和item的latent因子矩阵；$\Theta_f$ 表示交互函数 $f$ 的模型参数。由于函数 $f$ 被定义为多层神经网络，它可以形式化为：
 
 $$
 f(\mathbf{P}^T v_u^U, \mathbf{Q}^T v_i^I) = \phi_{out}(\phi_X(...\phi_2(\phi_1(\mathbf{P}^T v_u^U, \mathbf{Q}^T v_i^I))...)) \qquad (4)

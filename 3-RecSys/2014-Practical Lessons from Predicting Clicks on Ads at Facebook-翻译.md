@@ -55,7 +55,7 @@
 
 归一化熵（更准确地说是归一化交叉熵）等于每次展示的平均对数损失除以如果模型对每次展示都预测背景点击率（CTR）时的平均对数损失。换句话说，它是预测对数损失除以背景CTR熵的归一化值。背景CTR是训练数据集的平均经验CTR。更形象地说，这个指标可以称为归一化对数损失。其值越低，模型的预测效果越好。这样归一化的原因是背景CTR越接近0或1，就越容易获得更好的对数损失。除以背景CTR的熵使得NE对背景CTR不敏感。假设给定的训练数据集有N个样本，标签为y_i\in{−1,+1}，估计的点击概率为p_i，其中i=1,2,...N。平均经验CTR记为p。
 
-$$ \text{NE} = \frac{-\frac{1}{N} \sum_{i=1}^{n} \left( \frac{1+y_i}{2} \log(p_i) + \frac{1-y_i}{2} \log(1-p_i) \right)}{-(p \cdot \log(p) + (1-p) \cdot \log(1-p))} \tag{1} $$
+$$ \text{NE} = \frac{-\frac{1}{N} \sum_{i=1}^{n} \left( \frac{1+y_i}{2} \log(p_i) + \frac{1-y_i}{2} \log(1-p_i) \right)}{-(p \cdot \log(p) + (1-p) \cdot \log(1-p))} \qquad (1} $$
 
 NE本质上是计算相对信息增益（Relative Information Gain，RIG）的一个组成部分，且RIG = 1 - NE。
 
@@ -73,7 +73,7 @@ NE本质上是计算相对信息增益（Relative Information Gain，RIG）的�
 
 对于给定的带标签广告展示 (x, y)，我们记活跃权重的线性组合为：
 
-$$ s(y, x, w) = y \cdot w^T x = y \sum_{j=1}^{n} w_{j, i_j} \tag{2} $$
+$$ s(y, x, w) = y \cdot w^T x = y \sum_{j=1}^{n} w_{j, i_j} \qquad (2} $$
 
 其中 w 是线性点击分数的权重向量。
 
@@ -82,17 +82,17 @@ $$ s(y, x, w) = y \cdot w^T x = y \sum_{j=1}^{n} w_{j, i_j} \tag{2} $$
 $$ p(y|x, w) = \Phi\left( \frac{s(y, x, w)}{\beta} \right) $$
 $$ p(w) = \prod_{k=1}^{N} \mathcal{N}(w_k; \mu_k, \sigma_k^2) $$
 
-其中 \Phi(t) 是标准正态分布的累积密度函数，N(t) 是标准正态分布的密度函数。在线训练通过矩匹配的期望传播来实现。得到的模型由权重向量 w 的近似后验分布的均值和方差组成。BOPR算法的推理是计算 p(w|y, x) 并将其投影回最接近的因子化高斯近似 p(w)。因此，更新算法可以仅用非零分量 x 的所有均值和方差的更新方程来表示（见[7]）：
+\text{where } \Phi(t) 是标准正态分布的累积密度函数，N(t) 是标准正态分布的密度函数。在线训练通过矩匹配的期望传播来实现。得到的模型由权重向量 w 的近似后验分布的均值和方差组成。BOPR算法的推理是计算 p(w|y, x) 并将其投影回最接近的因子化高斯近似 p(w)。因此，更新算法可以仅用非零分量 x 的所有均值和方差的更新方程来表示（见[7]）：
 
-$$ \mu_{i_j} \leftarrow \mu_{i_j} + y \cdot \frac{\sigma_{i_j}^2}{\Sigma^2} \cdot v\left( \frac{s(y, x, \mu)}{\Sigma} \right) \tag{3} $$
-$$ \sigma_{i_j}^2 \leftarrow \sigma_{i_j}^2 \cdot \left[ 1 - \frac{\sigma_{i_j}^2}{\Sigma^2} \cdot w\left( \frac{s(y, x, \mu)}{\Sigma} \right) \right] \tag{4} $$
-$$ \Sigma^2 = \beta^2 + \sum_{j=1}^{n} \sigma_{i_j}^2 \tag{5} $$
+$$ \mu_{i_j} \leftarrow \mu_{i_j} + y \cdot \frac{\sigma_{i_j}^2}{\Sigma^2} \cdot v\left( \frac{s(y, x, \mu)}{\Sigma} \right) \qquad (3} $$
+$$ \sigma_{i_j}^2 \leftarrow \sigma_{i_j}^2 \cdot \left[ 1 - \frac{\sigma_{i_j}^2}{\Sigma^2} \cdot w\left( \frac{s(y, x, \mu)}{\Sigma} \right) \right] \qquad (4} $$
+$$ \Sigma^2 = \beta^2 + \sum_{j=1}^{n} \sigma_{i_j}^2 \qquad (5} $$
 
 其中，校正函数 v 和 w 定义为 v(t) := N(t)/\Phi(t) 和 w(t) := v(t)·[v(t)+t]。这种推理可以看作是对信念向量 µ 和 \sigma 的SGD方案。
 
 我们将BOPR与似然函数 p(y|x, w) = sigmoid(s(y, x, w)) 的SGD进行比较，其中 sigmoid(t) = exp(t)/(1+exp(t))。由此产生的算法通常称为逻辑回归（LR）。该模型中的推理是计算对数似然的导数，并沿着该梯度方向以逐坐标依赖的步长前进：
 
-$$ w_{i_j} \leftarrow w_{i_j} + y \cdot \eta_{i_j} \cdot g(s(y, x, w)) \tag{6} $$
+$$ w_{i_j} \leftarrow w_{i_j} + y \cdot \eta_{i_j} \cdot g(s(y, x, w)) \qquad (6} $$
 
 其中 g 是所有非零分量的对数似然梯度，由 g(s) := [y(y+1)/2 - y·sigmoid(s)] 给出。注意，(3)可以看作是在均值向量 µ 上的逐坐标梯度下降（如(6)），其中步长 \eta_{i_j} 由信念不确定性 \sigma 自动控制。在第3.3节中，我们将介绍各种步长函数 \eta 并与BOPR进行比较。
 
@@ -138,7 +138,7 @@ $$ w_{i_j} \leftarrow w_{i_j} + y \cdot \eta_{i_j} \cdot g(s(y, x, w)) \tag{6} $
 
 1. **逐坐标学习率**：特征 i 在第 t 次迭代的学习率设为
    $$ \eta_{t,i} = \frac{\alpha}{\beta + \sqrt{\sum_{j=1}^{t} \nabla_{j,i}^2}} $$
-   其中 \alpha, \beta 是两个可调参数（由[8]提出）。
+   \text{where } \alpha, \beta 是两个可调参数（由[8]提出）。
 
 2. **逐权重的平方根学习率**：
    $$ \eta_{t,i} = \frac{\alpha}{\sqrt{n_{t,i}}} $$

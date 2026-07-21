@@ -109,7 +109,7 @@ $$w_{i,j} = \frac{\sum_{u \in U_i \cap U_j} (r_{u,i} - \bar{r_i})(r_{u,j} - \bar
 
 如果用户对 <u, v> 之间存在许多 swing，通常表明有广泛种类的商品可以满足他们的需求。而这些 swing 之间的关系不那么紧密。因此，我们通过每个用户对之间形成的 swing 总数来对每个 swing 进行加权。Swing 分数的定义如下。
 
-$$s(i,j) = \sum_{u \in U_i \cap U_j} \sum_{v \in U_i \cap U_j} \frac{1}{\alpha + |I_u \cap I_v|} \tag{1}$$
+$$s(i,j) = \sum_{u \in U_i \cap U_j} \sum_{v \in U_i \cap U_j} \frac{1}{\alpha + |I_u \cap I_v|} \qquad (1}$$
 
 其中 $U_i$ 是点击过item $i$ 的用户集合，$I_u$ 是用户 $u$ 点击过的item集合。$\alpha$ 是平滑系数。
 
@@ -127,7 +127,7 @@ $$swing(h,t) = swing(h,r) = \frac{1}{2} = 0.25$$
 
 对于每个 swing 结构，我们进一步添加类似于著名的 Adamic/Adar 算法[12]的用户加权因子来惩罚活跃用户。一个用户点击的item越多，获得的权重越小。最终的 swing 分数为：
 
-$$s(i,j) = \sum_{u \in U_i \cap U_j} \sum_{v \in U_i \cap U_j} \frac{w_u \cdot w_v}{\alpha + |I_u \cap I_v|} \tag{2}$$
+$$s(i,j) = \sum_{u \in U_i \cap U_j} \sum_{v \in U_i \cap U_j} \frac{w_u \cdot w_v}{\alpha + |I_u \cap I_v|} \qquad (2}$$
 
 其中
 
@@ -180,13 +180,13 @@ $$w_u = \frac{1}{\sqrt{|I_u|}}, \quad w_v = \frac{1}{\sqrt{|I_v|}}$$
 
 通过将每个item映射到其类别，我们得到一个用户-类别矩阵。然后可以使用标准的协同过滤技术来计算类别之间的相关性。$c_j$ 是 $c_i$ 的相关类别的概率定义如下：
 
-$$\theta_{i,j} = p(c_{i,j}|c_j) = \frac{N(c_{i,j})}{N(c_j)} \tag{3}$$
+$$\theta_{i,j} = p(c_{i,j}|c_j) = \frac{N(c_{i,j})}{N(c_j)} \qquad (3}$$
 
 其中 $N(c_j)$ 是类别 $c_j$ 的总购买量，$N(c_{i,j})$ 是在 $c_i$ 之后购买 $c_j$ 的次数。
 
 假设从公式 3 获得的 $c_i$ 的类别列表为 $[c_{j1}, c_{j2}, ..., c_{jm}]$，对应的后验概率列表为 $[\theta_{i,j1}, \theta_{i,j2}, ..., \theta_{i,jm}]$。粗略地取前一定百分比或固定数量的候选作为 $c_i$ 的相关类别是不准确的，因为类别之间差异很大。相反，我们为每个类别 $c_{j,k}$ 计算一个相对下降分数。
 
-$$\eta_k = \frac{(\theta_{i,j_{k+1}} - \theta_{i,j_k})}{\theta_{i,j_k}} \tag{4}$$
+$$\eta_k = \frac{(\theta_{i,j_{k+1}} - \theta_{i,j_k})}{\theta_{i,j_k}} \qquad (4}$$
 
 排名在最大相对下降点之前的类别被选为 $c_i$ 的顶部相关类别，我们将这些类别记为 $\Gamma(c_i)$。
 
@@ -196,7 +196,7 @@ T 恤（男）和手机的相关类别概率分别如图 4(a) 和图 4(b) 所示
 
 对于每个相关类别，我们计算该类别中商品的相关性分数，可应用标准的基于item的协同过滤技术。在我们的系统中，我们添加了一个约束条件，即候选相关商品 $j$ 应在商品 $i$ 之后被购买。顺序在建模互补关系中非常重要。例如，当用户刚买了一部手机时，推荐移动电源是合理的，但如果用户已经购买了移动电源，再推荐手机就不合适了。相关分数定义如下。
 
-$$s_1(i,j) = \sum_{u \in U_i \cap U_j} \frac{1/(1 + |t_{ui} - t_{uj}|)}{\sqrt{|U_i|} \times \sqrt{|U_j|}} \tag{5}$$
+$$s_1(i,j) = \sum_{u \in U_i \cap U_j} \frac{1/(1 + |t_{ui} - t_{uj}|)}{\sqrt{|U_i|} \times \sqrt{|U_j|}} \qquad (5}$$
 
 在公式 5 中，其中 $c_j \in \Gamma(c_i)$ 且 $t_{uj} \geq t_{ui}$，我们在分子中添加了一个时间衰减因子。如果商品 $i$ 和商品 $j$ 的购买时间间隔较长，则它们之间存在强相关性的可能性较小。
 
@@ -245,7 +245,7 @@ $$s_1(i,j) = \sum_{u \in U_i \cap U_j} \frac{1/(1 + |t_{ui} - t_{uj}|)}{\sqrt{|U
 
 将商品聚类到不同组后，我们计算聚类级别的相关性分数。令 $L(i)$ 为商品 $i$ 所属的聚类。则
 
-$$s_2(i,j) = s_1(L(i), L(j)) \tag{6}$$
+$$s_2(i,j) = s_1(L(i), L(j)) \qquad (6}$$
 
 其中 $s_1$ 按之前描述的公式 5 计算。也就是说，我们计算商品聚类 $L(j)$ 的购买发生在商品聚类 $L(i)$ 之后的相关性分数。
 
@@ -253,7 +253,7 @@ $$s_2(i,j) = s_1(L(i), L(j)) \tag{6}$$
 
 基于两个相关性分数 $s_1(i,j)$ 和 $s_2(i,j)$，我们通过线性组合计算最终的相关分数：
 
-$$s(i,j) = \omega \cdot s_1(i,j) + (1 - \omega) \cdot s_2(i,j) \tag{7}$$
+$$s(i,j) = \omega \cdot s_1(i,j) + (1 - \omega) \cdot s_2(i,j) \qquad (7}$$
 
 其中 $\omega$ 是组合权重，可以手动设置或从数据中估计。除非另有说明，我们实验中的默认值为 $\omega = 0.8$。
 

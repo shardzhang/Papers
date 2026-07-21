@@ -189,7 +189,7 @@ NDCG@K 可表示为[22, 49]：
 
 **表 4：MobileRec 上各种基线的性能分析。基线属于不同类别，例如通用基线（如 Pop）、序列基线（如 SASRec、ELECRec、BERT4Rec、HGN、SINE）、基于会话的基线（如 GRU4Rec、GCSAN）、基于图神经网络的基线（如 GCSAN）、基于 Transformer 的基线（如 LightSANs）。**
 
-| 方法 ↓ / 指标 \rightarrow | Hit@1 | Hit@5 | Hit@10 | Hit@15 | Hit@20 | NDCG@5 | NDCG@10 | NDCG@15 | NDCG@20 |
+| 方法 $\downarrow$ / 指标 \rightarrow | Hit@1 | Hit@5 | Hit@10 | Hit@15 | Hit@20 | NDCG@5 | NDCG@10 | NDCG@15 | NDCG@20 |
 |---|---|---|---|---|---|---|---|---|---|
 | Pop | 0.0027 | 0.0086 | 0.0151 | 0.0208 | 0.0256 | 0.0056 | 0.0077 | 0.0092 | 0.0103 |
 | SASRec | 0.0026 | 0.0098 | 0.0181 | 0.0242 | 0.0295 | 0.0061 | 0.0088 | 0.0104 | 0.0117 |

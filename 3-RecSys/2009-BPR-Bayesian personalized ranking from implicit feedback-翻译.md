@@ -160,7 +160,7 @@ $$
 
 > [!NOTE]
 >
->  **BPR-Opt 是最大化问题**，的目标是**最大化**后验概率。因此后续优化算法是梯度上升算法
+>  **BPR-Opt 是最大化问题**，目标是**最大化**后验概率。因此后续优化算法是梯度上升算法
 
 
 
@@ -193,7 +193,7 @@ $$
 (1)和BPR-Opt之间的类比是明显的。除了归一化常数 $z_u$ 之外，它们仅在损失函数上有所不同。AUC使用**不可微的损失** $\delta(x > 0)$，它等同于Heaviside函数：
 
 $$
-\delta(x > 0) = H(x) := \begin{cases} 1 & \text{如果 } x > 0 \\ 0 & \text{否则} \end{cases}
+\delta(x > 0) = H(x) := \begin{cases} 1 & \text{if } x > 0 \\ 0 & \text{otherwise} \end{cases}
 $$
 
 取而代之，我们使用可微的损失 $\ln \sigma(x)$。**在优化AUC时，用可微函数替代不可微的Heaviside函数是常见的做法**[3]。替代函数的选择通常是启发式的，使用类似 $\sigma$ 形状的函数（见图3）。在本文中，我们推导了替代函数 $\ln \sigma(x)$，这是由MLE（最大似然估计）驱动的。
@@ -287,10 +287,10 @@ $$
 $$
 \frac{\partial}{\partial \theta} \hat{x}_{uij} =
 \begin{cases}
-h_{if} - h_{jf}, & \text{如果 } \theta = w_{uf},\\
-w_{uf}, & \text{如果 } \theta = h_{if},\\
--w_{uf}, & \text{如果 } \theta = h_{jf},\\
-0, & \text{否则}
+h_{if} - h_{jf}, & \text{if } \theta = w_{uf},\\
+w_{uf}, & \text{if } \theta = h_{if},\\
+-w_{uf}, & \text{if } \theta = h_{jf},\\
+0, & \text{otherwise}
 \end{cases}
 $$
 
@@ -298,7 +298,7 @@ $$
 
 > [!NOTE]
 >
-> 没有理解
+> 详见笔记
 
 
 
@@ -335,7 +335,7 @@ $$
 
 > [!NOTE]
 >
-> 没有理解
+> 详见笔记
 
 
 

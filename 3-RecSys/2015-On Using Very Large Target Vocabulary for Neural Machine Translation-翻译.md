@@ -42,16 +42,16 @@
 
 神经机器翻译通常实现为编码器-解码器网络。编码器读取源句子 $x = (x_1, \ldots, x_T)$ 并将其编码为隐藏状态序列 $h = (h_1, \cdots, h_T)$：
 
-$$h_t = f (x_t, h_{t-1}). \tag{1}$$
+$$h_t = f (x_t, h_{t-1}). \qquad (1}$$
 
 然后，解码器（另一个循环神经网络）根据编码后的隐藏状态序列 $h$ 生成相应的翻译 $y = (y_1, \cdots, y_{T'})$：
 
-$$p(y_t | y_{<t}, x) \propto \exp \{q (y_{t-1}, z_t, c_t)\}, \tag{2}$$
+$$p(y_t | y_{<t}, x) \propto \exp \{q (y_{t-1}, z_t, c_t)\}, \qquad (2}$$
 
 其中
 
-$$z_t = g (y_{t-1}, z_{t-1}, c_t), \tag{3}$$
-$$c_t = r (z_{t-1}, h_1, \ldots, h_T), \tag{4}$$
+$$z_t = g (y_{t-1}, z_{t-1}, c_t), \qquad (3}$$
+$$c_t = r (z_{t-1}, h_1, \ldots, h_T), \qquad (4}$$
 
 且 $y_{<t} = (y_1, \ldots, y_{t-1})$。
 
@@ -77,7 +77,7 @@ $$\overleftarrow{h}_t = f(x_t, \overleftarrow{h}_{t+1}), \quad \overrightarrow{h
 
 解码器在每个时间步将上下文向量 $c_t$ 计算为隐藏状态 $(h_1, \ldots, h_T)$ 的凸组合，系数 $\alpha_1, \ldots, \alpha_T$ 由下式计算：
 
-$$\alpha_t = \frac{\exp \{a (h_t, z_{t-1})\}}{\sum_k \exp \{a (h_k, z_{t-1})\}}, \tag{5}$$
+$$\alpha_t = \frac{\exp \{a (h_t, z_{t-1})\}}{\sum_k \exp \{a (h_k, z_{t-1})\}}, \qquad (5}$$
 
 其中 $a$ 是一个具有单隐藏层的前馈神经网络。
 
@@ -85,11 +85,11 @@ $$\alpha_t = \frac{\exp \{a (h_t, z_{t-1})\}}{\sum_k \exp \{a (h_k, z_{t-1})\}},
 
 然后，公式 (2) 中下一个目标词的概率由下式计算：
 
-$$p(y_t | y_{<t}, x) = \frac{1}{Z} \exp \{w_t^\top \phi (y_{t-1}, z_t, c_t) + b_t\} \tag{6}$$
+$$p(y_t | y_{<t}, x) = \frac{1}{Z} \exp \{w_t^\top \phi (y_{t-1}, z_t, c_t) + b_t\} \qquad (6}$$
 
 其中 $\phi$ 是一个仿射变换后接非线性激活函数，$w_t$ 和 $b_t$ 分别是目标词向量和目标词偏置。$Z$ 是归一化常数，由下式计算：
 
-$$Z = \sum_{k: y_k \in V} \exp \{w_k^\top \phi (y_{t-1}, z_t, c_t) + b_k\}, \tag{7}$$
+$$Z = \sum_{k: y_k \in V} \exp \{w_k^\top \phi (y_{t-1}, z_t, c_t) + b_k\}, \qquad (7}$$
 
 其中 $V$ 是所有目标词的集合。
 
@@ -119,7 +119,7 @@ $$Z = \sum_{k: y_k \in V} \exp \{w_k^\top \phi (y_{t-1}, z_t, c_t) + b_k\}, \tag
 
 让我们考虑公式 (6) 中输出的对数概率。梯度由正部和负部组成：
 
-$$\nabla \log p(y_t | y_{<t}, x) = \nabla E(y_t) - \sum_{k: y_k \in V} p(y_k | y_{<t}, x) \nabla E(y_k), \tag{8}$$
+$$\nabla \log p(y_t | y_{<t}, x) = \nabla E(y_t) - \sum_{k: y_k \in V} p(y_k | y_{<t}, x) \nabla E(y_k), \qquad (8}$$
 
 其中我们将能量 $E$ 定义为
 
@@ -127,17 +127,17 @@ $$E(y_j) = w_j^\top \phi (y_{j-1}, z_j, c_j) + b_j.$$
 
 梯度的第二项（即负项）本质上是能量的期望梯度：
 
-$$\mathbb{E}_{P} [\nabla E(y)], \tag{9}$$
+$$\mathbb{E}_{P} [\nabla E(y)], \qquad (9}$$
 
 其中 $P$ 表示 $p(y | y_{<t}, x)$。
 
 所提出方法的主要思想是通过使用少量样本的重要性采样来近似这个期望（即梯度的负项）。给定预定义的提议分布 $Q$ 和从 $Q$ 中采样的集合 $V'$，我们将公式 (9) 中的期望近似为：
 
-$$\mathbb{E}_{P} [\nabla E(y)] \approx \sum_{k: y_k \in V'} \frac{\omega_k}{\sum_{k': y_{k'} \in V'} \omega_{k'}} \nabla E(y_k), \tag{10}$$
+$$\mathbb{E}_{P} [\nabla E(y)] \approx \sum_{k: y_k \in V'} \frac{\omega_k}{\sum_{k': y_{k'} \in V'} \omega_{k'}} \nabla E(y_k), \qquad (10}$$
 
 其中
 
-$$\omega_k = \exp \{E(y_k) - \log Q(y_k)\}. \tag{11}$$
+$$\omega_k = \exp \{E(y_k) - \log Q(y_k)\}. \qquad (11}$$
 
 这种方法允许我们在训练期间仅使用目标词表的一小部分子集来计算归一化常数，从而每次参数更新的计算复杂度大大降低。直观地说，在每次参数更新时，我们只更新与正确词 $w_t$ 以及采样词 $V'$ 相关联的向量。
 

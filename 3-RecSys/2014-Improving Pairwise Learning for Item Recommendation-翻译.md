@@ -55,7 +55,7 @@ Pairwise算法是从隐式反馈中学习推荐系统的流行方法。对于每
 item推荐的任务是为每个上下文找到一个排序 $\hat{r}$。我们通过一个双射函数 $\hat{r} : I \times C \to \{1, \ldots, |I|\}$ 来形式化这个问题，其中 $\hat{r}(i|c)$ 是item $i$ 在给定上下文 $c$ 下的排名。排序函数通常由一个 **评分函数** $\hat{y}(i|c)$ 建模，该函数本身由一组模型参数 $\Theta$ 参数化。例如，如果 $i$ 和 $c$ 是分类变量，矩阵分解（MF）是评分模型的常见选择。**使用任何评分模型进行排序都可以通过计算所有item的得分（给定上下文 $c$）并按得分排序item（对每个上下文）来完成**。排名 $\hat{r}$ 和评分函数 $\hat{y}$ 之间的正式联系可定义为：
 
 $$
-\hat{r}(i|c) := |\{j : \hat{y}(j|c) \geq \hat{y}(i|c)\}|. \tag{1}
+\hat{r}(i|c) := |\{j : \hat{y}(j|c) \geq \hat{y}(i|c)\}|. \qquad (1}
 $$
 
 例如，对于排名第一的item，只有一个item（它本身）得分大于或等于它。对于排名第二的item，只有两个item的得分大于或等于它，以此类推。
@@ -73,43 +73,43 @@ $$
 模型参数 $\Theta$ 的值是从隐式反馈数据 $S$ 中学习的。一种流行的学习模型参数 $\Theta$ 的方法基于成对学习。其思想是对于每个上下文 $c \in C$，区分已选item $I^+(c) := \{i : (i, c) \in S\}$  和 剩余item $I \setminus I^+(c)$。在上下文 $c$ 下，item $i$ 优于item $j$（记作 $i \succ_c j$），**当且仅当 $i$ 被选择而 $j$ 未被选择**：
 
 $$
-i \succ_c j \Leftrightarrow i \in I^+(c) \land j \in I \setminus I^+(c). \tag{2}
+i \succ_c j \Leftrightarrow i \in I^+(c) \land j \in I \setminus I^+(c). \qquad (2}
 $$
 
 所有成对偏好的集合 $D_S \subseteq C \times I \times I$ 可定义为：
 
 $$
-(c, i, j) \in D_S :\Leftrightarrow i \in I^+(c) \land j \in I \setminus I^+(c). \tag{3}
+(c, i, j) \in D_S :\Leftrightarrow i \in I^+(c) \land j \in I \setminus I^+(c). \qquad (3}
 $$
 
 从成对偏好 到 模型/评分函数 $\hat{y}$ 的联系由下式建立：
 
 $$
-p(i \succ_c j) := \sigma(\hat{y}(i|c) - \hat{y}(j|c)) \tag{4}
+p(i \succ_c j) := \sigma(\hat{y}(i|c) - \hat{y}(j|c)) \qquad (4}
 $$
 
 其中 $\sigma(x) = 1/(1 + \exp(-x))$。目标是**最大化正确排序偏好的似然**：
 
 $$
-\arg\max_{\Theta} \prod_{(c,i,j) \in D_S} p(i \succ_c j), \tag{5}
+\arg\max_{\Theta} \prod_{(c,i,j) \in D_S} p(i \succ_c j), \qquad (5}
 $$
 
 这等价于最小化 **负对数似然**（NLL）：
 
 $$
-NLL := - \sum_{(c,i,j) \in D_S} \ln \sigma(\hat{y}(c, i) - \hat{y}(c, j)). \tag{6}
+NLL := - \sum_{(c,i,j) \in D_S} \ln \sigma(\hat{y}(c, i) - \hat{y}(c, j)). \qquad (6}
 $$
 
 **SGD学习。** 任意模型参数 $\theta \in \Theta$ 的梯度为：
 
 $$
-\frac{\partial NLL}{\partial \theta} = \sum_{(c,i,j) \in D_S} (1 - \sigma(\hat{y}(c, i) - \hat{y}(c, j))) \frac{\partial (\hat{y}(c, i) - \hat{y}(c, j))}{\partial \theta}. \tag{7}
+\frac{\partial NLL}{\partial \theta} = \sum_{(c,i,j) \in D_S} (1 - \sigma(\hat{y}(c, i) - \hat{y}(c, j))) \frac{\partial (\hat{y}(c, i) - \hat{y}(c, j))}{\partial \theta}. \qquad (7}
 $$
 
 由于pair数量 $|D_S|$ 非常庞大，学习算法通常基于随机梯度下降（SGD）。均匀采样一个pair $(c, i, j) \in D_S$ 并执行一个随机梯度下降步骤：
 
 $$
-\theta \leftarrow \theta - \eta \underbrace{(1 - \sigma(\hat{y}(c, i) - \hat{y}(c, j)))}_{=: \Delta_{c,i,j}} \frac{\partial}{\partial \theta} (\hat{y}(c, i) - \hat{y}(c, j)). \tag{8}
+\theta \leftarrow \theta - \eta \underbrace{(1 - \sigma(\hat{y}(c, i) - \hat{y}(c, j)))}_{=: \Delta_{c,i,j}} \frac{\partial}{\partial \theta} (\hat{y}(c, i) - \hat{y}(c, j)). \qquad (8}
 $$
 
 其中 $\eta$ 是学习率，必须选择足够小以确保步骤沿正确方向进行——即梯度仅在 $\theta$ 附近的小区域内（近似）正确。注意隐式反馈 $S \subseteq C \times I$  和 训练pair $D_S \subseteq C \times I \times I$ 之间的区别。
@@ -134,7 +134,7 @@ $$
 
 **梯度幅度。** 使用BPR学习模型参数是通过循环执行式(8)完成的。可以看出，**每个梯度步骤都有一个乘性标量**：
 $$
-\Delta_{c,i,j} := (1 - \sigma(\hat{y}(c, i) - \hat{y}(c, j))) = (1 - p(i \succ_c j)). \tag{9}
+\Delta_{c,i,j} := (1 - \sigma(\hat{y}(c, i) - \hat{y}(c, j))) = (1 - p(i \succ_c j)). \qquad (9}
 $$
 
 该量取决于评分模型（使用当前模型参数 $\Theta$）如何在上下文 $c$ 下区分正item $i$ 和负item $j$。量 $\Delta_{c,i,j}$ 显然是一个概率，如果 $i$ 被正确分配了比 $j$ 更大的得分，则接近0。如果 $j$ 被错误分配了比 $i$ 更大的得分，则接近1。这意味着 $\Delta_{c,i,j}$ 可以被理解为**成对偏好 $(c, i, j)$ 对改善 $\Theta$ 有多大影响**。如果 $\Delta_{c,i,j}$ 接近0，则无法从该案例 $(c, i, j)$ 中学到任何东西，因为其梯度消失，即 $\theta$ 不会被更新步骤（式8）改变。因此，在后续内容中 $\Delta_{c,i,j}$ 被称为**采样案例 $(c, i, j)$ 的梯度幅度**。注意 $\Delta_{c,i,j}$ 依赖于模型参数 $\Theta$，因此 $\Delta_{c,i,j}$ 在学习过程中会变化。
@@ -170,7 +170,7 @@ $$
 增加 **困难pair** 比例的一个简单方法是对 **流行item进行过采样**。经验流行度/选择频率（见图1）可以直接用来**定义采样分布**：
 
 $$
-p(j|c) \propto |\{(c', j') \in S : j = j'\}|. \tag{10}
+p(j|c) \propto |\{(c', j') \in S : j = j'\}|. \qquad (10}
 $$
 
 
@@ -184,13 +184,13 @@ $$
 
 或者，可以使用**参数化采样**。通常，经验分布近似遵循某种解析规律，例如 几何分布 或 Zipf分布（见图1）。例如，对于几何分布：
 $$
-p(j|c) = \gamma (1 - \gamma)^{r(j)}, \quad \gamma \in (0, 1) \tag{11}
+p(j|c) = \gamma (1 - \gamma)^{r(j)}, \quad \gamma \in (0, 1) \qquad (11}
 $$
 
 或者等价地使用另一种表示/参数化：
 
 $$
-p(j|c) \propto \exp(-r(j)/\lambda), \quad \lambda \in \mathbb{R}^+, \tag{12}
+p(j|c) \propto \exp(-r(j)/\lambda), \quad \lambda \in \mathbb{R}^+, \qquad (12}
 $$
 
 其中 $r(j)$ 是**根据全局流行度排序的item $j$ 的排名**。式(12)分布中的期望排名由参数 $\lambda$ 确定。
@@ -220,7 +220,7 @@ $$
 下面开发了一个细粒度的采样器，它同时适应上下文和模型的当前信念（即通过 $\Theta$ 适应 $\hat{y}$）。类似于全局item流行度（式10），可以定义一个**静态的上下文特定流行度分布**：
 
 $$
-p(j|c) \propto |\{(c', j') \in S : c = c', j = j'\}| = \delta((c, j) \in S). \tag{13}
+p(j|c) \propto |\{(c', j') \in S : c = c', j = j'\}| = \delta((c, j) \in S). \qquad (13}
 $$
 
 然而，该分布有两个缺点：(1) 它定义在非常少的样本上，即对于给定的上下文 $c$，只存在一个小的已选item子集 $I^+(c)$，其中通常没有item被多次选择。这将使item分布成为一个阶跃函数，其中负item无法区分。(2) 它没有考虑当前信念（即 $\Theta$）。
@@ -228,7 +228,7 @@ $$
 相反，我们提出**使用评分函数 $\hat{y}$ 来定义采样分布**。直观地说，当需要为给定观测 $(c, i) \in S$ 采样一个负item $j$ 时，$j$ 越接近顶部（排名 $\hat{r}(j|c)$ 越小），$j$ 的信息量越大。这也可以在梯度幅度 $\Delta_{c,i,j}$ 中看出：如果给定 $(c, i)$，我们应该选择使得 $\hat{y}(j|c)$ 大的 $j$，因为这会增大 $\Delta_{c,i,j}$。与其使用大得分这一概念，不如形式化一个小的预测排名 $\hat{r}(j|c)$，因为得分的大小是相对于其他item而言的，而排名是一个绝对值。这使我们能够公式化一个自适应且上下文感知的采样分布：
 
 $$
-p(j|c) \propto \exp(-\hat{r}(j|c)/\lambda), \quad \lambda \in \mathbb{R}^+. \tag{14}
+p(j|c) \propto \exp(-\hat{r}(j|c)/\lambda), \quad \lambda \in \mathbb{R}^+. \qquad (14}
 $$
 
 **性质。** item分布（式14）依赖于 $\hat{r}(j|c)$。提醒一下，$\hat{r}(j|c)$ 是item $j$ 在所有item $I$ 中使用评分模型 $\hat{y}(j|c)$ 对item进行排序得到的排名。因此，所提出的采样器是：
@@ -249,7 +249,7 @@ $$
 假设上下文 $C$ 和item $I$ 由分类变量表示，即 $C = \{c_1, c_2, \ldots\}$ 和 $I = \{i_1, i_2, \ldots\}$。例如，在个性化设置中，每个上下文 $c$ 可以对应一个用户。设评分模型 $\hat{y}$ 为矩阵分解（MF）：
 
 $$
-\hat{y}(l|c) := \sum_{f=1}^{k} v_{c,f} v_{l,f}, \quad V \in \mathbb{R}^{(C \cup I) \times k}. \tag{15}
+\hat{y}(l|c) := \sum_{f=1}^{k} v_{c,f} v_{l,f}, \quad V \in \mathbb{R}^{(C \cup I) \times k}. \qquad (15}
 $$
 
 其中 $k \in \mathbb{N}$ 是latent维度，因子 $V$ 是模型参数 $\Theta$。使用MF（式15）对一个item进行评分的复杂度为 $O(k) =: T_{pred}$。
@@ -259,21 +259,21 @@ $$
 **排名不变归一化。** 首先，定义 $\hat{y}$ 的一个变换 $\hat{y}^*$：
 
 $$
-\hat{y}^*(l|c) := \sum_{f=1}^{k} p(f|c) \operatorname{sgn}(v_{c,f}) v_{l,f}^* \tag{16}
+\hat{y}^*(l|c) := \sum_{f=1}^{k} p(f|c) \operatorname{sgn}(v_{c,f}) v_{l,f}^* \qquad (16}
 $$
 
-其中 $p(f|c)$ 是概率函数：$$p(f|c) \propto |v_{c,f}| \sigma_f \tag{17}$$
+其中 $p(f|c)$ 是概率函数：$$p(f|c) \propto |v_{c,f}| \sigma_f \qquad (17}$$
 
 而 $v_{l,f}^*$ 是标准化的item因子：
 
 $$
-v_{l,f}^* = \frac{v_{l,f} - \mu_f}{\sigma_f} \tag{18}
+v_{l,f}^* = \frac{v_{l,f} - \mu_f}{\sigma_f} \qquad (18}
 $$
 
 其中所有item因子的经验均值和方差为：
 
 $$
-\mu_f = \mathbb{E}(v_{\cdot,f}), \quad \sigma_f^2 = \operatorname{Var}(v_{\cdot,f}). \tag{19}
+\mu_f = \mathbb{E}(v_{\cdot,f}), \quad \sigma_f^2 = \operatorname{Var}(v_{\cdot,f}). \qquad (19}
 $$
 
 **引理4.1（排名不变性）。** 由 $\hat{y}^*$ 评分生成的排名 $\hat{r}^*$ 与由 $\hat{y}$ 生成的排名 $\hat{r}$ 相同。
@@ -306,19 +306,19 @@ $$\Leftrightarrow \hat{y}^*(i|c) \geq \hat{y}^*(j|c).$$
 
 **排名混合。** 表示 $\hat{y}^*$ 的优点在于 $p(f|c)$ 可以被解读为标准化item因子上的混合概率。即 $p(f|c)$ 越大，维度 $f$ 对特定上下文 $c$ 越重要。这允许将采样分布定义为混合：
 
-$$p(j|c) := \sum_{f=1}^{k} p(f|c) p(j|c, f). \tag{20}$$
+$$p(j|c) := \sum_{f=1}^{k} p(f|c) p(j|c, f). \qquad (20}$$
 
 由于 $v_{l,f}^*$ 的标准化，根据式(14)类比地定义 $p(j|c, f)$ 是合理的：
 
-$$p(j|c, f) \propto \exp(-\hat{r}^*(j|c, f)/\lambda), \tag{21}$$
+$$p(j|c, f) \propto \exp(-\hat{r}^*(j|c, f)/\lambda), \qquad (21}$$
 
 其中排名 $\hat{r}^*(j|c, f)$ 由上下文和因子相关的评分函数 $\hat{y}^*(j|c, f)$ 生成。根据式(16)，该评分函数可定义为：
 
-$$\hat{y}^*(l|c, f) := \operatorname{sgn}(v_{c,f}) v_{l,f}^*. \tag{22}$$
+$$\hat{y}^*(l|c, f) := \operatorname{sgn}(v_{c,f}) v_{l,f}^*. \qquad (22}$$
 
 我们可以摆脱 $v_{l,f}^*$ 的标准化，使用一个排名不变但更简单的函数：
 
-$$\hat{y}(l|c, f) := \operatorname{sgn}(v_{c,f}) v_{l,f}. \tag{23}$$
+$$\hat{y}(l|c, f) := \operatorname{sgn}(v_{c,f}) v_{l,f}. \qquad (23}$$
 
 注意 $\hat{y}(l|c, f)$ 依赖于原始参数 $V$ 而不是它们的归一化。评分函数 $\hat{y}(l|c, f)$ 与其排名 $\hat{r}(l|c, f)$ 有非常简单的关系：排名 $r$ 上的item具有第 $r$ 大的因子 $v_{l,f}$——如果 $\operatorname{sgn}(v_{c,f})$ 为正，否则是第 $r$ 大的负因子。
 
@@ -375,19 +375,19 @@ $$\hat{y}(l|c, f) := \operatorname{sgn}(v_{c,f}) v_{l,f}. \tag{23}$$
 
 设 $x_i \in \mathbb{R}^{p_I}$ 是一个描述item $i$ 的任意特征向量，包含 $p_I$ 个实值变量，$x_c \in \mathbb{R}^{p_C}$ 是一个描述上下文 $c$ 的特征向量，包含 $p_C$ 个变量。这种灵活表示允许描述许多不同类型的数据，包括属性、时间或序列上下文以及它们的组合[13]。特征向量 $x \in \mathbb{R}^p$（这里 $x = (x_c, x_i)$，$p = p_C + p_I$）上的二阶分解机（FM）定义为：
 
-$$\hat{y}(x) = w_0 + \sum_{l=1}^{p} w_l x_l + \sum_{l=1}^{p} \sum_{l' > l} x_l x_{l'} \langle v_l, v_{l'} \rangle \tag{24}$$
+$$\hat{y}(x) = w_0 + \sum_{l=1}^{p} w_l x_l + \sum_{l=1}^{p} \sum_{l' > l} x_l x_{l'} \langle v_l, v_{l'} \rangle \qquad (24}$$
 
 其中 $w_0, w_1, \ldots, w_p, v_{1,1}, \ldots, v_{p,k}$ 是模型参数 $\Theta$。计算评分函数（式24）的复杂度为 $T_{pred} = O(k \cdot NZ(x))$，其中 $NZ(x)$ 是 $x$ 中非零值的数量。SGD步骤也具有此复杂度[13]。下面展示如何在摊还 $T_{pred}$ 时间内采样一个负item。
 
 **排名不变变换。** 为了推导高效采样算法，首先为每个上下文和item定义一个 $k+1$ 维的因子向量 $v'$：
 
-$$v'_{c,f} := \sum_{l=1}^{p_C} v_{l,f} x_{c,l}, \quad f = 1, \ldots, k, \qquad v'_{c,0} := 1, \tag{25}$$
+$$v'_{c,f} := \sum_{l=1}^{p_C} v_{l,f} x_{c,l}, \quad f = 1, \ldots, k, \qquad v'_{c,0} := 1, \qquad (25}$$
 
 $$v'_{i,f} := \sum_{l=1}^{p_I} v_{l+p_C, f} x_{i,l}, \quad f = 1, \ldots, k, \qquad v'_{i,0} := \sum_{l=1}^{p_I} w_{l+p_C} x_{i,l} + \sum_{l=1}^{p_I} \sum_{l' > l} x_{i,l+p_C} x_{i,l'+p_C} \langle v_{l+p_C}, v_{l'+p_C} \rangle.$$
 
 变换后的因子 $v'$ 可用于定义矩阵分解模型：
 
-$$\hat{y}(i|c) := \sum_{f=0}^{k} v'_{c,f} v'_{i,f}. \tag{26}$$
+$$\hat{y}(i|c) := \sum_{f=0}^{k} v'_{c,f} v'_{i,f}. \qquad (26}$$
 
 该模型对于式(24)的FM是排名不变的，因此MF节中的所有推导都可以在此应用（现在使用 $v'$ 代替 $v$）。排名不变性的证明直接来自将 $v'$ 的定义代入式(26)，其结果等于式(24)除了一个常数（与排名无关的）项之外。
 

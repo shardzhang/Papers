@@ -1,6 +1,10 @@
 # 候选采样（Candidate Sampling）学习笔记
 
+> Google Research Team | Google
+
 ---
+
+## 摘要
 
 本文分享了候选采样（Candidate Sampling）的核心概念与方法。核心内容：
 - 从动机出发，说明正负样本数量悬殊时采样方法的必要性
@@ -64,13 +68,13 @@ $$F(\boldsymbol{x}, y) = F'(\boldsymbol{x}, y) + \log Q(y|\boldsymbol{x}) = \bol
 
 - Softmax 训练过程
 
-$$p(y|\mathbf{x}) = softmax(\mathbf{x}) = \frac{1}{Z}\exp(\mathbf{w}_y^T\mathbf{x}), \quad 其中\ Z = \sum_y \exp(\mathbf{w}_y^T\mathbf{x})$$
+$$p(y|\mathbf{x}) = softmax(\mathbf{x}) = \frac{1}{Z}\exp(\mathbf{w}_y^T\mathbf{x}), \quad \text{where } Z = \sum_y \exp(\mathbf{w}_y^T\mathbf{x})$$
 
-$$\nabla\log p(y|\mathbf{x}) = \nabla\mathcal{E}(y) - \sum_{y_k} p(y_k|\mathbf{x})\nabla\mathcal{E}(y_k), \quad 其中\ \mathcal{E}(y_k) = \mathbf{w}_y^T\mathbf{x}$$
+$$\nabla\log p(y|\mathbf{x}) = \nabla\mathcal{E}(y) - \sum_{y_k} p(y_k|\mathbf{x})\nabla\mathcal{E}(y_k), \quad \text{where } \mathcal{E}(y_k) = \mathbf{w}_y^T\mathbf{x}$$
 
 $$\sum_{y_i} p(y_i|\mathbf{x})\nabla\mathcal{E}(y_i) = \mathbb{E}_{y_i \sim P}[\nabla\mathcal{E}(y_i)] \simeq \sum_{y_k} \hat{w}(y_k)\nabla\mathcal{E}(y_k)$$
 
-$$其中\ \hat{w}(y_k) = \frac{\tilde{w}(y_k)}{\sum_{j=1}^m \tilde{w}(y_j)}, \quad \tilde{w}(y_k) = \hat{p}(y_k) / \hat{q}(y_k) = \mathbf{w}_{y_k}^T\mathbf{x} / \hat{q}(y_k)$$
+$$\text{where } \hat{w}(y_k) = \frac{\tilde{w}(y_k)}{\sum_{j=1}^m \tilde{w}(y_j)}, \quad \tilde{w}(y_k) = \hat{p}(y_k) / \hat{q}(y_k) = \mathbf{w}_{y_k}^T\mathbf{x} / \hat{q}(y_k)$$
 
 ## 重要性采样
 

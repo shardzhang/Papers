@@ -1,3 +1,4 @@
+# Slope One Predictors for Online Rating-Based Collaborative Filtering（中文翻译）
 本文分享了Slope One系列协同过滤预测器，该系列算法基于`f(x) = x + b`形式的线性回归模型，通过预先计算item间的平均评分差异来进行评分预测。核心内容：
 - 提出了三种Slope One方案：基本Slope One、加权Slope One和双极Slope One，这些方案简单、易实现、支持在线查询和动态更新
 - 通过将用户喜欢的item与不喜欢的item分开处理，双极Slope One方案进一步提升了预测精度
@@ -8,7 +9,6 @@
 - 将评分划分为"喜欢"和"不喜欢"两个子集可以提高1.5%-2%的预测精度
 - 基本Slope One即可超越BIAS FROM MEAN等基线方案，加权方案和双极方案进一步提升了性能
 
-# Slope One Predictors for Online Rating-Based Collaborative Filtering（中文翻译）
 
 > Daniel Lemire, Anna Maclachlan | Université du Québec à Montréal, University of Prince Edward Island
 

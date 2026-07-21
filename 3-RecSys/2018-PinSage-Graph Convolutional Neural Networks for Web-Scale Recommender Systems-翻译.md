@@ -54,7 +54,7 @@ The main challenge is to scale both the training as well as inference of GCN-bas
 
 主要的挑战在于将基于GCN的节点嵌入的训练和推理扩展到拥有数十亿节点和数百亿边的图。扩展GCN是困难的，因为其设计所依赖的许多核心假设在大数据环境下都不再成立。例如，所有现有的基于GCN的推荐系统都要求在训练过程中操作完整的图拉普拉斯矩阵——当底层图拥有数十亿节点且其结构不断变化时，这一假设是不可行的。
 
-**当前工作.** Here we present a highly-scalable GCN framework that we have developed and deployed in production at Pinterest. Our framework, a random-walk-based GCN named PinSage, operates on a massive graph with 3 billion nodes and 18 billion edges—a graph that is 10,000× larger than typical applications of GCNs. PinSage leverages several key insights to drastically improve the scalability of GCNs:
+**当前工作.** Here we present a highly-scalable GCN framework that we have developed and deployed in production at Pinterest. Our framework, a random-walk-based GCN named PinSage, operates on a massive graph with 3 billion nodes and 18 billion edges—a graph that is 10,000$\times$ larger than typical applications of GCNs. PinSage leverages several key insights to drastically improve the scalability of GCNs:
 
 本文提出了一个高度可扩展的GCN框架，我们已在Pinterest中开发并部署到生产环境中。我们的框架——一个基于随机游走的GCN，名为PinSage——在一个包含30亿节点和180亿边的大规模图上运行，该图比GCN的典型应用大10,000倍。PinSage利用了几个关键洞察来大幅提高GCN的可扩展性：
 
@@ -248,11 +248,11 @@ We first describe our margin-based loss function in detail. Following this, we g
 
 为了训练模型的参数，我们使用基于最大间隔的损失函数。基本思想是我们想要最大化正例的内积，即查询item的嵌入与对应的相关item的嵌入。同时，我们想要确保负例的内积——即查询item嵌入与不相关item嵌入之间的内积——比正样本的内积小某个预定义的间隔。因此，单对节点嵌入(zq, zi) : (q, i) \in L的损失函数为：
 
-J_G(zq, zi) = $E_{nk ~ Pn(q)}$ max{0, zq · znk - zq · zi + Δ}   (1)
+J_G(zq, zi) = $E_{nk ~ Pn(q)}$ max{0, zq · znk - zq · zi + $\Delta$}   (1)
 
-where Pn(q) denotes the distribution of negative examples for item q, and Δ denotes the margin hyper-parameter. We shall explain the sampling of negative samples below.
+where Pn(q) denotes the distribution of negative examples for item q, and $\Delta$ denotes the margin hyper-parameter. We shall explain the sampling of negative samples below.
 
-其中Pn(q)表示itemq的负例分布，Δ表示间隔超参数。我们将在下面解释负样本的采样。
+其中Pn(q)表示itemq的负例分布，$\Delta$表示间隔超参数。我们将在下面解释负样本的采样。
 
 **使用大批量的多GPU训练.** To make full use of multiple GPUs on a single machine for training, we run the forward and backward propagation in a multi-tower fashion. With multiple GPUs, we first divide each minibatch (Figure 1 bottom) into equal-sized portions. Each GPU takes one portion of the minibatch and performs the computations using the same set of parameters. After backward propagation, the gradients for each parameter across all GPUs are aggregated together, and a single step of synchronous SGD is performed. Due to the need to train on extremely large number of examples (on the scale of billions), we run our system with large batch sizes, ranging from 512 to 4096.
 
@@ -396,7 +396,7 @@ We also evaluate the methods using Mean Reciprocal Rank (MRR), which takes into 
 
 我们还使用平均倒数排名（MRR）来评估这些方法，它考虑了itemj在查询itemq的推荐item中的排名：
 
-MRR = 1/n × \Sigma_{(q,i)\inL} 1 / ⌈$R_{i,q}$ / 100⌉   (2)
+MRR = 1/n $\times$ \Sigma_{(q,i)\inL} 1 / ⌈$R_{i,q}$ / 100⌉   (2)
 
 Due to the large pool of candidates (more than 2 billion), we use a scaled version of the MRR in Equation (2), where $R_{i,q}$ is the rank of item i among recommended items for query q, and n is the total number of labeled item pairs. The scaling factor 100 ensures that, for example, the difference between rank at 1,000 and rank at 2,000 is still noticeable, instead of being very close to 0.
 

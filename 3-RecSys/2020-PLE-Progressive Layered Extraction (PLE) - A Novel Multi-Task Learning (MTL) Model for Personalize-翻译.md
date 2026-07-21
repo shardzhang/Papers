@@ -104,7 +104,7 @@ MTL在单个模型中同时学习多个任务，并通过任务之间的信息�
 
 在本小节中，我们简要介绍服务于腾讯新闻的MTL排序系统，腾讯新闻是全球最大的内容平台之一，基于多样化的用户反馈向用户推荐新闻和视频。如图2所示，MTL排序系统中有多个目标来建模不同的用户行为，如点击、分享和评论。在离线训练过程中，我们基于从用户日志中提取的用户行为训练MTL排序模型。每次在线请求后，排序模型为每个任务输出预测值，然后基于加权乘法的排序模块通过方程1所示的组合函数将这些预测分数组合为最终分数，并最终向用户推荐排名最高的视频。
 
-$$\text{score} = p_{\text{VTR}}^{w_{\text{VTR}}} \times p_{\text{VCR}}^{w_{\text{VCR}}} \times p_{\text{SHR}}^{w_{\text{SHR}}} \times p_{\text{CMR}}^{w_{\text{CMR}}} \times \cdots \times f(\text{video\_len}) \tag{1}$$
+$$\text{score} = p_{\text{VTR}}^{w_{\text{VTR}}} \times p_{\text{VCR}}^{w_{\text{VCR}}} \times p_{\text{SHR}}^{w_{\text{SHR}}} \times p_{\text{CMR}}^{w_{\text{CMR}}} \times \cdots \times f(\text{video\_len}) \qquad (1}$$
 
 其中每个w决定每个预测分数的相对重要性，f(video_len)是非线性变换函数，如视频时长上的sigmoid或log函数。wᵥₜᵣ、wᵥ꜀ᵣ、wₛₕᵣ、w꜀ₘᵣ是通过在线实验搜索优化的超参数，以最大化在线指标。
 
@@ -134,19 +134,19 @@ $$\text{score} = p_{\text{VTR}}^{w_{\text{VTR}}} \times p_{\text{VCR}}^{w_{\text
 
 在CGC中，共享专家和任务特定专家通过门控网络进行选择性融合。如图4所示，门控网络的结构基于单层前馈网络，以SoftMax作为激活函数，输入作为选择器来计算所选向量的加权和，即专家的输出。更准确地说，任务k的门控网络输出公式为：
 
-$$g_k(x) = w_k(x) S_k(x) \tag{2}$$
+$$g_k(x) = w_k(x) S_k(x) \qquad (2}$$
 
 其中x是输入表示，w_k(x)是通过线性变换和SoftMax层计算任务k权重向量的权重函数：
 
-$$w_k(x) = \text{Softmax}(W_k^g x) \tag{3}$$
+$$w_k(x) = \text{Softmax}(W_k^g x) \qquad (3}$$
 
-其中W_k^g \in ℝ^(m_k + m_s) × d 是参数矩阵，m_s和m_k分别是共享专家和任务k特定专家的数量，d是输入表示的维度。S_k(x)是由所有选定向量（包括共享专家和任务k的特定专家）组成的选择矩阵：
+其中W_k^g \in ℝ^(m_k + m_s) $\times$ d 是参数矩阵，m_s和m_k分别是共享专家和任务k特定专家的数量，d是输入表示的维度。S_k(x)是由所有选定向量（包括共享专家和任务k的特定专家）组成的选择矩阵：
 
-$$S_k(x) = [E_T^{(k,1)}, E_T^{(k,2)}, \ldots, E_T^{(k,m_k)}, E_S^{(s,1)}, E_S^{(s,2)}, \ldots, E_S^{(s,m_s)}]^T \tag{4}$$
+$$S_k(x) = [E_T^{(k,1)}, E_T^{(k,2)}, \ldots, E_T^{(k,m_k)}, E_S^{(s,1)}, E_S^{(s,2)}, \ldots, E_S^{(s,m_s)}]^T \qquad (4}$$
 
 最后，任务k的预测为：
 
-$$y_k(x) = t_k(g_k(x)) \tag{5}$$
+$$y_k(x) = t_k(g_k(x)) \qquad (5}$$
 
 其中t_k表示任务k的塔网络。
 
@@ -158,13 +158,13 @@ CGC明确分离了任务特定和共享组件。然而，在深度多任务学�
 
 PLE中权重函数、选择矩阵和门控网络的计算与CGC相同。具体而言，PLE第j个提取网络中任务k的门控网络公式为：
 
-$$g_{k,j}(x) = w_{k,j}(g_{k,j-1}(x)) S_{k,j}(x) \tag{6}$$
+$$g_{k,j}(x) = w_{k,j}(g_{k,j-1}(x)) S_{k,j}(x) \qquad (6}$$
 
 其中$w_{k,j}$是以$g_{k,j-1}$为输入的任务k的权重函数，$S_{k,j}$是第j个提取网络中任务k的选择矩阵。值得注意的是，PLE中共享模块的选择矩阵与任务特定模块略有不同，因为它由该层中的所有共享专家和任务特定专家组成。
 
 计算所有门控网络和专家后，我们最终可以得到PLE中任务k的预测：
 
-$$y_k(x) = t_k(g_{k,N}(x)) \tag{7}$$
+$$y_k(x) = t_k(g_{k,N}(x)) \qquad (7}$$
 
 通过多层专家和门控网络，PLE为每个任务提取和组合更深层的语义表示以提高泛化能力。如图1所示，MMOE的路由策略是全连接，CGC是早期分离。不同的是，PLE采用渐进式分离路由，从所有低层专家吸收信息，提取更高级别的共享知识，并逐步分离任务特定参数。渐进式分离的过程类似于化学中从化合物中提取所需产品的过程。在PLE的知识提取和转换过程中，低层表示在高层共享专家中被联合提取/聚合和路由，获得共享知识并逐步分发到特定塔层，从而实现更高效和灵活的联合表示学习和共享。尽管MMOE的全连接路由看起来像是CGC和PLE的通用设计，但第5.3节的实践研究表明，尽管存在可能性，MMOE并不能收敛到CGC或PLE的结构。
 
@@ -172,19 +172,19 @@ $$y_k(x) = t_k(g_{k,N}(x)) \tag{7}$$
 
 设计了高效的网络结构后，我们现在关注以端到端方式联合训练任务特定层和共享层。在多任务学习中，联合损失的常见公式是每个任务损失的加权和：
 
-$$L(\theta_1, \ldots, \theta_K, \theta_s) = \sum_{k=1}^K \omega_k L_k(\theta_k, \theta_s) \tag{8}$$
+$$L(\theta_1, \ldots, \theta_K, \theta_s) = \sum_{k=1}^K \omega_k L_k(\theta_k, \theta_s) \qquad (8}$$
 
 其中\theta_s表示共享参数，K是任务数量，L_k、\omega_k和\theta_k分别是任务k的损失函数、损失权重和任务特定参数。
 
 然而，存在几个问题使得实践中MTL模型的联合优化具有挑战性。在本文中，我们优化了联合损失函数以解决在现实推荐系统中遇到的两个关键问题。第一个问题是由于顺序用户行为导致的异质样本空间。例如，用户只能在点击某item后才能分享或评论，这导致不同任务的样本空间不同，如图6所示。为联合训练这些任务，我们将所有任务的样本空间的并集作为整个训练集，并在计算每个单独任务的损失时忽略其样本空间外的样本：
 
-$$L_k(\theta_k, \theta_s) = \frac{1}{\sum_i \delta_k^i} \sum_i \delta_k^i \text{loss}_k(\hat{y}_k^i(\theta_k, \theta_s), y_k^i) \tag{9}$$
+$$L_k(\theta_k, \theta_s) = \frac{1}{\sum_i \delta_k^i} \sum_i \delta_k^i \text{loss}_k(\hat{y}_k^i(\theta_k, \theta_s), y_k^i) \qquad (9}$$
 
 其中loss_k是任务k基于预测ŷₖⁱ和真实值yₖⁱ计算的样本i的损失，\deltaₖⁱ \in {0, 1}表示样本i是否在任务k的样本空间中。
 
 第二个问题是MTL模型的性能对训练过程中损失权重的选择很敏感[9]，因为它决定了每个任务对联合损失的相对重要性。在实践中，我们观察到每个任务在不同训练阶段可能具有不同的重要性。因此，我们将每个任务的损失权重视为动态权重而非静态权重。首先，我们为任务k设置初始损失权重\omegaₖ,₀，然后根据更新比率\gammaₖ在每个步骤后更新其损失权重：
 
-$$\omega_k^{(t)} = \omega_{k,0} \times \gamma_k^t \tag{10}$$
+$$\omega_k^{(t)} = \omega_{k,0} \times \gamma_k^t \qquad (10}$$
 
 其中t表示训练轮次，\omegaₖ,₀和\gammaₖ是模型的超参数。
 
@@ -229,7 +229,7 @@ $$\text{MTL增益} =
 \begin{cases}
 $M_{\text{MTL}$} - $M_{\text{single}$}, & M \text{为正向指标} \\
 $M_{\text{single}$} - $M_{\text{MTL}$}, & M \text{为负向指标}
-\end{cases} \tag{11}$$
+\end{cases} \qquad (11}$$
 
 #### 5.1.4 复杂相关性任务的评估
 

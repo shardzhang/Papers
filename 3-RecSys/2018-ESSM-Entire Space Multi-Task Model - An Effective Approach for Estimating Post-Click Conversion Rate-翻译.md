@@ -40,11 +40,11 @@
 
 2.1 符号说明
 
-我们假设观测数据集为S = {(xi, yi \rightarrow zi)}|N i=1，样本(x, y \rightarrow z)从分布D中抽取，其域为X × Y × Z，其中X是特征空间，Y和Z是标签空间，N是总曝光数。x表示观测曝光的特征向量，通常是具有多字段[8]的高维稀疏向量，例如用户字段、商品字段等。y和z是二元标签，y = 1或z = 1分别表示是否发生点击或转化事件。y \rightarrow z揭示了点击和转化标签的序列依赖性，即当转化事件发生时总是存在先前的点击。
+我们假设观测数据集为S = {(xi, yi \rightarrow zi)}|N i=1，样本(x, y \rightarrow z)从分布D中抽取，其域为X $\times$ Y $\times$ Z，其中X是特征空间，Y和Z是标签空间，N是总曝光数。x表示观测曝光的特征向量，通常是具有多字段[8]的高维稀疏向量，例如用户字段、商品字段等。y和z是二元标签，y = 1或z = 1分别表示是否发生点击或转化事件。y \rightarrow z揭示了点击和转化标签的序列依赖性，即当转化事件发生时总是存在先前的点击。
 
 点击后CVR建模是估计概率pCVR = p(z = 1|y = 1, x)。两个相关的概率是：曝光后点击率（CTR），pCTR = p(y = 1|x)；以及曝光后点击&转化率（CTCVR），pCTCVR = p(y = 1, z = 1|x)。给定曝光x，这些概率满足公式(1)：
 
-p(y = 1, z = 1|x) = p(y = 1|x) × p(z = 1|y = 1, x) (1)
+p(y = 1, z = 1|x) = p(y = 1|x) $\times$ p(z = 1|y = 1, x) (1)
 
 2.2 CVR建模与挑战
 
@@ -76,7 +76,7 @@ p(z = 1|y = 1, x) = p(y = 1, z = 1|x) / p(y = 1|x) (2)
 
 ESMM的损失函数定义为公式(3)。它包含来自CTR和CTCVR任务的两个损失项，这些项在所有曝光样本上计算，而不使用CVR任务的损失。
 
-L(\thetacvr, \thetactr) = \Sigmai=1 N l(yi, f(xi; \thetactr)) + \Sigmai=1 N l(yi & zi, f(xi; \thetactr) × f(xi; \thetacvr)) (3)
+L(\thetacvr, \thetactr) = \Sigmai=1 N l(yi, f(xi; \thetactr)) + \Sigmai=1 N l(yi & zi, f(xi; \thetactr) $\times$ f(xi; \thetacvr)) (3)
 
 其中\thetactr和\thetacvr是CTR和CVR网络的参数，l(·)是交叉熵损失函数。数学上，公式(3)将y \rightarrow z分解为两部分³：y和y&z，这实际上利用了点击和转化标签的序列依赖性。
 
@@ -102,22 +102,22 @@ L(\thetacvr, \thetactr) = \Sigmai=1 N l(yi, f(xi; \thetactr)) + \Sigmai=1 N l(yi
 
 竞争对手。我们使用几种竞争方法在CVR建模上进行实验。（1）BASE是2.2节介绍的基线模型。（2）AMAN [6]采用负采样策略，并在{10%, 20%, 50%, 100%}中搜索采样率，报告最佳结果。（3）OVERSAMPLING [11]复制正样本以降低稀疏数据训练的难度，采样率在{2, 3, 5, 10}中搜索。（4）UNBIAS遵循[10]通过拒绝采样从观测中拟合真实潜在分布。pCTR作为拒绝概率。（5）DIVISION使用独立训练的CTR和CTCVR网络估计pCTR和pCTCVR，并通过公式(2)计算pCVR。（6）ESMM-NS是ESMM的轻量版，不共享嵌入参数。
 
-前四种方法是基于最先进的深度网络直接建模CVR的不同变体。DIVISION、ESMM-NS和ESMM共享相同的思路，即在全空间上建模CVR，涉及CVR、CTR和CTCVR三个网络。ESMM-NS和ESMM协同训练三个网络，并从CVR网络取输出进行模型比较。为公平起见，所有竞争对手（包括ESMM）共享与BASE模型相同的网络结构和超参数，即：i）使用ReLU激活函数，ii）设置嵌入向量维度为18，iii）设置MLP网络各层维度为360×200×80×2，iv）使用adam求解器，参数\beta₁=0.9，\beta₂=0.999，\epsilon=10⁻⁸。
+前四种方法是基于最先进的深度网络直接建模CVR的不同变体。DIVISION、ESMM-NS和ESMM共享相同的思路，即在全空间上建模CVR，涉及CVR、CTR和CTCVR三个网络。ESMM-NS和ESMM协同训练三个网络，并从CVR网络取输出进行模型比较。为公平起见，所有竞争对手（包括ESMM）共享与BASE模型相同的网络结构和超参数，即：i）使用ReLU激活函数，ii）设置嵌入向量维度为18，iii）设置MLP网络各层维度为360$\times$200$\times$80$\times$2，iv）使用adam求解器，参数\beta₁=0.9，\beta₂=0.999，\epsilon=10⁻⁸。
 
-评估指标。比较在两个不同任务上进行：（1）传统的CVR预测任务，在点击曝光数据集上估计pCVR；（2）CTCVR预测任务，在所有曝光数据集上估计pCTCVR。任务（2）旨在比较不同CVR建模方法在整个输入空间上的表现，这反映了模型对应SSB问题的性能。在CTCVR任务中，所有模型通过pCTR × pCVR计算pCTCVR，其中：i）pCVR由各模型分别估计，ii）pCTR使用相同的独立训练的CTR网络（与BASE模型相同的结构和超参数）估计。这两个任务都将时间序列中前1/2的数据划分为训练集，其余为测试集。采用ROC曲线下面积（AUC）作为性能指标。所有实验重复10次，报告平均结果。
+评估指标。比较在两个不同任务上进行：（1）传统的CVR预测任务，在点击曝光数据集上估计pCVR；（2）CTCVR预测任务，在所有曝光数据集上估计pCTCVR。任务（2）旨在比较不同CVR建模方法在整个输入空间上的表现，这反映了模型对应SSB问题的性能。在CTCVR任务中，所有模型通过pCTR $\times$ pCVR计算pCTCVR，其中：i）pCVR由各模型分别估计，ii）pCTR使用相同的独立训练的CTR网络（与BASE模型相同的结构和超参数）估计。这两个任务都将时间序列中前1/2的数据划分为训练集，其余为测试集。采用ROC曲线下面积（AUC）作为性能指标。所有实验重复10次，报告平均结果。
 
 3.2 公共数据集上的结果
 
 表2：不同模型在公共数据集上的比较。
 
-模型 | CVR任务上的AUC（均值±标准差） | CTCVR任务上的AUC（均值±标准差）
-BASE | 66.00 ± 0.37 | 62.07 ± 0.45
-AMAN | 65.21 ± 0.59 | 63.53 ± 0.57
-OVERSAMPLING | 67.18 ± 0.32 | 63.05 ± 0.48
-UNBIAS | 66.65 ± 0.28 | 63.56 ± 0.70
-DIVISION | 67.56 ± 0.48 | 63.62 ± 0.09
-ESMM-NS | 68.25 ± 0.44 | 64.44 ± 0.62
-ESMM | 68.56 ± 0.37 | 65.32 ± 0.49
+模型 | CVR任务上的AUC（均值$\pm$标准差） | CTCVR任务上的AUC（均值$\pm$标准差）
+BASE | 66.00 $\pm$ 0.37 | 62.07 $\pm$ 0.45
+AMAN | 65.21 $\pm$ 0.59 | 63.53 $\pm$ 0.57
+OVERSAMPLING | 67.18 $\pm$ 0.32 | 63.05 $\pm$ 0.48
+UNBIAS | 66.65 $\pm$ 0.28 | 63.56 $\pm$ 0.70
+DIVISION | 67.56 $\pm$ 0.48 | 63.62 $\pm$ 0.09
+ESMM-NS | 68.25 $\pm$ 0.44 | 64.44 $\pm$ 0.62
+ESMM | 68.56 $\pm$ 0.37 | 65.32 $\pm$ 0.49
 
 表2显示了不同模型在公共数据集上的结果。（1）在BASE模型的三个变体中，只有AMAN在CVR任务上表现稍差，这可能是由于随机采样的敏感性。OVERSAMPLING和UNBIAS在CVR和CTCVR任务上均比BASE模型有所改进。（2）DIVISION和ESMM-NS都在全空间上估计pCVR，并取得了比BASE模型显著的提升。由于避免了数值不稳定性，ESMM-NS表现优于DIVISION。（3）ESMM进一步改进了ESMM-NS。通过利用用户行为的序列模式并通过迁移机制从未点击数据中学习，ESMM为CVR建模提供了一个优雅的解决方案，同时消除了SSB和DS问题，并击败了所有竞争对手。与BASE模型相比，ESMM在CVR任务上获得了2.56%的绝对AUC提升，这表明即使对于有偏样本也具有很好的泛化性能。在包含全样本的CTCVR任务上，它带来了3.25%的AUC提升。这些结果验证了我们建模方法的有效性。
 

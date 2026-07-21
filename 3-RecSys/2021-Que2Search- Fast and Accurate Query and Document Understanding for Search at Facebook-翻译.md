@@ -17,7 +17,7 @@ Yiqun Liu, Kaushik Rangadurai, Yunzhong He,
 Siddarth Malreddy, Xunlong Gui, Xiaoyi Liu, Fedor Borisyuk
 Facebook Inc.
 
-**摘要**
+## 摘要
 
 在本文中，我们提出了Que2Search，一个已部署的面向搜索的查询与产品理解系统。Que2Search利用多任务和多模态学习方法训练查询与产品表示。通过将最新的多语言自然语言理解架构（如XLM和XLM-R）与多模态融合技术相结合，我们在Facebook现有最先进的产品理解系统基础上实现了超过5%的绝对离线相关性改进和超过4%的在线参与度增益。在本文中，我们描述了如何在Facebook规模下部署基于XLM的搜索查询理解模型，该模型在CPU上P99延迟低于1.5毫秒，这在该行业一直是一个重大挑战。我们还基于大量的离线与在线A/B实验，描述了哪些模型优化有效（以及哪些无效）。我们将Que2Search部署到Facebook Marketplace搜索中，并分享我们的生产部署经验和调优技巧，以在在线A/B实验中实现更高效率。Que2Search已在生产应用中展现出收益，并在Facebook规模下运行。
 
@@ -100,7 +100,7 @@ f = \Sigmaⁿᵢ₌₁ aᵢ \odot \phiᵢ
 
 N个通道的表示
 拼接
-W \in R^{ND×N}
+W \in R^{ND$\times$N}
 
 (1)
 

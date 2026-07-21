@@ -181,7 +181,7 @@ $$\epsilon_d = \sum_{v \in \{u, 0\}} \left| \langle\phi_v(x), \phi_v(w_v)\rangle
 
 **协同过滤** 假设我们有一个非常大的稀疏矩阵 $M$，其中条目 $M_{ij}$ 表示用户 $i$ 对实例 $j$ 采取的操作。操作和实例的一个常见示例是用户对电影的评分 [5]。一种成功的在用户和实例之间寻找共同因子以预测未观察操作的方法是将 $M$ 分解为 $M = U^\top W$。如果我们有数百万用户执行数百万操作，将 $U$ 和 $W$ 存储在内存中很快就会变得不可行。相反，我们可以选择使用哈希来压缩矩阵 $U$ 和 $W$。对于 $U, W \in \mathbb{R}^{n \times d}$，用 $u, w \in \mathbb{R}^m$ 表示满足下式的向量
 
-$$u_i = \sum_{j,k:h(j,k)=i} \xi(j, k) U_{jk} \quad \text{和} \quad w_i = \sum_{j,k:h'(j,k)=i} \xi'(j, k) W_{jk}.$$
+$$u_i = \sum_{j,k:h(j,k)=i} \xi(j, k) U_{jk} \quad \text{and} \quad w_i = \sum_{j,k:h'(j,k)=i} \xi'(j, k) W_{jk}.$$
 
 其中 $(h, \xi)$ 和 $(h', \xi')$ 是独立选择的哈希函数。这允许我们通过下式近似矩阵元素 $M_{ij} = [U^\top W]_{ij}$
 

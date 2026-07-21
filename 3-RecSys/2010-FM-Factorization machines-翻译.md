@@ -148,9 +148,9 @@ FM可应用于多种预测任务，包括：
 $$
 \frac{\partial}{\partial \theta} \hat{y}(x) =
 \begin{cases}
-1, & \text{如果 } \theta \text{ 是 } w_0 \\
-x_i, & \text{如果 } \theta \text{ 是 } w_i \\
-x_i \sum_{j=1}^{n} v_{j,f} x_j - v_{i,f} x_i^2, & \text{如果 } \theta \text{ 是 } v_{i,f}
+1, & \text{if } \theta \text{ 是 } w_0 \\
+x_i, & \text{if } \theta \text{ 是 } w_i \\
+x_i \sum_{j=1}^{n} v_{j,f} x_j - v_{i,f} x_i^2, & \text{if } \theta \text{ 是 } v_{i,f}
 \end{cases} \qquad (4)
 $$
 
@@ -286,10 +286,10 @@ $$
 $$
 n := |U \cup I \cup L|, \quad x_j :=
 \begin{cases}
-1, & \text{如果 } j = u \\
-1, & \text{如果 } j = i \\
-\frac{1}{\sqrt{|N_u|}}, & \text{如果 } j \in N_u \\
-0, & \text{否则}
+1, & \text{if } j = u \\
+1, & \text{if } j = i \\
+\frac{1}{\sqrt{|N_u|}}, & \text{if } j \in N_u \\
+0, & \text{otherwise}
 \end{cases} \qquad (14)
 $$
 
@@ -331,10 +331,10 @@ FPMC模型 [4] 尝试根据用户 $u$ 的上一次购买（在时间 $t-1$）对
 $$
 n := |U \cup I \cup L|, \quad x_j :=
 \begin{cases}
-1, & \text{如果 } j = u \\
-1, & \text{如果 } j = i \\
-\frac{1}{|B_u^{t-1}|}, & \text{如果 } j \in B_u^{t-1} \\
-0, & \text{否则}
+1, & \text{if } j = u \\
+1, & \text{if } j = i \\
+\frac{1}{|B_u^{t-1}|}, & \text{if } j \in B_u^{t-1} \\
+0, & \text{otherwise}
 \end{cases} \qquad (19)
 $$
 

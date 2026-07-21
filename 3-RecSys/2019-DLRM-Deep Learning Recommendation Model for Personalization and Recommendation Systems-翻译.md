@@ -49,11 +49,11 @@
 
 为了处理类别数据，嵌入将每个类别映射到抽象空间中的一个稠密表示。特别地，每个嵌入查找可以解释为使用一个one-hot向量 $e_i$（第 $i$ 个位置为1，其他位置为0，其中索引 $i$ 对应第 $i$ 个类别）来获取嵌入表 $W \in \mathbb{R}^{m \times d}$ 的对应行向量，如下所示：
 
-$$w^T_i = e^T_i W. \tag{1}$$
+$$w^T_i = e^T_i W. \qquad (1}$$
 
 在更复杂的场景中，**嵌入也可以表示多个item的加权组合**，使用一个multi-hot权重向量 $a^T = [0, ..., a_{i_1}, ..., a_{i_k}, ..., 0]$，其中元素 $a_i \neq 0$ 对应 $i = i_1, ..., i_k$，其他位置为0，这里 $i_1, ..., i_k$ 索引相应的item。注意，一个mini-batch共 $t$ 个嵌入查找因此可以写作：
 
-$$S = A^T W \tag{2}$$
+$$S = A^T W \qquad (2}$$
 
 其中稀疏矩阵 $A = [a_1, ..., a_t]$ [20]。
 
@@ -65,7 +65,7 @@ DLRM将利用嵌入表将类别特征映射为稠密表示。然而，即使在�
 
 矩阵分解方法通过最小化下式来解决这个问题：
 
-$$\min \sum_{(i,j) \in S} \left( r_{ij} - w^T_i v_j \right)^2 \tag{3}$$
+$$\min \sum_{(i,j) \in S} \left( r_{ij} - w^T_i v_j \right)^2 \qquad (3}$$
 
 其中 $r_{ij} \in \mathbb{R}$ 是第 $j$ 个用户对第 $i$ 个产品的评分，$i=1,...,m$，$j=1,...,n$。然后，令 $W^T = [w_1, ..., w_m]$ 和 $V^T = [v_1, ..., v_n]$，我们可以将完整的评分矩阵 $R = [r_{ij}]$ 近似为矩阵乘积 $R \approx WV^T$。注意 $W$ 和 $V$ 可以解释为两个嵌入表，其中每一行在潜在因子空间中表示一个用户/产品[17]。**这些嵌入向量的点积可以产生对后续评分的有意义的预测，这是分解机和DLRM设计的关键观察**。
 
@@ -75,7 +75,7 @@ $$\min \sum_{(i,j) \in S} \left( r_{ij} - w^T_i v_j \right)^2 \tag{3}$$
 
 分解机（FM）通过定义一个如下形式的模型，将二阶交互纳入带有类别数据的线性模型中：
 
-$$\hat{y} = b + w^T x + x^T \text{upper}(VV^T)x \tag{4}$$
+$$\hat{y} = b + w^T x + x^T \text{upper}(VV^T)x \qquad (4}$$
 
 其中 $V \in \mathbb{R}^{n \times d}$，$w \in \mathbb{R}^n$，$b \in \mathbb{R}$ 是参数，$d \ll n$，$\text{upper}$ 选择矩阵的严格上三角部分[24]。
 
@@ -85,7 +85,7 @@ FM与使用 多项式核的支持向量机（SVM）[4]有明显区别，因为�
 
 与此同时，机器学习领域的许多近期成功归因于深度学习的兴起。其中最基本的模型是多层感知机（MLP），这是一个由交错的全连接（FC）层 和 **逐分量应用的激活函数** $\sigma: \mathbb{R} \rightarrow \mathbb{R}$ 组成的预测函数，如下所示：
 
-$$\hat{y} = W_k \sigma(W_{k-1} \sigma(...\sigma(W_1 x + b_1)...) + b_{k-1}) + b_k \tag{5}$$
+$$\hat{y} = W_k \sigma(W_{k-1} \sigma(...\sigma(W_1 x + b_1)...) + b_{k-1}) + b_k \qquad (5}$$
 
 其中权重矩阵 $W_l \in \mathbb{R}^{n_l \times n_{l-1}}$，偏置 $b_l \in \mathbb{R}^{n_l}$，层 $l = 1, ..., k$。
 

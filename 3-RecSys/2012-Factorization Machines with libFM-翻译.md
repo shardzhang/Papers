@@ -2,6 +2,8 @@
 
 > Steffen Rendle | University of Konstanz
 
+## 摘要
+
 ## 因子分解机与 libFM
 
 本文介绍了 Factorization Machines with libFM。核心内容：
@@ -64,7 +66,7 @@ S. Rendle
 
 ## 2. 因子分解机模型
 
-假设预测问题的数据由一个设计矩阵 X \in R^(n×p) 描述，其中 X 的第 i 行 x_i \in R^p 描述了一个具有 p 个实值变量的案例，并且 y_i 是第 i 个案例的预测目标（见图 1 的示例）。或者，可以将此设置描述为元组 (x, y) 的集合 S，其中（再次）x \in R^p 是一个特征向量，y 是其对应的目标。这种用数据矩阵和特征向量的表示在许多机器学习方法中很常见，例如线性回归或支持向量机（SVM）。
+假设预测问题的数据由一个设计矩阵 X \in R^(n$\times$p) 描述，其中 X 的第 i 行 x_i \in R^p 描述了一个具有 p 个实值变量的案例，并且 y_i 是第 i 个案例的预测目标（见图 1 的示例）。或者，可以将此设置描述为元组 (x, y) 的集合 S，其中（再次）x \in R^p 是一个特征向量，y 是其对应的目标。这种用数据矩阵和特征向量的表示在许多机器学习方法中很常见，例如线性回归或支持向量机（SVM）。
 
 因子分解机（FM）[Rendle 2010] 使用因子化的交互参数对 x 中 p 个输入变量之间所有最多 d 阶的嵌套交互进行建模。阶数 d = 2 的因子分解机（FM）模型定义为
 
@@ -78,9 +80,9 @@ Factorization Machines with libFM
 
 图 1. 示例（来自 Rendle [2010]），展示了如何用实值特征向量 x 表示推荐问题。每一行表示一个特征向量 x_i 及其对应的目标 y_i。为了更容易解释，特征被分组为活跃用户（蓝色）、活跃item（红色）、同一用户评分的其他电影（橙色）、以月为单位的时间（绿色）以及最后评分的电影（棕色）的指示符。
 
-其中 k 是因子分解的维度，模型参数 Θ = {w_0, w_1, ..., w_p, $v_{1,1}$, ... $v_{p,k}$} 为
+其中 k 是因子分解的维度，模型参数 $\Theta$ = {w_0, w_1, ..., w_p, $v_{1,1}$, ... $v_{p,k}$} 为
 
-w_0 \in R, w \in R^p, V \in R^(p×k).   (2)
+w_0 \in R, w \in R^p, V \in R^(p$\times$k).   (2)
 
 FM 模型的第一部分包含每个输入变量 x_j 与目标的单变量交互——完全如同线性回归模型。第二部分包含两个嵌套求和，包含了输入变量的所有成对交互，即 x_j $x_{j'}$。与标准多项式回归的重要区别在于，交互的效果不是由独立参数 $w_{j,j'}$ 建模的，而是通过因子化参数化 $w_{j,j'}$ \approx ⟨v_j, $v_{j'}$⟩ = \Sigma_{f=1}^{k} $v_{j,f}$ $v_{j',f}$ 来建模，这对应于成对交互的效果具有低秩的假设。这使得 FM 即使在标准模型失败的高度稀疏数据中也能估计可靠的参数。FM 与标准机器学习模型的关系将在第 4.3 节中更详细地讨论。在第 4 节中，还将展示 FM 如何模仿其他著名的因子分解模型，包括矩阵分解、SVD++、FPMC、timeSVD 等。
 
@@ -88,7 +90,7 @@ FM 模型的第一部分包含每个输入变量 x_j 与目标的单变量交互
 
 N_z(X) := \Sigma_i \Sigma_j \delta($x_{i,j}$ \neq 0),   (3)
 
-其中 \delta 是指示函数
+\text{where } \delta 是指示函数
 
 \delta(b) := { 1, 如果 b 为真；0, 如果 b 为假 }。   (4)
 
@@ -96,7 +98,7 @@ N_z(X) := \Sigma_i \Sigma_j \delta($x_{i,j}$ \neq 0),   (3)
 
 ŷ(x) = w_0 + \Sigma_{j=1}^{p} w_j x_j + 1/2 \Sigma_{f=1}^{k} [ (\Sigma_{j=1}^{p} $v_{j,f}$ x_j)^2 - \Sigma_{j=1}^{p} $v_{j,f}$^2 x_j^2 ]。   (5)
 
-FM 的模型参数数量 |Θ| 为 1 + p + k p，因此与预测变量的数量（= 输入特征向量的大小）线性相关，并且与因子分解大小 k 线性相关。
+FM 的模型参数数量 |$\Theta$| 为 1 + p + k p，因此与预测变量的数量（= 输入特征向量的大小）线性相关，并且与因子分解大小 k 线性相关。
 
 ACM Transactions on Intelligent Systems and Technology, 第 3 卷, 第 3 期, Article 57, 出版日期：2012 年 5 月.
 
@@ -104,9 +106,9 @@ ACM Transactions on Intelligent Systems and Technology, 第 3 卷, 第 3 期, Ar
 
 S. Rendle
 
-**多线性**。FM 的一个吸引人的特性是多线性，即对于每个模型参数 \theta \in Θ，FM 是两个函数 g_\theta 和 h_\theta 的线性组合，这两个函数独立于 \theta 的值 [Rendle et al. 2011]。
+**多线性**。FM 的一个吸引人的特性是多线性，即对于每个模型参数 \theta \in $\Theta$，FM 是两个函数 g_\theta 和 h_\theta 的线性组合，这两个函数独立于 \theta 的值 [Rendle et al. 2011]。
 
-ŷ(x) = g_\theta(x) + \theta h_\theta(x)  \forall\theta \in Θ,   (6)
+ŷ(x) = g_\theta(x) + \theta h_\theta(x)  \forall\theta \in $\Theta$,   (6)
 
 其中
 
@@ -124,7 +126,7 @@ h_\theta(x) = \partialŷ(x)/\partial\theta = { 1, 如果 \theta 是 w_0；x_l, �
 
 其中模型参数
 
-w_0 \in R, w \in R^p, \foralll \in {2, ..., d}: V_l \in R^(p×k_l).   (9)
+w_0 \in R, w \in R^p, \foralll \in {2, ..., d}: V_l \in R^(p$\times$k_l).   (9)
 
 对于更高阶的交互，方程 (8) 中的嵌套求和也可以分解以实现更高效的计算。在本文的其余部分，我们将只处理二阶 FM，因为在稀疏设置中——因子分解模型尤其具有吸引力——通常高阶交互难以估计 [Rendle and Schmidt-Thieme 2010]。尽管如此，大多数公式和算法可以直接迁移到高阶 FM，因为它们与二阶 FM 共享多线性的性质。
 
@@ -142,9 +144,9 @@ Factorization Machines with libFM
 
 模型参数的最优性通常用损失函数 l 来定义，其中任务是最小化观测数据 S 上的损失之和。
 
-OPT(S) := argmin_Θ \Sigma_{(x,y)\inS} l(ŷ(x|Θ), y).   (10)
+OPT(S) := argmin_$\Theta$ \Sigma_{(x,y)\inS} l(ŷ(x|$\Theta$), y).   (10)
 
-注意，我们将模型参数 Θ 添加到模型方程中，并写为 ŷ(x|Θ)，当我们想强调 ŷ 依赖于 Θ 的特定选择时。根据任务，可以选择损失函数。例如，对于回归，最小二乘损失：
+注意，我们将模型参数 $\Theta$ 添加到模型方程中，并写为 ŷ(x|$\Theta$)，当我们想强调 ŷ 依赖于 $\Theta$ 的特定选择时。根据任务，可以选择损失函数。例如，对于回归，最小二乘损失：
 
 $l_{LS}$(y_1, y_2) := (y_1 - y_2)^2,   (11)
 
@@ -152,25 +154,25 @@ $l_{LS}$(y_1, y_2) := (y_1 - y_2)^2,   (11)
 
 l_C(y_1, y_2) := -ln \sigma(y_1 y_2),   (12)
 
-其中 \sigma(x) = 1/(1+e^{-x}) 是 sigmoid/逻辑函数。
+\text{where } \sigma(x) = 1/(1+e^{-x}) 是 sigmoid/逻辑函数。
 
-FM 通常有大量的模型参数 Θ——特别是当 k 选择得足够大时。这使得它们容易过拟合。为了克服这一点，通常应用 L2 正则化，这可以由最大间隔 [Srebro et al. 2005] 或 Tikhonov 正则化来推动。
+FM 通常有大量的模型参数 $\Theta$——特别是当 k 选择得足够大时。这使得它们容易过拟合。为了克服这一点，通常应用 L2 正则化，这可以由最大间隔 [Srebro et al. 2005] 或 Tikhonov 正则化来推动。
 
-OP$T_{REG}$(S, \lambda) := argmin_Θ [ \Sigma_{(x,y)\inS} l(ŷ(x|Θ), y) + \Sigma_{\theta\inΘ} \lambda_\theta \theta^2 ],   (13)
+OP$T_{REG}$(S, \lambda) := argmin_$\Theta$ [ \Sigma_{(x,y)\inS} l(ŷ(x|$\Theta$), y) + \Sigma_{\theta\in$\Theta$} \lambda_\theta \theta^2 ],   (13)
 
-其中 \lambda_\theta \in R^+ 是模型参数 \theta 的正则化值。对模型的不同部分使用单独的正则化参数是有意义的。在 LIBFM 中，模型参数可以被分组——例如，一组用于描述用户的参数，一组用于item，一组用于时间等（见图 1 的分组示例）——每个组使用一个独立的正则化值。此外，每个因子化层 f \in {1, ..., k} 以及单变量回归系数 w 和 w_0 可以有单独的正则化（同样带有分组）。总的来说，LIBFM 的正则化结构为
+\text{where } \lambda_\theta \in R^+ 是模型参数 \theta 的正则化值。对模型的不同部分使用单独的正则化参数是有意义的。在 LIBFM 中，模型参数可以被分组——例如，一组用于描述用户的参数，一组用于item，一组用于时间等（见图 1 的分组示例）——每个组使用一个独立的正则化值。此外，每个因子化层 f \in {1, ..., k} 以及单变量回归系数 w 和 w_0 可以有单独的正则化（同样带有分组）。总的来说，LIBFM 的正则化结构为
 
-\lambda_0, \forall\pi \in {1, ..., Π}, \forallf \in {1, ..., k}: \lambda_\pi^w, \lambda_{f,\pi}^v,   (14)
+\lambda_0, \forall\pi \in {1, ..., $\Pi$}, \forallf \in {1, ..., k}: \lambda_\pi^w, \lambda_{f,\pi}^v,   (14)
 
-其中 \pi: {1, ..., p} \rightarrow {1, ..., Π} 是模型参数的分组。这意味着，例如，$v_{l,f}$ 的正则化值将是 \lambda_{f, \pi(l)}^v。
+\text{where } \pi: {1, ..., p} \rightarrow {1, ..., $\Pi$} 是模型参数的分组。这意味着，例如，$v_{l,f}$ 的正则化值将是 \lambda_{f, \pi(l)}^v。
 
 **概率解释**。损失和正则化也可以从概率的角度来推动（例如，Salakhutdinov and Mnih [2008b]）。最小二乘损失对应于假设目标 y 服从高斯分布，均值为预测值：
 
-y|x, Θ ∼ N(ŷ(x, Θ), 1/\alpha).   (15)
+y|x, $\Theta$ ∼ N(ŷ(x, $\Theta$), 1/\alpha).   (15)
 
 对于二分类，假设服从伯努利分布：
 
-y|x, Θ ∼ Bernoulli(b(ŷ(x, Θ))),   (16)
+y|x, $\Theta$ ∼ Bernoulli(b(ŷ(x, $\Theta$))),   (16)
 
 其中 b: R \rightarrow [0, 1] 是一个链接函数，通常是逻辑函数 \sigma 或标准正态分布的累积分布函数（CDF）\Phi。
 
@@ -184,7 +186,7 @@ ACM Transactions on Intelligent Systems and Technology, 第 3 卷, 第 3 期, Ar
 
 S. Rendle
 
-图 2. 标准因子分解机中所涉变量的图形化表示。(a) 变量为目标 y、输入特征 x、模型参数 w_0、w_j、$v_{j,f}$ 以及超参数/先验 \mu、\lambda、\alpha。(b) 先验通过超先验 Θ_0 = {\alpha_0, \alpha_\lambda, \beta_0, \beta_\lambda, \gamma_0, \mu_0} 进行扩展，这允许 MCMC 算法（算法 3）自动寻找先验参数 [Freudenthaler et al. 2011]。
+图 2. 标准因子分解机中所涉变量的图形化表示。(a) 变量为目标 y、输入特征 x、模型参数 w_0、w_j、$v_{j,f}$ 以及超参数/先验 \mu、\lambda、\alpha。(b) 先验通过超先验 $\Theta$_0 = {\alpha_0, \alpha_\lambda, \beta_0, \beta_\lambda, \gamma_0, \mu_0} 进行扩展，这允许 MCMC 算法（算法 3）自动寻找先验参数 [Freudenthaler et al. 2011]。
 
 先验均值 \mu_\theta 应与正则化值 \lambda_\theta（见方程 (14)）以相同方式分组和组织。
 
@@ -194,15 +196,15 @@ S. Rendle
 
 对于最小二乘回归：
 
-\partial/\partial\theta $l_{LS}$(ŷ(x|Θ), y) = \partial/\partial\theta [(ŷ(x|Θ) - y)]^2 = 2(ŷ(x|Θ) - y) \partial/\partial\theta ŷ(x|Θ),   (18)
+\partial/\partial\theta $l_{LS}$(ŷ(x|$\Theta$), y) = \partial/\partial\theta [(ŷ(x|$\Theta$) - y)]^2 = 2(ŷ(x|$\Theta$) - y) \partial/\partial\theta ŷ(x|$\Theta$),   (18)
 
 或者对于分类：
 
-\partial/\partial\theta l_C(ŷ(x|Θ), y) = \partial/\partial\theta [-ln \sigma(ŷ(x|Θ) y)] = (\sigma(ŷ(x|Θ) y) - 1) y \partial/\partial\theta ŷ(x|Θ).   (19)
+\partial/\partial\theta l_C(ŷ(x|$\Theta$), y) = \partial/\partial\theta [-ln \sigma(ŷ(x|$\Theta$) y)] = (\sigma(ŷ(x|$\Theta$) y) - 1) y \partial/\partial\theta ŷ(x|$\Theta$).   (19)
 
 最后，由于 FM 模型的多线性，模型方程关于 \theta 的偏导数对应于 h_\theta（方程 (7)）。
 
-\partial/\partial\theta ŷ(x|Θ) = h_\theta(x).   (20)
+\partial/\partial\theta ŷ(x|$\Theta$) = h_\theta(x).   (20)
 
 ### 3.2. 随机梯度下降（SGD）
 
@@ -216,15 +218,15 @@ Factorization Machines with libFM
 
 **算法 1: 随机梯度下降 (SGD)**
 输入：训练数据 S, 正则化参数 \lambda, 学习率 \eta, 初始化 \sigma
-输出：模型参数 Θ = (w_0, w, V)
+输出：模型参数 $\Theta$ = (w_0, w, V)
 w_0 \leftarrow 0; w \leftarrow (0, ..., 0); V ∼ N(0, \sigma);
 重复
   for (x, y) \in S do
-    w_0 \leftarrow w_0 - \eta [ \partial/\partialw_0 l(ŷ(x|Θ), y) + 2 \lambda_0 w_0 ];
+    w_0 \leftarrow w_0 - \eta [ \partial/\partialw_0 l(ŷ(x|$\Theta$), y) + 2 \lambda_0 w_0 ];
     for i \in {1, ..., p} ∧ x_i \neq 0 do
-      w_i \leftarrow w_i - \eta [ \partial/\partialw_i l(ŷ(x|Θ), y) + 2 \lambda_{\pi(i)}^w w_i ];
+      w_i \leftarrow w_i - \eta [ \partial/\partialw_i l(ŷ(x|$\Theta$), y) + 2 \lambda_{\pi(i)}^w w_i ];
       for f \in {1, ..., k} do
-        $v_{i,f}$ \leftarrow $v_{i,f}$ - \eta [ \partial/\partial$v_{i,f}$ l(ŷ(x|Θ), y) + 2 \lambda_{f,\pi(i)}^v $v_{i,f}$ ];
+        $v_{i,f}$ \leftarrow $v_{i,f}$ - \eta [ \partial/\partial$v_{i,f}$ l(ŷ(x|$\Theta$), y) + 2 \lambda_{f,\pi(i)}^v $v_{i,f}$ ];
       end
     end
   end
@@ -234,7 +236,7 @@ w_0 \leftarrow 0; w \leftarrow (0, ..., 0); V ∼ N(0, \sigma);
 
 \theta \leftarrow \theta - \eta [ \partial/\partial\theta l(ŷ(x), y) + 2 \lambda_\theta \theta ],   (21)
 
-其中 \eta \in R^+ 是梯度下降的学习率或步长。
+\text{where } \eta \in R^+ 是梯度下降的学习率或步长。
 
 **复杂度**。FM 的 SGD 算法具有线性的计算复杂度和常数的存储复杂度。对于遍历所有训练案例的一次迭代，SGD 的运行时复杂度为 O(k N_z(X))，因为对于每个单个案例 (x, y) \in S，梯度步骤的复杂度为 O(k \Sigma_{i=1}^{p} \delta(x_i \neq 0)) = O(k N_z(x))。
 
@@ -253,15 +255,15 @@ S. Rendle
 
 ### 3.3. 交替最小二乘/坐标下降
 
-SGD 的优化方法基于遍历训练数据的案例（行）并在损失减小的方向上执行小步长。坐标下降或交替最小二乘（ALS）采用了另一种方法，即最小化每个模型参数的损失。对于带有 L2 正则化的最小二乘回归，给定所有剩余参数 Θ \ {\theta}，一个模型参数 \theta 的最优值 \theta* 可以直接计算 [Rendle et al. 2011] 为
+SGD 的优化方法基于遍历训练数据的案例（行）并在损失减小的方向上执行小步长。坐标下降或交替最小二乘（ALS）采用了另一种方法，即最小化每个模型参数的损失。对于带有 L2 正则化的最小二乘回归，给定所有剩余参数 $\Theta$ \ {\theta}，一个模型参数 \theta 的最优值 \theta* 可以直接计算 [Rendle et al. 2011] 为
 
-\theta* = argmin_\theta [ \Sigma_{(x,y)\inS} (ŷ(x|Θ) - y)^2 + \Sigma_{\theta\inΘ} \lambda_\theta \theta^2 ]   (22)
-= argmin_\theta [ \Sigma_{(x,y)\inS} (g_\theta(x|Θ\{\theta}) + \theta h_\theta(x|Θ\{\theta}) - y)^2 + \Sigma_{\theta\inΘ} \lambda_\theta \theta^2 ]   (23)
-= [ \Sigma_{i=1}^{n} (y - g_\theta(x_i|Θ\{\theta})) h_\theta(x_i|Θ\{\theta}) ] / [ \Sigma_{i=1}^{n} h_\theta(x_i)^2 + \lambda_\theta ]   (24)
+\theta* = argmin_\theta [ \Sigma_{(x,y)\inS} (ŷ(x|$\Theta$) - y)^2 + \Sigma_{\theta\in$\Theta$} \lambda_\theta \theta^2 ]   (22)
+= argmin_\theta [ \Sigma_{(x,y)\inS} (g_\theta(x|$\Theta$\{\theta}) + \theta h_\theta(x|$\Theta$\{\theta}) - y)^2 + \Sigma_{\theta\in$\Theta$} \lambda_\theta \theta^2 ]   (23)
+= [ \Sigma_{i=1}^{n} (y - g_\theta(x_i|$\Theta$\{\theta})) h_\theta(x_i|$\Theta$\{\theta}) ] / [ \Sigma_{i=1}^{n} h_\theta(x_i)^2 + \lambda_\theta ]   (24)
 = [ \Sigma_{i=1}^{n} h_\theta(x_i) e_i ] / [ \Sigma_{i=1}^{n} h_\theta(x_i)^2 + \lambda_\theta ],   (25)
 
 其中 e_i 是第 i 个案例的"误差"项/残差：
-e_i := y_i - ŷ(x_i|Θ).   (26)
+e_i := y_i - ŷ(x_i|$\Theta$).   (26)
 
 这允许我们推导一个最小二乘学习算法（见算法 2），该算法迭代地为每个模型参数求解一个最小二乘问题，并用最优（局部）解更新每个模型参数：
 
@@ -271,11 +273,11 @@ e_i := y_i - ŷ(x_i|Θ).   (26)
 
 **复杂度**。ALS 学习（方程 (22)）的主要工作在于计算以下两个量：
 
-\Sigma_{i=1}^{n} h_\theta(x_i)^2,   \Sigma_{i=1}^{n} h_\theta(x_i) e_i = \Sigma_{i=1}^{n} h_\theta(x_i) (y_i - ŷ(x_i|Θ)).   (28-29)
+\Sigma_{i=1}^{n} h_\theta(x_i)^2,   \Sigma_{i=1}^{n} h_\theta(x_i) e_i = \Sigma_{i=1}^{n} h_\theta(x_i) (y_i - ŷ(x_i|$\Theta$)).   (28-29)
 
 使用简单的实现，更新一个模型参数需要为每个对应列 j 非零（$x_{i,j}$ \neq 0）的训练案例 x_i 计算模型方程 ŷ(x_i) 和梯度 h_\theta(x_i)。例如，对于更新模型参数 $v_{j,f}$，这将使复杂度为 O(\Sigma_{i=1}^{n} \delta($x_{i,j}$ \neq 0) k N_z(x_i))。总的来说，这必须为 1 + p(k + 1) 个模型参数中的每一个计算。
 
-在 Rendle et al. [2011] 中，展示了如何通过预计算缓存 e \in R^n（见方程 (26)）和 Q \in R^(n×k) 使得在所有模型参数 Θ 上的一次完整迭代可以在 O(N_z(X) k) 内高效完成，其中
+在 Rendle et al. [2011] 中，展示了如何通过预计算缓存 e \in R^n（见方程 (26)）和 Q \in R^(n$\times$k) 使得在所有模型参数 $\Theta$ 上的一次完整迭代可以在 O(N_z(X) k) 内高效完成，其中
 
 $q_{i,f}$ := \Sigma_{l=1}^{p} $v_{l,f}$ $x_{i,l}$,   (30)
 
@@ -291,7 +293,7 @@ Factorization Machines with libFM
 
 **算法 2: 交替最小二乘 (ALS)**
 输入：训练数据 S, 正则化参数 \lambda, 初始化 \sigma
-输出：模型参数 Θ = (w_0, w, V)
+输出：模型参数 $\Theta$ = (w_0, w, V)
 w_0 \leftarrow 0; w \leftarrow (0, ..., 0); V ∼ N(0, \sigma);
 重复
   ŷ \leftarrow 预测所有案例 S;
@@ -320,7 +322,7 @@ w_0 \leftarrow 0; w \leftarrow (0, ..., 0); V ∼ N(0, \sigma);
 
 ### 3.4. 马尔可夫链蒙特卡洛（MCMC）推断
 
-到目前为止使用的贝叶斯模型可以在图 2 中看到。ALS 和 SGD 都学习用于 ŷ 的点估计的最佳参数 Θ。MCMC 是一种贝叶斯推断技术，通过采样生成 ŷ 的分布。对于 FM 中使用吉布斯采样的 MCMC
+到目前为止使用的贝叶斯模型可以在图 2 中看到。ALS 和 SGD 都学习用于 ŷ 的点估计的最佳参数 $\Theta$。MCMC 是一种贝叶斯推断技术，通过采样生成 ŷ 的分布。对于 FM 中使用吉布斯采样的 MCMC
 
 ACM Transactions on Intelligent Systems and Technology, 第 3 卷, 第 3 期, Article 57, 出版日期：2012 年 5 月.
 
@@ -330,40 +332,38 @@ S. Rendle
 
 推断，每个模型参数的条件后验分布为 [Freudenthaler et al. 2011]：
 
-\theta | X, y, Θ\{\theta}, Θ_H ∼ N(\mũ_\theta, \sigmã_\theta^2),   (30)
+\theta | X, y, $\Theta$\{\theta}, $\Theta$_H ∼ N(\mũ_\theta, \sigmã_\theta^2),   (30)
 
-其中
-
-\sigmã_\theta^2 := ( \alpha \Sigma_{i=1}^{n} h_\theta(x_i)^2 + \lambda_\theta )^{-1},   (31)
+\text{where } \sigmã_\theta^2 := ( \alpha \Sigma_{i=1}^{n} h_\theta(x_i)^2 + \lambda_\theta )^{-1},   (31)
 
 \mũ_\theta := \sigmã_\theta^2 ( \alpha \Sigma_{i=1}^{n} h_\theta(x_i)^2 \theta + \alpha \Sigma_{i=1}^{n} h_\theta(x_i) e_i + \mu_\theta \lambda_\theta ),   (32)
 
-并且 Θ_H 是超参数：
+并且 $\Theta$_H 是超参数：
 
-Θ_H := {(\mu_0, \lambda_0), (\mu_\pi^w, \lambda_\pi^w), (\mu_{f,\pi}^v, \lambda_{f,\pi}^v) : \forall\pi \in {1, ..., Π}, \forallf \in {1, ..., k}}.   (33)
+$\Theta$_H := {(\mu_0, \lambda_0), (\mu_\pi^w, \lambda_\pi^w), (\mu_{f,\pi}^v, \lambda_{f,\pi}^v) : \forall\pi \in {1, ..., $\Pi$}, \forallf \in {1, ..., k}}.   (33)
 
 当比较 MCMC（方程 (30)）和 ALS 解（方程 (22)）中模型参数的条件后验时，可以看到两者非常相似，即 \theta* = \mũ_\theta 且 \alpha = 1, \mu· = 0。区别在于 MCMC 从后验分布中采样，而 ALS 使用期望值。
 
-MCMC 相对于 ALS 和 SGD 的一个主要优势是它允许将正则化参数 Θ_H 整合到模型中，从而避免了对这些超参数进行耗时的搜索。为了整合 Θ_H，贝叶斯 FM 模型通过在先验上放置分布（超先验分布）进行了扩展（图 2）。对于先验参数的每一对 (\mu_\theta, \lambda_\theta) \in Θ_H，假设 \lambda_\theta 服从 Gamma 分布，\mu_\theta 服从正态分布。即：
+MCMC 相对于 ALS 和 SGD 的一个主要优势是它允许将正则化参数 $\Theta$_H 整合到模型中，从而避免了对这些超参数进行耗时的搜索。为了整合 $\Theta$_H，贝叶斯 FM 模型通过在先验上放置分布（超先验分布）进行了扩展（图 2）。对于先验参数的每一对 (\mu_\theta, \lambda_\theta) \in $\Theta$_H，假设 \lambda_\theta 服从 Gamma 分布，\mu_\theta 服从正态分布。即：
 
-\mu_\pi^w ∼ N(\mu_0, \gamma_0 \lambda_\pi^w),   \lambda_\pi^w ∼ Γ(\alpha_\lambda, \beta_\lambda),   (34)
-\mu_{f,\pi}^v ∼ N(\mu_0, \gamma_0 \lambda_{f,\pi}^v),   \lambda_{f,\pi}^v ∼ Γ(\alpha_\lambda, \beta_\lambda),   (35)
+\mu_\pi^w ∼ N(\mu_0, \gamma_0 \lambda_\pi^w),   \lambda_\pi^w ∼ $\Gamma$(\alpha_\lambda, \beta_\lambda),   (34)
+\mu_{f,\pi}^v ∼ N(\mu_0, \gamma_0 \lambda_{f,\pi}^v),   \lambda_{f,\pi}^v ∼ $\Gamma$(\alpha_\lambda, \beta_\lambda),   (35)
 
-其中 \mu_0、\gamma_0 以及 \alpha_\lambda 和 \beta_\lambda 描述了超先验分布。最后，在 \alpha 上也放置一个 Gamma 分布：
+\text{where } \mu_0、\gamma_0 以及 \alpha_\lambda 和 \beta_\lambda 描述了超先验分布。最后，在 \alpha 上也放置一个 Gamma 分布：
 
-\alpha ∼ Γ(\alpha_0, \beta_0).   (36)
+\alpha ∼ $\Gamma$(\alpha_0, \beta_0).   (36)
 
-总的来说，超先验导致以下新的参数 Θ_0：
+总的来说，超先验导致以下新的参数 $\Theta$_0：
 
-Θ_0 := {\alpha_0, \beta_0, \alpha_\lambda, \beta_\lambda, \mu_0, \gamma_0}.   (37)
+$\Theta$_0 := {\alpha_0, \beta_0, \alpha_\lambda, \beta_\lambda, \mu_0, \gamma_0}.   (37)
 
-MCMC 允许将 Θ_H 整合到推断过程中，即 Θ_H 的值通过从它们对应的条件后验分布中采样而自动找到 [Freudenthaler et al. 2011]。
+MCMC 允许将 $\Theta$_H 整合到推断过程中，即 $\Theta$_H 的值通过从它们对应的条件后验分布中采样而自动找到 [Freudenthaler et al. 2011]。
 
-\alpha | y, X, Θ_0, Θ ∼ Γ( \alpha_0 + n/2, 1/2 \Sigma_{i=1}^{n} (y_i - ŷ(x_i|Θ))^2 + \beta_0 ),   (38)
+\alpha | y, X, $\Theta$_0, $\Theta$ ∼ $\Gamma$( \alpha_0 + n/2, 1/2 \Sigma_{i=1}^{n} (y_i - ŷ(x_i|$\Theta$))^2 + \beta_0 ),   (38)
 
-\lambda_\pi· | Θ_0, Θ_H\{\lambda_\pi·}, Θ ∼ Γ( \alpha_\lambda + (p_\pi + 1)/2, 1/2 [ \Sigma_{j=1}^{p} \delta(\pi(j)=\pi)(\theta_j - \mu_\theta)^2 + \gamma_0(\mu_\pi· - \mu_0)^2 + \beta_\lambda ] ),   (39)
+\lambda_\pi· | $\Theta$_0, $\Theta$_H\{\lambda_\pi·}, $\Theta$ ∼ $\Gamma$( \alpha_\lambda + (p_\pi + 1)/2, 1/2 [ \Sigma_{j=1}^{p} \delta(\pi(j)=\pi)(\theta_j - \mu_\theta)^2 + \gamma_0(\mu_\pi· - \mu_0)^2 + \beta_\lambda ] ),   (39)
 
-\mu_\pi· | Θ_0, Θ_H\{\lambda_\pi·}, Θ ∼ N( (p_\pi + \gamma_0)^{-1} [ \Sigma_{j=1}^{p} \delta(\pi(j)=\pi) \theta_j + \gamma_0 \mu_0 ], 1/((p_\pi + \gamma_0) \lambda_\pi·) ),   (40)
+\mu_\pi· | $\Theta$_0, $\Theta$_H\{\lambda_\pi·}, $\Theta$ ∼ N( (p_\pi + \gamma_0)^{-1} [ \Sigma_{j=1}^{p} \delta(\pi(j)=\pi) \theta_j + \gamma_0 \mu_0 ], 1/((p_\pi + \gamma_0) \lambda_\pi·) ),   (40)
 
 ACM Transactions on Intelligent Systems and Technology, 第 3 卷, 第 3 期, Article 57, 出版日期：2012 年 5 月.
 
@@ -375,9 +375,9 @@ Factorization Machines with libFM
 
 p_\pi := \Sigma_{j=1}^{p} \delta(\pi(j) = \pi).   (41)
 
-**复杂度**。用于 MCMC 推断的吉布斯采样器在算法 3 中进行了概述，并且具有与 ALS 算法相同的复杂度。这直接源于观察到，对于这两种算法，在 MCMC 中要计算条件后验分布的和与 ALS 中要计算期望值的和是相同的。MCMC 的开销在于对 Θ_H 的推断，即计算后验（方程 (38)、(39) 和 (40)），但即使使用直接实现，这也是 O(k N_z(X))。
+**复杂度**。用于 MCMC 推断的吉布斯采样器在算法 3 中进行了概述，并且具有与 ALS 算法相同的复杂度。这直接源于观察到，对于这两种算法，在 MCMC 中要计算条件后验分布的和与 ALS 中要计算期望值的和是相同的。MCMC 的开销在于对 $\Theta$_H 的推断，即计算后验（方程 (38)、(39) 和 (40)），但即使使用直接实现，这也是 O(k N_z(X))。
 
-**超参数**。MCMC 的一个主要优势是正则化值 Θ_H 被自动确定。这是以引入超先验 Θ_0 的参数为代价的。然而，（1）超先验的数量 |Θ_H| 小于正则化参数的数量 |Θ_0|，并且（2）更重要的是，MCMC 通常对 Θ_0 的选择不敏感。也就是说，对 Θ_0 值的一个简单选择就能很好地工作。在 LIBFM 中，使用以下 Θ_0 的简单值：\alpha_0 = \beta_0 = \alpha_\lambda = \beta_\lambda = \gamma_0 = 1 且 \mu_0 = 0。
+**超参数**。MCMC 的一个主要优势是正则化值 $\Theta$_H 被自动确定。这是以引入超先验 $\Theta$_0 的参数为代价的。然而，（1）超先验的数量 |$\Theta$_H| 小于正则化参数的数量 |$\Theta$_0|，并且（2）更重要的是，MCMC 通常对 $\Theta$_0 的选择不敏感。也就是说，对 $\Theta$_0 值的一个简单选择就能很好地工作。在 LIBFM 中，使用以下 $\Theta$_0 的简单值：\alpha_0 = \beta_0 = \alpha_\lambda = \beta_\lambda = \gamma_0 = 1 且 \mu_0 = 0。
 
 MCMC 仍然需要设置的唯一超参数是初始化 \sigma。通常在这里，甚至可以使用 0 的值（这对 ALS 和 SGD 是不可能的），因为 MCMC 的后验不确定性将识别出因子分解；然而，选择一个合适的值可以加速采样器。通常可以在前几个样本中看到初始化 \sigma 是否是一个好的选择。
 
@@ -385,7 +385,7 @@ MCMC 仍然需要设置的唯一超参数是初始化 \sigma。通常在这里�
 
 对于分类，必须对算法 3 进行的唯一两个更改是：（1）预测时，ŷ 通过 \Phi 进行变换；（2）不是直接回归到 y，而是在每次迭代中从其具有截断正态分布的后验中采样回归目标 y'。
 
-y'_i | x_i, y_i, Θ ∼ { N(ŷ(x_i, Θ), 1) \delta(y'_i < 0), 如果 y_i 为负类；N(ŷ(x_i, Θ), 1) \delta(y'_i \geq 0), 如果 y_i 为正类 }。   (42)
+y'_i | x_i, y_i, $\Theta$ ∼ { N(ŷ(x_i, $\Theta$), 1) \delta(y'_i < 0), 如果 y_i 为负类；N(ŷ(x_i, $\Theta$), 1) \delta(y'_i \geq 0), 如果 y_i 为正类 }。   (42)
 
 从这个分布中采样是高效的 [Robert 1995]。
 
@@ -411,7 +411,7 @@ w_0 \leftarrow 0; w \leftarrow (0, ..., 0); V ∼ N(0, \sigma);
   e \leftarrow y - ŷ;
   更新超参数：
     从方程 (38) 采样 \alpha;
-    for (\mu_\pi·, \lambda_\pi·) \in Θ_H do
+    for (\mu_\pi·, \lambda_\pi·) \in $\Theta$_H do
       从方程 (39) 采样 \lambda_\pi·;
       从方程 (40) 采样 \mu_\pi·;
     end
@@ -461,7 +461,7 @@ Factorization Machines with libFM
 
 #### 4.1.1. 矩阵分解
 
-假设关于两个类别变量 U（例如，用户）和 I（例如，item）的数据应该在 FM 中使用。直接描述一个案例 (u, i) \in U × I 的方法是使用具有二元指示变量的特征向量 x \in R^(|U|+|I|)，即
+假设关于两个类别变量 U（例如，用户）和 I（例如，item）的数据应该在 FM 中使用。直接描述一个案例 (u, i) \in U $\times$ I 的方法是使用具有二元指示变量的特征向量 x \in R^(|U|+|I|)，即
 
 (u, i) \rightarrow x = (0, ..., 0, 1, 0, ..., 0, 0, ..., 0, 1, 0, ..., 0),   (43)
 
@@ -581,7 +581,7 @@ SVDfeature [Chen et al. 2011] 是另一种通用因子分解模型。与 Agarwal
 
 其中模型参数
 
-w_0 \in R, w \in R^p, W \in R^(p×p).   (56)
+w_0 \in R, w \in R^p, W \in R^(p$\times$p).   (56)
 
 将此与 FM 模型（方程 (1)）进行比较，可以看到 FM 对成对交互使用因子化，而多项式回归对每个成对交互使用独立参数 $w_{j,j'}$。这一区别对于 FM 在稀疏设置中的成功至关重要，例如推荐系统或其他涉及大领域类别变量的预测问题。FM 可以估计对 (j, j') 的成对交互 $w_{j,j'}$，即使关于该对没有或只有很少的观测存在，
 

@@ -9,7 +9,7 @@
 ---
 
 
-**Kaushik Rangadurai** krangadu@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
+> **Kaushik Rangadurai** krangadu@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
 **Siyang Yuan** syyuan@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
 **Minhui Huang** mhhuang@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
 **Yiqun Liu** yiqliu@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
@@ -31,7 +31,7 @@
 
 ### CCS 概念
 
-- **计算方法** → 机器学习。
+- **计算方法** $\to$ 机器学习。
 
 ### 关键词
 
@@ -75,11 +75,11 @@ NeuMF [16]、DCN [38] 和 DHEN [44] 是先进的架构，但其计算复杂度�
 
 **训练设置（Training Setup）。** MoNN 模型在大规模训练数据集上训练，使用点击和转化作为标签，曝光（非点击或转化）作为负样本，以及额外的无标签数据进行半监督学习以消除偏差。模型使用 O(1000) 量级的特征作为输入。模型针对多个任务进行优化，例如点击任务和转化任务。然后使用多任务交叉熵损失训练模型：
 
-$$$L_{sup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{t=1}$^{T} w_t ($y_{ti}$ \log(\hat{y}_{ti}) + (1 - $y_{ti}$)(\log(1 - \hat{y}_{ti}))) \tag{1}$$
+$$$L_{sup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{t=1}$^{T} w_t ($y_{ti}$ \log(\hat{y}_{ti}) + (1 - $y_{ti}$)(\log(1 - \hat{y}_{ti}))) \qquad (1}$$
 
-$$$L_{unsup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{t=1}$^{T} distil(\hat{y}_{ti}, $y_{ti}$^{model}) \tag{2}$$
+$$$L_{unsup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{t=1}$^{T} distil(\hat{y}_{ti}, $y_{ti}$^{model}) \qquad (2}$$
 
-$$L = $L_{sup}$ + $L_{unsup}$ \tag{3}$$
+$$L = $L_{sup}$ + $L_{unsup}$ \qquad (3}$$
 
 其中 $w_t$ 是任务 $t$ 的权重，$t = 1,2,...T$，表示其在最终损失中的重要性。$y_{ti} \in \{0,1\}$ 是样本 $i$ 在任务 $t$ 上的标签。$\hat{y}_{ti}$ 是模型对样本 $i$ 在任务 $t$ 上的预测值，$y_{ti}^{model}$ 是由 MoNN 模型或更强的模型生成的软标签。$S$ 是样本数量。
 
@@ -118,7 +118,7 @@ HSNN 是在item层次结构上运行的模块化神经网络（MoNN）的混合�
 
 **损失函数（Loss Function）。** 有 $N$ 个监督损失，层次结构中每一层一个，其中包含 1 个 <用户, item> 监督损失和 (N-1) 个 <用户, 索引节点> 监督损失。每个损失还被校准，以确保模型不会低估或高估预测。如 MoNN 部分所述，使用多任务交叉熵损失来优化模型：
 
-$$$L_{sup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{j=1}$^{N} \su$m_{t=1}$^{T} w_t ($y_{ti}$ \log(\hat{y}_{ti}^{L_j}) + (1 - $y_{ti}$)(\log(1 - \hat{y}_{ti}^{L_j}))) \tag{4}$$
+$$$L_{sup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{j=1}$^{N} \su$m_{t=1}$^{T} w_t ($y_{ti}$ \log(\hat{y}_{ti}^{L_j}) + (1 - $y_{ti}$)(\log(1 - \hat{y}_{ti}^{L_j}))) \qquad (4}$$
 
 其中 $w_t$ 是任务 $t$ 的权重，$t = 1,2,...T$，表示其在最终损失中的重要性。$y_{ti} \in \{0,1\}$ 是样本 $i$ 在任务 $t$ 上的标签。$\hat{y}_{ti}^{L_j}$ 是模型对样本 $i$ 在任务 $t$ 上第 $L_j$ 层的预测值。$S$ 是样本数量，$N$ 是 HSNN 的层数。
 
@@ -174,12 +174,12 @@ $$$L_{sup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{j=1}$^{N} \su$m_{t=1}$^{T} w_
 
 具体地，给定item嵌入 $v$，$N$ 级残差学习算法初始化索引节点 $\{c_{nk}\}_{k=1,...,K; n=1,...,N}$，并在每个层级 $n$ 递归地量化残差向量 $r_n$：
 
-$$r_1 = v \tag{5}$$
-$$r_n = $r_{n-1}$ - \bar{c}_{n-1} \tag{6}$$
+$$r_1 = v \qquad (5}$$
+$$r_n = $r_{n-1}$ - \bar{c}_{n-1} \qquad (6}$$
 
 其中 $\bar{c}_{n-1}$ 是 embedding_item_index（算法 1 中的第 7 行）。在每个层级 $n$，量化后的item嵌入计算为 $q_n = \sum_{t=1}^{n-1} \bar{c}_t$。重构损失计算为：
 
-$$reconstruction\_loss = ||q_N - v||^2 \tag{7}$$
+$$reconstruction\_loss = ||q_N - v||^2 \qquad (7}$$
 
 残差的幅度在进一步向下层移动时逐渐减小。因此，较粗的索引层表达更一般的概念，而细粒度的索引层捕捉更详细的含义。
 
@@ -196,7 +196,7 @@ $$reconstruction\_loss = ||q_N - v||^2 \tag{7}$$
 
 **Softmax 温度调度器（Softmax Temperature Scheduler）。** HSNN 在服务期间使用代表性item的特征（算法 1 第 13 行）。然而，在训练期间 LTI 算法使用软 <item, 索引节点> 分配。为缓解这种不一致，采用调度器，通过逐渐增加温度（alpha），从初始阶段的软分配过渡到后期的硬分配。较小的 alpha 值产生平衡的item-索引分配分布，而较大的 alpha 值导致偏斜的分布。调度器基于以下函数：
 
-$$alpha = max\_alpha * \left(\frac{current\_iter}{max\_iters}\right)^{exp} \tag{8}$$
+$$alpha = max\_alpha * \left(\frac{current\_iter}{max\_iters}\right)^{exp} \qquad (8}$$
 
 **平衡索引分布（Balanced Index Distribution）。** 索引学习常常受到聚类坍缩（cluster collapse）的影响，即模型仅使用有限子集的索引节点。平衡的索引分布对于启用具有高复杂度的神经网络模型至关重要。我们采用 FLOPs 正则化器来解决这个问题。其动机来自 Paria 等人 [31] 的工作，如果所有item被分配到同一个索引节点，或者 <item, 索引节点> 分配分布不平衡，则对模型进行惩罚。引入稀疏性损失以最小化分配均值的平方和。由于这对小批次敏感，将最近 $K$ 个批次的数据聚合在一起，对聚合后的软分配矩阵（$K$ * batch_size, num_index_nodes）应用 FLOPs 正则化器。
 
@@ -224,7 +224,7 @@ MoNN Small 相对于双塔模型架构实现了 0.29% 的 NE 增益，突出了 
 
 **表 1：HSNN 使得像 MoNN XL 这样的更复杂模型架构能够进入检索阶段。每次规模扩展都带来数量级的增益。I1、I2、V 的量级分别为 O(1,000)、O(100,000)、O(10,000,000)。任何超过 0.05% 的 NE 增益和超过 0.5% 的召回率增益被认为是显著的。**
 
-| 模型架构 | FLOPs | Eval NE (↓) | 理论成本 | 基础设施成本 (↓) | 召回率 (↑) |
+| 模型架构 | FLOPs | Eval NE ($\downarrow$) | 理论成本 | 基础设施成本 ($\downarrow$) | 召回率 ($\uparrow$) |
 |---|---|---|---|---|---|
 | Two Tower (XS) | 0.25x | baseline | $M_{XS} * V$ | 1x | 0 |
 | MoNN Small | 1x | -0.29% | $M_S * V$ | 2.5x | +2.4% |
@@ -243,7 +243,7 @@ MoNN Small 相对于双塔模型架构实现了 0.29% 的 NE 增益，突出了 
 
 **表 2：对 HSNN（L1: MoNN Small, L2: Two Tower）的消融研究表明联合优化带来 0.15% 的 NE 增益。**
 
-| 模型架构 | Eval NE (↓) |
+| 模型架构 | Eval NE ($\downarrow$) |
 |---|---|
 | HSNN w/ SIL | baseline |
 | HSNN + JOIM w/ EM | -0.11% |
@@ -253,7 +253,7 @@ MoNN Small 相对于双塔模型架构实现了 0.29% 的 NE 增益，突出了 
 
 **表 3：各种 LTI 组件的消融研究。**
 
-| 消融研究 | Eval NE (↓) |
+| 消融研究 | Eval NE ($\downarrow$) |
 |---|---|
 | HSNN (MoNN Small) | baseline |
 | - Softmax 温度调度器 | +0.1% |
@@ -272,7 +272,7 @@ HSNN 框架已在 Meta 广告检索系统中广泛部署超过 2 年。在部署
 
 **表 4：HSNN 在 Meta 广告生产中的在线性能。任何超过 0.1% 的在线 Topline 指标增益被认为是显著的。**
 
-| 模型架构 | 在线 Topline 指标 (↑) |
+| 模型架构 | 在线 Topline 指标 ($\uparrow$) |
 |---|---|
 | Two Tower | -0.21% |
 | MoNN Small | baseline |

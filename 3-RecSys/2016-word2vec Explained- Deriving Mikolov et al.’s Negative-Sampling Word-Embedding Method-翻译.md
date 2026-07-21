@@ -6,6 +6,8 @@
 {yoav.goldberg,omerlevy}@gmail.com
 
 ---
+## 摘要
+
 本文介绍了 word2vec Explained: Deriving Mikolov et al.'s Negative-Sampling Word-Embedding Method。核心内容：
 
 
@@ -71,8 +73,8 @@ One approach for parameterizing the skip-gram model follows the neural-network l
 where v_c and v_w \in R^d are vector representations for c and w respectively, and C is the set of all available contexts.[2]
 其中 v_c 和 v_w \in R^d 分别是对 c 和 w 的向量表示，C 是所有可用上下文的集合。[2]
 
-The parameters \theta are $v_{c_i}$, $v_{w_i}$ for w \in V, c \in C, i \in 1, ···, d (a total of |C| × |V| × d parameters).
-参数 \theta 是 $v_{c_i}$, $v_{w_i}$，其中 w \in V, c \in C, i \in 1, ···, d（总共 |C| × |V| × d 个参数）。
+The parameters \theta are $v_{c_i}$, $v_{w_i}$ for w \in V, c \in C, i \in 1, ···, d (a total of |C| $\times$ |V| $\times$ d parameters).
+参数 \theta 是 $v_{c_i}$, $v_{w_i}$，其中 w \in V, c \in C, i \in 1, ···, d（总共 |C| $\times$ |V| $\times$ d 个参数）。
 
 We would like to set the parameters such that the product (2) is maximized.
 我们希望设置参数使得乘积 (2) 最大化。

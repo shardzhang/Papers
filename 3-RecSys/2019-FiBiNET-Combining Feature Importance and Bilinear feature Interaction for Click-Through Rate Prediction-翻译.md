@@ -76,7 +76,7 @@ Hu等人[8]提出了"Squeeze-and-Excitation Network"（SENET），通过显式�
 
 据我们所知，不同的特征对于目标任务具有不同的重要性。例如，当我们预测一个人的收入时，职业特征比爱好特征更重要。受SENET在计算机视觉领域成功的启发，我们引入SENET机制使模型更加关注特征重要性。对于特定的CTR预测任务，我们可以通过SENET机制动态增加重要特征的权重并减少无信息特征的权重。
 
-使用特征嵌入作为输入，SENET生成场嵌入的权重向量A = {a1, ..., ai, ..., af}，然后用向量A重新缩放原始嵌入E，得到新的嵌入（类似SENET的嵌入）V = [v1, ..., vi, ..., vf]，其中ai \in R是标量，表示第i个场嵌入vi的权重，vi \in Rk表示第i个场的类似SENET的嵌入，i \in [1, 2, ..., f]，V \in Rf×k，k是嵌入大小，f是场的数量。
+使用特征嵌入作为输入，SENET生成场嵌入的权重向量A = {a1, ..., ai, ..., af}，然后用向量A重新缩放原始嵌入E，得到新的嵌入（类似SENET的嵌入）V = [v1, ..., vi, ..., vf]，其中ai \in R是标量，表示第i个场嵌入vi的权重，vi \in Rk表示第i个场的类似SENET的嵌入，i \in [1, 2, ..., f]，V \in Rf$\times$k，k是嵌入大小，f是场的数量。
 
 如图2所示，SENET由三个步骤组成：压缩步骤、激励步骤和重新加权步骤。这些步骤的详细描述如下：
 
@@ -90,7 +90,7 @@ zi = Fsq(ei) = (1/k) * \Sigma(t=1 to k) ei(t)   (1)
 
 A = Fex(Z) = \sigma2(W2 \sigma1(W1 Z))   (2)
 
-其中A \in Rf是一个向量，\sigma1和\sigma2是激活函数，学习参数为W1 \in Rf × (f/r)，W2 \in R(f/r) × f，r是降维比率。
+其中A \in Rf是一个向量，\sigma1和\sigma2是激活函数，学习参数为W1 \in Rf $\times$ (f/r)，W2 \in R(f/r) $\times$ f，r是降维比率。
 
 **重新加权（Re-Weight）**：SENET的最后一步是重新加权步骤，在原始论文[8]中称为重新缩放。它在原始场嵌入E和场权重向量A之间进行逐场相乘，并输出新的嵌入（类似SENET的嵌入）V = {v1, ..., vi, ..., vf}。类似SENET的嵌入V可以计算如下：
 
@@ -108,19 +108,19 @@ V = FReWeight(A, E) = [a1·e1, ..., af·ef] = [v1, ..., vf]   (3)
 
 pij = vi·W\odotvj   (4)
 
-其中W \in Rk×k，vi, vj \in Rk是第i个和第j个场嵌入，1 \leq i \leq f, i \leq j \leq f。这里W在所有(vi, vj)场交互对之间共享，双线性交互层中共有k×k个参数，因此我们将此类型称为"Field-All"。
+其中W \in Rk$\times$k，vi, vj \in Rk是第i个和第j个场嵌入，1 \leq i \leq f, i \leq j \leq f。这里W在所有(vi, vj)场交互对之间共享，双线性交互层中共有k$\times$k个参数，因此我们将此类型称为"Field-All"。
 
 **b. Field-Each类型**
 
 pij = vi·Wi\odotvj   (5)
 
-其中Wi \in Rk×k，vi, vj \in Rk是第i个和第j个场嵌入，1 \leq i \leq f, i \leq j \leq f。这里Wi是第i个场的对应参数矩阵，由于我们有f个不同的场，双线性交互层中共有f×k×k个参数，因此我们将此类型称为"Field-Each"。
+其中Wi \in Rk$\times$k，vi, vj \in Rk是第i个和第j个场嵌入，1 \leq i \leq f, i \leq j \leq f。这里Wi是第i个场的对应参数矩阵，由于我们有f个不同的场，双线性交互层中共有f$\times$k$\times$k个参数，因此我们将此类型称为"Field-Each"。
 
 **c. Field-Interaction类型**
 
 pij = vi·Wij\odotvj   (6)
 
-其中Wij \in Rk×k是场i和场j之间交互的对应参数矩阵，1 \leq i \leq f, i \leq j \leq f。此层中总的学习参数数量为n×k×k，其中n是场交互数量，等于f(f-1)/2。因此我们将此类型称为"Field-Interaction"。
+其中Wij \in Rk$\times$k是场i和场j之间交互的对应参数矩阵，1 \leq i \leq f, i \leq j \leq f。此层中总的学习参数数量为n$\times$k$\times$k，其中n是场交互数量，等于f(f-1)/2。因此我们将此类型称为"Field-Interaction"。
 
 如图1所示，我们有两个嵌入（原始嵌入和类似SENET的嵌入），我们可以对任意嵌入采用双线性函数或Hadamard积作为特征交互操作。因此，在此层中有几种特征交互的组合。在第4.3节中，我们将详细讨论双线性函数和Hadamard积不同组合的性能。此外，我们有三种不同类型的所提特征交互方法（Field-All、Field-Each、Field-Interaction）应用于我们的模型，我们将在第4.4节讨论不同场类型的性能。
 

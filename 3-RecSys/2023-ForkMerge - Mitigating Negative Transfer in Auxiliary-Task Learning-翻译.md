@@ -189,9 +189,9 @@ where \lambda is the task-weighting hyper-parameter. Figure 3(a) quantitatively 
 
 其中\lambda是任务权重超参数。图3(a)使用t-SNE [74] 定量可视化了不同\lambda下的分布偏移。
 
-To quantitatively measure the distribution shift in ATL, we introduce the following definitions. Following the notations of [53], we consider multiclass classification with hypothesis space F of scoring functions f : X × Y \rightarrow R where f (x, y) indicates the confidence of predicting x as y.
+To quantitatively measure the distribution shift in ATL, we introduce the following definitions. Following the notations of [53], we consider multiclass classification with hypothesis space F of scoring functions f : X $\times$ Y \rightarrow R where f (x, y) indicates the confidence of predicting x as y.
 
-为了定量衡量ATL中的分布偏移，我们引入以下定义。遵循[53]的符号，我们考虑多类分类，其假设空间F为评分函数f: X × Y \rightarrow R，其中f(x, y)表示将x预测为y的置信度。
+为了定量衡量ATL中的分布偏移，我们引入以下定义。遵循[53]的符号，我们考虑多类分类，其假设空间F为评分函数f: X $\times$ Y \rightarrow R，其中f(x, y)表示将x预测为y的置信度。
 
 Definition 3.5 (Confidence Score Discrepancy, CSD). Given scoring function hypothesis F, denote the optimal hypothesis on distribution D as f ∗ D, then confidence score discrepancy between distribution D and D′ induced by F is defined by
 
@@ -331,11 +331,11 @@ where \SigmaK k=1 \lambdak \leq 1 and \forallk, \lambdak \geq 0. Using gradient 
 
 (10)
 
-where \lambda0 = 1. Given K task-weighting vectors {\omegak}K k=0 that satisfies \omegak i = 1[i = k or i = 0], i.e., the k-th and 0-th dimensions of \omegak are 1 and the rest are 0, and a vector Λ that satisfies
+where \lambda0 = 1. Given K task-weighting vectors {\omegak}K k=0 that satisfies \omegak i = 1[i = k or i = 0], i.e., the k-th and 0-th dimensions of \omegak are 1 and the rest are 0, and a vector $\Lambda$ that satisfies
 
-其中\lambda0 = 1。给定K个任务权重向量{\omegak}K k=0，满足\omegak i = 1[i = k or i = 0]，即\omegak的第k维和第0维为1，其余为0，以及一个满足以下条件的向量Λ
+其中\lambda0 = 1。给定K个任务权重向量{\omegak}K k=0，满足\omegak i = 1[i = k or i = 0]，即\omegak的第k维和第0维为1，其余为0，以及一个满足以下条件的向量$\Lambda$
 
-Λk = { 1 − \Sigma i\neq0 \lambdai, k = 0; \lambdak, k \neq 0 },
+$\Lambda$k = { 1 − \Sigma i\neq0 \lambdai, k = 0; \lambdak, k \neq 0 },
 
 (11)
 
@@ -343,25 +343,25 @@ then optimizing \lambda∗ in Equation (10) is equivalent to
 
 则优化公式(10)中的\lambda∗等价于
 
-Λ∗ = arg max Λ Pˆ( \SigmaK k=0 Λk\thetat+1(\omegak)).
+$\Lambda$∗ = arg max $\Lambda$ Pˆ( \SigmaK k=0 $\Lambda$k\thetat+1(\omegak)).
 
 (12)
 
-In Equation (12), the initial model parameters are forked into K + 1 branches, where one branch is optimized with the target task, and the other branches are jointly optimized with one auxiliary task and the target task. Then we find the optimal Λ∗ that linearly combines the K + 1 sets of parameters to maximize the validation performance (see proof of Equation (12) and the detailed algorithm in Appendix A.2). The training computational complexity of Equation 12 is O(K), which is much lower than the exponential complexity of grid searching, but still quite large. Inspired by the early-stop approximation used in task grouping methods [71], we can prune the forking branches with Λk = 0 (strong negative transfer) and only keep the branches with the largest K′ < K values in Λ after the early merge step. In this way, those useless branches with irrelevant auxiliary tasks can be stopped early. Additionally, we introduce a greedy search strategy in Algorithm 3 to further reduce the computation complexity when grid searching all possible values of Λ.
+In Equation (12), the initial model parameters are forked into K + 1 branches, where one branch is optimized with the target task, and the other branches are jointly optimized with one auxiliary task and the target task. Then we find the optimal $\Lambda$∗ that linearly combines the K + 1 sets of parameters to maximize the validation performance (see proof of Equation (12) and the detailed algorithm in Appendix A.2). The training computational complexity of Equation 12 is O(K), which is much lower than the exponential complexity of grid searching, but still quite large. Inspired by the early-stop approximation used in task grouping methods [71], we can prune the forking branches with $\Lambda$k = 0 (strong negative transfer) and only keep the branches with the largest K′ < K values in $\Lambda$ after the early merge step. In this way, those useless branches with irrelevant auxiliary tasks can be stopped early. Additionally, we introduce a greedy search strategy in Algorithm 3 to further reduce the computation complexity when grid searching all possible values of $\Lambda$.
 
-在公式(12)中，初始模型参数被分叉成K+1个分支，其中一个分支仅用目标任务优化，其他分支与一个辅助任务和目标任务联合优化。然后我们找到最优Λ∗，它线性组合K+1组参数以最大化验证性能（见公式(12)的证明和附录A.2中的详细算法）。公式(12)的训练计算复杂度为O(K)，远低于网格搜索的指数复杂度，但仍然相当大。受任务分组方法[71]中使用的早期停止近似的启发，我们可以剪枝掉Λk = 0（强负迁移）的分叉分支，在早期合并步骤后只保留Λ中具有最大K′ < K值的分支。这样，那些包含无关辅助任务的无用分支可以提前停止。此外，我们在算法3中引入了一种贪心搜索策略，以进一步降低网格搜索Λ所有可能值时的计算复杂度。
+在公式(12)中，初始模型参数被分叉成K+1个分支，其中一个分支仅用目标任务优化，其他分支与一个辅助任务和目标任务联合优化。然后我们找到最优$\Lambda$∗，它线性组合K+1组参数以最大化验证性能（见公式(12)的证明和附录A.2中的详细算法）。公式(12)的训练计算复杂度为O(K)，远低于网格搜索的指数复杂度，但仍然相当大。受任务分组方法[71]中使用的早期停止近似的启发，我们可以剪枝掉$\Lambda$k = 0（强负迁移）的分叉分支，在早期合并步骤后只保留$\Lambda$中具有最大K′ < K值的分支。这样，那些包含无关辅助任务的无用分支可以提前停止。此外，我们在算法3中引入了一种贪心搜索策略，以进一步降低网格搜索$\Lambda$所有可能值时的计算复杂度。
 
-Lastly, we introduce a general form of ForkMerge. Assuming B candidate branches with task-weighting vectors \nub (b = 1, . . . , B), the goal is to optimize Λ ∗ :
+Lastly, we introduce a general form of ForkMerge. Assuming B candidate branches with task-weighting vectors \nub (b = 1, . . . , B), the goal is to optimize $\Lambda$ ∗ :
 
-最后，我们引入ForkMerge的通用形式。假设B个候选分支具有任务权重向量\nub（b = 1, ..., B），目标是优化Λ∗：
+最后，我们引入ForkMerge的通用形式。假设B个候选分支具有任务权重向量\nub（b = 1, ..., B），目标是优化$\Lambda$∗：
 
-Λ ∗ = arg max Λ Pˆ( \SigmaB b=1 Λb\thetat+∆t(\nub)).
+$\Lambda$ ∗ = arg max $\Lambda$ Pˆ( \SigmaB b=1 $\Lambda$b\thetat+∆t(\nub)).
 
 (13)
 
-From a generalization view, the mixture distributions constructed by different \nu lead to diverse data shifts from the target distribution, yet we cannot predict which \nu leads to better generalization. Thus, we transform the problem of mixture distribution into that of mixture hypothesis [49] and the models trained on different distributions are combined dynamically via Λ ∗ to approach the optimal parameters. Here, Equation 12 is a particular case by substituting B = K + 1 and \nub i = 1[i = b − 1 or i = 0]. By comparison, Equation 13 allows us to introduce human prior into ForkMerge by constructing more efficient branches, and also provides possibilities for combining ForkMerge with previous task grouping methods [81, 71, 17]. The detailed algorithm of Equation 13 can be found in Algorithm 2.
+From a generalization view, the mixture distributions constructed by different \nu lead to diverse data shifts from the target distribution, yet we cannot predict which \nu leads to better generalization. Thus, we transform the problem of mixture distribution into that of mixture hypothesis [49] and the models trained on different distributions are combined dynamically via $\Lambda$ ∗ to approach the optimal parameters. Here, Equation 12 is a particular case by substituting B = K + 1 and \nub i = 1[i = b − 1 or i = 0]. By comparison, Equation 13 allows us to introduce human prior into ForkMerge by constructing more efficient branches, and also provides possibilities for combining ForkMerge with previous task grouping methods [81, 71, 17]. The detailed algorithm of Equation 13 can be found in Algorithm 2.
 
-从泛化的角度来看，由不同\nu构建的混合分布导致了与目标分布不同的数据偏移，然而我们无法预测哪个\nu会带来更好的泛化。因此，我们将混合分布问题转化为混合假设问题[49]，并且在不同分布上训练的模型通过Λ∗动态组合以逼近最优参数。这里，公式12是通过代入B = K + 1和\nub i = 1[i = b − 1 or i = 0]的一个特例。相比之下，公式13允许我们通过构建更高效的分支将先验知识引入ForkMerge，也为将ForkMerge与先前的任务分组方法[81, 71, 17]结合提供了可能性。公式13的详细算法见算法2。
+从泛化的角度来看，由不同\nu构建的混合分布导致了与目标分布不同的数据偏移，然而我们无法预测哪个\nu会带来更好的泛化。因此，我们将混合分布问题转化为混合假设问题[49]，并且在不同分布上训练的模型通过$\Lambda$∗动态组合以逼近最优参数。这里，公式12是通过代入B = K + 1和\nub i = 1[i = b − 1 or i = 0]的一个特例。相比之下，公式13允许我们通过构建更高效的分支将先验知识引入ForkMerge，也为将ForkMerge与先前的任务分组方法[81, 71, 17]结合提供了可能性。公式13的详细算法见算法2。
 
 ## 5 Experiments
 
@@ -435,9 +435,9 @@ As mentioned in Section 4.2, when there are multiple auxiliary task candidates, 
 
 如第4.2节所述，当有多个候选辅助任务时，我们可以使用ForkMerge同时选择辅助任务并与目标任务联合训练，表示为ForkMerge‡。
 
-Auxiliary-Task Scene Understanding. In NYUv2, we have 2 auxiliary tasks for any target task, thus we can construct 3 branches with different task weights in Equation 12. In this way, we are able to select auxiliary tasks adaptively by learning different Λ for different branches in the merge step. As shown in Table 3, this strategy yields better overall performance.
+Auxiliary-Task Scene Understanding. In NYUv2, we have 2 auxiliary tasks for any target task, thus we can construct 3 branches with different task weights in Equation 12. In this way, we are able to select auxiliary tasks adaptively by learning different $\Lambda$ for different branches in the merge step. As shown in Table 3, this strategy yields better overall performance.
 
-辅助任务场景理解。在NYUv2中，对于任何目标任务，我们有2个辅助任务，因此我们可以在公式12中构建3个具有不同任务权重的分支。通过这种方式，我们能够在合并步骤中通过为不同分支学习不同的Λ来自适应地选择辅助任务。如表3所示，这种策略产生了更好的整体性能。
+辅助任务场景理解。在NYUv2中，对于任何目标任务，我们有2个辅助任务，因此我们可以在公式12中构建3个具有不同任务权重的分支。通过这种方式，我们能够在合并步骤中通过为不同分支学习不同的$\Lambda$来自适应地选择辅助任务。如表3所示，这种策略产生了更好的整体性能。
 
 Auxiliary-Domain Image Recognition. For any target task in DomainNet, we can construct up to 6 branches with different task weights in Equation 12, which is computationally expensive. As mentioned in Section 4.2, we will prune the branches after the first merge step to reduce the computation cost. Table 4 reveals the impact of the pruning strategy. As the number of branches increases, the gain brought by auxiliary tasks will enlarge, while the gain brought by each branch will reduce. Therefore, pruning is an effective strategy to achieve a better balance between performance and efficiency. In practical terms, when confronted with multiple auxiliary tasks, users have the flexibility to tailor the number of branches to align with their available computational resources.
 
@@ -748,8 +748,8 @@ Ensure: final model parameter \theta∗
 8: \thetab t′+1 = \thetab t′ − \eta \Sigmak \nub kgk(\thetab t′)
 9: end for
 10: end for
-11: Λ∗ \leftarrow arg maxΛ Pˆ( \Sigmab Λb\thetab t+∆t)
-12: \theta∗ t+∆t \leftarrow \Sigmab Λ∗ b \thetab t+∆t
+11: $\Lambda$∗ \leftarrow arg max$\Lambda$ Pˆ( \Sigmab $\Lambda$b\thetab t+∆t)
+12: \theta∗ t+∆t \leftarrow \Sigmab $\Lambda$∗ b \thetab t+∆t
 13: for b = 1 to B do
 14: \thetab t+∆t \leftarrow \theta∗ t+∆t
 15: end for
@@ -769,8 +769,8 @@ Ensure: final model parameter \theta∗
 8: \thetab t′+1 = \thetab t′ − \eta \Sigmak \nub kgk(\thetab t′)
 9: end for
 10: end for
-11: Λ∗ \leftarrow arg maxΛ Pˆ( \Sigmab Λb\thetab t+∆t)
-12: \theta∗ t+∆t \leftarrow \Sigmab Λ∗ b \thetab t+∆t
+11: $\Lambda$∗ \leftarrow arg max$\Lambda$ Pˆ( \Sigmab $\Lambda$b\thetab t+∆t)
+12: \theta∗ t+∆t \leftarrow \Sigmab $\Lambda$∗ b \thetab t+∆t
 13: for b = 1 to B do
 14: \thetab t+∆t \leftarrow \theta∗ t+∆t
 15: end for
@@ -792,46 +792,46 @@ The goal of selecting \lambda∗ in Equation (10) is to maximize the validation 
 = arg max \lambda Pˆ((1 − \Sigmak\neq0 \lambdak)(\thetat − \etag0(\thetat)) + \Sigmak\neq0 \lambdak(\thetat − \etag0(\thetat) − \etagk(\thetat)))  // gradient descent, \Sigmak\neq0 \lambdak \leq 1
 = arg max \lambda Pˆ((1 − \Sigmak\neq0 \lambdak)(\thetat − \etag0(\thetat)) + \Sigmak\neq0 \lambdak(\thetat − \etag0(\thetat) − \etagk(\thetat)))
 
-By definitions of Λ and {\omegak}K k=0
+By definitions of $\Lambda$ and {\omegak}K k=0
 
-根据Λ和{\omegak}K k=0的定义
+根据$\Lambda$和{\omegak}K k=0的定义
 
-Λk = { 1 − \Sigmai\neq0 \lambdai, k = 0; \lambdak, k \neq 0 }
+$\Lambda$k = { 1 − \Sigmai\neq0 \lambdai, k = 0; \lambdak, k \neq 0 }
 \omegak i = { 1, i = 0 or i = k; 0, otherwise }
 
-we can prove that optimizing \lambda in Equation (10) is equivalent to optimizing Λ as follows:
+we can prove that optimizing \lambda in Equation (10) is equivalent to optimizing $\Lambda$ as follows:
 
-我们可以证明，在公式(10)中优化\lambda等价于如下优化Λ：
+我们可以证明，在公式(10)中优化\lambda等价于如下优化$\Lambda$：
 
-Λ∗ = arg max Λ Pˆ( \Sigmak Λk\thetat+1(\omegak)).
+$\Lambda$∗ = arg max $\Lambda$ Pˆ( \Sigmak $\Lambda$k\thetat+1(\omegak)).
 
 Remarks on the search step.
 
 关于搜索步骤的说明。
 
-Grid searching all possible values of Λ is computationally expensive especially when ∥Λ∥ is large. Thus, here we introduce a greedy search strategy in Algorithm 3, which reduces the computation complexity from exponential complexity to O(∥Λ∥).
+Grid searching all possible values of $\Lambda$ is computationally expensive especially when ∥$\Lambda$∥ is large. Thus, here we introduce a greedy search strategy in Algorithm 3, which reduces the computation complexity from exponential complexity to O(∥$\Lambda$∥).
 
-网格搜索Λ的所有可能值在计算上是昂贵的，特别是当∥Λ∥很大时。因此，我们在算法3中引入了一种贪心搜索策略，将计算复杂度从指数复杂度降低到O(∥Λ∥)。
+网格搜索$\Lambda$的所有可能值在计算上是昂贵的，特别是当∥$\Lambda$∥很大时。因此，我们在算法3中引入了一种贪心搜索策略，将计算复杂度从指数复杂度降低到O(∥$\Lambda$∥)。
 
-Algorithm 3 Greedy Search of Λ∗
+Algorithm 3 Greedy Search of $\Lambda$∗
 Require: A list of model parameters \theta1, ..., \thetaB sorted in decreasing order of Pˆ(\thetab).
-Ensure: optimal linear combination coefficient Λ∗
-1: unnormalized combination coefficient Λ̃ \leftarrow e1
+Ensure: optimal linear combination coefficient $\Lambda$∗
+1: unnormalized combination coefficient $\Lambda$̃ \leftarrow e1
 2: for b = 2 to B do
 3: set upper bound U \leftarrow 1
-4: grid search the optimal Λ̃m in range [0, U] to maximize Pˆ( 1/∥Λ̃∥ \Sigmab m=1 Λ̃m\thetam)
+4: grid search the optimal $\Lambda$̃m in range [0, U] to maximize Pˆ( 1/∥$\Lambda$̃∥ \Sigmab m=1 $\Lambda$̃m\thetam)
 5: end for
-6: Λ∗ \leftarrow 1/∥Λ̃∥ Λ̃
+6: $\Lambda$∗ \leftarrow 1/∥$\Lambda$̃∥ $\Lambda$̃
 
-算法3 Λ∗的贪心搜索
+算法3 $\Lambda$∗的贪心搜索
 输入：按Pˆ(\thetab)降序排列的模型参数列表\theta1, ..., \thetaB
-输出：最优线性组合系数Λ∗
-1: 未归一化的组合系数 Λ̃ \leftarrow e1
+输出：最优线性组合系数$\Lambda$∗
+1: 未归一化的组合系数 $\Lambda$̃ \leftarrow e1
 2: for b = 2 to B do
 3: 设置上界 U \leftarrow 1
-4: 在范围[0, U]内网格搜索最优Λ̃m以最大化 Pˆ( 1/∥Λ̃∥ \Sigmab m=1 Λ̃m\thetam)
+4: 在范围[0, U]内网格搜索最优$\Lambda$̃m以最大化 Pˆ( 1/∥$\Lambda$̃∥ \Sigmab m=1 $\Lambda$̃m\thetam)
 5: end for
-6: Λ∗ \leftarrow 1/∥Λ̃∥ Λ̃
+6: $\Lambda$∗ \leftarrow 1/∥$\Lambda$̃∥ $\Lambda$̃
 
 ## B Analysis Details
 
@@ -921,9 +921,9 @@ Following [55, 37], we report ∆m as the performance measure, which is the aver
 
 ### C.2 NYU上的辅助任务场景理解
 
-Experiment Details. We use DeepLabV3+ architecture [1], where a ResNet-50 network [23] pretrained on the ImageNet dataset [8] with dilated convolutions is used as a shared encoder among tasks and the Atrous Spatial Pyramid Pooling module is used as task-specific head for each task. Following [44, 79], each method is trained for 200 epochs with the Adam optimizer [29] and batch size of 8. The initial learning rate is 10−4 and halved to 5 × 10−5 after 100 epochs. In ForkMerge, the parameters are merged every 10 epochs. Table 7 presents the full evaluation results of Table 1.
+Experiment Details. We use DeepLabV3+ architecture [1], where a ResNet-50 network [23] pretrained on the ImageNet dataset [8] with dilated convolutions is used as a shared encoder among tasks and the Atrous Spatial Pyramid Pooling module is used as task-specific head for each task. Following [44, 79], each method is trained for 200 epochs with the Adam optimizer [29] and batch size of 8. The initial learning rate is 10−4 and halved to 5 $\times$ 10−5 after 100 epochs. In ForkMerge, the parameters are merged every 10 epochs. Table 7 presents the full evaluation results of Table 1.
 
-实验细节。我们使用DeepLabV3+架构[1]，其中在ImageNet数据集[8]上使用扩张卷积预训练的ResNet-50网络[23]作为任务间的共享编码器，并使用Atrous Spatial Pyramid Pooling模块作为每个任务的任务特定头部。遵循[44, 79]，每种方法使用Adam优化器[29]和批量大小8训练200个epoch。初始学习率为10−4，在100个epoch后减半为5×10−5。在ForkMerge中，参数每10个epoch合并一次。表7展示了表1的完整评估结果。
+实验细节。我们使用DeepLabV3+架构[1]，其中在ImageNet数据集[8]上使用扩张卷积预训练的ResNet-50网络[23]作为任务间的共享编码器，并使用Atrous Spatial Pyramid Pooling模块作为每个任务的任务特定头部。遵循[44, 79]，每种方法使用Adam优化器[29]和批量大小8训练200个epoch。初始学习率为10−4，在100个epoch后减半为5$\times$10−5。在ForkMerge中，参数每10个epoch合并一次。表7展示了表1的完整评估结果。
 
 Table 7: Performance on NYUv2 dataset.
 
@@ -937,7 +937,7 @@ Methods: STL, EW, UW, DWA, RLW, MGDA, GradNorm, PCGrad, IMTL, GradVac, CAGrad, N
 
 方法：STL, EW, UW, DWA, RLW, MGDA, GradNorm, PCGrad, IMTL, GradVac, CAGrad, NashMTL, GCS, OL_AUX, ARML, Auto-\lambda, Post-train, ForkMerge。
 
-Metrics: Segmentation (mIoU↑, Pix Acc↑), Depth (Abs Err↓, Rel Err↓), Normal (Angle Distance Mean↓, Median↓, Within t◦ 11.25↑, 22.5↑, 30↑), ∆m↑.
+Metrics: Segmentation (mIoU$\uparrow$, Pix Acc$\uparrow$), Depth (Abs Err$\downarrow$, Rel Err$\downarrow$), Normal (Angle Distance Mean$\downarrow$, Median$\downarrow$, Within t◦ 11.25$\uparrow$, 22.5$\uparrow$, 30$\uparrow$), ∆m$\uparrow$.
 
 ### C.3 Auxiliary-Domain Image Recognition on DomainNet
 
@@ -1081,9 +1081,9 @@ Table 11: Comparison of different methods with larger batch size training.
 
 表11：更大批量大小训练下不同方法的比较。
 
-Methods: EW (Batch Size 8), EW (Batch Size 32), ForkMerge‡ (Batch Size 8). Metrics: Segmentation (mIoU↑, Pix Acc↑), Depth (Abs Err↓, Rel Err↓), Normal (Angle Distance Mean↓, Median↓, Within t◦ 11.25↑, 22.5↑, 30↑), ∆m↑.
+Methods: EW (Batch Size 8), EW (Batch Size 32), ForkMerge‡ (Batch Size 8). Metrics: Segmentation (mIoU$\uparrow$, Pix Acc$\uparrow$), Depth (Abs Err$\downarrow$, Rel Err$\downarrow$), Normal (Angle Distance Mean$\downarrow$, Median$\downarrow$, Within t◦ 11.25$\uparrow$, 22.5$\uparrow$, 30$\uparrow$), ∆m$\uparrow$.
 
-方法：EW（批量大小8），EW（批量大小32），ForkMerge‡（批量大小8）。度量：分割（mIoU↑，Pix Acc↑），深度（Abs Err↓，Rel Err↓），法线（Angle Distance Mean↓，Median↓，Within t◦ 11.25↑, 22.5↑, 30↑），∆m↑。
+方法：EW（批量大小8），EW（批量大小32），ForkMerge‡（批量大小8）。度量：分割（mIoU$\uparrow$，Pix Acc$\uparrow$），深度（Abs Err$\downarrow$，Rel Err$\downarrow$），法线（Angle Distance Mean$\downarrow$，Median$\downarrow$，Within t◦ 11.25$\uparrow$, 22.5$\uparrow$, 30$\uparrow$），∆m$\uparrow$。
 
 ### D.6 ForkMerge with more network architectures
 
@@ -1097,9 +1097,9 @@ Table 12: Performance on DomainNet by replacing the ResNet-101 architecture with
 
 表12：将ResNet-101架构替换为ViT-Base架构后在DomainNet上的性能。
 
-Methods: STL, EW, Auto-\lambda, Post-train, ForkMerge. Metrics: C, I, P, Q, R, S, Avg ∆m↑.
+Methods: STL, EW, Auto-\lambda, Post-train, ForkMerge. Metrics: C, I, P, Q, R, S, Avg ∆m$\uparrow$.
 
-方法：STL, EW, Auto-\lambda, Post-train, ForkMerge。度量：C, I, P, Q, R, S, Avg ∆m↑。
+方法：STL, EW, Auto-\lambda, Post-train, ForkMerge。度量：C, I, P, Q, R, S, Avg ∆m$\uparrow$。
 
 This makes Single Task Learning (STL) less effective and consequently leads to the Equal Weighting (EW) method outperforming STL, causing the Post-train method to fall short of EW and Auto-\lambda. In this case, ForkMerge still exhibited superior performance, validating its efficacy across different network architectures.
 
@@ -1117,7 +1117,7 @@ Methods: STL, EW, GCS, OL_AUX, ARML, Auto-\lambda, ForkMerge‡.
 
 方法：STL, EW, GCS, OL_AUX, ARML, Auto-\lambda, ForkMerge‡。
 
-Metrics: Segmentation (mIoU↑, Pix Acc↑), Depth (Abs Err↓, Rel Err↓), Normal (Angle Distance Mean↓, Median↓, Within t◦ 11.25↑, 22.5↑, 30↑), ∆m↑.
+Metrics: Segmentation (mIoU$\uparrow$, Pix Acc$\uparrow$), Depth (Abs Err$\downarrow$, Rel Err$\downarrow$), Normal (Angle Distance Mean$\downarrow$, Median$\downarrow$, Within t◦ 11.25$\uparrow$, 22.5$\uparrow$, 30$\uparrow$), ∆m$\uparrow$.
 
 Table 14: Performance on AliExpress dataset by replacing the ESMM architecture with the MMoE architecture.
 
@@ -1127,4 +1127,4 @@ Methods: EW, GCS, OL_AUX, ARML, Auto-\lambda, ForkMerge‡.
 
 方法：EW, GCS, OL_AUX, ARML, Auto-\lambda, ForkMerge‡。
 
-Metrics: CTR (ES, FR, NL, US), CVCTR (ES, FR, NL, US), Avg ∆m↑.
+Metrics: CTR (ES, FR, NL, US), CVCTR (ES, FR, NL, US), Avg ∆m$\uparrow$.

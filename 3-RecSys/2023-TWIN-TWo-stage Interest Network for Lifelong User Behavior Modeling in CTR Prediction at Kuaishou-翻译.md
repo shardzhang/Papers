@@ -124,9 +124,9 @@ CTR 预测旨在预测用户的个性化兴趣，对当今的推荐系统至关�
 CTR 预测的目标是预测用户在特定上下文中**点击**某个item的概率。准确的 CTR 预测不仅能通过提供偏好内容提升用户体验，还能通过触达感兴趣的受众来惠及内容生产者和平台的商业效益。因此，CTR 预测已成为各种工业推荐系统的核心组件，尤其是像快手这样的短视频推荐平台。
 
 CTR 预测通常被形式化为一个二分类问题，目标是给定训练数据集 $D = \{(\mathbf{x}_1, y_1), \ldots, (\mathbf{x}_{|D|}, y_{|D|})\}$，学习一个预测函数 $f: \mathbb{R}^d \rightarrow \mathbb{R}$。具体来说，$\mathbf{x}_i \in \mathbb{R}^d$ 是第 $i$ 个训练样本的特征向量（即用户、item和上下文特征的拼接），$y_i \in \{0,1\}$ 是真实标签，表示用户是否点击（1）该item。预测的 CTR 计算如下：
-$$\hat{y}_i = \sigma(f(\mathbf{x}_i)). \tag{1}$$
+$$\hat{y}_i = \sigma(f(\mathbf{x}_i)). \qquad (1}$$
 $\sigma(\cdot)$ 是 Sigmoid 函数，将 $f$ 的输出缩放到 (0,1)。模型通过最小化负对数似然来训练：
-$$\ell(D) = -\frac{1}{|D|} \su$m_{i=1}$^{|D|} \left[ y_i \log(\hat{y}_i) + (1-y_i) \log(1-\hat{y}_i) \right]. \tag{2}$$
+$$\ell(D) = -\frac{1}{|D|} \su$m_{i=1}$^{|D|} \left[ y_i \log(\hat{y}_i) + (1-y_i) \log(1-\hat{y}_i) \right]. \qquad (2}$$
 为简洁起见，在以下各节中，当不会引起混淆时，我们将省略训练样本索引 $i$。
 
 ### 3.2 CTR 预测系统的架构
@@ -142,7 +142,7 @@ $$\ell(D) = -\frac{1}{|D|} \su$m_{i=1}$^{|D|} \left[ y_i \log(\hat{y}_i) + (1-y_
 - 话题={搞笑, 宠物} $\Rightarrow \mathbf{x}_{\text{Topic,hot}} = [\ldots,0,1,0,\ldots,0,1,0,\ldots]^\top$。
 
 需要注意的是，在大多数工业系统中，词汇表大小（尤其是用户/作者/视频 ID）可以轻松达到数亿。因此，常见策略是将极高维的 one-hot 编码转换为低维嵌入：
-$$\mathbf{x}_{A,\text{emb}} = E_A \mathbf{x}_{A,\text{hot}}, \tag{3}$$
+$$\mathbf{x}_{A,\text{emb}} = E_A \mathbf{x}_{A,\text{hot}}, \qquad (3}$$
 其中 $E_A \in \mathbb{R}^{d_A \times v_A}$ 是 $A$ 的嵌入字典，$d_A$ 是嵌入维度。在我们的系统中，对于具有大词汇表的 ID 特征，我们将嵌入维度设置为 64；对于其他特征（如视频话题、视频播放时间戳），设置为 8。
 
 在所有上层中，我们将嵌入向量作为输入，为简洁起见省略下标"emb"。
@@ -168,7 +168,7 @@ $$\mathbf{x}_{A,\text{emb}} = E_A \mathbf{x}_{A,\text{hot}}, \tag{3}$$
 遵循 MHTA [25] 的标准符号，我们将长度为 $L$ 的行为序列 $[s_1, s_2, \ldots, s_L]$ 的特征定义为矩阵 $K$，其中每一行表示一个行为的特征。在实践中，MHTA 注意力分数计算中 $K$ 的线性投影是关键的计算瓶颈，阻碍了 MHTA 在超长用户行为序列上的应用。因此，我们提出以下方法来降低其复杂度。
 
 我们首先将行为特征矩阵 $K$ 拆分为两部分：
-$$K \triangleq [K_h \ K_c] \in \mathbb{R}^{L \times (H + C)}, \tag{4}$$
+$$K \triangleq [K_h \ K_c] \in \mathbb{R}^{L \times (H + C)}, \qquad (4}$$
 我们将 $K_h \in \mathbb{R}^{L \times H}$ 定义为行为item的**固有特征**（如视频 ID、作者、话题、时长），这些特征与特定用户/行为序列**无关**；将 $K_c \in \mathbb{R}^{L \times C}$ 定义为**用户-item交叉特征**（如用户点击时间戳、用户播放时长、点击页面位置、用户-视频交互）。这种拆分允许对以下线性投影 $K_h W_h$ 和 $K_c W_c$ 进行高效计算。
 
 对于**固有特征 $K_h$**，虽然维度 $H$ 较大（每个 ID 特征 64 维），但线性投影实际上并不昂贵。特定item的固有特征在不同用户/行为序列之间是共享的。通过必要的缓存策略，$K_h W_h$ 可以通过查找和收集过程高效"计算"。在线部署的细节将在第 3.4 节中介绍。
@@ -176,7 +176,7 @@ $$K \triangleq [K_h \ K_c] \in \mathbb{R}^{L \times (H + C)}, \tag{4}$$
 对于**用户-item交叉特征 $K_c$**，缓存策略不适用，因为：1）交叉特征描述用户和视频之间的交互细节，因此不在不同用户的行为序列之间共享；2）每个用户最多观看一个视频一次，即在投影交叉特征时不存在重复计算。因此，我们通过简化线性投影权重来降低计算成本。
 
 给定 $J$ 个交叉特征，每个特征的嵌入维度为 8（因为不是具有巨大词汇表的 ID 特征）。我们有 $C = 8J$。我们简化线性投影如下：
-$$K_c W_c \triangleq [$K_{c,1}$ \mathbf{w}_1^c, \ldots, $K_{c,J}$ \mathbf{w}_J^c], \tag{5}$$
+$$K_c W_c \triangleq [$K_{c,1}$ \mathbf{w}_1^c, \ldots, $K_{c,J}$ \mathbf{w}_J^c], \qquad (5}$$
 其中 $K_{c,j} \in \mathbb{R}^{L \times 8}$ 是 $K_c$ 对应第 $j$ 个交叉特征的列切片，$\mathbf{w}_j^c \in \mathbb{R}^{8}$ 是其线性投影权重。使用这种简化的投影，我们将每个交叉特征压缩到一维，即 $K_c W_c \in \mathbb{R}^{L \times J}$。注意，这种简化投影等价于将 $W_c$ 限制为对角块矩阵。
 
 #### 3.3.2 复杂度分析
@@ -190,18 +190,18 @@ $$K_c W_c \triangleq [$K_{c,1}$ \mathbf{w}_1^c, \ldots, $K_{c,J}$ \mathbf{w}_J^c
 #### 3.3.3 TWIN 中的目标注意力
 
 基于行为特征 $K_h W_h$ 和 $K_c W_c$ 的线性投影，我们现在定义在 CP-GSU 和 ESU 中统一使用的目标-行为相关性度量。不失一般性，我们假设用户与目标item之间尚未发生交互，并将目标item的固有特征记为 $\mathbf{q} \in \mathbb{R}^H$。通过适当的线性投影 $W_q$，目标item与历史行为之间的相关性分数 $\boldsymbol{\alpha} \in \mathbb{R}^L$ 计算如下：
-$$\boldsymbol{\alpha} = \frac{(K_h W_h)(\mathbf{q}^\top W_q)^\top}{\sqrt{d_k}} + (K_c W_c)\boldsymbol{\beta}, \tag{6}$$
+$$\boldsymbol{\alpha} = \frac{(K_h W_h)(\mathbf{q}^\top W_q)^\top}{\sqrt{d_k}} + (K_c W_c)\boldsymbol{\beta}, \qquad (6}$$
 其中 $d_k$ 是投影后 query 和 key 的维度。这个相关性分数通过 query（即目标的固有特征）和 key（即行为的固有特征）之间的内积计算。另外，交叉特征由于被压缩至一维，作为偏置项。我们使用 $\boldsymbol{\beta} \in \mathbb{R}^J$ 作为可学习参数来表示交叉特征的相对重要性。
 
 在 **CP-GSU** 中，这个相关性分数 $\boldsymbol{\alpha}$ 用于将 $L = 10^4$ 个长期历史行为截断到最相关的 100 个。在 **ESU** 中，我们对 100 个最终候选执行加权平均池化：
-$$\text{Attention}(\mathbf{q}^\top W_q, K_h W_h, K_c W_c, K W_v) = \text{Softmax}(\boldsymbol{\alpha})^\top K W_v, \tag{7}$$
+$$\text{Attention}(\mathbf{q}^\top W_q, K_h W_h, K_c W_c, K W_v) = \text{Softmax}(\boldsymbol{\alpha})^\top K W_v, \qquad (7}$$
 其中 $W_v$ 是一个投影矩阵。我们略微滥用符号，将 $L$ 设为 100。这个投影 $K W_v$ 仅对 100 个行为执行，因此可以在线高效计算。我们不需要像计算 $10^4$ 个行为的 $\boldsymbol{\alpha}$ 那样对 $K$ 进行拆分。
 
 为了联合关注来自不同表示子空间的信息，我们在 MHTA 中采用 4 个头。因此，TWIN 的最终输出定义为：
 $$\begin{aligned}
 \text{TWIN} &= \text{Concat}(\text{head}_1, \ldots, \text{head}_4) W^o, \\
 \text{head}_a &= \text{Attention}(\mathbf{q}^\top W_q^a, K_h W_h^a, K_c W_c^a, K W_v^a), \quad a \in \{1, \ldots, 4\},
-\end{aligned} \tag{8}$$
+\end{aligned} \qquad (8}$$
 $W^o$ 是学习各个头之间相对重要性的投影矩阵。
 
 ### 3.4 系统部署
@@ -286,17 +286,17 @@ $W^o$ 是学习各个头之间相对重要性的投影矩阵。
 
 **表 4：与 SOTA 方法的离线比较（RQ1）。** 我们报告了连续 5 天的均值和标准差（std）。最佳和第二佳结果分别以**粗体**和_下划线_突出显示。注意，TWIN 在 AUC 上比最佳对比模型提高 0.29%，在 GAUC 上提高 0.51%。这些改进远大于 0.05%（足以带来在线收益的值）。
 
-| 方法 | AUC（均值±标准差）↑ | GAUC（均值±标准差）↑ |
+| 方法 | AUC（均值$\pm$标准差）$\uparrow$ | GAUC（均值$\pm$标准差）$\uparrow$ |
 |------|-------------------|--------------------|
-| Avg-Pooling | 0.7855 ± 0.00023 | 0.7168 ± 0.00019 |
-| DIN | 0.7873 ± 0.00014 | 0.7191 ± 0.00012 |
-| SIM Hard | 0.7901 ± 0.00016 | 0.7224 ± 0.00021 |
-| ETA | 0.7910 ± 0.00004 | 0.7243 ± 0.00011 |
-| SIM Cluster | 0.7915 ± 0.00017 | 0.7253 ± 0.00018 |
-| SDIM | 0.7919 ± 0.00009 | 0.7267 ± 0.00006 |
-| SIM Cluster+ | 0.7927 ± 0.00009 | 0.7275 ± 0.00011 |
-| SIM Soft | 0.7939 ± 0.00014 | 0.7299 ± 0.00013 |
-| **TWIN** | **0.7962 ± 0.00008** | **0.7336 ± 0.00011** |
+| Avg-Pooling | 0.7855 $\pm$ 0.00023 | 0.7168 $\pm$ 0.00019 |
+| DIN | 0.7873 $\pm$ 0.00014 | 0.7191 $\pm$ 0.00012 |
+| SIM Hard | 0.7901 $\pm$ 0.00016 | 0.7224 $\pm$ 0.00021 |
+| ETA | 0.7910 $\pm$ 0.00004 | 0.7243 $\pm$ 0.00011 |
+| SIM Cluster | 0.7915 $\pm$ 0.00017 | 0.7253 $\pm$ 0.00018 |
+| SDIM | 0.7919 $\pm$ 0.00009 | 0.7267 $\pm$ 0.00006 |
+| SIM Cluster+ | 0.7927 $\pm$ 0.00009 | 0.7275 $\pm$ 0.00011 |
+| SIM Soft | 0.7939 $\pm$ 0.00014 | 0.7299 $\pm$ 0.00013 |
+| **TWIN** | **0.7962 $\pm$ 0.00008** | **0.7336 $\pm$ 0.00011** |
 | **改进幅度** | **+0.29%** | **+0.51%** |
 
 **第一**，TWIN 显著优于所有基线，尤其是那些具有不一致 GSU 的两阶段 SOTA 方法。这验证了 TWIN 在终身行为建模中的关键优势，即 CP-GSU 中强大且一致的 TA。具体来说，CP-GSU 精确检索出 ESU 认为高相关的行为，为最重要的用户信息节省了 ESU 宝贵的计算资源。而在其他方法中，无效且不一致的 GSU 可能会遗漏重要行为并引入噪声，降低 TA 的性能。此外，从 Avg-Pooling 到 DIN 的增益显示了 TA 在检索有效信息方面的能力。从 DIN 到其他两阶段 SOTA 的增益验证了建模长期行为的必要性。这两者共同支持了我们的动机：将 TA 扩展到长序列。
