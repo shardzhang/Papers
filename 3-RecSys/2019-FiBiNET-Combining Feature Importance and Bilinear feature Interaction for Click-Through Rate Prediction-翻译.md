@@ -2,27 +2,33 @@
 
 > Tongwen Huang, Zhiqi Zhang, Junlin Zhang | Sina Weibo Inc.
 
+
+
 本文介绍了 FiBiNET（Feature Importance and Bilinear feature Interaction NETwork，特征重要性与双线性特征交互网络）。核心内容：
 
-- 提出 FiBiNET 模型，通过 SENET 机制动态学习特征重要性，并利用双线性函数细粒度地计算特征交互
-- 引入三种类型的双线性交互层（Field-All、Field-Each、Field-Interaction）
-- 将经典深度神经网络（DNN）组件与浅层模型结合为深度模型
+- 提出 FiBiNET 模型，**通过 SENET 机制动态学习特征重要性**，并利用 **双线性函数细粒度地计算特征交互**
+- 引入三种类型的 **双线性交互层**（Field-All、Field-Each、Field-Interaction）
+- 将经典深度神经网络（DNN）组件 与 浅层模型结合为深度模型
 - 在 Criteo 和 Avazu 两个真实数据集上进行大量实验评估
 
 关键发现：
 
 - 浅层 FiBiNET 优于 FM、FFM 等其他浅层模型；深度 FiBiNET 持续优于 DeepFM、xDeepFM 等最先进的深度模型
-- SENET 层与双线性交互层对 FiBiNET 的性能均不可或缺
+- SENET 层 与 双线性交互层对 FiBiNET 的性能**均不可或缺**
 
 ---
 
+
+
 ## 摘要
 
-广告和Feed排序对于许多互联网公司（如Facebook和新浪微博）至关重要。在许多真实的广告和Feed排序系统中，点击率（CTR，Click-Through Rate）预测扮演着核心角色。该领域已有许多模型被提出，如逻辑回归、基于树的模型、基于因子分解机的模型以及基于深度学习的CTR模型。然而，当前许多方法以简单方式（如Hadamard积和内积）计算特征交互，并且较少关注特征的重要性。本文提出了一种名为FiBiNET（Feature Importance and Bilinear feature Interaction NETwork，特征重要性与双线性特征交互网络）的新模型，用于动态学习特征重要性和细粒度特征交互。一方面，FiBiNET通过SENET（Squeeze-and-Excitation Network，压缩激励网络）机制动态学习特征的重要性；另一方面，它能够通过双线性函数有效学习特征交互。我们在两个真实数据集上进行了大量实验，结果表明我们的浅层模型优于其他浅层模型，如因子分解机（FM，Factorization Machine）和场感知因子分解机（FFM，Field-aware Factorization Machine）。为了进一步提升性能，我们将经典深度神经网络（DNN，Deep Neural Network）组件与浅层模型结合为深度模型。深度FiBiNET持续优于其他最先进的深度模型，如DeepFM和xDeepFM（eXtreme Deep Factorization Machine，极端深度因子分解机）。
+广告和Feed排序对于许多互联网公司（如Facebook和新浪微博）至关重要。在许多真实的广告和Feed排序系统中，点击率（CTR，Click-Through Rate）预测扮演着核心角色。该领域已有许多模型被提出，如逻辑回归、基于树的模型、基于因子分解机的模型以及基于深度学习的CTR模型。然而，当前许多方法**以简单方式（如Hadamard积和内积）计算特征交互**，并且**较少关注特征的重要**性。本文提出了一种名为FiBiNET（Feature Importance and Bilinear feature Interaction NETwork，特征重要性与双线性特征交互网络）的新模型，用于动态学习特征重要性和细粒度特征交互。一方面，FiBiNET通过SENET（Squeeze-and-Excitation Network，**压缩激励网络**）机制动态学习特征的重要性；另一方面，它能够通过双线性函数有效**学习特征交互**。我们在两个真实数据集上进行了大量实验，结果表明我们的浅层模型优于其他浅层模型，如因子分解机（FM，Factorization Machine）和场感知因子分解机（FFM，Field-aware Factorization Machine）。为了进一步提升性能，我们将经典深度神经网络（DNN，Deep Neural Network）组件与浅层模型结合为深度模型。深度FiBiNET持续优于其他最先进的深度模型，如DeepFM和xDeepFM（eXtreme Deep Factorization Machine，极端深度因子分解机）。
 
 **CCS概念**：计算机系统组织 $\rightarrow$ 因子分解方法；计算理论 $\rightarrow$ 计算广告理论。
 
 **关键词**：Display Advertising, CTR Prediction, Factorization Machines, Squeeze-Excitation network, Neural Network, Bilinear Function
+
+
 
 ## 1 引言
 
@@ -30,28 +36,30 @@
 
 随着深度学习在计算机视觉[5, 14]和自然语言处理[2, 18]等许多研究领域的巨大成功，近年来许多基于深度学习的CTR模型被提出[1, 4, 6, 15, 22, 23, 25, 26]。因此，基于深度学习的CTR预测也成为该领域的研究趋势。一些基于神经网络的模型已被提出并取得成功，如因子分解机支持的神经网络（FNN，Factorization-Machine Supported Neural Network）[25]、Wide & Deep模型（WDL，Wide & Deep Learning）[1]、注意力因子分解机（AFM，Attentional Factorization Machine）[23]、DeepFM[4]和xDeepFM[15]等。
 
-本文提出了一种名为FiBiNET（Feature Importance and Bilinear feature Interaction NETwork，特征重要性与双线性特征交互网络）的新模型，用于动态学习特征重要性和细粒度特征交互。据我们所知，不同的特征对于目标任务具有不同的重要性。例如，当我们预测一个人的收入时，职业特征比爱好特征更重要。考虑到这一点，我们引入了SENET（Squeeze-and-Excitation Network，压缩激励网络）[8]来动态学习特征的权重。此外，特征交互是CTR预测领域的一个关键挑战，许多相关工作以简单方式（如Hadamard积和内积）计算特征交互。本文提出了一种新的细粒度方法，使用双线性函数计算特征交互。我们的主要贡献如下：
+本文提出了一种名为FiBiNET（Feature Importance and Bilinear feature Interaction NETwork，特征重要性与双线性特征交互网络）的新模型，用于动态学习特征重要性和细粒度特征交互。**据我们所知，不同的特征对于目标任务具有不同的重要性**。例如，当我们预测一个人的收入时，职业特征比爱好特征更重要。考虑到这一点，我们引入了SENET（Squeeze-and-Excitation Network，压缩激励网络）[8]来动态学习特征的权重。此外，特征交互是CTR预测领域的一个关键挑战，许多相关工作以简单方式（如Hadamard积和内积）计算特征交互。本文提出了一种新的细粒度方法，使用双线性函数计算特征交互。我们的主要贡献如下：
 
 - 受SENET在计算机视觉领域成功的启发，我们使用SENET机制动态学习特征的权重。
 - 我们引入了三种类型的双线性交互层（Bilinear-Interaction layer），以细粒度的方式学习特征交互。这与先前的工作[6, 9, 10, 19, 20, 23]形成对比，这些工作使用Hadamard积或内积计算特征交互。
-- 结合SENET机制与双线性特征交互，我们的浅层模型在Criteo和Avazu数据集上达到了浅层模型中的最先进水平，如优于FFM。
+- 结合SENET机制与双线性特征交互，我们的浅层模型在Criteo和Avazu数据集上达到了浅层模型中的最先进水平，如**优于FFM**。
 - 为了进一步提升性能，我们将经典深度神经网络（DNN）组件与浅层模型结合为深度模型。深度FiBiNET在Criteo和Avazu数据集上持续优于其他最先进的深度模型。
 
 本文其余部分组织如下：第2节回顾与我们所提模型相关的相关工作；第3节介绍我们所提模型；第4节展示在Criteo和Avazu数据集上的实验探索；最后，我们在第5节讨论实验结果并总结本文工作。
+
+
 
 ## 2 相关工作
 
 ### 2.1 因子分解机及其相关变体
 
-因子分解机（FM，Factorization Machine）[19, 20]和场感知因子分解机（FFM，Field-aware Factorization Machine）[9, 10]是两个最成功的CTR模型。FM使用因子化参数对变量之间的所有特征交互进行建模。它具有低时间复杂度和内存存储，并且能很好地处理大规模稀疏数据。FFM引入了场感知隐向量，并赢得了Criteo和Avazu主办的两个竞赛[9]。然而，FFM受限于大内存需求，不易在互联网公司中使用。
+因子分解机（FM，Factorization Machine）[19, 20]和场感知因子分解机（FFM，Field-aware Factorization Machine）[9, 10]是**两个最成功的CTR模型**。**FM使用因子化参数对变量之间的所有特征交互进行建模**。**它具有低时间复杂度和内存存储，并且能很好地处理大规模稀疏数据**。FFM引入了场感知隐向量，并赢得了Criteo和Avazu主办的两个竞赛[9]。然而，FFM受限于**大内存需求**，不易在互联网公司中使用。
 
 ### 2.2 基于深度学习的CTR模型
 
 深度学习在计算机视觉[5, 14]和自然语言处理[2, 18]等许多研究领域取得了巨大成功。因此，近年来许多基于深度学习的CTR模型也被提出[1, 4, 6, 15, 22, 23, 25, 26]。如何有效建模特征交互是大多数基于神经网络的模型的关键因素。
 
-因子分解机支持的神经网络（FNN，Factorization-Machine Supported Neural Network）[25]是一种使用FM预训练嵌入层的前馈神经网络。然而，FNN只能捕获高阶特征交互。Wide & Deep模型（WDL，Wide & Deep Learning）[1]最初是为Google Play中的应用推荐而引入的。WDL联合训练宽线性模型和深度神经网络，以结合记忆和泛化的优势用于推荐系统。然而，WDL的宽部分输入仍然需要专家特征工程，这意味着交叉积转换也需要人工设计。为了减轻特征工程中的人工工作，DeepFM[4]用FM替换了WDL的宽部分，并在FM和深度组件之间共享特征嵌入。DeepFM被认为是CTR预估领域最先进的模型之一。
+因子分解机支持的神经网络（FNN，Factorization-Machine Supported Neural Network）[25]是一种**使用FM预训练嵌入层的前馈神经网络**。然而，**FNN只能捕获高阶特征交互**。Wide & Deep模型（WDL，Wide & Deep Learning）[1]最初是为Google Play中的应用推荐而引入的。WDL联合训练宽线性模型和深度神经网络，以结合记忆和泛化的优势用于推荐系统。然而，**WDL的宽部分输入仍然需要专家特征工程，这意味着交叉积转换也需要人工设计**。为了减轻特征工程中的人工工作，DeepFM[4]用FM替换了WDL的宽部分，并在FM和深度组件之间共享特征嵌入。DeepFM被认为是**CTR预估领域最先进的模型之一**。
 
-Deep & Cross Network（DCN）[22]以显式方式高效捕获有界阶数的特征交互。类似地，极端深度因子分解机（xDeepFM）[15]通过提出新颖的压缩交互网络（CIN，Compressed Interaction Network）部分，以显式方式建模低阶和高阶特征交互。如[23]所述，FM对所有特征交互使用相同权重进行建模可能会受到限制，因为并非所有特征交互都同样有用和具有预测性。他们提出了注意力因子分解机（AFM，Attentional Factorization Machine）[23]模型，该模型使用注意力网络学习特征交互的权重。深度兴趣网络（DIN，Deep Interest Network）[26]使用兴趣分布表示用户多样化的兴趣，并设计类似注意力的网络结构，根据候选广告局部激活相关兴趣。
+Deep & Cross Network（DCN）[22]以显式方式高效捕获有界阶数的特征交互。类似地，极端深度因子分解机（xDeepFM）[15]通过提出新颖的**压缩交互网络**（CIN，Compressed Interaction Network）部分，以显式方式建模低阶和高阶特征交互。如[23]所述，FM对所有特征交互使用相同权重进行建模可能会受到限制，因为并非所有特征交互都同样有用和具有预测性。他们提出了注意力因子分解机（AFM，Attentional Factorization Machine）[23]模型，该模型使用注意力网络学习特征交互的权重。深度兴趣网络（DIN，Deep Interest Network）[26]使用兴趣分布表示用户多样化的兴趣，并设计类似注意力的网络结构，根据候选广告局部激活相关兴趣。
 
 ### 2.3 SENET模块
 
@@ -59,13 +67,17 @@ Hu等人[8]提出了"Squeeze-and-Excitation Network"（SENET），通过显式�
 
 除图像分类外，SENET还有其他应用[12, 21, 24]。[21]为语义分割任务引入了SE模块的三种变体。胸部X光片上常见胸部疾病分类以及可疑病变区域的定位[24]是另一个应用领域。[16]将SENET模块与全局-局部注意力（GALA，Global-and-Local Attention）模块扩展，在ILSVRC上获得了最先进的准确率。
 
+
+
 ## 3 本文提出的模型
 
 我们的目标是动态学习特征的重要性并以细粒度的方式学习特征交互。为此，我们提出了特征重要性与双线性特征交互网络（FiBiNET）用于CTR预测任务。
 
 在本节中，我们将描述所提模型的架构，如图1所示。为清晰起见，我们省略了可以简单加入的逻辑回归部分。我们所提模型由以下部分组成：稀疏输入层、嵌入层、SENET层、双线性交互层、组合层、多个隐藏层和输出层。稀疏输入层和嵌入层与DeepFM[4]相同，采用稀疏表示处理输入特征，并将原始特征输入嵌入为稠密向量。SENET层可以将嵌入层转换为类似SENET的嵌入特征，有助于提升特征判别能力。随后的双线性交互层分别在原始嵌入和类似SENET的嵌入上建模二阶特征交互。然后，这些交叉特征由组合层拼接，该层合并双线性交互层的输出。最后，将交叉特征输入深度神经网络，网络输出预测得分。
 
-**图1：我们所提 FiBiNET 的架构。**
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805040403645.png" alt="image-20260805040403645" style="zoom: 33%;" />
+
+> 图1：我们所提 FiBiNET 的架构。
 
 ### 3.1 稀疏输入和嵌入层
 
@@ -180,6 +192,8 @@ $$
 #### 3.6.1 与FM和FNN的关系
 
 假设我们移除SENET层和双线性交互层，不难发现我们的模型将退化为FNN。当我们进一步移除DNN部分，同时使用常数求和，则浅层FiBiNET退化为传统的FM模型。
+
+
 
 ## 4 实验
 
@@ -349,17 +363,21 @@ $$
 - 双线性交互层和SENET层对于FiBiNET的性能都是必要的。我们可以看到，当我们移除任何组件时，性能都会明显下降。
 - 双线性交互层在FiBiNET中与SENET层同等重要。
 
+
+
 ## 5 结论
 
 受现有最先进模型缺点的启发，我们提出了一种名为FiBiNET（Feature Importance and Bilinear feature Interaction NETwork，特征重要性与双线性特征交互网络）的新模型，旨在动态学习特征重要性和细粒度特征交互。我们提出的FiBiNET在以下方面为提高性能做出了贡献：1) 对于CTR任务，SENET模块可以动态学习特征的重要性。它增强重要特征的权重并抑制不重要特征的权重。2) 我们引入了三种类型的双线性交互层来学习特征交互，而不是使用Hadamard积或内积计算特征交互。3) 在我们的浅层模型中结合SENET机制与双线性特征交互，优于其他浅层模型（如FM和FFM）。4) 为了进一步提升性能，我们将经典深度神经网络（DNN）组件与浅层模型结合为深度模型。深度FiBiNET持续优于其他最先进的深度模型，如DeepFM和xDeepFM。
+
+
 
 ## 参考文献
 
 [1] Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, Tal Shaked, Tushar Chandra, Hrishi Aradhye, Glen Anderson, Greg Corrado, Wei Chai, Mustafa Ispir, et al. 2016. Wide & deep learning for recommender systems. In Proceedings of the 1st Workshop on Deep Learning for Recommender Systems. ACM, 7–10.
 
-[2] Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. 2014. Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation. arXiv:cs.CL/1406.1078.
+[2] Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. 2014. **Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation.** arXiv:cs.CL/1406.1078.
 
-[3] Thore Graepel, Joaquin Quinonero Candela, Thomas Borchert, and Ralf Herbrich. 2010. Web-scale bayesian click-through rate prediction for sponsored search advertising in microsoft's bing search engine. Omnipress.
+[3] Thore Graepel, Joaquin Quinonero Candela, Thomas Borchert, and Ralf Herbrich. 2010. **Web-scale bayesian click-through rate prediction for sponsored search advertising in microsoft's bing search engine**. Omnipress.
 
 [4] Huifeng Guo, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. 2017. DeepFM: a factorization-machine based neural network for CTR prediction. arXiv preprint arXiv:1703.04247 (2017).
 
@@ -369,9 +387,9 @@ $$
 
 [7] Xinran He, Junfeng Pan, Ou Jin, Tianbing Xu, Bo Liu, Tao Xu, Yanxin Shi, Antoine Atallah, Ralf Herbrich, Stuart Bowers, et al. 2014. Practical lessons from predicting clicks on ads at facebook. In Proceedings of the Eighth International Workshop on Data Mining for Online Advertising. ACM, 1–9.
 
-[8] Jie Hu, Li Shen, and Gang Sun. 2017. Squeeze-and-excitation networks. arXiv preprint arXiv:1709.01507 7 (2017).
+[8] Jie Hu, Li Shen, and Gang Sun. 2017. **Squeeze-and-excitation networks**. arXiv preprint arXiv:1709.01507 7 (2017).
 
-[9] Yuchin Juan, Damien Lefortier, and Olivier Chapelle. 2017. Field-aware factorization machines in a real-world online advertising system. In Proceedings of the 26th International Conference on World Wide Web Companion. International World Wide Web Conferences Steering Committee, 680–688.
+[9] Yuchin Juan, Damien Lefortier, and Olivier Chapelle. 2017. **Field-aware factorization machines in a real-world online advertising system**. In Proceedings of the 26th International Conference on World Wide Web Companion. International World Wide Web Conferences Steering Committee, 680–688.
 
 [10] Yuchin Juan, Yong Zhuang, Wei-Sheng Chin, and Chih-Jen Lin. 2016. Field-aware factorization machines for CTR prediction. In Proceedings of the 10th ACM Conference on Recommender Systems. ACM, 43–50.
 
@@ -383,29 +401,31 @@ $$
 
 [14] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. 2012. Imagenet classification with deep convolutional neural networks. In Advances in neural information processing systems. 1097–1105.
 
-[15] Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. 2018. xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems. arXiv preprint arXiv:1803.05170 (2018).
+[15] Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. 2018. **xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems**. arXiv preprint arXiv:1803.05170 (2018).
 
 [16] Drew Linsley, Dan Scheibler, Sven Eberhardt, and Thomas Serre. 2018. Global-and-local attention networks for visual recognition. arXiv preprint arXiv:1805.08819 (2018).
 
 [17] H Brendan McMahan, Gary Holt, David Sculley, Michael Young, Dietmar Ebner, Julian Grady, Lan Nie, Todd Phillips, Eugene Davydov, Daniel Golovin, et al. 2013. Ad click prediction: a view from the trenches. In Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining. ACM, 1222–1230.
 
-[18] Tomáš Mikolov, Martin Karafiát, Lukáš Burget, Jan Černockỳ, and Sanjeev Khudanpur. 2010. Recurrent neural network based language model. In Eleventh Annual Conference of the International Speech Communication Association.
+[18] Tomáš Mikolov, Martin Karafiát, Lukáš Burget, Jan Černockỳ, and Sanjeev Khudanpur. 2010. **Recurrent neural network based language model**. In Eleventh Annual Conference of the International Speech Communication Association.
 
 [19] Steffen Rendle. 2010. Factorization machines. In Data Mining (ICDM), 2010 IEEE 10th International Conference on. IEEE, 995–1000.
 
 [20] Steffen Rendle. 2012. Factorization machines with libfm. ACM Transactions on Intelligent Systems and Technology (TIST) 3, 3 (2012), 57.
 
-[21] Abhijit Guha Roy, Nassir Navab, and Christian Wachinger. 2018. Recalibrating Fully Convolutional Networks with Spatial and Channel 'Squeeze & Excitation' Blocks. arXiv preprint arXiv:1808.08127 (2018).
+[21] Abhijit Guha Roy, Nassir Navab, and Christian Wachinger. 2018. **Recalibrating Fully Convolutional Networks with Spatial and Channel 'Squeeze & Excitation' Blocks**. arXiv preprint arXiv:1808.08127 (2018).
 
 [22] Ruoxi Wang, Bin Fu, Gang Fu, and Mingliang Wang. 2017. Deep & cross network for ad click predictions. In Proceedings of the ADKDD'17. ACM, 12.
 
-[23] Jun Xiao, Hao Ye, Xiangnan He, Hanwang Zhang, Fei Wu, and Tat-Seng Chua. 2017. Attentional factorization machines: Learning the weight of feature interactions via attention networks. arXiv preprint arXiv:1708.04617 (2017).
+[23] Jun Xiao, Hao Ye, Xiangnan He, Hanwang Zhang, Fei Wu, and Tat-Seng Chua. 2017. **Attentional factorization machines: Learning the weight of feature interactions via attention networks**. arXiv preprint arXiv:1708.04617 (2017).
 
 [24] Chaochao Yan, Jiawen Yao, Ruoyu Li, Zheng Xu, and Junzhou Huang. 2018. Weakly Supervised Deep Learning for Thoracic Disease Classification and Localization on Chest X-rays. In Proceedings of the 2018 ACM International Conference on Bioinformatics, Computational Biology, and Health Informatics. ACM, 103–110.
 
-[25] Weinan Zhang, Tianming Du, and Jun Wang. 2016. Deep learning over multi-field categorical data. In European conference on information retrieval. Springer, 45–57.
+[25] Weinan Zhang, Tianming Du, and Jun Wang. 2016. **Deep learning over multi-field categorical data**. In European conference on information retrieval. Springer, 45–57.
 
 [26] Guorui Zhou, Xiaoqiang Zhu, Chenru Song, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, and Kun Gai. 2018. Deep interest network for click-through rate prediction. In Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. ACM, 1059–1068.
+
+
 
 [^1]: 场嵌入也称为特征嵌入。如果场是多值的，则使用特征嵌入之和作为场嵌入。为与先前文献保持一致，我们在某些术语中保留"feature"，例如特征交互（feature interaction）和特征表示（feature representation）。
 

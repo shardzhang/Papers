@@ -3,6 +3,7 @@
 > Yuchin Juan, Yong Zhuang, Wei-Sheng Chin, Chih-Jen Lin | Criteo Research / Carnegie Mellon Univ. / National Taiwan Univ.
 
 
+
 本文分享了面向点击率预测的域感知因子分解机 FFM（Field-aware Factorization Machines）的研究成果。核心内容：
 
 - FFM 是 FM（Factorization Machines）的一种变体，通过为每个特征-域组合学习独立的 latent vector 来捕获特征交互，在 CTR（Click-Through Rate）预测竞赛中优于现有模型
@@ -15,11 +16,13 @@
 ---
 
 
+
 ## 摘要
 
 点击率（CTR，Click-Through Rate）预测在计算广告中扮演着重要角色。基于二阶多项式映射（Poly2，Degree-2 Polynomial Mapping）和因子分解机（FMs，Factorization Machines）的模型被广泛用于这一任务。最近，FM 的一种变体——域感知因子分解机（FFMs，Field-aware Factorization Machines），在一些全球性的 CTR 预测竞赛中超越了现有模型。基于我们赢得其中两项竞赛的经验，本文将 FFMs 确立为一种对包括 CTR 预测在内的大规模稀疏数据分类的有效方法。首先，我们提出了训练 FFMs 的高效实现。然后，我们全面分析了 FFMs 并将该方法与竞争模型进行了比较。实验表明，FFMs 对某些分类问题非常有用。最后，我们发布了 FFMs 的软件包供公众使用。
 
 **关键词**：机器学习；点击率预测；计算广告；因子分解机
+
 
 
 ## 1. 引言
@@ -59,6 +62,7 @@ FM 的一种变体——成对交互张量分解（PITF，Pairwise Interaction T
 本文实验所用的代码和 LIBFFM 软件包分别可在以下地址获取：
 http://www.csie.ntu.edu.tw/~cjlin/ffm/exps
 http://www.csie.ntu.edu.tw/~cjlin/libffm
+
 
 
 ## 2. Poly2 和 FM
@@ -102,6 +106,7 @@ $$
 其中模型大小 $B$ 是用户指定的参数。
 
 在本文中，为了简化公式，我们不包含线性项和偏置项。然而，在第 4 节中，我们在部分实验中包含了它们。
+
 
 
 ## 3. FFM
@@ -281,6 +286,7 @@ Yes AR:45:1 Hidx:2:1 Cite:3:1,
 在这个示例中，唯一的域是"句子"。如果我们为所有词分配这个域，则 FFMs 简化为 FMs。读者可能会问是否可以像数值型特征那样使用虚拟域。回顾 FFMs 的模型大小为 $O(nfk)$ 。使用虚拟域是不实用的，因为 $f = n$ 且 $n$ 通常很大。
 
 
+
 ## 4. 实验
 
 在本节中，我们首先在第 4.1 节提供实验设置的详细信息。然后，我们研究参数的影响。我们发现与 LM 或 Poly2 不同，FFM 对 epoch 数量敏感。因此，在第 4.3 节中，我们在提出 early-stopping 技巧之前详细讨论了这个问题。并行化的加速效果在第 4.4 节中研究。在检查了 FFMs 的各种特性之后，我们在第 4.5-4.6 节将 FFMs 与包括 Poly2 和 FMs 在内的其他模型进行了比较。它们都使用相同的 SG 方法实现，因此除了准确率之外，我们还可以公平地比较它们的训练时间。此外，我们在比较中包含了最先进的软件包 LIBLINEAR [14] 和 LIBFM [15]，分别用于训练 LM/Poly2 和 FMs。
@@ -422,6 +428,7 @@ $$
 - 在数值型数据集上应用 FFMs 更加困难。
 
 
+
 ## 5. 结论与未来工作
 
 在本文中，我们讨论了 FFMs 的高效实现。我们证明了对于某些类型的数据集，FFMs 在 logloss 方面优于三个著名模型 LM、Poly2 和 FM，代价是更长的训练时间。
@@ -429,9 +436,11 @@ $$
 对于未来工作，第 4.3 节中讨论的过拟合问题是我们计划研究的一个问题。此外，为了便于实现，我们使用 SG 作为优化方法。有趣的是看看其他优化方法（例如 Newton 法）在 FFMs 上的表现如何。
 
 
+
 ## 致谢
 
 本工作部分得到了台湾 MOST 通过资助 104-2221-E-002-047-MY3 和 104-2622-E-002-012-CC2 以及台湾教育部通过资助 105R7872 的支持。
+
 
 
 ## 参考文献

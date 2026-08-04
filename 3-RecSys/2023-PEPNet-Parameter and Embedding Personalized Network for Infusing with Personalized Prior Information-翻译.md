@@ -1,45 +1,22 @@
 # PEPNet：注入个性化先验信息的参数与嵌入个性化网络
 
-> Jianxin Chang, Dewei Leng et al. | Kuaishou
+> Jianxin Chang, Chenbin Zhang∗, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, Kun Gai | Kuaishou Technology, Unaffiliated
+>
+> KDD '23: The 29th ACM SIGKDD Conference on Knowledge Discovery and Data Mining, August 6-10, 2023, Long Beach, CA, USA
+>
+> ∗ 同等贡献，作者顺序由抛硬币决定。
 
-本文介绍了 PEPNet：注入个性化先验信息的参数与嵌入个性化网络。核心内容：
+本文介绍了PEPNet：注入个性化先验信息的参数与嵌入个性化网络。核心内容：
 
+- 提出即插即用的参数与嵌入个性化网络（PEPNet），通过门控机制动态缩放底层嵌入和顶层DNN隐藏单元，用于多域和多任务推荐
+- 嵌入个性化网络（EPNet）在嵌入层执行个性化选择，融合多域中不同用户具有不同重要性的特征；参数个性化网络（PPNet）对DNN参数进行个性化修改，平衡多任务中不同用户具有不同稀疏性的目标
+- 该方法已在快手部署，每天服务超过3亿用户，带来观看时长超过1%的提升和多个交互目标约2%的提升
 
 关键发现：
 
-
-changjianxin@kuaishou.com
-
-冷德伟
-快手科技
-北京，中国
-lengdewei@kuaishou.com
-
-张宸彬*
-快手科技
-北京，中国
-zhangchenbin@kuaishou.com
-
-牛亚男
-快手科技
-北京，中国
-niuyanan@kuaishou.com
-
-盖坤
-无单位
-北京，中国
-gai.kun@qq.com
-
-惠轶群
-快手科技
-北京，中国
-huiyiqun@kuaishou.com
-
-宋洋
-快手科技
-北京，中国
-yangsong@kuaishou.com
-
+- 在快手工业数据集上，PEPNet在三个域的所有六个任务指标上显著优于所有基线方法，在更稀疏的域和任务上提升更为明显
+- 消融研究验证了EPNet和PPNet分别在多域和多任务推荐中有效缓解不完全双重跷跷板问题
+- PEPNet参数少、收敛速度快，可即插即用注入任何模型
 
 ---
 
@@ -47,30 +24,22 @@ yangsong@kuaishou.com
 
 随着在线购物和视频观看等在线服务中内容页面和交互按钮的增加，工业级推荐系统面临多域和多任务推荐的挑战。多任务和多域推荐的核心是在给定多种用户行为的情况下，准确捕捉用户在多个场景中的兴趣。在本文中，我们提出了一种即插即用的参数与嵌入个性化网络（PEPNet），用于多域和多任务推荐。PEPNet将个性化先验信息作为输入，通过门控机制动态缩放底层嵌入和顶层DNN隐藏单元。嵌入个性化网络（EPNet）在嵌入层执行个性化选择，以为多域中不同用户融合具有不同重要性的特征。参数个性化网络（PPNet）对DNN参数进行个性化修改，以平衡多任务中不同用户具有不同稀疏性的目标。我们结合快手训练框架和在线部署环境进行了一系列特殊的工程优化。通过注入嵌入的个性化选择和DNN参数的个性化修改，为每个个体兴趣量身定制的PEPNet获得了显著的性能提升，在跨多个域的多个任务指标上在线提升超过1%。我们已在快手应用中部署PEPNet，每天服务超过3亿用户。
 
-*同等贡献。作者顺序由抛硬币决定。
+**CCS概念**
 
-允许为个人或课堂使用制作本作品的全部或部分的数字或硬拷贝，无需付费，前提是副本不得以营利或商业优势为目的进行分发，且副本在第一页包含此声明和完整引用。归作者所有的本作品组件的版权必须得到尊重。允许带信用摘要。如需以其他方式复制、重新发布、在服务器上发布或分发给列表，需要事先获得特定许可和/或支付费用。请向 permissions@acm.org 请求许可。
+• 信息系统 $\rightarrow$ 个性化；推荐系统。
+• 计算方法 $\rightarrow$ 神经网络。
 
-KDD '23，2023年8月6-10日，美国加利福尼亚州长滩
-© 2023 版权归所有者/作者所有。出版权已授权给ACM。
-ACM ISBN 979-8-4007-0103-0/23/08... $15.00$
-https://doi.org/10.1145/3580305.3599884
+**关键词**
 
-## CCS概念
+Multi-Domain Learning; Multi-Task Learning; Personalization; Recommender System
 
-• 信息系统 \rightarrow 个性化；推荐系统；• 计算方法 \rightarrow 神经网络。
+**ACM引用格式：**
 
-## 关键词
-
-多域学习；多任务学习；个性化；推荐系统
-
-## ACM引用格式
-
-Jianxin Chang, Chenbin Zhang, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and Kun Gai. 2023. PEPNet: Parameter and Embedding Personalized Network for Infusing with Personalized Prior Information. 见第29届ACM SIGKDD知识发现与数据挖掘会议论文集（KDD '23），2023年8月6-10日，美国加利福尼亚州长滩。ACM，纽约，NY，美国，10页。https://doi.org/10.1145/3580305.3599884
+Jianxin Chang, Chenbin Zhang, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and Kun Gai. 2023. PEPNet: Parameter and Embedding Personalized Network for Infusing with Personalized Prior Information. In Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '23), August 6-10, 2023, Long Beach, CA, USA. ACM, New York, NY, USA, 10 pages. https://doi.org/10.1145/3580305.3599884
 
 ## 1 引言
 
-传统推荐模型关注单一域中的单一预测任务（如CTR）[5, 14, 31]，即使用从单一域收集的样本进行训练，服务于单一任务的预测。然而，在实际应用中，推荐需求分散在不同的场景中。随着内容页面数量的增加，推荐系统面临数据片段分布在多个域中的关键问题。例如，淘宝1有诸如购前（猜你喜欢）、购中（再来一单）和购后（购买后猜你喜欢）等场景，如图1所示。而快手2有精选视频Tab、双列发现Tab和单列滑动Tab等场景。此外，每个页面上通常设计多个按钮供用户交互。为了利用用户反馈并提供更好的体验，推荐系统需要捕捉用户的多种行为偏好，建模用户与多个任务中不同目标进行交互的概率。例如，快手在图1中为用户提供了各种交互目标，如点赞、关注、转发、收藏和评论。
+传统推荐模型关注单一域中的单一预测任务（如CTR（Click-Through Rate，点击率））[5, 14, 31]，即使用从单一域收集的样本进行训练，服务于单一任务的预测。然而，在实际应用中，推荐需求分散在不同的场景中。随着内容页面数量的增加，推荐系统面临数据片段分布在多个域中的关键问题。例如，淘宝1有诸如购前（猜你喜欢）、购中（再来一单）和购后（购买后猜你喜欢）等场景，如图1所示。而快手2有精选视频Tab、双列发现Tab和单列滑动Tab等场景。此外，每个页面上通常设计多个按钮供用户交互。为了利用用户反馈并提供更好的体验，推荐系统需要捕捉用户的多种行为偏好，建模用户与多个任务中不同目标进行交互的概率。例如，快手在图1中为用户提供了各种交互目标，如点赞、关注、转发、收藏和评论。
 
 1https://www.taobao.com/
 2https://www.kuaishou.com/
@@ -83,7 +52,7 @@ Jianxin Chang, Chenbin Zhang, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and K
 
 个性化建模是推荐系统的核心。增强模型的个性化有助于捕捉用户在不同情境下对item的偏好程度。多域和多任务设置可以视为用户在不同情境下与item交互，因此更准确的个性化估计可以缓解不完全双重跷跷板问题。但简单地将个性化先验信息作为底层输入，其信号经过深度网络传递到顶层后效果变得极弱。如何在正确的位置以正确的方式将个性化先验信息注入模型是至关重要且值得探索的，特别是对于多个域和任务而言。
 
-为了解决这个问题，我们提出了一种参数与嵌入个性化网络（PEPNet），用于多任务和多域推荐，它充分利用了任务之间的关系，并通过增强个性化来消除域偏差。与多任务学习[18, 27]和多域学习[13, 25]的现有工作相比，PEPNet是一种高效的即插即用网络。PEPNet将带有个性化先验信息的特征作为输入，通过门控机制动态缩放模型中的底层嵌入和顶层DNN隐藏单元，分别称为域特定的EPNet和任务特定的PPNet。嵌入个性化网络（EPNet）在底层添加域特定的个性化信息以生成个性化嵌入门控。然后使用嵌入门控对来自多个域的原始嵌入进行个性化选择，得到个性化嵌入。参数个性化网络（PPNet）将用户和item的个性化信息与每个任务中DNN的输入连接起来，以获取个性化门控分数。然后与DNN隐藏单元逐元素相乘，对DNN参数进行个性化修改。通过将个性化先验信息映射到0到2之间的缩放权重，EPNet选择嵌入以融合多域中不同用户具有不同重要性的特征，PPNet修改DNN参数以平衡多任务中不同用户具有不同稀疏性的目标。
+为了解决这个问题，我们提出了一种参数与嵌入个性化网络（PEPNet），用于多任务和多域推荐，它充分利用了任务之间的关系，并通过增强个性化来消除域偏差。与多任务学习[18, 27]和多域学习[13, 25]的现有工作相比，PEPNet是一种高效的即插即用网络。PEPNet将带有个性化先验信息的特征作为输入，通过门控机制动态缩放模型中的底层嵌入和顶层DNN（Deep Neural Network，深度神经网络）隐藏单元，分别称为域特定的EPNet和任务特定的PPNet。嵌入个性化网络（EPNet）在底层添加域特定的个性化信息以生成个性化嵌入门控。然后使用嵌入门控对来自多个域的原始嵌入进行个性化选择，得到个性化嵌入。参数个性化网络（PPNet）将用户和item的个性化信息与每个任务中DNN的输入连接起来，以获取个性化门控分数。然后与DNN隐藏单元逐元素相乘，对DNN参数进行个性化修改。通过将个性化先验信息映射到0到2之间的缩放权重，EPNet选择嵌入以融合多域中不同用户具有不同重要性的特征，PPNet修改DNN参数以平衡多任务中不同用户具有不同稀疏性的目标。
 
 图1：快手短视频场景与淘宝电商场景的对比。两者都针对不同域进行推荐。此外，快手中每个域执行多个任务，例如对短视频的点赞、关注、转发、收藏和评论。
 
@@ -91,7 +60,7 @@ Jianxin Chang, Chenbin Zhang, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and K
 
 • 我们提出了一种为每个个体兴趣量身定制的参数与嵌入个性化网络（PEPNet）。PEPNet是一种高效、低部署成本且即插即用的方法，可以注入任何模型。我们在工业短视频数据集上评估了PEPNet和其他SOTA方法，大量实验证明了我们的方法在缓解不完全双重跷跷板现象方面的有效性。
 
-• 我们在快手的推荐系统中部署了PEPNet，服务超过3亿日活跃用户（DAU）。PEPNet的部署带来了观看时长超过1%的提升和多个交互目标约2%的提升。我们的方法可以推广到其他场景，研究人员可以从我们部署中获得的经验教训中受益。
+• 我们在快手的推荐系统中部署了PEPNet，服务超过3亿日活跃用户（DAU，Daily Active Users）。PEPNet的部署带来了观看时长超过1%的提升和多个交互目标约2%的提升。我们的方法可以推广到其他场景，研究人员可以从我们部署中获得的经验教训中受益。
 
 ## 2 方法
 
@@ -99,13 +68,15 @@ Jianxin Chang, Chenbin Zhang, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and K
 
 ### 2.1 问题形式化
 
-这里我们定义研究中使用的符号和问题设置。模型使用稀疏/稠密输入，如用户历史行为、用户画像特征、item特征、上下文特征等。预测目标 ŷₜ 是域 d 中第 t 个任务下用户 u 对item i 的偏好分数，通过以下方式计算：
+这里我们定义研究中使用的符号和问题设置。模型使用稀疏/稠密输入，如用户历史行为、用户画像特征、item特征、上下文特征等。预测目标 $\hat{y}_t$ 是域 $d$ 中第 $t$ 个任务下用户 $u$ 对item $i$ 的偏好分数，通过以下方式计算：
 
-ŷₜ = F({E(u₁), ..., E(uₘ) \oplus E(i₁), ..., E(iₙ) \oplus E(c₁), ..., E(cₒ)}_d)   (1)
+$$
+\hat{y}_t = F(\{E(u_1), \ldots, E(u_m) \oplus E(i_1), \ldots, E(i_n) \oplus E(c_1), \ldots, E(c_o)\}_d) \qquad (1)
+$$
 
-其中 u₁, ..., uₘ 表示用户特征，包括用户历史行为、用户画像和用户ID等。i₁, ..., iₙ 表示item特征，包括item类别、itemID（iid）和作者ID（aid）等。c₁, ..., cₒ 表示其他特征，包括上下文特征和组合特征。m、n 和 o 分别表示用户特征、item特征和其他特征的数量。E(∗) 表示稀疏/稠密特征经过分桶算法后由嵌入层映射为可学习嵌入，\oplus 表示拼接。{}_d 表示来自域 d 的样本。ŷₜ 表示任务 t 的输出分数。F 是推荐模型，本质上是一个可学习的预测函数。
+其中 $u_1, \ldots, u_m$ 表示用户特征，包括用户历史行为、用户画像和用户ID等。$i_1, \ldots, i_n$ 表示item特征，包括item类别、itemID（iid）和作者ID（aid）等。$c_1, \ldots, c_o$ 表示其他特征，包括上下文特征和组合特征。$m$、$n$ 和 $o$ 分别表示用户特征、item特征和其他特征的数量。$E(\ast)$ 表示稀疏/稠密特征经过分桶算法后由嵌入层映射为可学习嵌入，$\oplus$ 表示拼接。$\{\}_d$ 表示来自域 $d$ 的样本。$\hat{y}_t$ 表示任务 $t$ 的输出分数。$F$ 是推荐模型，本质上是一个可学习的预测函数。
 
-在现实世界中，item候选池和部分用户在多个场景中是共享的。然而，由于不同的消费目的，用户对同一item的行为倾向在不同场景中会发生变化。为了更好捕捉用户对多种行为的倾向及其在多个场景中的关联，推荐器 f 需要同时在多个域 D 中对多任务 T 进行预测。因此，多域和多任务推荐问题可以形式化为：x_d \rightarrow ŷₜ，其中 x_d 是从每个域 d \in D 收集的样本的特征，ŷₜ 是每个任务 t \in T 的预测分数。
+在现实世界中，item候选池和部分用户在多个场景中是共享的。然而，由于不同的消费目的，用户对同一item的行为倾向在不同场景中会发生变化。为了更好捕捉用户对多种行为的倾向及其在多个场景中的关联，推荐器 $f$ 需要同时在多个域 $D$ 中对多任务 $T$ 进行预测。因此，多域和多任务推荐问题可以形式化为：$x_d \rightarrow \hat{y}_t$，其中 $x_d$ 是从每个域 $d \in D$ 收集的样本的特征，$\hat{y}_t$ 是每个任务 $t \in T$ 的预测分数。
 
 ### 2.2 网络结构
 
@@ -119,19 +90,23 @@ Jianxin Chang, Chenbin Zhang, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and K
 
 #### 2.2.1 门控神经单元（Gate NU）
 
-受语音识别领域提出的LHUC算法[26]启发，PEPNet引入了一种称为门控神经单元的门控机制，允许将个性化先验信息注入网络。LHUC专注于学习说话者特定的隐藏单元贡献，通过使用个性化贡献缩放模型的隐藏层，提高了不同说话者的语音识别准确性。然而，LHUC本质上使用用户ID作为个性化标识符，忽略了其他丰富的个性化先验信息，如用户的年龄、性别和其他画像信息。此外，在匹配用户和item的推荐系统中，item信息也至关重要，如item的ID、类别和作者。大量研究[22, 35, 36]表明，用户对不同item表现出不同的个性化偏好模式。
+受语音识别领域提出的LHUC（Learning Hidden Unit Contributions，学习隐藏单元贡献）算法[26]启发，PEPNet引入了一种称为门控神经单元的门控机制，允许将个性化先验信息注入网络。LHUC专注于学习说话者特定的隐藏单元贡献，通过使用个性化贡献缩放模型的隐藏层，提高了不同说话者的语音识别准确性。然而，LHUC本质上使用用户ID作为个性化标识符，忽略了其他丰富的个性化先验信息，如用户的年龄、性别和其他画像信息。此外，在匹配用户和item的推荐系统中，item信息也至关重要，如item的ID、类别和作者。大量研究[22, 35, 36]表明，用户对不同item表现出不同的个性化偏好模式。
 
-因此，我们提出了门控神经单元，简称Gate NU，以处理更多具有不同个性化语义的先验信息并将其注入模型。Gate NU（后面也称为℧）由两个神经网络层组成。我们将Gate NU的输入记为 x，并将第一层公式化如下：
+因此，我们提出了门控神经单元，简称Gate NU，以处理更多具有不同个性化语义的先验信息并将其注入模型。Gate NU（后面也称为℧）由两个神经网络层组成。我们将Gate NU的输入记为 $\mathbf{x}$，并将第一层公式化如下：
 
-x′ = Relu(xW + b)   (2)
+$$
+\mathbf{x}' = \mathrm{Relu}(\mathbf{x}\mathbf{W} + \mathbf{b}) \qquad (2)
+$$
 
-其中 W 和 b 是可学习的权重和偏置。选择Relu作为非线性激活函数。第一层用于交叉具有各种先验信息的特征。然后，我们通过第二层定制门控分数的生成如下：
+其中 $\mathbf{W}$ 和 $\mathbf{b}$ 是可学习的权重和偏置。选择Relu作为非线性激活函数。第一层用于交叉具有各种先验信息的特征。然后，我们通过第二层定制门控分数的生成如下：
 
-\delta = \gamma * Sigmoid(x′W′ + b′), \delta \in [0, \gamma]   (3)
+$$
+\boldsymbol{\delta} = \gamma \ast \mathrm{Sigmoid}(\mathbf{x}'\mathbf{W}' + \mathbf{b}'), \quad \boldsymbol{\delta} \in [0, \gamma] \qquad (3)
+$$
 
-第一层的输出 x′ 被输入到第二层。W′ 和 b′ 是第二层中可训练的权重和偏置。使用Sigmoid函数生成门控向量 \delta，将其输出限制在 [0, \gamma] 范围内。\gamma 是缩放因子，设置为2。
+第一层的输出 $\mathbf{x}'$ 被输入到第二层。$\mathbf{W}'$ 和 $\mathbf{b}'$ 是第二层中可训练的权重和偏置。使用Sigmoid函数生成门控向量 $\boldsymbol{\delta}$，将其输出限制在 $[0, \gamma]$ 范围内。$\gamma$ 是缩放因子，设置为2。
 
-从公式2和3可以看出，Gate NU利用先验信息 x 生成个性化门控 \delta，自适应地控制先验信息的重要性，并使用超参数 \gamma 进一步压缩和加倍有效信号。接下来，我们详细阐述如何在EPNet和PPNet中使用Gate NU，将重要的先验信息选择性注入模型的关键位置。
+从公式2和3可以看出，Gate NU利用先验信息 $\mathbf{x}$ 生成个性化门控 $\boldsymbol{\delta}$，自适应地控制先验信息的重要性，并使用超参数 $\gamma$ 进一步压缩和加倍有效信号。接下来，我们详细阐述如何在EPNet和PPNet中使用Gate NU，将重要的先验信息选择性注入模型的关键位置。
 
 图3：PEPNet由Gate NU、EPNet和PPNet组成。Gate NU是利用先验信息生成个性化门控并自适应放大有效信号的基本单元。EPNet对嵌入进行个性化选择，以融合多域中不同用户具有不同重要性的特征。PPNet对DNN参数进行个性化修改，以平衡多任务中不同用户具有不同稀疏性的目标。在多个域中估计同一组多目标。PEPNet参数少、收敛速度快，可以即插即用到任何网络中。
 
@@ -139,41 +114,59 @@ x′ = Relu(xW + b)   (2)
 
 在工业级推荐系统中，嵌入表非常庞大，尤其是ID特征。为了节省计算和内存成本，共享底层嵌入结构被广泛使用如下：
 
-E = E(Fₛ) \oplus E(F_d)   (4)
+$$
+\mathbf{E} = E(\mathbf{F}_S) \oplus E(\mathbf{F}_D) \qquad (4)
+$$
 
-其中 Fₛ 是稀疏特征，F_d 是稠密特征。作为通用输入，它们通过嵌入层 E(∗) 转换为可学习嵌入 E。
+其中 $\mathbf{F}_S$ 是稀疏特征，$\mathbf{F}_D$ 是稠密特征。作为通用输入，它们通过嵌入层 $E(\ast)$ 转换为可学习嵌入 $\mathbf{E}$。
 
-由于共享嵌入层用于来自不同域的训练样本，在实践中存在若干缺陷，因为它强调共性而忽略多个域之间的差异。EPNet在共享嵌入层的基础上，以低成本（即参数少、收敛速度快）将域特定的个性化先验信息注入嵌入。我们使用域侧特征 E(F_d) \in Rᵏ 作为EPNet的输入，包括域ID和域特定的个性化统计特征，如每个域中用户行为的计数和item曝光次数。℧ₑₚ 是嵌入层中EPNet的Gate NU，其输出 \delta_𝑑𝑜𝑚𝑎𝑖𝑛 \in Rᵉ 由下式给出：
+由于共享嵌入层用于来自不同域的训练样本，在实践中存在若干缺陷，因为它强调共性而忽略多个域之间的差异。EPNet在共享嵌入层的基础上，以低成本（即参数少、收敛速度快）将域特定的个性化先验信息注入嵌入。我们使用域侧特征 $E(\mathbf{F}_d) \in \mathbb{R}^k$ 作为EPNet的输入，包括域ID和域特定的个性化统计特征，如每个域中用户行为的计数和item曝光次数。℧$_{ep}$ 是嵌入层中EPNet的Gate NU，其输出 $\boldsymbol{\delta}_{\mathrm{domain}} \in \mathbb{R}^e$ 由下式给出：
 
-\delta_𝑑𝑜𝑚𝑎𝑖𝑛 = ℧ₑₚ(E(F_d) \oplus (⊘(E)))   (5)
+$$
+\boldsymbol{\delta}_{\mathrm{domain}} = \mathrm{℧}_{ep}(E(\mathbf{F}_d) \oplus (\nabla(\mathbf{E}))) \qquad (5)
+$$
 
-其中我们将通用嵌入 E \in Rᵉ 与输入拼接，但不使用梯度反向传播，记为 ⊘(∗)。接下来，我们使用外部Gate NU对嵌入 E 进行个性化变换，而不改变原始嵌入层，从而为多域中不同用户对齐具有不同重要性的特征。变换后的嵌入为：
+其中我们将通用嵌入 $\mathbf{E} \in \mathbb{R}^e$ 与输入拼接，但不使用梯度反向传播，记为 $\nabla(\ast)$。接下来，我们使用外部Gate NU对嵌入 $\mathbf{E}$ 进行个性化变换，而不改变原始嵌入层，从而为多域中不同用户对齐具有不同重要性的特征。变换后的嵌入为：
 
-Oₑₚ = \delta_𝑑𝑜𝑚𝑎𝑖𝑛 \otimes E   (6)
+$$
+\mathbf{O}_{ep} = \boldsymbol{\delta}_{\mathrm{domain}} \otimes \mathbf{E} \qquad (6)
+$$
 
-其中 Oₑₚ \in Rᵉ，\otimes 表示逐元素乘积。注意，当嵌入层中的输入特征较多且向量维度较大时，向量级乘积是可选的。
+其中 $\mathbf{O}_{ep} \in \mathbb{R}^e$，$\otimes$ 表示逐元素乘积。注意，当嵌入层中的输入特征较多且向量维度较大时，向量级乘积是可选的。
 
 #### 2.2.3 参数个性化网络（PPNet）
 
 现有的多任务推荐器[18, 27]侧重于使用复杂模块来建模多任务表示。在基于多任务表示拟合多任务标签时，它们都使用DNN塔，即堆叠的神经网络层。然而，DNN塔的参数由所有用户共享。由于不同用户对各种行为的偏好不一致，缺乏个性化参数将使模型难以平衡多个任务，不可避免地导致性能跷跷板。
 
-为了解决这个问题，我们提出PPNet来修改多任务学习中的DNN参数，构建为每个用户兴趣量身定制的DNN模型。我们使用用户/item/作者侧特征（F_u / F_i / F_a）作为PPNet的个性化先验信息，如用户ID、itemID、作者ID（快手中短视频的创作者）以及其他侧信息特征，例如用户年龄/性别、item类别/热度等。具体来说，PPNet的详细结构如下：
+为了解决这个问题，我们提出PPNet来修改多任务学习中的DNN参数，构建为每个用户兴趣量身定制的DNN模型。我们使用用户/item/作者侧特征（$\mathbf{F}_u / \mathbf{F}_i / \mathbf{F}_a$）作为PPNet的个性化先验信息，如用户ID、itemID、作者ID（快手中短视频的创作者）以及其他侧信息特征，例如用户年龄/性别、item类别/热度等。具体来说，PPNet的详细结构如下：
 
-O_𝑝𝑟𝑖𝑜𝑟 = E(F_u) \oplus E(F_i) \oplus E(F_a)
-\delta_𝑡𝑎𝑠𝑘 = ℧ₚₚ(O_𝑝𝑟𝑖𝑜𝑟 \oplus (⊘(Oₑₚ)))   (7)
+$$
+\mathbf{O}_{\mathrm{prior}} = E(\mathbf{F}_u) \oplus E(\mathbf{F}_i) \oplus E(\mathbf{F}_a)
+$$
 
-我们将EPNet的输出 Oₑₚ 与个性化先验 O_𝑝𝑟𝑖𝑜𝑟 拼接，作为 ℧ₚₚ 的输入，℧ₚₚ 是PPNet中的Gate NU。为避免影响EPNet中更新的嵌入，我们对 Oₑₚ 执行停止梯度操作 ⊘。接下来，我们基于Gate NU输出 \delta_𝑡𝑎𝑠𝑘 使用逐元素乘积来加倍和压缩DNN每一层中的隐藏贡献 H，如下所示：
+$$
+\boldsymbol{\delta}_{\mathrm{task}} = \mathrm{℧}_{pp}(\mathbf{O}_{\mathrm{prior}} \oplus (\nabla(\mathbf{O}_{ep}))) \qquad (7)
+$$
 
-Oₚₚ = \delta_𝑡𝑎𝑠𝑘 \otimes H   (8)
+我们将EPNet的输出 $\mathbf{O}_{ep}$ 与个性化先验 $\mathbf{O}_{\mathrm{prior}}$ 拼接，作为℧$_{pp}$ 的输入，℧$_{pp}$ 是PPNet中的Gate NU。为避免影响EPNet中更新的嵌入，我们对 $\mathbf{O}_{ep}$ 执行停止梯度操作 $\nabla$。接下来，我们基于Gate NU输出 $\boldsymbol{\delta}_{\mathrm{task}}$ 使用逐元素乘积来加倍和压缩DNN每一层中的隐藏贡献 $\mathbf{H}$，如下所示：
 
-其中 H = [H₁, ..., H_T]。在每个DNN层中，H_t \in Rʰ 表示第 t 个任务塔的隐藏单元。注意 \delta_𝑡𝑎𝑠𝑘 \in Rʰ∗ᵀ 在分割成 T 个维度为 h 的向量后应用于 T 个任务的隐藏层单元。类似地，分割后的 Oₚₚ 表示 T 个任务中 h 维的PPNet输出。
+$$
+\mathbf{O}_{pp} = \boldsymbol{\delta}_{\mathrm{task}} \otimes \mathbf{H} \qquad (8)
+$$
+
+其中 $\mathbf{H} = [\mathbf{H}_1, \ldots, \mathbf{H}_T]$。在每个DNN层中，$\mathbf{H}_t \in \mathbb{R}^h$ 表示第 $t$ 个任务塔的隐藏单元。注意 $\boldsymbol{\delta}_{\mathrm{task}} \in \mathbb{R}^{h \ast T}$ 在分割成 $T$ 个维度为 $h$ 的向量后应用于 $T$ 个任务的隐藏层单元。类似地，分割后的 $\mathbf{O}_{pp}$ 表示 $T$ 个任务中 $h$ 维的PPNet输出。
 
 此外，我们将PPNet集成到所有DNN层中，以充分个性化DNN参数，平衡多任务中不同用户具有不同稀疏性的目标，公式化如下：
 
-Oₚₚ^(l) = \delta_𝑡𝑎𝑠𝑘^(l) \otimes H^(l)
-H^(l+1) = f(Oₚₚ^(l) W^(l) + b^(l)), l \in {1, ..., L}   (9)
+$$
+\mathbf{O}_{pp}^{(l)} = \boldsymbol{\delta}_{\mathrm{task}}^{(l)} \otimes \mathbf{H}^{(l)}
+$$
 
-其中 L 是任务塔的DNN层数，f 是激活函数。对于前 L-1 层，激活函数 f 使用Relu。最后一层的 f 是Sigmoid，没有放大系数 \gamma，这与Gate NU不同。在最后一层获得多个域上多个任务的预测分数后，使用二元交叉熵进行优化。
+$$
+\mathbf{H}^{(l+1)} = f(\mathbf{O}_{pp}^{(l)} \mathbf{W}^{(l)} + \mathbf{b}^{(l)}), \quad l \in \{1, \ldots, L\} \qquad (9)
+$$
+
+其中 $L$ 是任务塔的DNN层数，$f$ 是激活函数。对于前 $L-1$ 层，激活函数 $f$ 使用Relu。最后一层的 $f$ 是Sigmoid，没有放大系数 $\gamma$，这与Gate NU不同。在最后一层获得多个域上多个任务的预测分数后，使用二元交叉熵进行优化。
 
 ### 2.3 工程优化策略
 
@@ -406,7 +399,7 @@ H^(l+1) = f(Oₚₚ^(l) W^(l) + b^(l)), l \in {1, ..., L}   (9)
 
 ### 4.1 点击率预测
 
-点击率（CTR）预测是电商和流媒体互联网公司最重要的增长引擎，可以改善用户体验并增加公司收入。传统的浅层CTR模型，如逻辑回归（LR）、因子分解机（FM）和梯度提升决策树（GBDT），因其强大的可解释性和轻量级的训练部署要求，在早期被广泛使用。
+点击率（CTR）预测是电商和流媒体互联网公司最重要的增长引擎，可以改善用户体验并增加公司收入。传统的浅层CTR模型，如逻辑回归（LR，Logistic Regression）、因子分解机（FM，Factorization Machine）和梯度提升决策树（GBDT，Gradient Boosted Decision Tree），因其强大的可解释性和轻量级的训练部署要求，在早期被广泛使用。
 
 由于深度学习在捕捉高阶特征交叉方面的强大能力，现代深度方法取得了显著改进。FNN [32] 使用FM预训练嵌入层，然后将处理后的稠密特征输入DNN。PNN [23] 将向量内积/外积从预训练直接迁移到神经网络。WDL [5] 联合训练宽线性模型和深度神经网络，以结合记忆和泛化优势。DeepFM [8] 用FM替换WDL的宽部分，因此不再依赖手工特征工程。DCN [30, 31] 用交叉网络替换DeepFM的FM，xDeepFM [14] 进一步将向量级思想引入DCN的交叉部分。DCNv2 [31] 使用低秩DCN的混合，在性能和延迟之间取得更健康的权衡，以达到SOTA。
 
@@ -418,9 +411,9 @@ H^(l+1) = f(Oₚₚ^(l) W^(l) + b^(l)), l \in {1, ..., L}   (9)
 
 ### 4.3 多任务学习
 
-多任务学习旨在同时学习多个相关任务，并通过挖掘共享信息来促进每个特定任务的学习。早期的线性模型 [2] 使用共享稀疏表示跨多个任务学习。在深度学习时代，硬参数共享方法可能由于任务差异导致负迁移。为了获得更好的性能，一些研究采用软参数共享方法进行优化。交叉网络 [20] 和水闸网络 [24] 被提出用于学习任务特定隐藏层的线性组合。其他方法使用门控机制和注意力机制进行信息融合。MOE [11] 使用门控结构组合底部共享的多个专家。MTAN [15] 由一个共享网络和几个任务特定的注意力模块组成。
+多任务学习旨在同时学习多个相关任务，并通过挖掘共享信息来促进每个特定任务的学习。早期的线性模型 [2] 使用共享稀疏表示跨多个任务学习。在深度学习时代，硬参数共享方法可能由于任务差异导致负迁移。为了获得更好的性能，一些研究采用软参数共享方法进行优化。交叉网络 [20] 和水闸网络 [24] 被提出用于学习任务特定隐藏层的线性组合。其他方法使用门控机制和注意力机制进行信息融合。MOE（Mixture of Experts，混合专家）[11] 使用门控结构组合底部共享的多个专家。MTAN（Multi-Task Attention Network，多任务注意力网络）[15] 由一个共享网络和几个任务特定的注意力模块组成。
 
-在推荐系统中，早期基于协同过滤和矩阵分解的模型 [16, 28, 29] 表达能力较低且忽略了任务之间的相关性。由于简单高效等不可替代的优势，底层硬参数共享（ShareBottom）在推荐系统中被广泛使用。MMoE [18] 进一步在不同任务中共享所有专家，并为每个任务使用不同的门控以扩展MOE。ESSM [19] 基于软参数共享结构，以顺序模式同时优化两个相关任务，以缓解预测目标的稀疏性。在保留MMoE中共享专家的基础上，PLE [27] 为每个任务设置独立专家，并考虑不同专家之间的交互。
+在推荐系统中，早期基于协同过滤和矩阵分解的模型 [16, 28, 29] 表达能力较低且忽略了任务之间的相关性。由于简单高效等不可替代的优势，底层硬参数共享（ShareBottom）在推荐系统中被广泛使用。MMoE [18] 进一步在不同任务中共享所有专家，并为每个任务使用不同的门控以扩展MOE。ESSM（Entire Space Multi-Task Model，全空间多任务模型）[19] 基于软参数共享结构，以顺序模式同时优化两个相关任务，以缓解预测目标的稀疏性。在保留MMoE中共享专家的基础上，PLE [27] 为每个任务设置独立专家，并考虑不同专家之间的交互。
 
 ### 4.4 推荐中的门控机制
 
@@ -432,7 +425,7 @@ H^(l+1) = f(Oₚₚ^(l) W^(l) + b^(l)), l \in {1, ..., L}   (9)
 
 ## 参考文献
 
-[1] Martín Abadi, Paul Barham, Jianmin Chen, Zhifeng Chen, Andy Davis, Jeffrey Dean, Matthieu Devin, Sanjay Ghemawat, Geoffrey Irving, Michael Isard, et al. 2016. Tensorflow: A system for large-scale machine learning. 见 12th {USENIX} symposium on operating systems design and implementation ({OSDI} 16).
+[1] Martín Abadi, Paul Barham, Jianmin Chen, Zhifeng Chen, Andy Davis, Jeffrey Dean, Matthieu Devin, Sanjay Ghemawat, Geoffrey Irving, Michael Isard, et al. 2016. Tensorflow: A system for large-scale machine learning. In 12th {USENIX} symposium on operating systems design and implementation ({OSDI} 16).
 
 [2] Andreas Argyriou, Theodoros Evgeniou, and Massimiliano Pontil. 2008. Convex multi-task feature learning. Machine Learning 73, 3 (2008), 243–272.
 
@@ -440,59 +433,59 @@ H^(l+1) = f(Oₚₚ^(l) W^(l) + b^(l)), l \in {1, ..., L}   (9)
 
 [4] Shai Ben-David, John Blitzer, Koby Crammer, Fernando Pereira, et al. 2007. Analysis of representations for domain adaptation. Advances in neural information processing systems 19 (2007), 137.
 
-[5] Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, Tal Shaked, Tushar Chandra, Hrishi Aradhye, Glen Anderson, Greg Corrado, Wei Chai, Mustafa Ispir, et al. 2016. Wide & deep learning for recommender systems. 见 Proceedings of the 1st Workshop on Deep Learning for Recommender Systems. ACM, 7–10.
+[5] Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, Tal Shaked, Tushar Chandra, Hrishi Aradhye, Glen Anderson, Greg Corrado, Wei Chai, Mustafa Ispir, et al. 2016. Wide & deep learning for recommender systems. In Proceedings of the 1st Workshop on Deep Learning for Recommender Systems. ACM, 7–10.
 
 [6] Hal Daume III and Daniel Marcu. 2006. Domain adaptation for statistical classifiers. Journal of artificial Intelligence research 26 (2006), 101–126.
 
-[7] Xavier Glorot and Yoshua Bengio. 2010. Understanding the difficulty of training deep feedforward neural networks. 见 Proceedings of the thirteenth international conference on artificial intelligence and statistics. 249–256.
+[7] Xavier Glorot and Yoshua Bengio. 2010. Understanding the difficulty of training deep feedforward neural networks. In Proceedings of the thirteenth international conference on artificial intelligence and statistics. 249–256.
 
-[8] Huifeng Guo, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. 2017. Deepfm: a factorization-machine based neural network for ctr prediction. 见 Proceedings of the 26th International Joint Conference on Artificial Intelligence. Melbourne, Australia., 2782–2788.
+[8] Huifeng Guo, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. 2017. Deepfm: a factorization-machine based neural network for ctr prediction. In Proceedings of the 26th International Joint Conference on Artificial Intelligence. Melbourne, Australia., 2782–2788.
 
 [9] Tongwen Huang, Qingyun She, Zhiqiang Wang, and Junlin Zhang. 2020. GateNet: Gating-Enhanced Deep Network for Click-Through Rate Prediction. arXiv preprint arXiv:2007.03519 (2020).
 
-[10] Tongwen Huang, Zhiqi Zhang, and Junlin Zhang. 2019. FiBiNET: combining feature importance and bilinear feature interaction for click-through rate prediction. 见 Proceedings of the 13th ACM Conference on Recommender Systems. 169–177.
+[10] Tongwen Huang, Zhiqi Zhang, and Junlin Zhang. 2019. FiBiNET: combining feature importance and bilinear feature interaction for click-through rate prediction. In Proceedings of the 13th ACM Conference on Recommender Systems. 169–177.
 
 [11] Robert A Jacobs, Michael I Jordan, Steven J Nowlan, and Geoffrey E Hinton. 1991. Adaptive mixtures of local experts. Neural computation 3, 1 (1991), 79–87.
 
 [12] Diederik P. Kingma and Jimmy Ba. 2015. Adam: A Method for Stochastic Optimization. 见 ICLR.
 
-[13] Pan Li and Alexander Tuzhilin. 2020. Ddtcdr: Deep dual transfer cross domain recommendation. 见 Proceedings of the 13th International Conference on Web Search and Data Mining. 331–339.
+[13] Pan Li and Alexander Tuzhilin. 2020. Ddtcdr: Deep dual transfer cross domain recommendation. In Proceedings of the 13th International Conference on Web Search and Data Mining. 331–339.
 
 [14] Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. 2018. xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems. arXiv preprint arXiv:1803.05170 (2018).
 
-[15] Shikun Liu, Edward Johns, and Andrew J Davison. 2019. End-to-end multi-task learning with attention. 见 Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 1871–1880.
+[15] Shikun Liu, Edward Johns, and Andrew J Davison. 2019. End-to-end multi-task learning with attention. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 1871–1880.
 
-[16] Yichao Lu, Ruihai Dong, and Barry Smyth. 2018. Why I like it: multi-task learning for recommendation and explanation. 见 Proceedings of the 12th ACM Conference on Recommender Systems. 4–12.
+[16] Yichao Lu, Ruihai Dong, and Barry Smyth. 2018. Why I like it: multi-task learning for recommendation and explanation. In Proceedings of the 12th ACM Conference on Recommender Systems. 4–12.
 
-[17] Chen Ma, Peng Kang, and Xue Liu. 2019. Hierarchical gating networks for sequential recommendation. 见 Proceedings of the 25th ACM SIGKDD international conference on knowledge discovery & data mining. 825–833.
+[17] Chen Ma, Peng Kang, and Xue Liu. 2019. Hierarchical gating networks for sequential recommendation. In Proceedings of the 25th ACM SIGKDD international conference on knowledge discovery & data mining. 825–833.
 
-[18] Jiaqi Ma, Zhe Zhao, Xinyang Yi, Jilin Chen, Lichan Hong, and Ed H Chi. 2018. Modeling task relationships in multi-task learning with multi-gate mixture-of-experts. 见 Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. 1930–1939.
+[18] Jiaqi Ma, Zhe Zhao, Xinyang Yi, Jilin Chen, Lichan Hong, and Ed H Chi. 2018. Modeling task relationships in multi-task learning with multi-gate mixture-of-experts. In Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. 1930–1939.
 
 [19] Xiao Ma, Liqin Zhao, Guan Huang, Zhi Wang, Zelin Hu, Xiaoqiang Zhu, and Kun Gai. 2018. Entire space multi-task model: An effective approach for estimating post-click conversion rate. 见 The 41st International ACM SIGIR Conference on Research & Development in Information Retrieval. 1137–1140.
 
 [20] Ishan Misra, Abhinav Shrivastava, Abhinav Gupta, and Martial Hebert. 2016. Cross-Stitch Networks for Multi-task Learning. 3994–4003.
 
-[21] Xingchao Peng, Qinxun Bai, Xide Xia, Zijun Huang, Kate Saenko, and Bo Wang. 2019. Moment matching for multi-source domain adaptation. 见 Proceedings of the IEEE/CVF international conference on computer vision. 1406–1415.
+[21] Xingchao Peng, Qinxun Bai, Xide Xia, Zijun Huang, Kate Saenko, and Bo Wang. 2019. Moment matching for multi-source domain adaptation. In Proceedings of the IEEE/CVF international conference on computer vision. 1406–1415.
 
 [22] Qi Pi, Guorui Zhou, Yujing Zhang, Zhe Wang, Lejian Ren, Ying Fan, Xiaoqiang Zhu, and Kun Gai. 2020. Search-based User Interest Modeling with Lifelong Sequential Behavior Data for Click-Through Rate Prediction. 见 Proceeding of The 29th ACM International Conference on Information and Knowledge Management. 2685–2692.
 
-[23] Yanru Qu, Han Cai, Kan Ren, Weinan Zhang, Yong Yu, Ying Wen, and Jun Wang. 2016. Product-based neural networks for user response prediction. 见 Proceedings of the16th International Conference on Data Mining. IEEE, 1149–1154.
+[23] Yanru Qu, Han Cai, Kan Ren, Weinan Zhang, Yong Yu, Ying Wen, and Jun Wang. 2016. Product-based neural networks for user response prediction. In Proceedings of the16th International Conference on Data Mining. IEEE, 1149–1154.
 
 [24] Sebastian Ruder, Joachim Bingel, Isabelle Augenstein, and Anders Søgaard. 2017. Sluice networks: Learning what to share between loosely related tasks. arXiv preprint arXiv:1705.08142 2 (2017).
 
-[25] Xiang-Rong Sheng, Liqin Zhao, Guorui Zhou, Xinyao Ding, Binding Dai, Qiang Luo, Siran Yang, Jingshan Lv, Chi Zhang, Hongbo Deng, et al. 2021. One Model to Serve All: Star Topology Adaptive Recommender for Multi-Domain CTR Prediction. 见 Proceedings of the 30th ACM International Conference on Information & Knowledge Management. 4104–4113.
+[25] Xiang-Rong Sheng, Liqin Zhao, Guorui Zhou, Xinyao Ding, Binding Dai, Qiang Luo, Siran Yang, Jingshan Lv, Chi Zhang, Hongbo Deng, et al. 2021. One Model to Serve All: Star Topology Adaptive Recommender for Multi-Domain CTR Prediction. In Proceedings of the 30th ACM International Conference on Information & Knowledge Management. 4104–4113.
 
 [26] Pawel Swietojanski, Jinyu Li, and Steve Renals. 2016. Learning hidden unit contributions for unsupervised acoustic model adaptation. IEEE/ACM Transactions on Audio, Speech, and Language Processing 24, 8 (2016), 1450–1463.
 
 [27] Hongyan Tang, Junning Liu, Ming Zhao, and Xudong Gong. 2020. Progressive layered extraction (ple): A novel multi-task learning (mtl) model for personalized recommendations. 见 Fourteenth ACM Conference on Recommender Systems.
 
-[28] Jialei Wang, Steven CH Hoi, Peilin Zhao, and Zhi-Yong Liu. 2013. Online multi-task collaborative filtering for on-the-fly recommender systems. 见 Proceedings of the 7th ACM conference on Recommender systems. 237–244.
+[28] Jialei Wang, Steven CH Hoi, Peilin Zhao, and Zhi-Yong Liu. 2013. Online multi-task collaborative filtering for on-the-fly recommender systems. In Proceedings of the 7th ACM conference on Recommender systems. 237–244.
 
 [29] Nan Wang, Hongning Wang, Yiling Jia, and Yue Yin. 2018. Explainable recommendation via multi-task learning in opinionated text data. 见 The 41st International ACM SIGIR Conference on Research & Development in Information Retrieval. 165–174.
 
-[30] Ruoxi Wang, Bin Fu, Gang Fu, and Mingliang Wang. 2017. Deep & cross network for ad click predictions. 见 Proceedings of the ADKDD'17. ACM, 12.
+[30] Ruoxi Wang, Bin Fu, Gang Fu, and Mingliang Wang. 2017. Deep & cross network for ad click predictions. In Proceedings of the ADKDD'17. ACM, 12.
 
-[31] Ruoxi Wang, Rakesh Shivanna, Derek Cheng, Sagar Jain, Dong Lin, Lichan Hong, and Ed Chi. 2021. DCN V2: Improved deep & cross network and practical lessons for web-scale learning to rank systems. 见 Proceedings of the Web Conference 2021. 1785–1797.
+[31] Ruoxi Wang, Rakesh Shivanna, Derek Cheng, Sagar Jain, Dong Lin, Lichan Hong, and Ed Chi. 2021. DCN V2: Improved deep & cross network and practical lessons for web-scale learning to rank systems. In Proceedings of the Web Conference 2021. 1785–1797.
 
 [32] Weinan Zhang, Tianming Du, and Jun Wang. 2016. Deep learning over multi-field categorical data. 见 European conference on information retrieval. Springer.
 
@@ -500,8 +493,8 @@ H^(l+1) = f(Oₚₚ^(l) W^(l) + b^(l)), l \in {1, ..., L}   (9)
 
 [34] Sicheng Zhao, Bo Li, Xiangyu Yue, Yang Gu, Pengfei Xu, Runbo Hu, Hua Chai, and Kurt Keutzer. 2019. Multi-source domain adaptation for semantic segmentation. arXiv preprint arXiv:1910.12181 (2019).
 
-[35] Guorui Zhou, Na Mou, Ying Fan, Qi Pi, Weijie Bian, Chang Zhou, Xiaoqiang Zhu, and Kun Gai. 2019. Deep Interest Evolution Network for Click-Through Rate Prediction. 见 Proceedings of the 33rd AAAI Conference on Artificial Intelligence. Honolulu, Hawaii, USA, 5941–5948.
+[35] Guorui Zhou, Na Mou, Ying Fan, Qi Pi, Weijie Bian, Chang Zhou, Xiaoqiang Zhu, and Kun Gai. 2019. Deep Interest Evolution Network for Click-Through Rate Prediction. In Proceedings of the 33rd AAAI Conference on Artificial Intelligence. Honolulu, Hawaii, USA, 5941–5948.
 
-[36] Guorui Zhou, Xiaoqiang Zhu, Chenru Song, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, and Kun Gai. 2018. Deep interest network for click-through rate prediction. 见 Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. ACM, 1059–1068.
+[36] Guorui Zhou, Xiaoqiang Zhu, Chenru Song, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, and Kun Gai. 2018. Deep interest network for click-through rate prediction. In Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. ACM, 1059–1068.
 
-[37] Yongchun Zhu, Fuzhen Zhuang, and Deqing Wang. 2019. Aligning domain-specific distribution and classifier for cross-domain classification from multiple sources. 见 Proceedings of the AAAI Conference on Artificial Intelligence, Vol. 33. 5989–5996.
+[37] Yongchun Zhu, Fuzhen Zhuang, and Deqing Wang. 2019. Aligning domain-specific distribution and classifier for cross-domain classification from multiple sources. In Proceedings of the AAAI Conference on Artificial Intelligence, Vol. 33. 5989–5996.

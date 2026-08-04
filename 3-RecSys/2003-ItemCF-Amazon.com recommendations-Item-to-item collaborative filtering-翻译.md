@@ -1,4 +1,4 @@
-# Amazon.com Recommendations: Item-to-Item Collaborative Filtering
+# ItemCF: Amazon.com Recommendations: Item-to-Item Collaborative Filtering
 
 > Greg Linden, Brent Smith, Jeremy York | Amazon.com
 >
@@ -158,7 +158,7 @@ item到item协同过滤的可扩展性和高性能关键在于它在离线创建
 
 [3] J. Breese, D. Heckerman, and C. Kadie, "Empirical Analysis of Predictive Algorithms for Collaborative Filtering," *Proc. 14th Conf. Uncertainty in Artificial Intelligence*, Morgan Kaufmann, 1998, pp. 43-52.
 
-[4] B.M. Sarwarm et al., "Analysis of Recommendation Algorithms for E-Commerce," *ACM Conf. Electronic Commerce*, ACM Press, 2000, pp.158-167.
+[4] B.M. Sarwarm et al., "**Analysis of Recommendation Algorithms for E-Commerce**," *ACM Conf. Electronic Commerce*, ACM Press, 2000, pp.158-167.
 
 [5] K. Goldberg et al., "Eigentaste: A Constant Time Collaborative Filtering Algorithm," *Information Retrieval J.*, vol. 4, no. 2, July 2001, pp. 133-151.
 
@@ -170,7 +170,7 @@ item到item协同过滤的可扩展性和高性能关键在于它在离线创建
 
 [9] G.D. Linden, J.A. Jacobi, and E.A. Benson, *Collaborative Recommendations Using Item-to-Item Similarity Mappings*, US Patent 6,266,649 (to Amazon.com), Patent and Trademark Office, Washington, D.C., 2001.
 
-[10] B.M. Sarwar et al., "Item-Based Collaborative Filtering Recommendation Algorithms," *10th Int'l World Wide Web Conference*, ACM Press, 2001, pp. 285-295.
+[10] B.M. Sarwar et al., "**Item-Based Collaborative Filtering Recommendation Algorithms**," *10th Int'l World Wide Web Conference*, ACM Press, 2001, pp. 285-295.
 
 
 
