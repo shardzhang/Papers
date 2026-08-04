@@ -13,7 +13,6 @@
 关键发现：
 
 
-
 徐军
 
 何向南
@@ -118,7 +117,7 @@ References
 
 抽象
 
-匹配 是  关键 问题 在 两者 搜索与推荐, 该 是  度量  相关性 的  文档  
+匹配 是  关键 问题 在 两者 搜索与推荐, 该 是  度量  相关性 的  文档
 查询 或  兴趣 的  用户 在  item. 机器学习
 具有 是 exploited  解决  问题, 该 学习
  匹配函数 基于 在 输入 表示 和
@@ -138,11 +137,11 @@ raw 形式).
 
 2
 
-匹配 在 搜索与推荐. 在 该 方式, 
+匹配 在 搜索与推荐. 在 该 方式,
 解决方案 从  二 ﬁelds 可以 是 比较了 之下 一
 框架. 则,  综述 分类  当前 深度
 学习 解决方案 到 二 类型: 方法 的 表示
-学习 和 方法 的 匹配函数学习. 
+学习 和 方法 的 匹配函数学习.
 基本 问题, 以及  最先进的 解决方案 的 查询-文档匹配 在 搜索 和 用户-item
 匹配 在 推荐, 是 描述.  综述
 旨在  帮助 研究ers 从 两者 搜索与推荐 communities  get 在-深度 理解 和 洞察
@@ -172,7 +171,7 @@ answering, 图像标注, 和 许多 其他 应用.
 
 在 搜索, 文档 (e.g., web 文档, Twitter posts, 或 Ecommerce products) 是 首先 pre-processed 和 索引 在  搜索
 engine. 之后 该,  搜索 engine 取  查询 ( 数量 的 关键词) 从  用户.  查询 描述  用户’s 信息需求.
-相关 文档 是 retrieved 从  索引, 匹配了 用 
+相关 文档 是 retrieved 从  索引, 匹配了 用
 查询, 和 ranked 根据 其 相关性   查询. 用于 例子,
 如果  用户 是 感兴趣的 在 news 关于 quantum 计算中,  查询
 “quantum 计算中” mat 是 提交   搜索 engine 和 get
@@ -214,10 +213,10 @@ ranked 根据  似然 该  用户 是 感兴趣的 在 它们.
 表 1.1 总结  diﬀerences 之间 搜索与推荐.  基本 机制 的 搜索 是 “pull”, 因为
 用户 首先 使 speciﬁc requests (i.e., 提交 查询) 和 则 receive 信息.  基本 mechanisms 的 推荐
 是 “push”, 因为 用户 是 提供 信息 该 它们 进行 不
-speciﬁcally 请求 (e.g., 提交 查询). 这里 “beneﬁciary” means 
+speciﬁcally 请求 (e.g., 提交 查询). 这里 “beneﬁciary” means
 人们 其 interests 是  是 met 在  任务. 在  搜索 engine,
  results 是 典型地 创建了 仅基于  用户‘s needs, 和
-因此  beneﬁciary 是  用户. 在  推荐 engine,  results 通常 需求  满足 两者  用户 和 providers, 和 因此 
+因此  beneﬁciary 是  用户. 在  推荐 engine,  results 通常 需求  满足 两者  用户 和 providers, 和 因此
 beneﬁciary 是 所有 的 它们. 然而,  区别 是 成为中 模糊
 最近. 用于 例子, 一些 搜索 engines mix 搜索 results 用 paid
 advertisements, 该 beneﬁts 两者  用户 和  providers. 作为
@@ -258,7 +257,7 @@ y, 其中 X 和 Y 表示 二 对象 spaces. X 和 Y 是  spaces 的
 实际 应用. 用于 例子, 在 一些 E-commerce sites, 当
  用户 提交  查询,  排序 列表 的 products 是 呈现了
 基于 在 不 仅 相关性 (查询-乘积 匹配) 但 也 用户
-兴趣 (用户-乘积 匹配). 在 一些 生活方式 apps, 当 
+兴趣 (用户-乘积 匹配). 在 一些 生活方式 apps, 当
 用户 searches 用于 餐厅,  results 是 returned 基于 在 两者
 
 6
@@ -276,13 +275,13 @@ needs 更好, 其中 匹配 plays  本质 角色.
 可以 是 解决 通过 使用中 推荐 技术 (Zamani 等人,
 2016), 和 反之亦然 (Costa 和 Roda, 2011), 在  基础 的 匹配.
 用  使用 的 深度学习 technologies,  匹配 模型 用于
-搜索与推荐 bear 甚至 更多 相似性 在 架构 和 方法论, 作为 reﬂected 在  技术: 嵌入 
+搜索与推荐 bear 甚至 更多 相似性 在 架构 和 方法论, 作为 reﬂected 在  技术: 嵌入
 输入 (查询, 用户, 文档, 和 item) 作为 分布式 表示, 组合中 神经网络 组件  表示  匹配
 函数, 和 训练  模型 参数 在  端--端 方式.
 此外, 搜索与推荐 可以 是 联合地 建模 和 优化 如果 它们 share  相同 集合 的 信息对象 (作为 在  以上
 例子 的 E-commerce sites 和 生活方式 apps) (Zamani 和 Croft,
 2018; Schedl 等人, 2018; Zamani 和 Croft, 2020). 因此, 在 顺序
- 开发 更多 高级 ones, 它 是 必要 和 advantageous 
+ 开发 更多 高级 ones, 它 是 必要 和 advantageous
 取  uniﬁed 匹配视角  分析 和 比较 现有 搜索
 和 推荐 technologies.
 
@@ -306,7 +305,7 @@ needs 更好, 其中 匹配 plays  本质 角色.
 水平.  高 匹配 程度 在  文本层面 进行 不 necessarily 均值
 高 相关性 在  语义层面, 和 反之亦然. 此外, 查询
 是 issued 通过 用户, 同时 文档 是 编写 通过 编辑. Due
-  歧义 的 自然 语言, 用户 和 编辑 是 可能 
+  歧义 的 自然 语言, 用户 和 编辑 是 可能
 使用 diﬀerent 语言 风格 和 表达 用于 呈现中  相同
 concepts 或 主题. 作为  结果,  搜索 系统 可以 suﬀer 从  socalled 查询-文档 失配 问题. Speciﬁcally, 当  用户
 的  搜索 engine 和  编辑 的  文档 使用 diﬀerent 文本
@@ -316,12 +315,12 @@ concepts 或 主题. 作为  结果,  搜索 系统 可以 suﬀer 从  socalled
 查询  检索 图像 文档),  查询-文档 失配
 问题 成为 甚至 更多 严重, 因为 diﬀerent 模态 具有
 diﬀerent 类型 的 表示. 在 交叉-模态 检索, 一 主要
-挑战 是 如何  构建  匹配函数 该 可以 桥接 
+挑战 是 如何  构建  匹配函数 该 可以 桥接
 “异质性鸿沟” amongst  模态.
 
  解决  查询-文档 失配 挑战, 方法 具有
 是 提出  执行 匹配 在  语义层面, 称为
- 作为 语义匹配.  关键 想法 在  解决方案 是 或 
+ 作为 语义匹配.  关键 想法 在  解决方案 是 或
 执行 更多 查询 和 文档理解  更好 表示
  meanings 的  查询 和 文档, 或  构建 更多 强大
 匹配 函数 该 可以 桥接  语义鸿沟 之间  查询
@@ -342,7 +341,7 @@ Craswell, 2018; Onal 等人, 2018) 具有 是 开发了 用于 语义
 在 推荐, 然而, 用户 和 item 是 通常 表示了
 通过 diﬀerent 类型 的 特征, 用于 例子,  特征 的 用户 可以 是
  用户 ID, age, income 水平, 和 最近 behaviors, 同时  特征
-用于 item 可以 是  item ID, 类别, price, 和 brand 命名. 由于 
+用于 item 可以 是  item ID, 类别, price, 和 brand 命名. 由于
 特征 的 用户 和 item 是 从  spaces 的 diﬀerent 语义,
  naive 方法 基于 在  匹配 的 superﬁcial 特征 进行
 不 工作 用于 推荐. 更多 challengingly,  item 可以 是
@@ -361,7 +360,7 @@ content.
  解决  稀疏性 问题 是 该  用户-item交互 矩阵
 是 低-排序, 该 因此 可以 是 估计 从 低-维 用户
 (和 item) 潜在 特征 矩阵. 则  用户 (item) 相似度 可以 是
-更多 可靠地 reﬂected 在  潜在 特征 矩阵. 该 导致  
+更多 可靠地 reﬂected 在  潜在 特征 矩阵. 该 导致
 eﬀectiveness 的 矩阵分解 用于 协同 过滤ing (Koren
 等人, 2009; Rendle 等人, 2009), 该 成为  强 CF 方法
 和  本质 设计 用于 许多 推荐 模型. 除之外 矩阵
@@ -440,8 +439,8 @@ Recurrent 神经 网络 (CNNs), 因为 它们 具有 stronger capabilities 在 �
 和 推荐. 最先进的 匹配 解决方案 使用中 深度
 学习 是 描述.  uniﬁed 视角 的 搜索与推荐
 从 匹配 是 提供.  ideas 和 解决方案 解释了 可以 激励 工业 从业者  轮次  研究 results 到 products.
- 方法 和  讨论 可以 帮助 学术 研究ers 
-开发 新 方法.  uniﬁed 视角 可以 bring 研究ers 在 
+ 方法 和  讨论 可以 帮助 学术 研究ers
+开发 新 方法.  uniﬁed 视角 可以 bring 研究ers 在
 搜索 和  推荐 communities 一起 和 启发 它们
  探索 新 directions.
 
@@ -464,10 +463,10 @@ tional 机器学习 方法  匹配 用于 搜索与推荐; 章 3 给出  通用 
 工作 在  ﬁelds 的 信息检索 和 推荐 系统.
 而是, 我们 讨论  大多数 代表性 方法 的  二 ﬁelds
 从  视角 的 匹配, 旨在  总结 其 关键 ideas
-该 是 通用 和 本质. 在 particular, 该 综述 覆盖 
+该 是 通用 和 本质. 在 particular, 该 综述 覆盖
 代表性 工作 在之前 2019.
 
-若干 之前 FnTIR 问题 具有 给定 详细 introductions 
+若干 之前 FnTIR 问题 具有 给定 详细 introductions
 相关 主题. 一 问题 (Li 和 Xu, 2014) 介绍  传统
 机器学习 方法   语义匹配 问题, 特别是 在 网页搜索. 我们的 综述 在 该 问题 是 very diﬀerent 从
 它 在  sense 该 1) 它 聚焦 在  newly 开发了 深度学习
@@ -492,12 +491,12 @@ e.g., MLP, CNN, RNN, 自编码器-基于, 和 因此 在. 其他 相关
 
 Guo 等人 (2019b), Batmaz 等人 (2019), 和 Zhang 等人 (2017).
 它们 所有 quite diﬀer 从 该 综述, 该 总结 现有 工作
-从  视角 的 匹配 (e.g., 输入 表示 和 
+从  视角 的 匹配 (e.g., 输入 表示 和
 方式 用于 匹配).
 
 该 综述 聚焦 在 最先进的 匹配 技术 使用中
 深度学习. 我们 期望 该  读者 具有  一定 知识
-的 搜索与推荐. 那些 谁 是 不 熟悉 用 
+的 搜索与推荐. 那些 谁 是 不 熟悉 用
 areas 可以 参考 现有 材料 (e.g., Croft 等人 (2009), Li 和 Xu
 (2014), Liu (2009), Ricci 等人 (2015), 和 Adomavicius 和 Tuzhilin
 (2005)). 我们 也 假设 该  读者 具有 suﬃcient 知识 的
@@ -543,18 +542,18 @@ f (x, y) = hw, \Phi(x, y)i,
 
 2.1.2 学习 的 匹配 函数
 
-监督学习 可以 是 采用了  学习  参数 的 
+监督学习 可以 是 采用了  学习  参数 的
 匹配函数 f , 作为 显示 在 图 2.1. 监督学习 用于
 匹配 典型地 由组成 的 二 phases: oﬄine 学习 和 在线 匹配. 在 oﬄine 学习,  集合 的 训练实例 D =
 {(x1, y1, r1), · · · , (xN , yN , rN )} 是 给定, 其中 ri 是  布尔 值 或
 真实 数量 表明中  匹配程度 之间 对象 xi 和 yi,
-和 N 是  大小 的 训练数据. 学习 是 进行了  选择 
+和 N 是  大小 的 训练数据. 学习 是 进行了  选择
 匹配函数 f \in F 该 可以 执行  最好 在 匹配. 在
 在线 匹配, 给定  测试 实例 ( 对 的 对象) (x, y) \in X $\times$ Y,
  学会了 匹配函数 f 是 利用了  预测  匹配
 程度 之间  对象 对 表示为 作为 f (x, y).
 
-相似  其他 监督学习 问题, 我们 可以 deﬁne 
+相似  其他 监督学习 问题, 我们 可以 deﬁne
 目标 的 学习匹配 作为 minimizing  损失函数, 该 表示
 如何 许多 准确率  匹配函数 可以 实现 在  训练
 数据 以及  测试数据. 更多 speciﬁcally, 给定  训练数据
@@ -571,7 +570,7 @@ L(D, f ) + Ω(f ),
 是 典型地 chosen  impose  惩罚 在  复杂度 的 f . 流行
 regularizers 包括 ‘1, ‘2, 和  混合 的 它们.
 
-Diﬀerent deﬁnitions 的  经验的 损失函数 L(D, f ) lead 
+Diﬀerent deﬁnitions 的  经验的 损失函数 L(D, f ) lead
 diﬀerent 类型 的 学习匹配 算法. 三 类型 的 损失
 函数, 分别地 称为  作为 逐点 损失函数, 成对
 损失函数, 和 列表级 损失函数, 具有 是 popularly 使用了 在
@@ -591,8 +590,8 @@ Joachims, 2002; Cao 等人, 2006). 下一个, 我们 brieﬂy 描述  三
  逐点 损失函数 是 deﬁned 仅 在 一 实例, i.e.,  来源
 对象 和  目标 对象. 假设 该 那里 是  对 的 对象 (x, y)
 用  真 匹配程度 的 r. 进一步, 假设  预测了
-匹配程度 的 (x, y) 给定 通过  匹配模型 是 f (x, y). 
-逐点 损失函数 是 deﬁned 作为  度量 表示中  不一致 之间  匹配 degrees, 表示为 作为 ‘指出(r, f (x, y)). 
+匹配程度 的 (x, y) 给定 通过  匹配模型 是 f (x, y).
+逐点 损失函数 是 deﬁned 作为  度量 表示中  不一致 之间  匹配 degrees, 表示为 作为 ‘指出(r, f (x, y)).
 closer f (x, y) 是  r,  更少 值  损失函数 具有.
 
 在 学习, 给定  训练 数据集 D = {(x1, y1, r1), · · · , (xN , yN , rN )},
@@ -613,12 +612,12 @@ i=1
 
 其中 ri 是  ground-真值 匹配程度 的 训练实例 (xi, yi).
 
-!"!#!$%$%"%#&"&#&$'(学习 系统!%?匹配模型 *匹配 systemtraining datatest 数据̂&=*!,%…'(16$
+!"!#! $%$ %"%#&"&#& $'(学习 系统!%?匹配模型 *匹配 systemtraining datatest 数据̂&=*!,%…'(16$
 
 传统匹配模型
 
 作为  例子 的  逐点 损失, 均方误差 (MSE) 是
- 广泛使用 损失函数. 给定  labeled 实例 (x, y, r) 和 
+ 广泛使用 损失函数. 给定  labeled 实例 (x, y, r) 和
 匹配模型 f ,  MSE 是 deﬁned 作为:
 
 ‘MSE = (f (x, y) − r)2.
@@ -642,7 +641,7 @@ degrees 的 (x, y+) 和 (x, y−) 分别地.  顺序 relations 之间
 对象 可以 是 显式地 或 隐式地 获得了.
 
 我们 使用 f (x, y+) 和 f (x, y−)  表示  匹配 degrees 的
-(x, y+) 和 (x, y−) 给定 通过  匹配模型 f , 分别地. 
+(x, y+) 和 (x, y−) 给定 通过  匹配模型 f , 分别地.
 成对 损失函数 是 deﬁned 作为  度量 表示中  不一致 之间  匹配 degrees 和  顺序 关系, 表示为 作为
 ‘对(f (x, y+), f (x, y−)).  larger f (x, y+) 是 比 f (x, y−),  更少
 值  损失函数 具有.
@@ -677,7 +676,7 @@ Lpair(P, f ) = X
 
 ‘成对-hinge = max{0, 1 − f (x, y+) + f (x, y−)}.
 
-另一个 共同 选择 的 成对 损失 在 推荐 是 
+另一个 共同 选择 的 成对 损失 在 推荐 是
 贝叶斯个性化排序 (BPR) 损失 (Rendle 等人, 2009), 该
 旨在  maximize  间隔 之间  预测 的  正
 实例 和 该 的 负 实例:
@@ -691,7 +690,7 @@ Lpair(P, f ) = X
 在 搜索与推荐,  来源 对象 (e.g.,  查询 或  用户)
 是 通常 相关  多个 目标 对象 (e.g., 多个 文档 或
 item).  评估 测量 用于 搜索与推荐 通常
-treat  列表 的 目标 对象 作为  整体. 它 是 reasonable, 因此, 
+treat  列表 的 目标 对象 作为  整体. 它 是 reasonable, 因此,
 deﬁne  损失函数 超过  列表 的 目标 对象, 称为 列表级 损失
 函数. 假设 该  来源 对象 x 是 相关  多个 目标 对象 y = {y1, y2, · · · , yN }, 和  相应 真 匹配 degrees
 是 r = {r1, r2, · · · , yN }, 分别地.  预测了 匹配 degrees
@@ -722,7 +721,7 @@ Llist(D, f ) = X
 文档 在 y 表示为 作为 y+. 则,  列表 的 labeled 对象 可以
 是 written 作为 (x, y = {y+, y−
 M 是  M
-不相关 对象.  列表-wise 损失函数 可以 是 deﬁned 作为 
+不相关 对象.  列表-wise 损失函数 可以 是 deﬁned 作为
 负 概率 该 y+ 是 相关 给定 x:
 
 M }), 其中 y−
@@ -745,7 +744,7 @@ P
 关系 用 学习  排序
 
 我们 视角 学习匹配 和 学习  排序 作为 二 diﬀerent 机器
-学习 问题, 虽然 它们 是 强烈 相关. 学习 
+学习 问题, 虽然 它们 是 强烈 相关. 学习
 排序 (Liu, 2009; Li, 2011) 是  学习  函数 表示了 作为 g(x, y)
 其中 x 和 y 可以 是 查询 和 文档 在 搜索 和 用户 和 item
 在 推荐 分别地. 在 搜索, 用于 例子,  排序
@@ -754,10 +753,10 @@ y, 以及 特征 在 x 和 特征 在 y. 在 对比,  匹配
 函数 f (x, y) 仅 包含 特征 关于  relations 之间 x
 和 y.
 
-通常  匹配函数 f (x, y) 是 训练了 首先 和 则 
+通常  匹配函数 f (x, y) 是 训练了 首先 和 则
 排序 函数 g(x, y) 是 训练了 用 f (x, y) 是  特征. 用于
 排序, 确定 的  顺序 的 多个 对象 是  关键, 同时
-用于 匹配, 确定 的  关系 之间 二 对象 是 
+用于 匹配, 确定 的  关系 之间 二 对象 是
 关键. 当  排序 函数 g(x, y) 仅 由组成 的  匹配
 函数 f (x, y), 一 仅 needs  采用 学习匹配.
 
@@ -812,7 +811,7 @@ relationships 和 局部 上下文 信息. 排序 模型 该 直接地 排序  �
 在  以下 方式: 查询 q 是 生成了 根据 概率
 分布 P (q), 文档 d 是 生成了 根据 conditional
 概率 分布 P (d|q), 和 相关性 r 是 生成了 according
- conditional 概率 分布 P (r|q, d). 该 corresponds 
+ conditional 概率 分布 P (r|q, d). 该 corresponds
  fact: 查询 是 提交   搜索 系统 独立地,
 文档 associated 用  查询 是 retrieved 用  查询 词,
 和  相关性 的  文档 用 respect   查询 是 determined
@@ -825,10 +824,10 @@ relationships 和 局部 上下文 信息. 排序 模型 该 直接地 排序  �
 点击数据 可以 是 使用了 作为 训练数据.
 
  目标 的 学习匹配 用于 搜索 是  自动地 学习
- 匹配模型 表示了 作为  scoring 函数 f (q, d) (或 作为 
+ 匹配模型 表示了 作为  scoring 函数 f (q, d) (或 作为
 conditional 概率 分布 P (r|q, d)).  学习 问题
 可以 是 formalized 作为 最小化 的  逐点 损失函数 在
-方程 (2.1),  成对 损失函数 在 方程 (2.2), 或 
+方程 (2.1),  成对 损失函数 在 方程 (2.2), 或
 列表级 损失函数 在 方程 (2.3).  学会了 模型 必须 具有
  泛化 能力  进行 匹配 在 unseen 测试数据.
 
@@ -836,7 +835,7 @@ conditional 概率 分布 P (r|q, d)).  学习 问题
 
 当 应用  推荐, 学习匹配 可以 是 描述
 作为 follows.  集合 的 M 用户 U = {u1, · · · , uM } 和  集合 的 N item
-V = {i1, · · · , 在 }, 以及  评分矩阵 R \in RM $\times$N 是 给定,
+V = {i1, · · · , 在 }, 以及  评分矩阵 R \in RM $\times$ N 是 给定,
 其中 每个 条目 rij 表示  rating (交互) 的 用户 ui 在
 item ij 和 rij 是 集合  零 如果  rating (交互) 是 未知.
 我们 假设 该 每个 元组 (ui, ij, rij) 是 生成了 在  以下
@@ -847,8 +846,8 @@ P (rij|ui, ij). 该 corresponds   fact: 用户 和 item 是 呈现了
 在  推荐 系统, 和  兴趣 的  用户 在  item 是
 determined 通过  已知 兴趣 的 用户 在 item 在  系统.
 
- 目标 的 学习匹配 用于 推荐 是  学习 
-底层 匹配模型 f (ui, ij) 该 可以 使 predictions 在 
+ 目标 的 学习匹配 用于 推荐 是  学习
+底层 匹配模型 f (ui, ij) 该 可以 使 predictions 在
 ratings (interactions) 的  零 entries 在 矩阵 R:
 
 ˆrij = f (ui, ij),
@@ -859,13 +858,13 @@ ij. 在 该 方式, 给定  用户,  子集 的 item 用  highest 分数
 可以 是 formalized 作为 minimizing  regularized 经验的 损失函数.
 仍然,  损失函数 可以 是 或 逐点 损失, 成对 损失, 或
 列表级 损失 作为 在 方程 (2.1), 方程 (2.2), 或 方程 (2.3). 如果
- 损失函数 是 逐点 损失 如 square 损失 或 交叉-熵, 
+ 损失函数 是 逐点 损失 如 square 损失 或 交叉-熵,
 
 2.2. 搜索与推荐中的匹配模型
 
 21
 
-模型 学习 成为  回归 或 classiﬁcation 问题, 其中 
+模型 学习 成为  回归 或 classiﬁcation 问题, 其中
 预测 值 表明  强度 的 兴趣. 如果  损失函数
 是 成对 损失 或 列表级 损失, 它 成为  genuine 排序 问题,
 其中  预测 值 表明  relative strengths 的 兴趣
@@ -877,9 +876,9 @@ ij. 在 该 方式, 给定  用户,  子集 的 item 用  highest 分数
 在 搜索与推荐 是  失配 之间 对象 从
 二 diﬀerent spaces (查询 和 文档, 以及 用户 和 item).
 一 eﬀective 方法  dealing 用  挑战 是  表示
- 二 对象 在 匹配 在  共同空间, 和  执行 
-任务 的 匹配 在  共同空间. 作为  空间 可以 不 具有 
-显式 deﬁnition, 它 是 经常 称为  作为 “潜在空间”. 该 是 
+ 二 对象 在 匹配 在  共同空间, 和  执行
+任务 的 匹配 在  共同空间. 作为  空间 可以 不 具有
+显式 deﬁnition, 它 是 经常 称为  作为 “潜在空间”. 该 是
 基本 想法 在之后  方法 的 匹配 在  潜在空间,
 用于 两者 搜索 (Wu 等人, 2013b) 和 推荐 (Koren 等人,
 2009b).
@@ -889,7 +888,7 @@ ij. 在 该 方式, 给定  用户,  子集 的 item 用  highest 分数
 那里 exist 语义 gaps 之间  查询空间 和 文档空间.
 查询 和 文档 是 首先 映射   潜在空间, 和 则
 匹配 是 进行了 在  潜在空间. 二 映射 函数
-specify  mappings 从  查询空间 和 文档空间 到 
+specify  mappings 从  查询空间 和 文档空间 到
 潜在空间.  使用 的 diﬀerent 类型 的 映射 函数 (e.g., 线性
 和 non-线性) 和 相似度 测量 在  潜在空间 (e.g., inner
 乘积 和 欧氏距离) lead  diﬀerent 类型 的 匹配
@@ -911,7 +910,7 @@ specify  mappings 从  查询空间 和 文档空间 到
 (表示) 的 q 和 d 在  潜在空间, i.e., \phi(q) 和 \phi0(d).
 
 在之前  prevalence 的 深度学习, 大多数 方法 是 “浅层”,
-在  sense 该 线性 函数 和 内积 是 采用 作为 
+在  sense 该 线性 函数 和 内积 是 采用 作为
 映射函数 和 相似度, 分别地,
 
 s(q, d) = h\phi(q), \phi0(d)i,
@@ -938,7 +937,7 @@ relations 之间 查询 和 文档 是 给定. 用于 例子, clickthrough 数�
 
 偏最小二乘 (PLS) 是  技术 初始 提出 用于 回归 在 统计 (Rosipal 和 Krämer, 2006). 它 是 显示 该 PLS 可以
 
-MappingqdQuery spaceDocument spaceLatent 空间!!"!#!"$2.3. 搜索中的潜在空间模型$
+MappingqdQuery spaceDocument spaceLatent 空间!!"!#!" $2.3. 搜索中的潜在空间模型$
 
 23
 
@@ -948,7 +947,7 @@ MappingqdQuery spaceDocument spaceLatent 空间!!"!#!"$2.3. 搜索中的潜在�
 Let 我们 考虑 使用中  匹配函数 f (q, d) 在 方程 (2.4).
 Let 我们 也 假设 该  映射 函数 是 deﬁned 作为 \phi(q) = Lqq
 和 \phi0(d) = Ldd, 其中 q 和 d 是 特征 vectors 表示中 查询
-q 和 文档 d, 和 Lq 和 Ld 是 标准正交 矩阵. 因此, 
+q 和 文档 d, 和 Lq 和 Ld 是 标准正交 矩阵. 因此,
 匹配函数 成为
 
 f (q, d) = hLqq, Lddi.
@@ -989,7 +988,7 @@ PLS 假设 该  映射 函数 是 标准正交 矩阵.
 constraints 在 PLS 是 replaced 用 ‘1 和 ‘2 regularizations, 之下
  假设 该  解决方案 是 稀疏. 在 该 方式, 那里 是 无
 需求  solve SVD, 和  优化 可以 是 carried out eﬃciently.
-Speciﬁcally,  优化 问题 成为 该 的 minimizing 
+Speciﬁcally,  优化 问题 成为 该 的 minimizing
 
 24
 
@@ -1037,7 +1036,7 @@ q 和 lj
 的  矩阵. 该 means 该  学习 在 RMLS 可以 是 easily
 parallelized 和 缩放 向上.
 
- 匹配函数 在 方程 (2.5) 可以 是 rewritten 作为 
+ 匹配函数 在 方程 (2.5) 可以 是 rewritten 作为
 
 双线性 函数
 
@@ -1049,7 +1048,7 @@ q Ld)d
 (2.8)
 
 其中 W = LT
-q Ld. 因此, 两者 PLS 和 RMLS 可以 是 viewed 作为 
+q Ld. 因此, 两者 PLS 和 RMLS 可以 是 viewed 作为
 方法 的 学习  binear 函数 用 矩阵 W 该 可以 是
 factorized 到 二 低-排序 矩阵 Lq 和 Ld.
 
@@ -1058,7 +1057,7 @@ factorized 到 二 低-排序 矩阵 Lq 和 Ld.
  special 假设 可以 是 使 在 PLS 和 RMLS; 该 是,  查询
 空间 和  文档空间 具有  相同 dimensions. 用于 例子,
 当 两者 查询 和 文档 是 表示了 作为 bag-的-词, 它们
-具有  相同 dimensions 在  查询 和 文档 spaces. 作为 
+具有  相同 dimensions 在  查询 和 文档 spaces. 作为
 结果, W 在 方程 (2.8) 成为  square 矩阵.  方法 的
 
 2.4. 推荐中的潜在空间模型
@@ -1081,7 +1080,7 @@ f (q, d) = qT (LT
 q Ld + I)d.
 
  添加 的  identity 矩阵 means 该 SSI 使  tradeoﬀ
-之间  使用 的  低-维 潜在空间 和  使用 的 
+之间  使用 的  低-维 潜在空间 和  使用 的
 经典 向量空间模型 (VSM)1.  diagonal 的 矩阵 W 给出
  分数  每个 术语 该 occurs 在 两者 查询 和 文档.
 
@@ -1152,7 +1151,7 @@ u qi,
 其中 b0, bu, 和 bi 是 scalars 表示中  整体 偏置, 用户 偏置, 和
 item 偏置 在 rating 分数, 和 pu 和 qi 是 潜在 vectors 表示中
  用户 和  item. 该 可以 是 interpreted 作为 仅 使用中  IDs 的
-用户 和 item 作为 特征 的 它们, 和 projecting  IDs 到 
+用户 和 item 作为 特征 的 它们, 和 projecting  IDs 到
 潜在空间 用 二 线性 函数. Let u 是  一-hot ID 向量
 的 用户 u 和 i 是  一-hot ID 向量 的 item i, 和 P 是  用户
 投影 矩阵 和 Q 是  item 投影 矩阵. 则 我们 可以
@@ -1164,19 +1163,19 @@ f (u, i) = h\phi(u), \phi0(i)i = h[b0, bu, 1, P · u], [1, 1, bi, Q · i]i,
 
 其中 [·, ·] 表示 向量 concatenation.
 
-给定  训练数据,  学习 的 模型 参数 ($\Theta$ =
+给定  训练数据,  学习 的 模型 参数 ( $\Theta$ =
 {b0, bu, bi, P, Q} ) 成为 optimizing  逐点 回归 误差
 用 正则化:
 
 arg min
 
-$\Theta$
+ $\Theta$
 
 X
 
 (u,i)\inD
 
-(Rui − f (u, i))2 + \lambda||$\Theta$||2,
+(Rui − f (u, i))2 + \lambda|| $\Theta$ ||2,
 
 (2.12)
 
@@ -1187,7 +1186,7 @@ cannot guarantee  发现  全局 optimum.
 
 2.4.2 因子化item相似度模型
 
-因子化item相似度模型 (FISM) (Kabbur 等人, 2013) adopts 
+因子化item相似度模型 (FISM) (Kabbur 等人, 2013) adopts
 假设 的 item-基于 协同 过滤ing, i.e., 用户 将 prefer
 item 该 是 相似  什么 它们 具有 chosen 因此 far.  进行 因此, FISM
 
@@ -1210,7 +1209,7 @@ j\inD+
 u
 
 其中 D+
-u 表示  item 该 用户 u 具有 chosen, du 表示 
+u 表示  item 该 用户 u 具有 chosen, du 表示
 数量 的 这样的 item, 和 d−\alpha
 表示 归一化 跨越 用户.
 qi 是  潜在向量 的 目标 item i, 和 pj 是  潜在向量 的
@@ -1239,7 +1238,7 @@ u
 j /\inD+
 u
 
-(f (u, i) − f (u, j) − 1)2 + \lambda||$\Theta$||2,
+(f (u, i) − f (u, j) − 1)2 + \lambda|| $\Theta$ ||2,
 
 (2.14)
 
@@ -1262,15 +1261,15 @@ u
 j /\inD+
 u
 
-− ln \sigma(f (u, i) − f (u, j)) + \lambda||$\Theta$||2,
+− ln \sigma(f (u, i) − f (u, j)) + \lambda|| $\Theta$ ||2,
 
 (2.15)
 
 \text{where } \sigma(·) 表示  Sigmoid函数 该 converts  diﬀerence
-的 分数   概率 值 之间 零 和 一, 和 因此 
-损失 具有  概率 解释.  主要 diﬀerence 之间 
+的 分数   概率 值 之间 零 和 一, 和 因此
+损失 具有  概率 解释.  主要 diﬀerence 之间
 二 losses 是 该 BPR enforces  diﬀerences 之间 正 和
-负 实例 作为 大 作为 可能, 无 显式地 deﬁning 
+负 实例 作为 大 作为 可能, 无 显式地 deﬁning
 间隔. 两者 成对 losses 可以 是 seen 作为  surrogate 的  AUC
 度量, 该 测量 如何 许多 pairs 的 item 是 correctly ranked
 通过  模型.
@@ -1286,7 +1285,7 @@ u
 
 之间 用户 和 item, FM 也 incorporates 辅助信息 的 用户
 和 item, 这样的 作为 用户 proﬁles (e.g., age, gender, etc.), item attributes
-(e.g., 类别, 标签, etc.) 和 contexts (e.g., 时间, 位置, etc.). 
+(e.g., 类别, 标签, etc.) 和 contexts (e.g., 时间, 位置, etc.).
 输入  FM 是  特征 向量 x = [x1, x2, ..., xn] 该 可以 包含
 任何 特征 用于 表示中  匹配函数, 作为 描述 以上.
 因此, FM casts  匹配 问题 作为  监督学习
@@ -1338,7 +1337,7 @@ al., 2010) 可以 也 是 subsumed 通过 FM 用 适当 特征工程.
 失配 在 搜索, 该 是,  变换  查询  另一个 查询
 该 可以 进行 更好 匹配. 查询 变换 包括 spelling
 误差 修正 的  查询. 用于 例子, Brill 和 Moore (2000)
-提出  来源 channel 模型, 和 Wang 等人 (2011) 提出 
+提出  来源 channel 模型, 和 Wang 等人 (2011) 提出
 判别 方法 用于  任务. 查询 变换 也 包括
 查询 分割 (Bergsma 和 Wang, 2007; Bendersky 等人, 2011;
 Guo 等人, 2008). Inspired 通过 统计 机器 翻译 (SMT),
@@ -1353,11 +1352,11 @@ Guo 等人, 2008). Inspired 通过 统计 机器 翻译 (SMT),
 翻译 模型  执行  任务. Gao 等人 (2004) 提出 使用中
  短语-基于 翻译 模型  捕获  dependencies 之间
 词 在  查询 和 文档 title. 主题 模型 可以 也 是 利用了
- 解决  失配 问题.  简单 和 eﬀective 方法 是 
+ 解决  失配 问题.  简单 和 eﬀective 方法 是
 使用  线性 组合 的 术语 匹配分数 和 主题 匹配
-分数 (Hofmann, 1999). 概率 主题 模型 是 也 采用了 
+分数 (Hofmann, 1999). 概率 主题 模型 是 也 采用了
 平滑 文档 语言 模型 (或 查询 语言 模型) (Wei
-和 Croft, 2006; Yi 和 Allan, 2009). Li 和 Xu (2014) 提供 
+和 Croft, 2006; Yi 和 Allan, 2009). Li 和 Xu (2014) 提供
 全面 综述 在  传统机器学习 方法
  语义匹配 在 搜索.
 
@@ -1380,7 +1379,7 @@ proﬁles 和 contexts, 除之外  FM 模型 介绍, 张量 factorization (Karat
 
 最近 年 具有 观察到 巨大 进展 在 应用 的
 深度学习 到 匹配 在 搜索与推荐 (Guo 等人,
-2019b; Naumov 等人, 2019).  主要 原因 用于  成功 是 due 
+2019b; Naumov 等人, 2019).  主要 原因 用于  成功 是 due
 深度学习’s 强 能力 在 学习 的 表示 用于 输入
 (i.e., 查询, 文档, 用户, 和 item) 和 学习 的 非线性
 函数 用于 匹配. 在 该 章, 我们 首先 给出  概述 的 深度
@@ -1392,9 +1391,9 @@ proﬁles 和 contexts, 除之外  FM 模型 介绍, 张量 factorization (Karat
 
 3.1.1 深度 神经 网络
 
-深度 神经 网络 是 复杂 非线性 函数 从 输入 
+深度 神经 网络 是 复杂 非线性 函数 从 输入
 输出. 在 该 节, 我们 描述 若干 神经网络 架构
-该 是 广泛使用. Please 指代  (Goodfellow 等人, 2016) 用于 
+该 是 广泛使用. Please 指代  (Goodfellow 等人, 2016) 用于
 更多 详细 介绍.
 
 30
@@ -1407,8 +1406,8 @@ proﬁles 和 contexts, 除之外  FM 模型 介绍, 张量 factorization (Karat
 
  馈-前向 神经 网络 (FFN), 也 称为 Multilayer Perceptron (MLP), 是 神经 网络 consisting 的 多个 层 的
 单元, 该 是 connected 层 通过 层 无  循环. 它 是 称为
-馈-前向 因为  信号 仅 moves 在 一 方向 在  网络, 从  输入 层, 通过  隐藏 层, 和 ﬁnally 
- 输出 层.  馈-前向 神经 网络 可以 是 利用了 
+馈-前向 因为  信号 仅 moves 在 一 方向 在  网络, 从  输入 层, 通过  隐藏 层, 和 ﬁnally
+ 输出 层.  馈-前向 神经 网络 可以 是 利用了
 近似 任何 函数, 用于 例子,  regressor y = f (x) 该 maps
  向量 输入 x   标量 输出 y.
 
@@ -1420,14 +1419,14 @@ y = \sigma (W2 · \sigma (W1 · x + b1) + b2) ,
 
 \text{where } \sigma 是  元素-wise Sigmoid函数, W1, W2, b1 和 b2 是
 模型 参数  是 determined 在 学习.  构建  deeper
-神经网络, 一 仅 needs  stack 更多 层 在  top 的 
+神经网络, 一 仅 needs  stack 更多 层 在  top 的
 网络. 除之外 Sigmoid函数, 其他 函数 这样的 作为 tanh 和
 Rectiﬁed 线性 单元 (ReLU) 是 也 利用了.
 
-在 学习, 训练数据 的 输入-输出 pairs 是 fed 到 
+在 学习, 训练数据 的 输入-输出 pairs 是 fed 到
 网络 作为 ground-真值.  损失 是 计算了 用于 每个 实例 通过
 contrasting  真实值 和  预测 通过  网络, 和
- 训练 是 执行了 通过 adjusting  参数 因此 该 
+ 训练 是 执行了 通过 adjusting  参数 因此 该
 总计 损失 是 minimized.  好-已知 back-propagation 算法 是
 采用了  进行  最小化.
 
@@ -1449,9 +1448,9 @@ contrasting  真实值 和  预测 通过  网络, 和
 
 图 3.1:  简单 前馈神经网络.
 
-并行  产生  集合 的 线性 activations. 在  detector 层, 
+并行  产生  集合 的 线性 activations. 在  detector 层,
 集合 的 线性 activations 是 run 通过  非线性 激活函数.
-在  池化 层, 池化 函数 是 使用了  进一步 modify 
+在  池化 层, 池化 函数 是 使用了  进一步 modify
 集合 的 输出.
 
 图 3.3 显示  比较 之间  完全地 connected 层 和
@@ -1468,10 +1467,9 @@ yi = (x ∗ w)(i) = X
 xi−awa,
 
 
-
 其中 ‘*’ 表示  卷积 operator.
 
-在  二-维度 案例, 给定  卷积 核 K 和 
+在  二-维度 案例, 给定  卷积 核 K 和
 
 输入 矩阵 X,  输出 的 位置 (单元) (i, j) 是 decided 作为:
 
@@ -1480,7 +1478,6 @@ Yi,j = (X ∗ W)(i, j) = X
 X
 
 Xi−,j−bWa,b.
-
 
 
 b
@@ -1507,8 +1504,8 @@ Recurrent 神经 网络 是 神经 网络 用于 processing 序列
 长度.
 
 作为 显示 在 图 3.4,  RNN shares  相同 参数 在
-diﬀerent positions. 该 是, 在 每个 位置,  输出 是 从 
-相同 函数 的 输入 在  当前 位置 以及 输出 在 
+diﬀerent positions. 该 是, 在 每个 位置,  输出 是 从
+相同 函数 的 输入 在  当前 位置 以及 输出 在
 之前 位置.  输出 是 determined 用  相同 规则 跨越
 positions. Speciﬁcally, 在 每个 位置 t = 1, · · · , T ,  输出 向量
 
@@ -1540,7 +1537,7 @@ stages (正确 部分 的 图 3.4) 该 share 参数 超过 所有 stages.
 句子 在  编码器-解码器 模型 在 神经 机器 翻译
 (NMT) (Bahdanau 等人, 2015).
 注意力 基于 模型: 图 3.5 显示  编码器-解码器 模型
-用  additive 注意力机制. 假设 该 那里 是 
+用  additive 注意力机制. 假设 该 那里 是
 
 fullyconnected layerdense 交互, 用 不同 weightsconvolutional layersparse 交互, 用 sharedweightsmove forwardinput xfeature map ykernel3.1. 深度学习概述
 
@@ -1549,7 +1546,7 @@ fullyconnected layerdense 交互, 用 不同 weightsconvolutional layersparse �
 图 3.4:  RNN 和 其 unfolded 形式.
 
 输入 序列 (w1, w2, · · · , wM ) 的 长度 M 和  输出 序列
-(y1, y2, · · · , yN ) 的 长度 N .  编码器 (e.g.,  RNN) 创建 
+(y1, y2, · · · , yN ) 的 长度 N .  编码器 (e.g.,  RNN) 创建
 隐藏 陈述 hi 在 每个 输入 位置 wi(i = 1, · · · , M ).  解码器
 构建  隐藏 陈述 st = f (st−1, yt−1, ct) 在 输出 位置 t
 (t = 1, · · · , N ), 其中 f 是  函数 的  解码器, st−1 和 yt−1
@@ -1606,7 +1603,7 @@ Transformer: Transformer (Vaswani 等人, 2017) 是 另一个 attentionbased 神
 
 作为 显示 在 图 3.6, Transformer 由组成 的  编码器 用于 transforming  输入 序列 的 词 到  序列 的 vectors (internal
 表示) 和  解码器 用于 生成中  输出 序列 的
-词 一 通过 一 给定  internal 表示.  编码器 是 
+词 一 通过 一 给定  internal 表示.  编码器 是
 stack 的 编码器 组件 用  完全相同 结构, 和  解码器 是 也  stack 的 解码器 组件 用  完全相同 结构,
 其中  编码器 和 解码器 具有  相同 数量 组件.
 
@@ -1616,12 +1613,12 @@ vectors (packed 到  矩阵) 作为 输入, processes  vectors 用
 
 37
 
-图 3.6:  例子 Transformer 用 二-层 的 编码器 和 解码器. 
-编码器 是 responsible 用于 创建中 internal 表示 的 输入 词. 
+图 3.6:  例子 Transformer 用 二-层 的 编码器 和 解码器.
+编码器 是 responsible 用于 创建中 internal 表示 的 输入 词.
 解码器 是 应用 多个 次  生成  输出 词 一 通过 一. 注意
 该  residual connections 大约  sub-层 是 不 显示 在  ﬁgure.
 
-前向 网络 sub-层. 最后, 它 sends  vectors 作为 输出 
+前向 网络 sub-层. 最后, 它 sends  vectors 作为 输出
  下一个 编码器 组件. Speciﬁcally,  输入 是  序列 的
 词 (w1, w2, · · · , wM ) 用 长度 M . 每个 词 wi 是 表示了
 通过  向量 xi 作为 sum 的  词嵌入 和 positional 编码
@@ -1636,14 +1633,14 @@ Z = 注意力(Q, K, V) = softmax
 V,
 
 QKT
-$\sqrt{}$
+ $\sqrt{}$
 dk
 
 其中 K, V, 和 Q 是 矩阵 的 关键 vectors, 值 vectors, 和 查询
-vectors 分别地; dk 是  维度 的 关键 向量; K 是 
+vectors 分别地; dk 是  维度 的 关键 向量; K 是
 resulting 矩阵 consisting 的 M vectors.  矩阵 K, V, 和 Q
 
-DecoderEncodercomponent#2positionalencodingwordembedding⋯⋯⋯+++⋯𝐗($)自身-注意力===𝐱’𝐱(𝐱)层 normalizationlayer normalizationFFNFFNFFN𝐳’𝐳(𝐳)𝐗(’)Encodercomponent#1⋯𝐗(()w1w2wMEncoder⋯自身-attentionlayer normalizationlayer normalizationFFNFFNFFNpositionalencodingencoder-decoderattentionlayer 归一化++Decodercomponent #2linearandsoftmaxyt(t=1,2,…,N)y1yt-1wordembedding[开始]+⋯Decodercomponent #1𝐊=𝐕=𝐗(() $
+DecoderEncodercomponent#2positionalencodingwordembedding⋯⋯⋯+++⋯𝐗( $)自身-注意力===𝐱’𝐱(𝐱)层 normalizationlayer normalizationFFNFFNFFN𝐳’𝐳(𝐳)𝐗(’)Encodercomponent#1⋯𝐗(()w1w2wMEncoder⋯自身-attentionlayer normalizationlayer normalizationFFNFFNFFNpositionalencodingencoder-decoderattentionlayer 归一化++Decodercomponent #2linearandsoftmaxyt(t=1,2,…,N)y1yt-1wordembedding[开始]+⋯Decodercomponent #1𝐊=𝐕=𝐗(() $
 38
 
 面向匹配的深度学习
@@ -1681,7 +1678,7 @@ r每个ed.
 AutoEncoders
 
 AutoEncoders 是 神经 网络 该 aim  学习  隐藏 信息 的  输入, 通过 compressing  输入 到  潜在-空间
-表示 和 则 reconstructing  输出 从  表示. 在  模型, 高-维 数据 是 首先 converted 到 
+表示 和 则 reconstructing  输出 从  表示. 在  模型, 高-维 数据 是 首先 converted 到
 
 3.1. 深度学习概述
 
@@ -1761,7 +1758,7 @@ i 是  k-th
 
 i 和 ˆxk
 
-OriginalinputReconstructedoutputEncoderneuralnetwork!LatentrepresentationDecoderneuralnetwork"#$%$ℓ$,#$40
+OriginalinputReconstructedoutputEncoderneuralnetwork!LatentrepresentationDecoderneuralnetwork"# $%$ ℓ $,#$ 40
 
 面向匹配的深度学习
 
@@ -1771,7 +1768,7 @@ OriginalinputReconstructedoutputEncoderneuralnetwork!LatentrepresentationDecoder
 特征 的 数据 是 uncovered 在  “压缩” 低 维
 表示.
 
-Denoising Autoencoders (DAE):  deal 用 corruption 在 
+Denoising Autoencoders (DAE):  deal 用 corruption 在
 数据, DAE 是 也 提出 (Vincent 等人, 2008) 作为  扩展 的
 vanilla 自编码器. 它 是 假设 该 DAE receives  corrupted 数据
 样本 作为 输入 和 预测  原始 uncorrupted 数据 样本
@@ -1782,14 +1779,14 @@ uncorrupted 输入 x 通过  随机 过程 ˜x ∼ qD(˜x|x), 其中 qD
  潜在 表示 y = f (˜x) 和 则  潜在 表示 是
 映射 到  重建 输出 ˆx = g(f (˜x)), 作为 显示 在 图 3.8.
  参数 的  编码器 和  解码器 是 学会了  minimize
- average 重建 误差 (e.g., 交叉 熵 误差) 之间 
+ average 重建 误差 (e.g., 交叉 熵 误差) 之间
 输入 x 和 重建 输出 ˆx.
 
 其他 类型 的 AutoEncoders 包括 稀疏 自编码器 (Ranzato
 等人, 2007), Variational 自编码器 (Kingma 和 Welling, 2014), 和
 卷积 自编码器 (Masci 等人, 2011).
 
-OriginalinputEncoderneuralnetwork!LatentrepresentationDecoderneuralnetwork"#$Reconstructedoutput$%$&ℓ$,#$Stochasticmapping%$~*+%$|$3.1. 深度学习概述
+OriginalinputEncoderneuralnetwork!LatentrepresentationDecoderneuralnetwork"# $Reconstructedoutput$ % $&ℓ$ ,# $Stochasticmapping%$ ~*+% $|$ 3.1. 深度学习概述
 
 41
 
@@ -1797,7 +1794,7 @@ OriginalinputEncoderneuralnetwork!LatentrepresentationDecoderneuralnetwork"#$Rec
 
 3.1.2 表示学习
 
- 强 能力 在 表示学习 是  主要 原因 用于 
+ 强 能力 在 表示学习 是  主要 原因 用于
 大 成功 的 深度学习. 在 该 节, 我们 介绍 若干 方法
 的 表示学习 该 是 successfully 应用 在 匹配,
 包括中 方法 的 学习 词 embeddings 和 contextualized
@@ -1816,13 +1813,13 @@ OriginalinputEncoderneuralnetwork!LatentrepresentationDecoderneuralnetwork"#$Rec
 
 作为 显示 在 图 3.9, CBOW 取  上下文 的  词 作为 输入
 
-!|#|$\times$%!|#|$\times$%!|#|$\times$%&%$\times$|#|'-dim|(|-dimone-hotvectorsofthecontextwords(cid:1)HiddenlayerInputlayer)*+,)*+,-.)*-,/0)*12*|2*+,,⋯,2*-,|(|-dimone-hotvectorofthecenterword5*42
+!|#| $\times$ %!|#| $\times$ %!|#| $\times$ %&% $\times$ |#|'-dim|(|-dimone-hotvectorsofthecontextwords(cid:1)HiddenlayerInputlayer)*+,)*+,-.)*-,/0)*12*|2*+,,⋯,2*-,|(|-dimone-hotvectorofthecenterword5*42
 
 面向匹配的深度学习
 
 和 预测  词 从  上下文. 它 旨在  学习 二 矩阵,
-U \in RD$\times$|V | 和 W \in R|V |$\times$D, 其中 D 是  大小 的 嵌入 空间,
-V 是  词汇, 和 |V | 是  大小 的  词汇. U 是 
+U \in RD $\times$ |V | 和 W \in R|V | $\times$ D, 其中 D 是  大小 的 嵌入 空间,
+V 是  词汇, 和 |V | 是  大小 的  词汇. U 是
 输入 词 矩阵 这样的 该  i-th column 的 U, 表示为 作为 ui, 是
  D-维 嵌入 向量 的 输入 词 wi. 类似地, W 是
  输出 词 矩阵 这样的 该  j-th row 的 W, 表示为 作为 wj, 是
@@ -1877,7 +1874,7 @@ k ˆu}
 和 输出 是 swapped. 作为 显示 在 图 3.10,  输入 的 Skip
 Gram 是  一-hot 向量 的  中心 词, 和  输出 是
  vectors 的  词 在  上下文. 跳字模型 也 旨在  学习
-二 矩阵 U \in RD$\times$|V | 和 W \in R|V |$\times$D. 给定  文本 语料库, 
+二 矩阵 U \in RD $\times$ |V | 和 W \in R|V | $\times$ D. 给定  文本 语料库,
 学习 amounts   以下 计算:
 
 3.1. 深度学习概述
@@ -1935,7 +1932,9 @@ k uc}
 
 .
 
-!"$\times$$%"$\times$|$|'-dim|(|-dimone-hotvectorofthecenterword)*+,)*+,-.)*-,/*)*|(|-dimone-hotvectorofthecontextwords(cid:1)%"$\times$|$|%"$\times$|$|01*+,|1*2*+,2*+,-.2*-,01*+,-.|1*01*-,|1*(cid:1)44
+!" $\times
+$$
+%"$\times$|$|'-dim|(|-dimone-hotvectorofthecenterword)*+,)*+,-.)*-,/*)*|(|-dimone-hotvectorofthecontextwords(cid:1)%"$\times$|$|%"$\times$|$|01*+,|1*2*+,2*+,-.2*-,01*+,-.|1*01*-,|1*(cid:1)44
 
 面向匹配的深度学习
 
@@ -1961,10 +1960,10 @@ GPT (Radford 等人, 2018), GPT-2 (Radford 等人, 2019), Bidirectional
 词 用 ‘[MASK]’.  学习 目标, 因此, 是  预测
  masked 词  get  原始 句子.
 
-作为 说明了 在 图 3.11, BERT 采用  Transformer 
+作为 说明了 在 图 3.11, BERT 采用  Transformer
 学习  contextual relations 之间 词 在  文本. Speciﬁcally,
  模型 receives  对 的 句子 separated 通过 词元 ‘[SEP]’ 作为
-输入.  二 句子 是 称为  作为  左 上下文 和 
+输入.  二 句子 是 称为  作为  左 上下文 和
 正确 上下文, 分别地. BERT manages  捕获  语言
 表示 的 两者  左 和  正确 contexts 通过 使用中  Transformer 编码器. 形式化地, 给定  词 序列 W = {w1, w2, · · · , wN }
 的 该 由组成 的  词 在  左 上下文,  词元 ‘[SEP]’,
@@ -1983,9 +1982,9 @@ n (i.e., 通过 词2Vec), 片段 嵌入 对比
 45
 
 和 位置 嵌入 vP
-n (i.e., 表明  位置 的  词 在 
+n (i.e., 表明  位置 的  词 在
 序列).  输入 表示 是 则 fed 到  layered 块
-的 Transformer 编码器  获得 contextualized 表示 用于 
+的 Transformer 编码器  获得 contextualized 表示 用于
 词 的  对 的 句子. 每个 Transformer 块 是 composed 的
  多头注意力 followed 通过  馈-前向 层.
 
@@ -1995,19 +1994,19 @@ n (i.e., 表明  位置 的  词 在
 预测. (1) 在 mask 语言 建模, 15% 的  随机地 chosen
 词 在  二 句子 是 replaced 用 词元 ‘[MASK]’ 在之前
 feeding 它们 到  模型.  训练 目标, 则, 是  预测
- 原始 masked 词, 基于 在  contexts 提供 通过 
+ 原始 masked 词, 基于 在  contexts 提供 通过
 non-masked 词 在  句子. (2) 在 下一句预测,
- 模型 receives pairs 的 句子 作为 输入.  训练 目标 是 
+ 模型 receives pairs 的 句子 作为 输入.  训练 目标 是
 预测 如果  秒 句子 在  对 是  后续 句子 在
  原始 文档. 关于 50% 的  输入 是 正 例子,
 同时  其他 50% 的  输入 是 负 例子. 在 pre-训练,
 mask 语言 建模 和 下一句预测 是 进行了
 联合地, 通过 minimizing  结合 损失 函数 的  二 strategies.
 精细-调整 的  pre-训练了 BERT 模型 是 进行了 在  监督学习 方式, 用于 生成中 词 表示 tailored
-用于  speciﬁc 任务. Let 我们 使用 文本 classiﬁcation 作为  例子. 
+用于  speciﬁc 任务. Let 我们 使用 文本 classiﬁcation 作为  例子.
 classiﬁcation 层 是 added 在 top 的  BERT 模型  构建
  classiﬁer. 假设 该 每个 实例 在  训练数据 由组成
-的  词 序列 x1, · · · , xM , 和  标签 y.  模型 feeds 
+的  词 序列 x1, · · · , xM , 和  标签 y.  模型 feeds
 序列 通过  pre-训练了 BERT 模型, 生成  表示 用于  ‘[CLS]’ 词元, 和 预测  标签 ˆy.  ﬁne-调整
 目标, 因此, 可以 是 deﬁned   ground-真值 标签 y 和
  预测了 标签 ˆy.
@@ -2047,7 +2046,7 @@ richer 表示 用于 匹配 的 对象 (i.e., 查询, 文档,
 3.2.1 通用 框架 用于 深度匹配
 
 图 3.12 显示  通用 框架 的 匹配.  匹配
-框架 取 二 匹配 对象 作为 其 输入 和 输出 
+框架 取 二 匹配 对象 作为 其 输入 和 输出
 数值 值  表示  匹配程度.  框架 具有
 输入 和 输出 层 在  bottom 和  top. 之间  输入
 和 输出 层, 那里 是 三 consecutive 层. 每个 层 可以 是
@@ -2062,7 +2061,7 @@ embeddings, ID vectors, 或 特征 vectors.
  输入.
 
  交互 层 比较  匹配 对象 (i.e., 二 分布式 表示) 和 输出  数量 的 (局部 或 全局)
-匹配 signals. 矩阵 和 张量 可以 是 使用了 用于 storing 
+匹配 signals. 矩阵 和 张量 可以 是 使用了 用于 storing
 signals 和 其 locations.
 
 输出: MLPAggregation: 池化, ConcatenationInteraction: 矩阵, TensorRepresentation: MLP, CNN, LSTMInput: ID Vectors, 特征 Vectors48
@@ -2097,10 +2096,10 @@ AggregationRepresentationYXRepresentationInteractionMatch3.2. 面向匹配的深
 
 图 3.14:  神经网络架构 二 用于 查询-文档匹配.
 
-网络 独立地, 用于 创建中 其 表示. 则, 
+网络 独立地, 用于 创建中 其 表示. 则,
 架构 计算  interactions 之间  二 表示 和 输出 匹配 signals. 最后,  匹配 signals 是
 aggregated  形式  ﬁnal 匹配分数.  special 案例 的  架构 是  let  二 表示 神经 网络 完全相同 和
-其 参数 共享 (Huang 等人, 2013; Shen 等人, 2014). 
+其 参数 共享 (Huang 等人, 2013; Shen 等人, 2014).
 simpliﬁcation 使  网络 架构 easier  训练 和 更多
 鲁棒, 该 是 可能 当 两者 X 和 Y 是 文本.
 
@@ -2109,12 +2108,12 @@ simpliﬁcation 使  网络 架构 easier  训练 和 更多
 Y 作为 输入, 和 每个 词 在  文本 是 表示了 通过 其 嵌入.
  架构 首先 计算 lexical interactions 之间  二
 文本.  results 的  lexical interactions 是 stored 在  矩阵 或
- 张量, 用于 keeping  results 以及 其 locations. 则, 
+ 张量, 用于 keeping  results 以及 其 locations. 则,
 interactions 在  lexical 水平 是 aggregated 到  ﬁnal 匹配
 分数. 比较了   首先 架构, 该 架构 具有 二
 显著的 properties: (1) 进行  interactions 在  lexical
 水平 而 比 在  语义层面, 该 是 通常 必要 用于
-搜索; (2) storing 和 利用中  位置 的 每个 交互 在 
+搜索; (2) storing 和 利用中  位置 的 每个 交互 在
 下一个 步骤.
 
 YXInteractionAggregationMatch50
@@ -2150,13 +2149,13 @@ AggregationMatchRepresentationYXInteraction (2ndand/orhigherorder)EmbeddingsInte
 由组成 的 多个 模块 (函数), 和 因此  开发
 的 这样的  模型 应当 也 取  modular 方法. 用于 例子,
  表示 模块 可以 是 implemented 用 CNN, RNN, 或
-MLP,  交互 模块 可以 是  矩阵 或  张量, 和 
+MLP,  交互 模块 可以 是  矩阵 或  张量, 和
 聚合 模块 可以 是  池化 或 concatenating operator. Diﬀerent
 combinations 的  模块 结果 在 diﬀerent 匹配 模型.
 
  混合 原则 断言 该  组合 的 dichotomic 技术 是 有帮助 在  开发 的 匹配 模型. 用于 例子,
 在 用户-item匹配 在 推荐,  首先-顺序, 秒-顺序,
-和 更高-顺序 interactions 所有 contribute   确定 的 
+和 更高-顺序 interactions 所有 contribute   确定 的
 ﬁnal 匹配程度. 在 查询-文档匹配 在 搜索,  查询
 和 文档 可以 是 表示了 用 两者 bag-的-词 和 sequences
 的 词 embeddings. 此外, 在 两者 搜索与推荐,
@@ -2174,8 +2173,8 @@ combinations 的  模块 结果 在 diﬀerent 匹配 模型.
 主要地 fall 到 二 categories: 表示学习 和 匹配
 函数 学习, 其 架构 是 描述了 在 图 3.13 和
 图 3.14, 分别地. 在  二 categories, 神经 网络 是
-利用了 用于 表示中 查询 和 文档, 用于 进行 
-interactions 之间 查询 和 文档, 和 用于 aggregating 
+利用了 用于 表示中 查询 和 文档, 用于 进行
+interactions 之间 查询 和 文档, 和 用于 aggregating
 匹配 signals. Diﬀerent combinations 的 技术 结果 在 diﬀerent 深度匹配 模型. 表 4.1 总结  深度匹配
 模型 在 搜索.  首先 column 分类  模型 作为 匹配
 基于 在 表示学习, 匹配 基于 在 匹配函数
@@ -2208,8 +2207,8 @@ letter tri-grams” 和 “bag 的 词 means” means 该  顺序 的
 
  表示学习 方法 假设 该 查询 和 文档
 可以 是 表示了 通过 低-维 和 稠密 vectors. 那里 是 二
-关键 问题: 1) 什么 种类 的 神经 网络  使用 用于 创建中 
-表示 的 查询 和 文档, 和 2) 什么 种类 的 函数 
+关键 问题: 1) 什么 种类 的 神经 网络  使用 用于 创建中
+表示 的 查询 和 文档, 和 2) 什么 种类 的 函数
 使用 用于 计算中  ﬁnal 匹配分数 基于 在  表示.
 Let 我们 假设 该 那里 是 二 spaces: 查询空间 和 文档
 空间.  查询空间 包含 所有  查询, 和  文档空间
@@ -3655,7 +3654,6 @@ d
 n
 
 
-
 r
 i
 e
@@ -3911,21 +3909,21 @@ C
 图 4.1: 查询-文档 基于表示学习的匹配.
 
 Diﬀerent 神经 网络 可以 是 利用了 用于 表示中  查询
-和 文档, 以及 计算中  匹配 分数 给定 
-表示, resulting 在 diﬀerent 匹配 模型. 大多数 的 
+和 文档, 以及 计算中  匹配 分数 给定
+表示, resulting 在 diﬀerent 匹配 模型. 大多数 的
 匹配 模型 (e.g., DSSM) 使用 完全相同 网络 structures 用于
 查询 和 文档 (i.e., \phiq = \phid). 它们 可以 是 广义  具有
 diﬀerent 网络 structures 用于 查询 和 文档, 分别地.
 
 4.1.2 表示中 用 Feedforward 神经 网络
 
-Feedforward 神经 网络 是  首先 网络 架构 使用了 
+Feedforward 神经 网络 是  首先 网络 架构 使用了
 创建 语义 表示 的 查询 和 文档. 用于 例子,
 Huang 等人 (2013) 提出 表示中 查询 和 文档 用
 深度 神经 网络, 使用中  模型 称为  作为 深度 Structured
 语义 模型 (DSSM). 图 4.2 显示  架构 的 DSSM.
 DSSM 首先 表示 查询 q 和 其 associated 文档 d’s
-(d1, d2, · · · , dn) 作为 vectors 的 术语 和 取  vectors 作为 输入. 
+(d1, d2, · · · , dn) 作为 vectors 的 术语 和 取  vectors 作为 输入.
 overcome  diﬃculties resulting 从  very 大 词汇 大小 在
 网页搜索, DSSM maps  术语 vectors  letter n-gram vectors. 用于
 例子, 词 “good” 是 映射 到 letter trigrams: (“#go”, “goo”,
@@ -3983,7 +3981,7 @@ P
 4.1.3 表示中 用 卷积 神经 网络
 
 虽然 成功 在 网页搜索, 研究ers 发现 该 DSSM 具有 二
-shortcomings. 第一, 深度 神经 网络 包含 也 许多 参数, 该 使 它 diﬃcult  训练  模型. 秒, DSSM views 
+shortcomings. 第一, 深度 神经 网络 包含 也 许多 参数, 该 使 它 diﬃcult  训练  模型. 秒, DSSM views
 查询 (或  文档) 作为  bag 的 词 但 不  序列 的 词.
 作为  结果, DSSM 是 不 eﬀective 在 处理 局部 上下文 信息
 之间 词. 这些 二 drawbacks 可以 是 解决了 好 用 CNN.
@@ -4015,8 +4013,8 @@ CLSM. 作为 显示 在 图 4.3, CLSM 使  follow modiﬁcations
 CLSM 取  余弦相似度 之间  表示 vectors 的
 查询 和 文档 作为  ﬁnal 匹配分数.
 
-相似  DSSM,  模型 参数 的 CLSM 是 学会了 
-maximize  似然 的 clicked 文档 给定 查询 在 
+相似  DSSM,  模型 参数 的 CLSM 是 学会了
+maximize  似然 的 clicked 文档 给定 查询 在
 
 58
 
@@ -4162,21 +4160,21 @@ r 片, 和 V, u, 和 b 是 参数.  双线性 张量 乘积
 q M[1:r]yd returns  r-维 向量. 一 优势 的 CNTN
 yT
 
-thecatonthesatthecatcat satthe cat satcat satsat 在 cat sat onsat onon thesat 在 theon thethe maton  matmatthecatsat onthe cat satsat onthe maton  matConvolutionPooling. . . Concatenationword 嵌入 
+thecatonthesatthecatcat satthe cat satcat satsat 在 cat sat onsat onon thesat 在 theon thethe maton  matmatthecatsat onthe cat satsat onthe maton  matConvolutionPooling. . . Concatenationword 嵌入
 4.1. 基于表示学习的匹配
 
 61
 
 图 4.5: 卷积 神经 张量 网络.
 
-是 该 它 可以 联合地 模型  表示 和 interactions. 
+是 该 它 可以 联合地 模型  表示 和 interactions.
 表示 的 句子 是 建模 用  卷积 层,
 和  interactions 之间 句子 是 建模 用  张量
 层.
 
 相似  ARC-I,  学习 的 模型 参数 在 CNTN 也
 relies 在 判别 训练 用  大 间隔 标准. 给定
- 相关 pairs C 和 不相关 pairs C0,  学习 amounts 
+ 相关 pairs C 和 不相关 pairs C0,  学习 amounts
 minimizing:
 
 L = X
@@ -4210,7 +4208,7 @@ X
 
  解决  diﬃculty 的 学习 长 术语 dependency 之内
  序列 due   vanishing 梯度 问题, LSTM-RNN 使
-使用 的 LSTM 而非  原始 RNN. 期间  scanning 的 
+使用 的 LSTM 而非  原始 RNN. 期间  scanning 的
 输入 文本,  gates 在 LSTM store  长 术语 dependencies 到
  cells. Speciﬁcally,  前向 pass 用于 LSTM-RNN 是 deﬁned 作为
 
@@ -4305,7 +4303,7 @@ Pn
 
 f (~x) = W~x,
 
-其中 W 是  变换 矩阵.  目标 的 学习 是 
+其中 W 是  变换 矩阵.  目标 的 学习 是
 maximize  相似度 之间  投影 短语 表示
 和  文档 表示:
 
@@ -4328,7 +4326,7 @@ D, ~h(B)i),
 
 在 在线 匹配, 给定 查询 q 和 文档 d, NVSM projects
  查询   文档空间, 相似  该 用于  n-gram 短语.
- 匹配分数 是 计算了 作为  余弦相似度 之间 
+ 匹配分数 是 计算了 作为  余弦相似度 之间
 文档 表示 和 投影 查询 表示:
 
 f (q, d) = cos(~h(q), ~Rd
@@ -4348,7 +4346,7 @@ Standalone 神经 排序模型 (SNRM)
 
 2017), 其中  标签 是 获得了 自动地 无 标注
 通过 人类 或 利用 的 additional resources (e.g., 点击 数据).
-Zamani 等人 (2018b) 呈现 SNRM 通过 介绍中 稀疏性 到 
+Zamani 等人 (2018b) 呈现 SNRM 通过 介绍中 稀疏性 到
 学会了 潜在 presentations 的 查询 和 文档, 和 构建
  inverted 索引 用于  整体 集合 基于 在  表示.
 作为 显示 在 图 4.8,  SNRM 网络 考虑 两者 查询 和
@@ -4356,7 +4354,7 @@ Zamani 等人 (2018b) 呈现 SNRM 通过 介绍中 稀疏性 到
 层,  词 序列 成为  序列 的 词 vectors. 则,
  序列 是 decomposed 作为  集合 的 n-grams 和 processed 通过
 完全地-connected 层 用 稀疏性 constraints, 生成中  集合 的 highdimensional 稀疏 n-gram 表示. 最后,  average 池化
-层 是 使用了  aggregate  n-gram 表示 和 生成 
+层 是 使用了  aggregate  n-gram 表示 和 生成
 ﬁnal 序列 表示.
 
 更多 speciﬁcally,  表示 的  文档 d 是 deﬁned 作为
@@ -4375,7 +4373,7 @@ i=1
 
 其中 w1, w2, · · · , w|d| 表示  词 序列 在 d 和 \phingram 表示  高-维 和 稀疏 表示 的  n-gram
 wi, wi+1, · · · , wi+n−1. 该 是, \phi 首先 converts  n-gram 的 词 到
- n-gram 的 词 vectors, 和 则 使用 多个 馈-前向 层 
+ n-gram 的 词 vectors, 和 则 使用 多个 馈-前向 层
 生成  表示 的  n-gram. 类似地,  表示
 
 querydocumentembeddinglayer……sequenceofwordvectorsfully-connectedlayersn-gramofwordvectorsn-gramsparserepresentations……averagepoolingmatchingscoredotproductlatentsparserepresentationsequenceofwords……66
@@ -4404,14 +4402,14 @@ f (q, d) = hyq, ydi.
  模型 参数 在 SNRM 是 训练了 用 弱监督
 使用中 传统 IR 模型. 给定  查询 q 和  对 的 文档
 d1 和 d2,  偏好 标签 z \in {−1, 1} 表明 该 文档
-是 更多 相关   查询. 在 弱监督, z 是 deﬁned 通过 
+是 更多 相关   查询. 在 弱监督, z 是 deﬁned 通过
 传统 IR 模型 的 查询 似然:
 
 z = sign(pQL(q, d1) − pQL(q, d2)),
 
 其中 pQL 表示  查询 概率 用  Dirichlet 先验, 和
 ‘sign’ extracts  sign 的  真实 数量. 因此, 给定  训练
-实例 (q, d1, d2, z), SNRM 训练 其 参数 通过 minimizing 
+实例 (q, d1, d2, z), SNRM 训练 其 参数 通过 minimizing
 以下 损失函数
 
 min L(q, d1, d2, z) + \lambdaL1([yq, yd1, yd2]),
@@ -4428,7 +4426,7 @@ controls  稀疏性 的  学会了 表示.
 和 文档 是 表示了 在 diﬀerent 模态, 则 那里 exists
  signiﬁcant 鸿沟 之间 它们. 因此,  关键 是  创建 共同
 (模态 agnostic) 表示 用于 查询 和 文档. 深度
-学习 可以 确实 fulﬁll  需求, 和 模型 是 提出 用于 
+学习 可以 确实 fulﬁll  需求, 和 模型 是 提出 用于
 目的.
 
 4.1. 基于表示学习的匹配
@@ -4491,8 +4489,8 @@ corr(TextNN(Q; $\Theta$1), ImageNN(D; $\Theta$2)),
 交叉 模态 检索 (ACMR), 进行  极小极大博弈 涉及中
 二 players:  特征投影器 和  模态 classiﬁer.  特征
 projector 是 responsible 用于 生成中 模态-invariant 表示
-用于 item 从 diﬀerent 模态 在  共同空间. 它 具有 
-目标 的 confusing  模态 classiﬁer 作为  adversary. 
+用于 item 从 diﬀerent 模态 在  共同空间. 它 具有
+目标 的 confusing  模态 classiﬁer 作为  adversary.
 模态 classiﬁer 是 responsible 用于 distinguishing item 从 其
 模态. 通过 bringing 在  模态 classiﬁer, 它 是 expected 该
  学习 的 特征投影器 可以 是 执行了 更多 eﬀectively, 在
@@ -4507,7 +4505,7 @@ Speciﬁcally,  文本 分支 的 ACMR 取 bag-的-词 特征 作为
 
 给定  集合 的 N 训练 triples D = {(vi, ti, yi)}N
 
-i=1, 其中 vi 是 
+i=1, 其中 vi 是
 图像 特征 向量, ti 是  文本 特征 向量, 和 yi 是  类别
 的 vi 和 ti, ACMR deﬁnes 其 模态 classiﬁer 和 特征投影器
 作为 follows.
@@ -4519,12 +4517,12 @@ textqueryimagedocFC1’ReLU1’随机失活1’(cid:1)(cid:1)Conv1ReLU1ReLU7FC8(
 
 69
 
-图 4.10: Flowchart 的 ACMR.  模态 classiﬁer tries  区分 
+图 4.10: Flowchart 的 ACMR.  模态 classiﬁer tries  区分
 item 从 其 模态.  特征 projector manages  confuse  模态
 classiﬁer 通过 生成中 模态-invariant 和 判别 表示.
 
 向量 [0, 1], 同时  投影 特征 的  文本 是 assigned 一-hot
-向量 [1, 0].  模态 classiﬁer acts 作为  adversary. 它 manages 
+向量 [1, 0].  模态 classiﬁer acts 作为  adversary. 它 manages
 minimize  对抗损失:
 
 Ladv($\Theta$D) = −
@@ -4544,7 +4542,7 @@ i=1
 
  特征投影器 进行 模态-invariant 嵌入 的
 文本 和 images 到  共同空间, consisting 的 二 parts: 标签
-预测 和 结构保持.  标签预测 minimizes 
+预测 和 结构保持.  标签预测 minimizes
 损失函数 Limd  ensure 该  特征 表示 belonging
   相同 categories 是 suﬃciently close.  结构保持
 minimizes  损失函数 Limi  ensure 该  特征 表示
@@ -4604,7 +4602,7 @@ game:
 我们 呈现  实验的 results 的 搜索 相关性 通过  方法
 的 表示学习, 报告了 在 Yin 和 Schütze (2015) 和 Pang
 等人 (2017b). 在  实验,  基准 数据 的 MSRP1 是
-利用了, 和 准确率 和 F1 是 采用 作为 评估 测量. 
+利用了, 和 准确率 和 F1 是 采用 作为 评估 测量.
 results 在 表 4.2 表明 该  方法 基于 在 表示
 学习 可以 outperform  基线 的 TF-IDF 从角度 F1.
 
@@ -4661,13 +4659,13 @@ ACMR (深度 特征)
 捕获了 从  输入 查询 和 文档 表示.
 
 Researchers 提出  使用 深度 神经 网络  自动地
-学习  匹配 patterns 之间 查询 和 文档, 称为 
+学习  匹配 patterns 之间 查询 和 文档, 称为
 这里 作为 匹配函数学习. 那里 是 二 关键 问题 在
 该 方法: 1) 如何  表示 和 计算  匹配 signals,
 和 2) 如何  aggregate  匹配 signals  计算  ﬁnal
 匹配分数.
 
-图 4.11 显示  通用 框架. 在  框架, 
+图 4.11 显示  通用 框架. 在  框架,
 查询 和 文档 是 比较了 用 每个 其他  创建 匹配
 signals, 和  匹配 signals 是 aggregated  输出  匹配
 分数, 所有 在  单一 神经网络.
@@ -4688,9 +4686,9 @@ signals, 和  匹配 signals 是 aggregated  输出  匹配
 4.2.2 学习 匹配函数 用 匹配矩阵
 
 匹配矩阵 是 使用了 用于 storing 词-水平 匹配 signals 和 其
-positions.  columns 和 rows 的  匹配矩阵 correspond 
+positions.  columns 和 rows 的  匹配矩阵 correspond
  词 在  查询 和 文档, 分别地. 每个 条目 表示
- 位置 的 匹配, 和  值 的 每个 条目 表示 
+ 位置 的 匹配, 和  值 的 每个 条目 表示
 程度 的 匹配.  匹配矩阵 是 输入   神经网络
 作为  整体.
 
@@ -4752,10 +4750,10 @@ i,j) · \sigma(w(1,f )z0
 i,j + b(1,f )),
 
 \text{where } \sigma 是  激活函数, w(1,f ) 和 b(1,f ) 是  卷积
-参数, 和 g(·) 是  门控 函数 这样的 该 g(·) = 0 如果 所有 
+参数, 和 g(·) 是  门控 函数 这样的 该 g(·) = 0 如果 所有
 元素 在  输入 vectors 相等 0, 否则 g(·) = 1. 这里, g(·)
 工作 作为  零 padding 函数. 用于 所有 可能 查询 词 和
-文档 词,  一-维 卷积 层 输出 
+文档 词,  一-维 卷积 层 输出
 二-维 匹配矩阵.
 
  下一个 层 进行 二-维 max-池化 在 每个 nonoverlapping 2$\times$2-window.  (i, j)-th 条目 在  输出 矩阵 是
@@ -4853,7 +4851,7 @@ MatchPyramid
 之间 查询 和 文档. 然而,  meanings 的  interactions (i.e.,  一-维 卷积) 是 不 清晰. Pang 等人
 (2016b) 指出 out 该  匹配矩阵 可以 是 构建了 更多
 straightforwardly.  提出 模型, 称为 MatchPyramid, rede-
-ﬁnes  匹配矩阵 作为  词-水平 相似度 矩阵. 则, 
+ﬁnes  匹配矩阵 作为  词-水平 相似度 矩阵. 则,
 二-维 卷积神经网络 是 exploited  提取
 查询-文档匹配 patterns, 总结  匹配 signals,
 和 计算  ﬁnal 匹配分数.  主要 想法 的 MatchPyramid
@@ -4929,13 +4927,13 @@ k 是  宽度 和 长度 的  池化 核. 用
 动态 池化  输出 特征 map 成为 ﬁxed-sized. 更多
 层 的 卷积 和 动态 池化 可以 是 stacked.
 
-在  最后 层, MatchPyramid 利用  MLP  产生 
+在  最后 层, MatchPyramid 利用  MLP  产生
 
 ﬁnal 匹配分数:
 
 [s0, s1]T = f (q, d) = W2\sigma (W1z + b1) + b2,
 
-其中 z 是  输入 特征 map 和 W1, W2, b1 和 b2 是 
+其中 z 是  输入 特征 map 和 W1, W2, b1 和 b2 是
 参数.
 
  学习  模型 参数, MatchPyramid 利用  softmax
@@ -4972,13 +4970,13 @@ patterns 和 store 它们 在  kernels, 该 是 相似  visual 模式
 二 kernels, 它 是 清晰 该  首先 卷积 层 可以 捕获
 两者 n-gram 匹配 signals 这样的 作为 “向下  ages” 和 n-术语
 匹配 signals 这样的 作为 “(noodles 和 dumplings) v.s. (dumplings 和
-noodles)”, 作为 显示 在  特征 maps 的  首先 层. 则, 
+noodles)”, 作为 显示 在  特征 maps 的  首先 层. 则,
 秒 卷积 层 使 compositions 和 形式 更高 水平
 匹配 patterns, 作为 显示 在  特征 map 的  秒 层.
 
 匹配-SRNN
 
-二-维 Recurrent 神经 网络 (RNN) 可以 也 是 使用了 
+二-维 Recurrent 神经 网络 (RNN) 可以 也 是 使用了
 discover 匹配 patterns 在  匹配矩阵. Wan 等人 (2016b)
 
 4.2. 基于匹配函数学习的匹配
@@ -5019,11 +5017,11 @@ qT
 qi
 dj
 
-其中 qi 和 dj 是  embeddings 的  i-th 查询 词 和 
+其中 qi 和 dj 是  embeddings 的  i-th 查询 词 和
 j-th 文档 词.
 
 下一个,  spatial RNN (二-维 RNN) 是 采用了  scan
- outputted 匹配矩阵 recursively. Speciﬁcally,  计算 
+ outputted 匹配矩阵 recursively. Speciﬁcally,  计算
 匹配 表示 之间  查询 preﬁx q[1:i] 和 文档
 preﬁx q[1:j],  表示 的 其 preﬁxes 是 首先 计算了:
 
@@ -5031,7 +5029,7 @@ hi−1,j =SpatialRNN(q[1:i−1], d[1:j]),
 hi−1,j−1 =SpatialRNN(q[1:i−1], d[1:j−1]),
 hi,j−1 =SpatialRNN(q[1:i], d[1:j−1]),
 
-其中 SpatialRNN(·, ·) 是  二-维 RNN 应用  
+其中 SpatialRNN(·, ·) 是  二-维 RNN 应用
 preﬁxes. 则,  匹配 表示 是 计算了 作为
 
 hi,j = SpatialRNN(q[1:i], d[1:j]) = f (hi−1,j, hi,j−1, hi−1,j−1, sqi,di),
@@ -5068,7 +5066,7 @@ f (q, d) = wh|q|,|d| + b,
 4.2.3 学习 匹配函数 用 注意力
 
  最近 趋势 是  利用 注意力, 该 是 inspired 通过  注意力
-机制 在 人类 cognition. 注意力 是 successfully 应用 
+机制 在 人类 cognition. 注意力 是 successfully 应用
 任务 在 NLP 和 IR, 包括中 查询-文档匹配.
 
 Decomposable 注意力 模型
@@ -5076,8 +5074,8 @@ Decomposable 注意力 模型
 Parikh 等人 (2016) 指出 out 该 匹配 signals 可以 是 捕获了
 和 表示了 用  decomposable 注意力机制. 作为 显示
 在 图 4.16,  模型 由组成 的 三 steps: attend, 比较, 和
-aggregate. 给定  查询 和  文档, 其中 每个 词 在 
-查询 和  文档 是 表示了 通过  嵌入 向量, 
+aggregate. 给定  查询 和  文档, 其中 每个 词 在
+查询 和  文档 是 表示了 通过  嵌入 向量,
 模型 首先 创建  soft 对齐 矩阵 使用中 注意力; 则 它 使用
 
  cat sat 在  … dog playsball 在 …thecatsatonthethe   dog   playsball   onthe    dog   playsball   onthecatsatonthematchingmatrixsimilarityoperator:NTN2-DRNNlinearlayermatchingscore4.2. 基于匹配函数学习的匹配
@@ -5090,7 +5088,7 @@ merges  results 的  subproblems  产生  ﬁnal 匹配
 
 Speciﬁcally, 给定  查询-文档 对 (q, d) 其中 每个 词
 在 q 是 表示了 作为  嵌入 向量 q = (q1, · · · , q|q|) 和 |q|
-是  数量 的 词 在 q, 和 每个 词 在 d 是 表示了 作为 
+是  数量 的 词 在 q, 和 每个 词 在 d 是 表示了 作为
 嵌入 向量 d = (d1, · · · , d|d|) 和 |d| 是  数量 的 词 在
 d. 在  attend 步骤  注意力 矩阵 之间 每个 查询 词 和
 文档 词 是 构建了.  unnormalized 注意力 权重 eij
@@ -5230,7 +5228,7 @@ PC
 
 ,
 
-其中 C 是  数量 的 类2, N 是  数量 的 实例 在 
+其中 C 是  数量 的 类2, N 是  数量 的 实例 在
 训练数据.
 
 匹配 用 BERT
@@ -5251,17 +5249,17 @@ PC
 的 BERT  表示 的 二 文本 是 学会了 从  大
 量 的 未标注数据 通过 mask 语言 建模 和 下一个
 句子 预测. 在 ﬁne-调整  表示 是 进一步 re-
-ﬁned 用于  downstream 任务 用  输出 层 added 在 top 的 
+ﬁned 用于  downstream 任务 用  输出 层 added 在 top 的
 模型 和  小 量 的 任务-speciﬁc 标注数据.
 
-当 应用  搜索, BERT 可以 是 利用了  计算 
+当 应用  搜索, BERT 可以 是 利用了  计算
 匹配程度 之间 查询 和 文档, 作为 长 作为 训练数据
 是 提供 (Nogueira 和 Cho, 2019). 该 是,  pre-训练了 BERT
 模型 可以 是 适应  查询-文档匹配 用 ﬁne-调整.
 
 图 4.17 显示  流行 方法 的 使用中 BERT 用于 querydocument 匹配. 给定  查询-文档 对 (q, d),  输入
   BERT 模型 包括 查询 词, 文档 词: “[CLS],
-q1, · · · , qN , [SEP], d1, · · · , dM , [SEP]”, 其中 “[CLS]” 是  词元 
+q1, · · · , qN , [SEP], d1, · · · , dM , [SEP]”, 其中 “[CLS]” 是  词元
 表明 是否  查询-文档 对 是 相关 或 不, “[SEP]” 是
  词元  表明  分离 的 查询 和 文档, 和 qi 和
 dj 是  i-th 查询 词 和  j-th 文档 词, 分别地.
@@ -5284,9 +5282,9 @@ M , T 0
 tion 的  词元 [CLS], T1, · · · , TN 的  查询 词, T 0
 M
 的  文档 词, T[SEP] 和 T 0
-[SEP] 的  二 separators. 
+[SEP] 的  二 separators.
 表示 的  [CLS] 词元 C 是 fed 到  输出 层 (e.g.,
-单一 层 神经网络)  获得 p(rel|q, d), 该 表示 
+单一 层 神经网络)  获得 p(rel|q, d), 该 表示
 概率 的 文档’s 是 相关  查询.
 
 1, · · · , T 0
@@ -5308,7 +5306,7 @@ L = X
 表示  intra-查询, intra-文档, 和 inter 查询-文档
 interactions. 秒, 在 BERT,  表示 的 查询 和 文档 以及 查询-文档 交互 是 变换 多个
 次 在  层次 架构. 作为  结果, 复杂 局部
-和 全局 匹配 patterns 可以 是 表示了. 第三, BERT 使用 
+和 全局 匹配 patterns 可以 是 表示了. 第三, BERT 使用
 pre-训练/ﬁne-调整 框架, 其中  pre-训练了 BERT 模型
 可以 利用  信息 在  大 量 的 未标注数据.
 其他 匹配 模型, 然而, 具有 更少 强大 表示
@@ -5355,7 +5353,7 @@ i = h(qi
 O d),
 
 用于 i = 1, · · · , |q|, 其中 N 表示 余弦相似度 计算 之间
-qi 和 所有 词 在 d, outputting  集合 的 余弦相似度 分数 在 
+qi 和 所有 词 在 d, outputting  集合 的 余弦相似度 分数 在
 间隔 的 [−1, 1]. 则, 函数 h discretizes  间隔 到  集合 的
 ordered bins, counts  数量 的 相似度 分数 在 每个 bin, 和
 计算  对数 的  counts, 生成中  histogram 向量
@@ -5368,7 +5366,7 @@ i
  生成  匹配分数 用于 每个 查询 词 qi, 表示为 作为 z(L)
 .
 给定  匹配 分数 的 个体 查询 词,  ﬁnal 匹配
-分数 之间 q 和 d, f (q, d), 是 计算了 作为  weighted sum 的 
+分数 之间 q 和 d, f (q, d), 是 计算了 作为  weighted sum 的
 
 i
 
@@ -5427,12 +5425,12 @@ L = max(0, 1 − f (q, d+) + f (q, d−)).
 DRMM 是 eﬀective 在 建模  interactions 之间 查询 词
 和 文档 词. 然而,  histogram 池化 部分 (i.e., counting
 的 相似度 值 在 每个 bin) 是 不  diﬀerentiable 函数, 该
-hinders 端--端 学习 的  匹配模型.  cope 用 
+hinders 端--端 学习 的  匹配模型.  cope 用
 问题, DRMM 使 使用 的 pre-训练了 词 vectors  表示
  词 在  查询 和 文档. Xiong 等人 (2017) 提出
  相关性 匹配模型 称为 K-NRM. 在  模型, 而非
 counting  相似度 分数, 核池化 是 采用了  刻画
- 匹配程度 之间 每个 查询 词 和  文档. 作为 
+ 匹配程度 之间 每个 查询 词 和  文档. 作为
 结果,  模型 可以 是 训练了 端--端.
 
 作为 显示 在 图 4.19, 给定  查询 q 和  文档 d,
@@ -5451,7 +5449,7 @@ K-NRM 首先 使用  嵌入 层  map 每个 词 (在 q 和 d)
 相似度 (余弦相似度) 之间  i-th 查询 词 和  j-th
 文档 词. 则, 它 应用  kennel 池化 operator  每个 row
 的 M (相应  每个 查询 词), 生成中  K-维
-向量 ~K. Speciﬁcally,  k-th 维度 的  池化 向量 的 
+向量 ~K. Speciﬁcally,  k-th 维度 的  池化 向量 的
 i-th 查询 词 是 deﬁned 作为  RBF 核 函数:
 
 Kk(Mi) = X
@@ -5472,7 +5470,7 @@ k
 
 其中 Mi 是  i-th row 的 M, Mij 是  j-th 元素 在 Mi, 和 µk
 
- cat sat 在  mat… dog playsball 在 …      dog   playsball     onthecatsatonthematMatchingmatrixbasedonwordembeddingsFeed-forwardMatchingNetworkFeed-前向 MatchingNetworkFeed-前向 MatchingNetworkweightedsummatching scorethe cat sat 在  mat…TermGatingNetworkg1g2…Matchinghistogrammappingg|Q| cat sat 在  mat… dog playsball 在 …      dog   playsball     onthecatsatonthemattranslation(匹配)matrixMkernel 池化...核池化!Soft-TFfeatures"matchingscoretanh'"+)核池化!*exp−/0*−1232523embeddinglayer……wordembeddingscosquerydocument 
+ cat sat 在  mat… dog playsball 在 …      dog   playsball     onthecatsatonthematMatchingmatrixbasedonwordembeddingsFeed-forwardMatchingNetworkFeed-前向 MatchingNetworkFeed-前向 MatchingNetworkweightedsummatching scorethe cat sat 在  mat…TermGatingNetworkg1g2…Matchinghistogrammappingg|Q| cat sat 在  mat… dog playsball 在 …      dog   playsball     onthecatsatonthemattranslation(匹配)matrixMkernel 池化...核池化!Soft-TFfeatures"matchingscoretanh'"+)核池化!*exp−/0*−1232523embeddinglayer……wordembeddingscosquerydocument
 86
 
 搜索中的深度匹配模型
@@ -5500,7 +5498,7 @@ f (q, d) = tanh(hw, \phi(M )i + b),
 
 其中 w 和 b 是 weights 和 偏置 分别地.
 
-一 优势 的 K-NRM 是 该 学习 可以 是 进行了 在 
+一 优势 的 K-NRM 是 该 学习 可以 是 进行了 在
 端--端 方式. 给定  集合 的 训练 例子 D = {(qi, d+
 i )}N
 其中 d+
@@ -5557,21 +5555,21 @@ f (q, d) = fl(q, d) + fd(q, d),
 
 在  模型 的 fl(q, d), 每个 查询 词 (和 每个 文档 词)
 是 表示了 通过  一-hot 向量.  模型 则 创建  二进制
-匹配矩阵 X \in {0, 1}|d|$\times$|q| 其中  (i, j)-th 条目 表示 
+匹配矩阵 X \in {0, 1}|d|$\times$|q| 其中  (i, j)-th 条目 表示
 精确 匹配 关系 的  i-th 文档 词 和  j-th 查询
 词.  匹配矩阵 X 是 首先 passed 通过  卷积
-层.  输出 是 则 passed 通过 二 完全地-connected 层, 
+层.  输出 是 则 passed 通过 二 完全地-connected 层,
 随机失活 层, 和  完全地-connected 层  产生  单一 匹配
 分数.
 
 在  模型 的 fd(q, d), (相似  DSSM (Huang 等人, 2013)),
  词 在 q 和 d 是 分别地 表示了 作为 频率 vectors
-的 letter n-grams. 则,  向量 的 查询 q 是 passed 通过 
+的 letter n-grams. 则,  向量 的 查询 q 是 passed 通过
 卷积 层,  max-池化 层, 和  完全地-connected 层,
 yielding  查询 表示 的 向量 Q. 类似地,  向量 的
 文档 d 是 passed 通过  卷积 层,  max-池化 层,
 和  完全地-connected 层, yielding  文档 表示 的
-矩阵 D. 下一个, 元素-wise 乘积 是 计算了 之间 D 和 
+矩阵 D. 下一个, 元素-wise 乘积 是 计算了 之间 D 和
 扩展了 Q.  resulting 矩阵 是 passed 通过 完全地 connected
 
 matchingscoresumbinarymatrixforcapturingexactmatchingsignalsdocumentmatching signalsconvolution+完全地-connectedlocalmatchingscoreconvolution+完全地-connectedconvolution+完全地-connecteddistributedmatchingscorefully-connectedqueryelement-wiseproduct 88
@@ -5581,7 +5579,7 @@ matchingscoresumbinarymatrixforcapturingexactmatchingsignalsdocumentmatching sig
 层, 和  随机失活 层  产生  单一 匹配分数.
 
  二 网络 在 Duet 是 联合地 训练了 作为  单一 神经
-网络. 给定  训练 例子 该 由组成 的  查询 q, 
+网络. 给定  训练 例子 该 由组成 的  查询 q,
 相关 文档 d+, 和  集合 的 non-相关 文档 D =
 {d−
 k },  目标 的 学习 是 deﬁned 作为  conditional
@@ -5606,7 +5604,7 @@ log P (d+|q).
 我们 呈现  实验的 results 通过 匹配函数学习 方法, 报告了 在 Wan 等人 (2016b). 在  实验,  基准
 的 Yahoo! 答案 是 利用了, 和 P@1 和 平均倒数排名
 (MRR) 是 采用 作为 评估 测量.  results 在 表 4.4
-表明 该 两者  方法 的 表示学习 和 
+表明 该 两者  方法 的 表示学习 和
 方法 的 匹配函数学习 可以 outperform  基线 的
 BM25.  匹配函数学习 方法, 在 通用, 执行
 更好 比  表示学习 方法. 表 4.5 呈现
@@ -5728,14 +5726,14 @@ BERTLARGE
 方法 具有 两者 advantages 和 limitations 和 具有 强
 connections  传统 匹配 和 排序 模型 在 IR.
 
-表示学习 给出  ﬁnal 匹配分数 基于 在 
+表示学习 给出  ﬁnal 匹配分数 基于 在
 语义 表示 的 查询 和 文档, 该 是 分别地
-学会了 从  raw 表示 的 查询 和 文档. 
+学会了 从  raw 表示 的 查询 和 文档.
 语义 表示 的 查询 和 文档 是 嵌入 vectors
 (真实-valued vectors), 该 means 该 我们 表示  查询 和
  文档 在  共同 语义 空间. 该 方法 是 自然
 和 具有  强 连接 用  传统 潜在空间 模型.
- 方法 可以 eﬀectively 解决  术语 失配 问题 如果 
+ 方法 可以 eﬀectively 解决  术语 失配 问题 如果
 语义 的 查询 和 文档 是 表示了 very 好. 然而,
 那里 也 exist limitations 在  方法.  查询 和 文档
 是 表示了 独立地 在之前  ﬁnal 步骤 的 匹配分数
@@ -5810,15 +5808,15 @@ Papers
 查询 表示 和 文档 表示 在 多个 levels, 包括中 词, 短语, 和  整个 文本. Wan 等人 (2016)
 呈现 MV-LSTM,  LSTM-基于 模型  实现 多个 positional 句子 表示, 用于 捕获中  局部 信息 作为
 好 作为  全局 信息 在  句子. Nie 等人 (2018) 指出
-out 该 diﬀerent levels 的 匹配, 从 低-水平 术语 匹配 
+out 该 diﬀerent levels 的 匹配, 从 低-水平 术语 匹配
 高-水平 语义匹配, 是 需要了 due   本质 的 自然
 语言.  多-水平 抽象 卷积 模型 (MACM) 是
 提出 用于 生成中 多-levels 的 表示 和 aggregating
- 多-levels 的 匹配 分数. Huang 等人 (2017) 也 呈现 
+ 多-levels 的 匹配 分数. Huang 等人 (2017) 也 呈现
 方法 该 组合 CNN 和 LSTM  利用 从 字符-水平
  句子-水平 特征 用于 执行中 匹配. Jiang 等人 (2019)
 呈现 MASH RNN 用于 匹配 的 长 文档. 在  方法,
-bidirectional GRU 和  注意力机制 是 采用 作为 
+bidirectional GRU 和  注意力机制 是 采用 作为
 encoders 用于 构建  文档 表示 在  句子
 水平, 段落 水平, 和 文档 水平. Liu 等人 (2019) 提出
  encode news articles 用  概念 交互 图 和 进行
@@ -5834,7 +5832,7 @@ encoders 用于 构建  文档 表示 在  句子
 匹配. 一 advantages 的 MCAN 是 该 它 允许  任意 数量 的 注意力 mechanisms  是 casted, 和 允许 多个 注意力
 类型 (e.g., co-注意力, intra-注意力) 和 注意力 variants (e.g.,
 对齐-池化, max-池化, 均值-池化)  是 executed 同时地. 也, Tay 等人 (2018c) 论证 该  co-注意力 模型
-在 asymmetrical 匹配 任务 需要 diﬀerent treatments  
+在 asymmetrical 匹配 任务 需要 diﬀerent treatments
 attentions 用于 symmetrical 任务. 它们 提出 Hermitian Co-注意力
 
 4.3. 讨论与扩展阅读
@@ -5845,19 +5843,19 @@ Recurrent 网络 (HCRN) 在 该  注意力机制 是 基于
 在  复杂-valued 内积 (Hermitian products). Tan 等人
 (2018) 提出  Multiway 注意力 网络 (MwAN) 在 该
 多个 注意力 函数 是 采用了  匹配 句子 pairs 之下
- 匹配-聚合 框架. Chen 等人 (2018b) 提出 
+ 匹配-聚合 框架. Chen 等人 (2018b) 提出
 多-channel 信息 Crossing (MIX) 模型  比较  查询
 和 文档 在 各种 granularities, 形成中  序列 的 匹配
 矩阵. 注意力 层 是 则 imposed 用于 捕获中  interactions 和 产生  ﬁnal 匹配分数. 注意力-基于 神经
 匹配模型 (aNMM) (Yang 等人, 2016) 是 另一个 注意力-基于
 神经 匹配模型. 给定  匹配矩阵, 用于 每个 查询
 词,  值-共享 weighting 方案 而非  位置-共享
-weighting 方案 是 使用了 用于 计算中  匹配 signals 用于 
+weighting 方案 是 使用了 用于 计算中  匹配 signals 用于
 词.  signals 的 diﬀerent 查询 词 是 aggregated 用  注意力 网络. Nogueira 等人 (2019) 提出  三-阶段 排序
 架构 用于 搜索.  首先 阶段 是 implemented 用 BM25,
 和  秒 阶段 和  第三 阶段 是 分别地 implemented
 用 逐点 和 成对 BERT 基于 在 学习  排序. Yang
-等人 (2019b) 和 Qiao 等人 (2019) 也 应用  BERT 模型 
+等人 (2019b) 和 Qiao 等人 (2019) 也 应用  BERT 模型
 临时检索 和 段落检索. Reimers 和 Gurevych (2019)
 提出 句子-BERT 用于 减少中  计算 overhead 用于
 文本 匹配. 用于  任务 的 自然 语言 推理, Chen 等人
@@ -5865,7 +5863,7 @@ weighting 方案 是 使用了 用于 计算中  匹配 signals 用于
 称为 增强 序列 推理 模型 (ESIM). ESIM 显式地
 考虑 递归 架构 在 两者 局部 推理 建模 和
 推理 组合. Gong 等人 (2018) 提出  交互 推理 网络 (IIN) 该 hierarchically extracts 语义 特征
-从 交互 空间 和 执行 高-水平 理解 的 
+从 交互 空间 和 执行 高-水平 理解 的
 句子 对. 它 是 显示 该  交互 张量 (注意力 权重)
 可以 捕获  语义 信息  solve  自然 语言
 推理 任务.
@@ -5874,7 +5872,7 @@ weighting 方案 是 使用了 用于 计算中  匹配 signals 用于
  adapt NVSM   实体 空间, 该 可以 是 使用了 用于 乘积
 搜索 (Van Gysel 等人, 2018; Van Gysel 等人, 2016) 和 expert
 搜索 (Van Gysel 等人, 2016b). Zamani 和 Croft (2017) 也 呈现
- 方法  学习  词 和 查询 表示 在 
+ 方法  学习  词 和 查询 表示 在
 
 94
 
@@ -5884,12 +5882,12 @@ weighting 方案 是 使用了 用于 计算中  匹配 signals 用于
 在  IR 社区 用于  任务 的 文本 表示, 匹配,
 和 排序. 作为 用于 训练 模型 使用中 弱监督, Zamani
 和 Croft (2016) 提出  框架 在 该  查询 可以 是
-表示了 基于 在  个体 词嵌入 vectors. 
+表示了 基于 在  个体 词嵌入 vectors.
 参数 是 估计 使用中 pseudo-相关 文档 作为 训练
 signals. Zamani 和 Croft (2017) 提出  训练  神经 排序
 模型 使用中 弱监督. 仍然,  标签 是 获得了 自动地
 从 pseudo-相关性 反馈 和 无  需求 的 使用中 人类
-标注 或 external 资源. Dehghani 等人 (2017) 提出 
+标注 或 external 资源. Dehghani 等人 (2017) 提出
 使用  输出 的 BM25 作为  弱监督 信号  训练 神经
 排序 模型. Haddad 和 Ghosh (2019) 建议  利用 多个
 无监督 rankers  生成 soft 训练 标签 和 则 学习
@@ -5925,20 +5923,20 @@ homogeneous (e.g., 短 文本4), 和 symmetric 匹配 函数
 
 类似地, 位置-Aware 卷积-Recurrent 相关性 匹配 (PACRR) (Hui 等人, 2017) splits  文档 用  sliding
 window.  聚焦了 区域 可以 是  首先-k 词 在  文档
-或  大多数 相似 上下文 positions 在  文档 (k-window). 
+或  大多数 相似 上下文 positions 在  文档 (k-window).
 上下文-aware PACRR (Co-PACRR) (Hui 等人, 2018) 扩展 PACRR
 通过 incorporating  组件 该 可以 模型  上下文 信息 的  匹配 signals. Fan 等人 (2018) 提出  层次
 神经 匹配模型 (HiNT) 模型 在 该  文档 是 也
 拆分 到 段落.  局部 相关性 signals 是 计算了 之间
  查询 和  段落 的  文档.  局部 signals 是
-accumulated 到 diﬀerent granularities 和 ﬁnally 结合 到 
+accumulated 到 diﬀerent granularities 和 ﬁnally 结合 到
 ﬁnal 匹配分数. 商业 网页搜索 engines 需求  考虑
 更多 比 仅 一 文档 ﬁeld. Incorporating diﬀerent sources 的
-文档 描述 (e.g., title, URL, body, anchor, etc.) 是 有用 
+文档 描述 (e.g., title, URL, body, anchor, etc.) 是 有用
 确定  相关性 的  文档   查询 (Robertson 等人,
 2004).  解决  问题 的 leveraging 多个 ﬁelds, Zamani 等人
 (2018c) 提出 NRM-F 该 介绍  masking 方法  处理
-missing 信息 从 一 ﬁeld, 和  ﬁeld-水平 随机失活 方法 
+missing 信息 从 一 ﬁeld, 和  ﬁeld-水平 随机失活 方法
 避免 relying 也 许多 在 一 ﬁeld. 在 层次 注意力 检索
 模型 (HAR) (Zhu 等人, 2019), 词-水平 交叉-注意力 是 进行了
  识别  词 该 大多数 相关 用于  查询, 和 层次
@@ -5959,7 +5957,7 @@ maximally correlated projections 在  reproducing 核 Hilbert 空间
 
 搜索中的深度匹配模型
 
-dot products.  ﬁnal 图像-句子 匹配分数 是 deﬁned 作为 
+dot products.  ﬁnal 图像-句子 匹配分数 是 deﬁned 作为
 average thresholded 分数 的 其 成对 fragment 匹配 分数.
 Multimodal 卷积 神经 网络 (m-CNNs) (Ma 等人, 2015)
 adopts CNN  计算  多-模态 匹配 分数 在  wordlevel, 短语-水平, 和 句子-水平.  更好 均匀地 表示
@@ -5983,7 +5981,7 @@ MSRP (Dolan 和 Brockett, 2005) 和 SNLI (Bowman 等人, 2015)
 
 Open 来源 Packages
 
- 数量 的 open-来源 packages 用于 匹配 是 可用 在 
+ 数量 的 open-来源 packages 用于 匹配 是 可用 在
 web. MatchZoo9 是  open-来源 item dedicated  研究 在 深度
 
 5https://trec.nist.gov/数据.html
@@ -6026,7 +6024,7 @@ aggregate 它们   ﬁnal 匹配分数. 表 5.1 显示  分类
 框架 的 潜在空间 模型 作为 描述 在 图 4.1. 在 短,
 给定 用户 u 在  用户空间 u \in U 和 item i 在  item空间 i \in I,
 函数 \phiu : U 7\rightarrow H 和 \phii : I 7\rightarrow H stand 用于 mappings 从  用户
-空间 U 和 从  item空间 I   新 空间 H, 分别地. 
+空间 U 和 从  item空间 I   新 空间 H, 分别地.
 
 98
 
@@ -6911,7 +6909,6 @@ c
 M
 d
 n
-
 
 
 h
@@ -8219,9 +8216,9 @@ f (u, i) = F (\phiu(u), \phii(i)),
 (5.1)
 
 其中 F 是  相似度 函数 超过 H, 这样的 作为 内积 或
-余弦相似度. Diﬀerent 神经 网络 可以 是 使用了  realize 
+余弦相似度. Diﬀerent 神经 网络 可以 是 使用了  realize
 表示 函数 \phiu 和 \phii, depending 在  形式 的 输入
-数据 和  数据 properties 的 兴趣. 我们 进一步 分类 
+数据 和  数据 properties 的 兴趣. 我们 进一步 分类
 方法 到 四 类型 基于 在  形式 的 输入 数据: 1) unordered
 interactions, 2) 序列 interactions, 3) 多-模态 content, 和 4)
 linked 图.
@@ -8265,20 +8262,20 @@ Auto-编码器-基于, 和 注意力-基于 方法.
 
 MLP-基于 方法
 
-深度 矩阵分解 (DeepMF) (Xue 等人, 2017) adopts 
+深度 矩阵分解 (DeepMF) (Xue 等人, 2017) adopts
 架构 的 DSSM (Huang 等人, 2013). 它 具有  二-tower 结构,
 其中 一 tower 是 用于 学习 用户 表示, 和  其他 是 用于
-学习 item 表示. 在 每个 tower,  MLP 是 采用了 
+学习 item 表示. 在 每个 tower,  MLP 是 采用了
 学习  表示 从  多-hot 向量.  期望 是 该
  多-层 非线性 transformations 在  交互 历史 可以
-学习 更好 表示  桥接  语义鸿沟 之间 
+学习 更好 表示  桥接  语义鸿沟 之间
 用户 和 item. 图 5.1 说明  架构 的  DeepMF
 模型.
 
 Let  用户-item交互 矩阵 是 Y \in RM $\times$N 其中 M 和 N
 表示  数量 的 用户 和 item, 分别地; 用于 显式反馈,
 每个 条目 yui 是  rating 分数, 和  分数 的 0 means 该 用户 u
-具有 不 rated 在 item i 在之前; 用于 隐式反馈, 每个 条目 是 
+具有 不 rated 在 item i 在之前; 用于 隐式反馈, 每个 条目 是
 二进制 值, 和  值 的 1 和 0 表示 是否 或 不 用户 u
 具有 interacted 用 item i 在之前. Let yu∗ \in RN 表示  u-th row
 的 Y, i.e.,  多-hot 历史 向量 的 用户 u, 和 y∗i \in RM 表示
@@ -8301,7 +8298,7 @@ u qi
 (5.2)
 
 作为  spaces 的 用户 和 item 是 diﬀerent, DeepMF 使用 二 MLPs
-用 diﬀerent 参数  表示 用户 和 item. 注意 该 due 
+用 diﬀerent 参数  表示 用户 和 item. 注意 该 due
  稀疏 本质 的 yu∗ 和 y∗i,  整体 复杂度 的  模型 是
 acceptable 如果 我们 omit  零 entries 在 Y 在 实现. 它 是 也
 worth mentioning 该 它 是 不 compulsory  使用 二 towers — 一
@@ -8312,16 +8309,16 @@ qi. 这样的  simpliﬁcation 是 本质上 等价   auto-编码器
 Auto-编码器 基于 方法
 
 Auto-编码器 是 另一个 选择  构建  推荐 模型 从
- 交互 历史. Auto-编码器 transforms  输入 数据 到 
+ 交互 历史. Auto-编码器 transforms  输入 数据 到
 隐藏 表示, 这样的 该 从  good 隐藏 表示, 一
 是 几乎 able  recover  输入 数据. 在 item-基于 AutoRec (Sedhain
-等人, 2015),  输入 是  用户 历史 向量 yu∗ \in RN , 和 
+等人, 2015),  输入 是  用户 历史 向量 yu∗ \in RN , 和
 重建 的  输入 是:
 
 ˆyu∗ = \sigma2(W · \sigma1(Vyu∗ + b1) + b2),
 \text{where } \sigma2 和 \sigma1 是 activation 函数, V \in Rd$\times$N 和 W \in RN $\times$d
-是 权重 矩阵, b1 \in Rd 和 b1 \in RN 是 偏置 vectors. 
-重建 向量 ˆyu∗ 是  N -维度 向量 该 stores 
+是 权重 矩阵, b1 \in Rd 和 b1 \in RN 是 偏置 vectors.
+重建 向量 ˆyu∗ 是  N -维度 向量 该 stores
 预测了 匹配 分数 的 所有 item 用于 用户 u.  学习 参数
 \theta = {V, W, b1, b2}, AutoRec minimizes  总计 损失 超过 所有 输入
 (用户) 用 L2 正则化:
@@ -8365,7 +8362,7 @@ qi
 (5.4)
 
 其中 wi∗ 表示  i-th row 的 W, 该 可以 是 seen 作为  ID
-嵌入 的 item i, 和 用户 表示 pu 是 等价  
+嵌入 的 item i, 和 用户 表示 pu 是 等价
 输出 的  一-层 MLP 用 yu∗ 作为 输入.  匹配分数 是
 本质上  内积 的 用户 表示 pu 和 item ID
 嵌入 qi, 该 falls 到  潜在空间 框架 deﬁned 在
@@ -8385,7 +8382,7 @@ auto-编码器 用于 推荐, solving  表示学习
 一 观察 在  学习 的 用户 表示 是 该 历史 item 可以 不 equally contribute   建模 的  用户’s
 偏好. 用于 例子,  用户 可以 选择  trendy item 基于 在 其
 高 popularity 而 比 他的/她的 own 兴趣. 虽然, 在 原则,
- MLP 学会了 从 交互 历史 可以 是 able  捕获 
+ MLP 学会了 从 交互 历史 可以 是 able  捕获
 复杂 relationships (c.f.  通用 approximation 定理 的
 神经 网络 (Hornik, 1991)),  过程 是 也 隐式 和 那里 是
 无 guarantee 用于 该.  solve  问题,  神经 Attentive item
@@ -8428,7 +8425,7 @@ MLP 该 输出  标量 值 (e.g.,  MLP 取 concatenation
 或 元素-wise 乘积 的 pi 和 qj 作为 输入).  输出 的 g 是
 进一步 processed 通过  smoothed softmax 函数 \text{where } \beta 是 在 (0, 1)
  平滑  weighted sum 的 主动 用户 ( default 值 的 \beta 是
-0.5). 通过 显式地 学习  权重 的 每个 interacted item 用 
+0.5). 通过 显式地 学习  权重 的 每个 interacted item 用
 
 attentionoutputattentioninputinnerproduct010101…000100…q2q4q6p3s32s34s36attentionnetworka323436\summatchingscore5.1. 基于表示学习的匹配
 
@@ -8444,7 +8441,7 @@ YouTube 推荐 (Covington 等人, 2016).
 item i 当 estimating  权重 的  历史 item j. 该 purposeful
 设计 是  解决  局限性 的 静态 用户 表示 当
 interacting 用 diﬀerent item. 用于 例子, 当  用户 考虑
-是否  purchase  clothing item,  历史 behaviors 在 
+是否  purchase  clothing item,  历史 behaviors 在
 fashion 类别 是 更多 reﬂective 的 他的/她的 aesthetic 偏好 比
  历史 behaviors 在  electronic 类别.  深度 兴趣
 网络 (DIN) 模型 (Zhou 等人, 2018), 该 是 独立地
@@ -8482,14 +8479,14 @@ N -维 向量 和 N 是  数量 的 item.  输出 是
 位置 i 在  序列 x,  输入 是  陈述 的  会话, 该
 可以 是  一-hot 表示 的  当前 item, 或  weighted sum
 的 表示 的 item 因此 far, 作为 显示 在 图 5.3. 作为  core 的
- 网络,  多-层 GRU 是 使用了  receive  embeddings 的 
+ 网络,  多-层 GRU 是 使用了  receive  embeddings 的
 输入 表示, 和  输出 的 每个 GRU 层 是  输入
-  下一个 层. 最后, feedforward 层 是 added 之间 
+  下一个 层. 最后, feedforward 层 是 added 之间
 最后 GRU 层 和  输出 层.  输出 是  N -维
 向量, 每个 表示中  概率 的  相应 item 是
 clicked 在  下一个 事件 的  会话.
 
-期间 训练, 成对 排序 损失 是 利用了  学习 
+期间 训练, 成对 排序 损失 是 利用了  学习
 模型 参数. 二 类型 的 损失 函数 是 使用了.  BPR 损失
 比较  分数 的  正 (preferred) item 用 那些 的 若干
 sampled 负 item. 因此,  BPR 损失 在  位置 是 deﬁned 作为:
@@ -8507,8 +8504,8 @@ j=1
 
 log(\sigma(ˆrs,i − ˆrs,j)),
 
-其中 Ns 是  数量 的 sampled 负 item, ˆrs,i (或 ˆrs,j) 是 
-预测了 分数 的 item i (或 j), i 是  正 item, 和 j 是 
+其中 Ns 是  数量 的 sampled 负 item, ˆrs,i (或 ˆrs,j) 是
+预测了 分数 的 item i (或 j), i 是  正 item, 和 j 是
 负 item.  其他 类型 的 损失 称为 TOP1 是 也 devised, 该
 是  比率 的 correctly ranked pairs 用 正则化.  TOP1
 损失 在  位置 是 deﬁned 作为:
@@ -8530,7 +8527,7 @@ s,j).
 
  解决  问题 该  lengths 的 sessions vary, GRU4Rec
 采用 会话-并行 mini-batches 用于  优化. 在 训练,
-它 使用 popularity-基于 负 sampling, 该 假设 该 
+它 使用 popularity-基于 负 sampling, 该 假设 该
 更多 流行  item 是,  更多 可能  用户 knows 关于 它, 用于
 生成中  负 item.
 
@@ -8605,9 +8602,9 @@ i Bct,
 候选 item, 其中 m 是  数量 的 candidates.
 
  学习  模型 参数, 交叉-熵 损失 是 使用了. Speciﬁcally,
-给定  训练 序列, 在  位置 t NARM 首先 预测 
+给定  训练 序列, 在  位置 t NARM 首先 预测
 概率 分布 超过  m item qt. 从  log 我们 know
-该  ground-真值 概率 分布 在 t 是 pt. 因此, 
+该  ground-真值 概率 分布 在 t 是 pt. 因此,
 交叉-熵 损失 是 deﬁned 作为
 
 L =
@@ -8654,7 +8651,7 @@ E 可以 不 具有 spatial relations 如 真实 images 从角度  宽度
 
  solve  二 问题, Caser 介绍 ‘完整-宽度’ CNN 过滤s
 和 max-池化 operations. Speciﬁcally,  卷积 operations
-在 Caser 覆盖  完整 columns 的  序列 “图像”. 该 是, 
+在 Caser 覆盖  完整 columns 的  序列 “图像”. 该 是,
 宽度 的  过滤 具有  相同 大小 作为  嵌入 维度, 和
  高度 的  过滤 varies (see  diﬀerent colors 的 图 5.5 ()).
 作为  结果, 过滤s 的 diﬀerent sizes 产生 特征 maps 用 diﬀerent
@@ -8669,7 +8666,7 @@ omitted 在 图 5.5.  特征 maps 1 $\times$ k 是 concatenated 一起
 用 其他 特征 maps.
 
 在 fact, due   max-池化 operations, Caser 是 不 好-suited
- 模型 长-范围 sequences 或 repeated sequences.  alleviate 
+ 模型 长-范围 sequences 或 repeated sequences.  alleviate
 
 !"!#!$!%…ℎ""ℎ#"ℎ$"ℎ%'!"!#!$!%…ℎ"(ℎ#(ℎ$(ℎ%(attentionsignal)=+(ℎ%(,ℎ%')sessionfeaturegenerator/%=[/%(,/%']/%2341234223432344……234msimilaritylayer:;=234;<=/%softmaxlayer>?23">?23#>?23$>?23@……>?23……localencoderglobalencoderrankingscoresitemembeddingsEncoderDecoder110$
 
@@ -8678,7 +8675,7 @@ omitted 在 图 5.5.  特征 maps 1 $\times$ k 是 concatenated 一起
 图 5.5: 架构 的 Caser.
 
 问题, Caser 采用  数据增强 方法 通过 sliding  window 超过  原始 序列  创建  集合 的 subsequences. 用于
-例子, 假设 该  原始 序列 是 {x1, ..., x10} 和 
+例子, 假设 该  原始 序列 是 {x1, ..., x10} 和
 sliding window 大小 是 5, 和 则  subsequences 是 生成了 作为
 {x1, ..., x5}, {x2, ..., x6}, ..., {x6, ..., x10}, 该 是 fed 到 模型 训练 一起 用  原始 序列.
 
@@ -8765,7 +8762,7 @@ NormalizationMasked1$\times$3输入𝐸NormalizationNormalization+1$\times$11$\t
 长-distance item dependencies. 在 添加, unlike  RNN 模型,
  CNN 模型 基于 在  seq2seq 框架 面临  数据 leakage
 问题 因为  未来 数据 可以 是 观察到 通过  更高-层
-的  网络.  overcome 该 问题, NextItNet 介绍 
+的  网络.  overcome 该 问题, NextItNet 介绍
 masking 技术, 通过 该  预测了 item itself 和 未来 item
 是 隐藏   更高-层. Masking 可以 是 simply implemented 通过
 padding  输入 序列.
@@ -8815,12 +8812,12 @@ d
 
 其中 WQ, WK 和 WV 是  权重 矩阵 的 查询, keys 和
 值, 分别地.  SA 层 使用  相同 对象 F 作为 quires,
-keys, 和 值, 该 是 投影 通过 diﬀerent 权重 矩阵 
+keys, 和 值, 该 是 投影 通过 diﬀerent 权重 矩阵
 改进 模型 ﬂexibility. Intuitively,  注意力 计算  weighted
 sum 的 所有 值 vectors, 其中  权重 之间 查询 i 和 值 j
 relates   交互 之间 查询 i 和 关键 j, i.e.,  结果 的
 sof tmax(·).  denominator
-d 是  避免 overly 大 值 的 
+d 是  避免 overly 大 值 的
 inner products 该 可以 cause 梯度 问题.
 
 $\sqrt{}$
@@ -8838,7 +8835,7 @@ F F N (S) = Relu(SW1 + b1)W2 + b2
 的 一 序列, 仅  之前 item 是 已知 (see 图 5.7). 该
 是 实现了 通过 forbidding  链接 之间 Qi ( i-th 查询) 和 Kj
 ( j-th 关键) 用于 j > i, i.e., 设置  相应 注意力 weights
- 0. 当  网络 goes deeper,  模型 成为 更多 diﬃcult 
+ 0. 当  网络 goes deeper,  模型 成为 更多 diﬃcult
 训练.  solve  问题, SASRec 采用 层归一化 (Ba et
 al., 2016), 随机失活 (Srivastava 等人, 2014), 和 残差连接 (他
 等人, 2016) 在 每个 SA 层 和 FFN 层:
@@ -8854,7 +8851,7 @@ F(l) = S(l) + 随机失活(F F N (LayerN orm(S(l)))).
 
 在 最后,  输出 的  最后 自身-注意力 块 是 使用了 用于 预测. 给定  历史 item 序列 {v1, v2, . . . , vt},  下一个 item
 需求 是 预测了 基于 在 F(L)
-, 其中 L 是  数量 的 块. 
+, 其中 L 是  数量 的 块.
 预测了 分数 的  目标 item i 是:
 
 t
@@ -8878,11 +8875,11 @@ N \in R(|I| $\times$ d) 是  嵌入 矩阵 的 目标 item, 该 可以
 
 除之外 SASRec, 另一个 代表性 注意力-基于
 方法 用于 学习  表示 的 序列 interactions 是
-BERT4Rec (Sun 等人, 2019).  主要 diﬀerence 是 该 它 取 
+BERT4Rec (Sun 等人, 2019).  主要 diﬀerence 是 该 它 取
 bi-directional 自身-注意力 模型  过程  序列, 该 可以
 利用 两者 左 (之前) 和 正确 (未来) interactions.  未来
 interactions 是 arguably 有用 用于 预测 (Yuan 等人, 2020) 因为 它们 也 reﬂect  偏好 的  用户, 和  rigid 顺序
-的 interactions 可以 不 是 因此 重要 ( 顺序 是 derived 从 
+的 interactions 可以 不 是 因此 重要 ( 顺序 是 derived 从
 交互 timestamp).  该 端, 它们 revise SASRec 在 二 ways:
 (1) revise 自身-注意力  remove  零 constraints 在  注意力
 weights 的 Qi 和 Kj 用于 j > i, 和 (2) 随机地 mask 一些 item 在
@@ -8913,12 +8910,12 @@ videos, 和 musics, 其 多-模态 描述性 特征 是 readily
 (5.13)
 
 其中 pu 表示  嵌入 的 用户 u 该 是 学会了 从 历史
-interactions (e.g.,  ID 嵌入 和  embeddings 从 
+interactions (e.g.,  ID 嵌入 和  embeddings 从
 之前 subsections 可以 是 使用了), Fu 表示  侧 特征 的 用户
 u 该 可以 是  矩阵 或  向量, 和 f (·) 是  表示
 学习 函数 用于 侧 特征; 相似 notations 应用  qi, Gi,
 和 g(·) 用于  item 侧. 组合(·, ·) 是  函数 该 组合
- 嵌入 从 历史 interactions 和  侧 特征. 
+ 嵌入 从 历史 interactions 和  侧 特征.
 函数 f (·), g(·), 和 组合(·, ·) 可以 所有 是 realized 作为  深度
 神经网络. 在  下一个, 我们 介绍 speciﬁc 方法 和 划分
 它们 到 三 类型: 学习 从 categorical attributes, 用户 综述,
@@ -8927,10 +8924,10 @@ u 该 可以 是  矩阵 或  向量, 和 f (·) 是  表示
 学习 从 Categorical Attributes
 
 Wang 等人 (2017b) 提出  属性-aware 深度 CF 模型, 该
-是 说明了 在 图 5.8. 它 projects 每个 categorical 特征 到 
+是 说明了 在 图 5.8. 它 projects 每个 categorical 特征 到
 嵌入 向量 和 则 执行 bi-交互 池化 (他 和
 Chua, 2017) 用  用户 (item) ID 嵌入. 最后,  pooled
-用户 向量 和 item 向量 是 结合 到  MLP  获得 
+用户 向量 和 item 向量 是 结合 到  MLP  获得
 预测 分数:
 
 \phiu(u) = BI-交互(pu, {fu
@@ -9008,7 +9005,7 @@ t 分别地 表示  embeddings 的 用户 属性
 
 Li 等人 (2015) 提出  正则化-基于 方法  incorporate attributes 到 推荐.  想法 是  首先 学习 表示 从 用户 特征 和 item 特征 用 二 auto-encoders,
 分别地, 和 则 联合地 训练  表示 之内  推荐 任务.  auto-编码器 损失 可以 是 treated 作为  正则化
-术语 用于 推荐. 图 5.9 显示  模型 架构. 
+术语 用于 推荐. 图 5.9 显示  模型 架构.
 
 10…001…001…010…1UserNodesItemNodesAttributeNodesAttributeNodes!"#"$"%&'())*+,-(!,01)'())*+,-(&,0+)MLPmatchingscorePoolingLayer31(!)3+(&)5.1. 基于表示学习的匹配$
 
@@ -9036,7 +9033,11 @@ l(R, U, V ).
  综述, 称为 深度 Cooperative 神经 网络 (DeepCoNN).
 作为 显示 在 图 5.10, DeepCoNN 由组成 的 二 并行 神经
 
-InputLayerHiddenLayer$\times$UserFeatureXUserFeatureY#V\approxOutputLayerUser-ItemRatingMatrixRr'(,*'+,,'-,*,,$\times$$\times$$\times$118
+InputLayerHiddenLayer$\times$UserFeatureXUserFeatureY#V\approxOutputLayerUser-ItemRatingMatrixRr'(,*'+,,'-,*,,$\times
+$$
+\times
+$  $
+\times$ 118
 
 推荐中的深度匹配模型
 
@@ -9066,7 +9067,7 @@ k 表示  k-th 词 在  文档 du
 1:n,  look-向上
 k) returns  嵌入 的  输入 词 du
 函数 \phi(du
-k, 和 c 是 
+k, 和 c 是
 维度 的 embeddings. 则,  一-维 CNN 是 采用了
  总结  综述 到  表示 向量 xu:
 
@@ -9076,7 +9077,7 @@ xu = N etu(du
 
 1:n).
 
-类似地, 给定 所有  综述 用于  item i, N eti 也 merges 
+类似地, 给定 所有  综述 用于  item i, N eti 也 merges
 综述 到  单一 文档 di
 1:m 的 m 词, 创建  矩阵 的
 词 vectors V i
@@ -9089,7 +9090,7 @@ xi = N eti(di
 
 1:m).
 
-综述 written 通过  用户⋯convolutionallayer𝑑#$𝑑%$𝑑&$𝑉&:#$𝐱$综述 written 通过  用户⋯convolutionallayer𝑑#*𝑑%*𝑑&*𝑉&:+*𝐱*factorizationmatching𝑦$*5.1. 基于表示学习的匹配
+综述 written 通过  用户⋯convolutionallayer𝑑# $𝑑%$ 𝑑& $𝑉&:#$ 𝐱 $综述 written 通过  用户⋯convolutionallayer𝑑#*𝑑%*𝑑&*𝑉&:+*𝐱*factorizationmatching𝑦$ *5.1. 基于表示学习的匹配
 
 119
 
@@ -9204,10 +9205,10 @@ projects gi 到  嵌入 空间 用  特征 变换
 嵌入 qi  形式  ﬁnal item 表示. 最后, 它 interacts
  item 表示 用  用户 表示 用 内积
  获得  预测 分数, 该 是, ˆyui = \phiu(u)T [qi, Egi]. 注意 该
- 偏置 术语 是 omitted 用于 clarity.  模型 是 学会了 用 
+ 偏置 术语 是 omitted 用于 clarity.  模型 是 学会了 用
 成对 BPR 损失.
 
-它 是 worth noting 该 在 VBPR,  深度 CNN 是 pre-训练了 作为 
+它 是 worth noting 该 在 VBPR,  深度 CNN 是 pre-训练了 作为
 特征 extractor, 该 是 不 updated 期间 推荐 训练.
 由于 深度 CNN 是 典型地 训练了 从  通用 图像 语料库 如
 ImageNet, 它 可以 不 是 适合 用于  推荐 任务 如
@@ -9216,8 +9217,8 @@ clothing 推荐.  解决  问题, 三 解决方案 是
 
 - Lei 等人 (2016) 提出  Comparative 深度学习 (CDL)
 方法 用于 content-基于 图像 推荐. 而非 ﬁxing
- 参数 的 深度 CNN, 它 也 updates 它们 在 训练. 
-目标 函数 是 tailored 用于 推荐, 更多 speciﬁcally, 
+ 参数 的 深度 CNN, 它 也 updates 它们 在 训练.
+目标 函数 是 tailored 用于 推荐, 更多 speciﬁcally,
 变体 的  成对 BPR 损失 基于 在 用户 interactions. 作为  整体
 模型 是 训练了 在  端--端 fashion,  特征 extracted 通过
 深度 CNN 是 更多 适合 用于  推荐 任务.  最近 工作
@@ -9247,10 +9248,10 @@ Wei 等人 (2019) 提出 MMGCN 用于 micro-视频 推荐,
 regions. 它 采用  pre-训练了 深度 CNN  提取 特征 从
 每个 区域 和  注意力 网络  学习  权重 的 它, 其中
  底层 假设 是 该 diﬀerent 用户 可以 是 感兴趣的
-在 diﬀerent regions 的  图像.  49 regions 是 ﬁnally pooled 
+在 diﬀerent regions 的  图像.  49 regions 是 ﬁnally pooled
 获得  图像 表示. 作为  注意力 网络 是 训练了
 基于 在 用户-item interactions,  图像 表示 是 适应
-用于  推荐 任务.  框架 的 ACF 是 也 应用 
+用于  推荐 任务.  框架 的 ACF 是 也 应用
 视频 推荐 通过  authors, 其中  区域 是 replaced 用
  frame sampled 从  视频.
 
@@ -9292,19 +9293,19 @@ connectivities 在  图. Intuitively, 直接 connections 显式地
 刻画 用户 和 item —  用户’s interacted item 给出 支持中
 证据 在  用户’s 偏好, 同时  item’s associated 用户 可以
 是 viewed 作为 特征 的  item. 此外, 高-顺序 connectivities
-reﬂect 更多 复杂 patterns —  路径 u1 \leftarrow i1 \leftarrow u2 表明 
+reﬂect 更多 复杂 patterns —  路径 u1 \leftarrow i1 \leftarrow u2 表明
 behavioral 相似度 之间 用户 u1 和 u2, 作为 两者 具有 interacted
 用 item i1;  longer 路径 u1 \leftarrow i1 \leftarrow u2 \leftarrow i2 建议 u1’s 偏好
-在 i2, 由于 他的/她的 相似 用户 u2 具有 采用 i2. 图 5.12 显示 
+在 i2, 由于 他的/她的 相似 用户 u2 具有 采用 i2. 图 5.12 显示
 例子 的 这样的 高-顺序 connectivities, 该 reﬂect  用户-用户
-和 item-item dependencies. NGCF 旨在  inject 这样的 signals 到 
+和 item-item dependencies. NGCF 旨在  inject 这样的 signals 到
 表示 的 用户 和 item.
 
 图 5.12:  例子 的 高阶连通性 revealed 在 用户-item交互
 图.  ﬁgure 是 取 从 (Wang 等人, 2019b)
 
 Inspired 通过  最近 成功 的 图 神经 网络 (GNNs) (Ying
-等人, 2018), 该 是 构建了  信息 propagation (或 messaging passing) 在 graphs, NGCF 执行 嵌入 propagation 在 
+等人, 2018), 该 是 构建了  信息 propagation (或 messaging passing) 在 graphs, NGCF 执行 嵌入 propagation 在
 bipartite 用户-item交互 图. 图 5.13 显示 其 框架.
 形式化地,  图 卷积 层 的 GNN 是 composed 的 二
 
@@ -9366,7 +9367,7 @@ i = q(0)|| · · · ||q(L), (5.16)
 
 其中 || 表示  concatenation 操作.
 
-!"#$%#!$#$%#!$&$%#!"#'!()'*#*'*'+++=1+=2+=3+=1+=2+=3concatenateconcatenate!"##!"#&!"#0!(##!(#&!(#0$\times$!"∗!(∗2345678#,:)EmbeddingsEmbeddingsPropagationPredication!()$%#!"&$%#!"0$%#*#5.1. 基于表示学习的匹配
+!"# $%#!$ # $%#!$ & $%#!"#'!()'*#*'*'+++=1+=2+=3+=1+=2+=3concatenateconcatenate!"##!"#&!"#0!(##!(#&!(#0$ \times $!"∗!(∗2345678#,:)EmbeddingsEmbeddingsPropagationPredication!()$ %#!"& $%#!"0$ %#*#5.1. 基于表示学习的匹配
 
 125
 
@@ -9374,7 +9375,7 @@ i = q(0)|| · · · ||q(L), (5.16)
 special 案例 的 NGCF 用 无 和 一-顺序 propagation 层, 分别地. 此外, 一 可以 implement  图 卷积 层
 在 diﬀerent ways. 用于 例子, SpectralCF (Zheng 等人, 2018) 使用
  谱卷积 操作  执行 信息 propagation;
-GC-MC (Berg 等人, 2017) 组合 MLP 用 方程 (5.15) 
+GC-MC (Berg 等人, 2017) 组合 MLP 用 方程 (5.15)
 捕获 非线性 和 复杂 patterns.
 
 同时 NGCF 具有 证明了  strengths 的 使用中  交互
@@ -9382,7 +9383,7 @@ GC-MC (Berg 等人, 2017) 组合 MLP 用 方程 (5.15)
 2020) (LightGCN) 显示 该 许多 designs 在 NGCF 是 redundant,
 特别  非线性 特征 transformations.  主要 论证 是
 该 在  用户-item交互 图, 每个 节点 (用户 或 item) 是 仅
-描述 通过  一-hot ID, 该 具有 无 语义 除之外 是 
+描述 通过  一-hot ID, 该 具有 无 语义 除之外 是
 identiﬁer. 在 这样的  案例, 执行中 多个 层 的 非线性 特征
 变换, 该 是  标准 操作 的 神经 网络, 将
 bring 无 beneﬁt.  validate 该 论证, 它们 提出  简单 模型
@@ -9496,7 +9497,7 @@ acted 通过  相同 actor Hugh Jackman. Obviously, 这样的 connections
 从  neighborhood 的 高阶连通性. Diﬀerent 从 NGCF
 其中  decay 因素 \alphaht 在 propagation 的 信息 在 边 (h, t)
 是 ﬁxed, KGAT 采用  relational 注意力机制 取中 到
-consideration  关系 r 的 边 (h, r, t). 图 5.14 显示 
+consideration  关系 r 的 边 (h, r, t). 图 5.14 显示
 框架.  attentive 嵌入 propagation 层 是 formulated
 
 5.1. 基于表示学习的匹配
@@ -9548,10 +9549,10 @@ establishing  表示, KGAT 使用  相同 预测 模型
 2019c) 介绍 meta-paths 或 paths  直接地 reﬁne  相似之处
 之间 用户 和 item. 在 particular,  模型 首先 或 deﬁne
 meta-路径 patterns (Gao 等人, 2018) 或 提取 qualiﬁed paths (Wang
-等人, 2019c), 和 则 馈 它们 到  监督学习 模型 
+等人, 2019c), 和 则 馈 它们 到  监督学习 模型
 预测  分数. 这样的  方法 可以 是 formulated 作为 follows. 给定
 
-!"#$!%&$'=1'=2'=3concatenateconcatenate!"##!"#,!"#&!%##!%#,!%#&$\times$!"∗!%∗./0#,2&CKGEmbeddingLayerPredicationLayer0#0,0&032#2,2&23!#!,!&'=1'=2'=3AttentiveEmbeddingsPropagationAttentiveEmbeddingsPropagationAttentiveEmbeddingsPropagation\otimes\otimes\otimes\oplusLeakyReLU𝑒$%&’(𝑒)*&’(𝑒+,&’(\pi𝑖/,𝑟/,𝑒(\pi𝑖/,−𝑟(,𝑢4𝑊(&\otimes\otimes\otimes\oplusLeakyReLU𝑒$%&’(𝑒)*&’(𝑒+,&’(\pi𝑖/,𝑟/,𝑒(\pi𝑖/,−𝑟(,𝑢4𝑊4&\otimes\oplus𝑒)*(&)128
+!"# $!%&$ '=1'=2'=3concatenateconcatenate!"##!"#,!"#&!%##!%#,!%#& $\times$ !"∗!%∗./0#,2&CKGEmbeddingLayerPredicationLayer0#0,0&032#2,2&23!#!,!&'=1'=2'=3AttentiveEmbeddingsPropagationAttentiveEmbeddingsPropagationAttentiveEmbeddingsPropagation\otimes\otimes\otimes\oplusLeakyReLU𝑒 $%&’(𝑒)*&’(𝑒+,&’(\pi𝑖/,𝑟/,𝑒(\pi𝑖/,−𝑟(,𝑢4𝑊(&\otimes\otimes\otimes\oplusLeakyReLU𝑒$ %&’(𝑒)*&’(𝑒+,&’(\pi𝑖/,𝑟/,𝑒(\pi𝑖/,−𝑟(,𝑢4𝑊4&\otimes\oplus𝑒)*(&)128
 
 推荐中的深度匹配模型
 
@@ -9580,11 +9581,11 @@ k\inP(u,i)
 
 其中 pk = [h1, r1, · · · , hL, rL] 是  k-th 路径, (hl, rl, hl+1) 是  l-th
 triplet 在 pk, 和 L 表示  triplet 数量. 作为 这样的, KPRN 可以
-采用  LSTM 模型  利用  序列 信息 在 
+采用  LSTM 模型  利用  序列 信息 在
 知识图谱 和  增强  推荐 模型’s 解释
 能力, revealing 为何  推荐 是 使.
 
-ShapeofYouEdSheeran$\div$IseeFireItemPersonAlbumItemSungByProduceContainSong<端>CCCCC\oplus\oplus\oplus\oplus\oplus\oplus\oplus\oplus\oplus\oplus𝑟#𝑟$𝑟%𝑟&𝑟’())𝑒$𝑒%𝑒&𝑒+𝑒$,𝑒%,𝑒&,𝑒+,𝑥#𝑥$𝑥%𝑥&𝑥+ℎ#ℎ$ℎ%ℎ&AliceUser𝑒#𝑒#,Interact𝑝01#𝑝0𝑝02#(Alice,Internet,IseeFire)𝑠𝜏𝑃PoolingLayerEmbeddingLayerLSTMLayer5.2. 基于匹配函数学习的匹配$
+ShapeofYouEdSheeran $\div$ IseeFireItemPersonAlbumItemSungByProduceContainSong<端>CCCCC\oplus\oplus\oplus\oplus\oplus\oplus\oplus\oplus\oplus\oplus𝑟#𝑟 $𝑟%𝑟&𝑟’())𝑒$ 𝑒%𝑒&𝑒+𝑒 $,𝑒%,𝑒&,𝑒+,𝑥#𝑥$ 𝑥%𝑥&𝑥+ℎ#ℎ $ℎ%ℎ&AliceUser𝑒#𝑒#,Interact𝑝01#𝑝0𝑝02#(Alice,Internet,IseeFire)𝑠𝜏𝑃PoolingLayerEmbeddingLayerLSTMLayer5.2. 基于匹配函数学习的匹配$
 
 129
 
@@ -9611,7 +9612,7 @@ expressive 匹配 函数. 我们 分类 现有 工作 沿着 该
 
 相似度 学习 方法
 
-神经协同过滤 (NCF) (他 等人, 2017c) exploits 
+神经协同过滤 (NCF) (他 等人, 2017c) exploits
 通用 神经网络 框架 用于 协同 过滤ing.  想法
 是  位置  多-层 神经网络 以上 用户 嵌入 和 item
 嵌入  学习 其 交互 分数:
@@ -9623,7 +9624,7 @@ f (u, i) = F (\phiu(u), \phii(i)),
 实例 是 提出 之下  NCF 框架:
 
 - 多-层 感知 (MLP).  straightforward 方式 是  stack
- MLP 以上  concatenation 的 用户 嵌入 和 item 嵌入, leveraging  non-线性 建模 能力 的 MLP  学习 
+ MLP 以上  concatenation 的 用户 嵌入 和 item 嵌入, leveraging  non-线性 建模 能力 的 MLP  学习
 交互 函数: F (\phiu(u), \phii(i)) = M LP ([\phiu(u), \phii(i)]). 虽然
 
 130
@@ -9635,7 +9636,7 @@ underperforms  简单 MF 模型 大多数 的  时间 (用于 证据 see
 (他 等人, 2017c)). 作为 revealed 在 (Beutel 等人, 2018),  关键 原因
 是 该 它 是 practically diﬃcult 用于 MLP  学习  multiplication
 操作, 该 是, 然而, very 重要 用于 建模 的 交互 在 CF (相应   低-排序 假设 的 用户-item
-交互 矩阵). 它 是 重要, 因此,  显式地 express 
+交互 矩阵). 它 是 重要, 因此,  显式地 express
 multiplication 或 相似 eﬀect 在  匹配 网络.
 
 - 广义 矩阵分解 (GMF).  泛化 MF 之下  NCF 框架,  authors 的 NCF 首先 计算 elementwise 乘积 在 用户 嵌入 和 item 嵌入, 则 输出
@@ -9653,11 +9654,11 @@ good 性能.
 - 神经 矩阵分解 (NeuMF).  使用 的 MLP 可以 endow
  交互 函数 用 non-线性.  补充 GMF 用
 MLP 和 组合 其 strengths,  authors 的 NCF 提出  集成 模型, 作为 说明了 在 图 5.16. 它 使用 separated 嵌入
-集合 用于 GMF 和 MLP, concatenating  最后 隐藏 层 的 
+集合 用于 GMF 和 MLP, concatenating  最后 隐藏 层 的
 二 模型 在之前 projecting   ﬁnal 匹配分数. 该 模型
 具有 更高 表示 能力. 然而, 它 是 也 hard  训练
-如果 训练 是 进行了 从  scratch. Empirically, initializing 
-参数 用 pre-训练了 GMF 和 MLP 导致  更好 性能, 该 是 高度 encouraged 在 实践. 此外, sharing 
+如果 训练 是 进行了 从  scratch. Empirically, initializing
+参数 用 pre-训练了 GMF 和 MLP 导致  更好 性能, 该 是 高度 encouraged 在 实践. 此外, sharing
 嵌入 层 是 也 reasonable  减少  数量 的 参数,
 该 是 subjected  设计 (Guo 等人, 2017).
 
@@ -9684,11 +9685,11 @@ receptive ﬁeld 在  矩阵. 此外, CNN 具有 少数er 参数
 
 度量 学习 方法
 
-度量 学习 方法 aim  学习 和 利用 distance metrics 
+度量 学习 方法 aim  学习 和 利用 distance metrics
 quantitatively 度量  relationships 之中 数据 实例. Mathematically,  distance 度量 needs  满足 若干 conditions, 和
 之中 它们  triangle inequality 是  重要 一 用于 泛化 (Kulis 等人, 2013).  early 和 代表性 工作 该
 
-000100…000010…MFUserVectorMLPUserVectorMFItemVectorMLPItemVectorGMFLayerMLPLayer1MLPLayerNNeuMFLayer…concatenationelement-wiseproductReLUReLUconcatenation!"#$"#$trainingloglossuser%item&scoretarget132
+000100…000010…MFUserVectorMLPUserVectorMFItemVectorMLPItemVectorGMFLayerMLPLayer1MLPLayerNNeuMFLayer…concatenationelement-wiseproductReLUReLUconcatenation!"# $"#$ trainingloglossuser%item&scoretarget132
 
 推荐中的深度匹配模型
 
@@ -9704,7 +9705,7 @@ relations (因为  相似度 关系 cannot 是 properly propagated
 工作 如 (他 等人, 2017; Tay 等人, 2018). 下一个, 我们 brieﬂy 介绍
  方法.
 
-- 协同 度量 学习 (CML) (Hsieh 等人, 2017). 
+- 协同 度量 学习 (CML) (Hsieh 等人, 2017).
 用户-item 度量 在 CML 是 deﬁned 作为  欧氏距离 之间
 用户 嵌入 和 item 嵌入:
 
@@ -9713,12 +9714,12 @@ d(u, i) = ||pu − qi||,
 (5.21)
 
 其中 pu 是  用户 嵌入 向量, qi 是  item 嵌入 向量,
-和 d(u, i) 是  distance 之间 用户 u 和 item i,  smaller, 
+和 d(u, i) 是  distance 之间 用户 u 和 item i,  smaller,
 更多 相似.  优势 的 学习 和 利用中  度量 是 该
  相似度 之中 实例 可以 是 propagated. 用于 例子, 如果 它 是
 已知 该 “pu 是 相似  两者 qi 和 qj”, 则  学会了 度量
 
-用户!item"UserEmbeddingItemEmbeddingInteractionMap…InteractionFeature#$\otimes&'#($\times$*&+$\times$*,-$'BPRTrainingHiddenLayers5.2. 基于匹配函数学习的匹配
+用户!item"UserEmbeddingItemEmbeddingInteractionMap…InteractionFeature# $\otimes&'#($ \times $*&+$ \times $*,-$ 'BPRTrainingHiddenLayers5.2. 基于匹配函数学习的匹配
 
 133
 
@@ -9742,17 +9743,17 @@ wui[\delta + d(u, i)2 − d(u, j)2]+,
 (5.22)
 
 其中 i 表示  item 该 u likes, j 表示  item 该 u 进行 不
-如, \delta > 0 是  predeﬁned 间隔 大小, [z]+ = max(z, 0) 表示 
+如, \delta > 0 是  predeﬁned 间隔 大小, [z]+ = max(z, 0) 表示
 hinge 损失函数, 和 wui 是  权重 的 训练实例 该
-是 predeﬁned.  authors 提出 若干 additional constraints 
+是 predeﬁned.  authors 提出 若干 additional constraints
 改进  质量 的  学会了 metrics, 包括中  bound 的 用户
 嵌入 和 item 嵌入 之内  单元 sphere (i.e., ||p∗|| \leq 1
-和 ||q∗|| \leq 1), 和  regularizer  de-correlate  dimensions 的 
+和 ||q∗|| \leq 1), 和  regularizer  de-correlate  dimensions 的
 学会了 度量. 我们 指代  读者   原始 论文 用于 更多
 细节 (Hsieh 等人, 2017).
 
 - 翻译-基于 推荐 (TransRec) (他 等人, 2017).
-TransRec 可以 是 seen 作为  扩展 的 CML 用于 下一item推荐, 该 accounts 用于 用户 序列 行为 通过 建模 
+TransRec 可以 是 seen 作为  扩展 的 CML 用于 下一item推荐, 该 accounts 用于 用户 序列 行为 通过 建模
 第三-顺序 交互 之中  用户,  之前 visited item, 和
  下一个 item  visit (Rendle 等人, 2010).  想法 是 该,  用户
 是 表示了 作为  “翻译 向量”, 该 translates  之前
@@ -9790,7 +9791,7 @@ d(u, i) = ||pu + r − qi||,
 
 (5.25)
 
-其中 r 是  潜在 关系 向量  是 学会了. 而非 学习 
+其中 r 是  潜在 关系 向量  是 学会了. 而非 学习
 uniform r 用于 所有 用户-item pairs, LRML parameterizes 它 作为  attentive sum 超过 external 记忆 vectors. 图 5.18 显示  模型
 架构. Let  external 记忆 vectors 是 {mt}T
 t=1, 和  keys
@@ -9814,7 +9815,7 @@ atmt,
 其中 在 是  attentive 权重 的 记忆 mt 生成了 通过  注意力
 网络 该 取  交互 之间 用户 嵌入 和 item
 嵌入 作为 输入. 在 该 方式,  关系 向量 是 用户-item交互 aware, 该 增加  geometrical ﬂexibility 的  度量.
- 模型 是 学会了 通过 optimizing  成对 合页损失 该 是 
+ 模型 是 学会了 通过 optimizing  成对 合页损失 该 是
 相同 作为 该 在 CML.
 
 5.2.2 多-方式 匹配
@@ -9824,7 +9825,7 @@ atmt,
 interactions 在  匹配函数.  方法 允许  utilization
 的 任何 种类 的 辅助信息 和 上下文. 然而, 它们 可以 具有
 更高 复杂度 比较了  二-方式 匹配 和 表示
-学习-基于 方法. 作为 这样的, 它们 是 更多 经常 使用了 在 
+学习-基于 方法. 作为 这样的, 它们 是 更多 经常 使用了 在
 排序 阶段 而 比 在  候选检索 阶段, 这样的 作为
 点击率 (CTR) 预测.
 
@@ -9838,11 +9839,11 @@ interactions 在  匹配函数.  方法 允许  utilization
 i.e., signals 从 多个 特征. 用于 例子, 用户 的 age 20-25
 (特征 1) 和 gender female (特征 2) 是 更多 可能  purchase
 iPhones 的 pink color (特征 3).  naive 解决方案 用于 捕获中 这样的
-eﬀects 是  手动地 构建 交叉 特征, feeding 它们 到 
+eﬀects 是  手动地 构建 交叉 特征, feeding 它们 到
 线性 模型 该 可以 学习 和 memorize  重要性 的  交叉
-特征 (Cheng 等人, 2016).  问题 是 该 它 可以 仅 memorize 
+特征 (Cheng 等人, 2016).  问题 是 该 它 可以 仅 memorize
 seen 交叉 特征 (在 训练数据), 和 cannot 泛化  unseen
-交叉 特征. 此外,  数量 的 交叉 特征 增加 polynomially 用  顺序 的 crossing. 因此 它 需要 领域 知识 
+交叉 特征. 此外,  数量 的 交叉 特征 增加 polynomially 用  顺序 的 crossing. 因此 它 需要 领域 知识
 选择 有用 交叉 特征 而非 使用中 所有 交叉 特征. 因此,
 我们 需求 更多 eﬀective 和 eﬃcient 技术 用于 特征 交互
 建模.
@@ -9851,7 +9852,7 @@ seen 交叉 特征 (在 训练数据), 和 cannot 泛化  unseen
 interactions 是 建模: 隐式 交互 建模, 显式 交互 建模, 和  组合 的 隐式 和 显式 交互
 建模.
 
-UserEmbeddingLayerItemEmbeddingLayerUserVector!′HadamardProductUserVector!PairwiseHingeLossK1K2K3K4K5K6M1M2M3M4M5M6RelationLayer!+$−&TranslationLayer!′+$−&′ItemVector&′ItemVectorqJointEmbeddingSoftmaxNegativeSamplingUser-ItemKeysUser-ItemKeysLatentRelationVector$MemorySlicesRelationModelingLayer136$
+UserEmbeddingLayerItemEmbeddingLayerUserVector!′HadamardProductUserVector!PairwiseHingeLossK1K2K3K4K5K6M1M2M3M4M5M6RelationLayer!+ $−&TranslationLayer!′+$ −&′ItemVector&′ItemVectorqJointEmbeddingSoftmaxNegativeSamplingUser-ItemKeysUser-ItemKeysLatentRelationVector $MemorySlicesRelationModelingLayer136$
 
 推荐中的深度匹配模型
 
@@ -9864,15 +9865,15 @@ UserEmbeddingLayerItemEmbeddingLayerUserVector!′HadamardProductUserVector!Pair
 嵌入 向量). 它 则 concatenates 所有 embeddings, feeding  concatenated 向量 到  三-层 MLP  获得  ﬁnal 预测.
  MLP 是 expected  学习  interactions 之中 特征 embeddings, 因为 其 强 表示 能力 在 approximating
 任何 连续 函数. 然而,  特征 交互 建模
-是 而  隐式 过程 由于  interactions 是 encoded 在 
+是 而  隐式 过程 由于  interactions 是 encoded 在
 隐藏 单元 的 MLP, 和 那里 是 无 方式  识别 该 interactions
 是 重要 用于  预测 之后  模型 是 训练了. 此外, 它 是
 practically diﬃcult 用于 MLP  学习 multiplication eﬀect (Beutel 等人,
 2018), 该 是 重要  捕获 交叉 特征.
 
 该 简单 架构 成为  pioneer 工作 的 利用中 深度
-神经 网络 用于 推荐, 和 许多 后来 工作 使 extensions 在 它. 用于 例子, 广泛&深度 (Cheng 等人, 2016) ensembles 
-深度模型 (i.e.,  深度 部分) 用  线性 回归 模型 (i.e., 
+神经 网络 用于 推荐, 和 许多 后来 工作 使 extensions 在 它. 用于 例子, 广泛&深度 (Cheng 等人, 2016) ensembles
+深度模型 (i.e.,  深度 部分) 用  线性 回归 模型 (i.e.,
 广泛 部分), 该 包含 sophisticated 特征 包括中 手动地
 构建了 交叉 特征. 深度 Crossing (Shan 等人, 2016) deepens
  MLP  十 层 用 residual connections 之间 层. 作为 将
@@ -9895,7 +9896,7 @@ FM 是  传统 模型 该 执行 秒-顺序 交互 建模 (我们 具有 介绍 
 137
 
 图 5.19 显示  神经 分解机 (NFM) 模型 (他
-和 Chua, 2017).  想法 是  replace  内积 用 
+和 Chua, 2017).  想法 是  replace  内积 用
 元素-wise 乘积, 该 输出  向量 而 比  标量, 和
 则 stacks  MLP 以上  sum 的 元素-wise products.  core
 操作 在 NFM 是 称为 Bi-交互 池化, deﬁned 作为:
@@ -9919,28 +9920,28 @@ xivi (cid:12) xjvj,
 其中 xi 表示  值 的 特征 i, Vx 表示  集合 的 embeddings
 的 non-零 特征, 和 n 表示  数量 的 non-零 特征.
  向量 获得了 通过 Bi-交互 池化 encodes 秒-顺序
-interactions. 通过 stacking  MLP 以上 它,  模型 具有  能力 
+interactions. 通过 stacking  MLP 以上 它,  模型 具有  能力
 学习 高-顺序 特征 interactions.
 
 图 5.19: 模型 架构 的 NFM.
 
 一 问题 用 FM 和 NFM 是 该 所有 秒-顺序 interactions
-是 考虑了 equally 重要, 和 它们 contribute evenly  
+是 考虑了 equally 重要, 和 它们 contribute evenly
 预测.  解决 该 问题, Attentional 分解机
 (AFM) (Xiao 等人, 2017) 是 提出  diﬀerentiate  重要性
 的 interactions 用  注意力 网络. 图 5.20 显示  架构 的 AFM.  输入 和 嵌入 层 是  相同 作为
-那些 在  标准 FM.  对-wise 交互 层 执行 
-元素-wise 乘积 在 每个 对 的 特征 embeddings  获得 
+那些 在  标准 FM.  对-wise 交互 层 执行
+元素-wise 乘积 在 每个 对 的 特征 embeddings  获得
 交互 vectors; 该 步骤 是 等价  那些 的 FM 和 NFM.
  注意力 网络 取 每个 交互 向量 vi (cid:12) vj 作为 输入
 和 输出  重要性 权重 aij 用  二-层 MLP. 则,
 
-010100.20……InputFeatureVectorV"V#V$……EmbeddingLayerBi-InteractionPooling…%&B-InteractionLayerHiddenLayersPredictionScore138$
+010100.20……InputFeatureVectorV"V#V $……EmbeddingLayerBi-InteractionPooling…%&B-InteractionLayerHiddenLayersPredictionScore138$
 
 推荐中的深度匹配模型
 
  模型 使用  重要性 权重  re-权重 每个 交互
-向量 和 sum 向上 所有 交互 vectors  获得  ﬁnal 分数. 
+向量 和 sum 向上 所有 交互 vectors  获得  ﬁnal 分数.
 方程 的 AFM 是:
 
 ˆyAF M (x) = pT
@@ -9964,18 +9965,18 @@ i=1
 每个 秒-顺序 交互 用于  预测. 它 是 straightforward
  进一步 利用  strengths 的 NFM 在 高-顺序 交互
 建模 和 AFM 在 秒-顺序 交互 建模, 通过 appending
- MLP 到  注意力-基于 池化 层. 该 自然地 导致 
+ MLP 到  注意力-基于 池化 层. 该 自然地 导致
 深度 AFM, 该 具有 更好 表示 能力 和 可以 yield 更好
 性能.  最近 工作 (Tao 等人, 2019) 提出  高-顺序
 attentive FM (HoAFM), 该 具有 线性 复杂度 在 顺序 大小.
 
 正交   工作 的 FM, Lian 等人 (2018) 提出 压缩 交互 网络 (CIN), 该 显式地 模型 高-顺序
 特征 interactions 在  递归 方式. Let  embeddings 的 non-零
-输入 特征 是  矩阵 V0 \in Rn$\times$D, 其中 n 是  数量 的
-非零 特征 和 D 是  嵌入 大小;  i-th row 在 V0 是 
+输入 特征 是  矩阵 V0 \in Rn $\times$ D, 其中 n 是  数量 的
+非零 特征 和 D 是  嵌入 大小;  i-th row 在 V0 是
 嵌入 向量 的  i-th 非零 特征: V0
 i,∗ = vi. Let  输出
-的  k-th 层 在 CIN 是  矩阵 Xk \in RHk$\times$D, 其中 Hk 表示
+的  k-th 层 在 CIN 是  矩阵 Xk \in RHk $\times$ D, 其中 Hk 表示
  数量 的 嵌入 vectors 在  k-th 层 和 是  架构
 选择  specify (注意 该 H0 = n).  递归 deﬁnition 的 CIN
 该 可以 捕获 高-顺序 特征 交互 是 deﬁned 作为:
@@ -10004,11 +10005,11 @@ j,∗),
 
 (5.29)
 
-其中 1 \leq h \leq Hk, Wk,h \in RHk−1$\times$n 是  参数 矩阵 用于 
+其中 1 \leq h \leq Hk, Wk,h \in RHk−1 $\times$ n 是  参数 矩阵 用于
 h-th 特征 向量. 作为 Vk 是 derived 通过  交互 之间 Vk−1
 和 V0,  顺序 的 特征 interactions 增加 用  层 深度.
 假设 该  模型 stacks K 这样的 层,  ﬁnal 预测
-是 基于 在  输出 矩阵 Xk 的 所有 K 层, 该 uniﬁes 
+是 基于 在  输出 矩阵 Xk 的 所有 K 层, 该 uniﬁes
 特征 interactions 向上  K orders. 注意 该  时间复杂度 的
 高-顺序 交互 建模 增加 linearly 用  数量 的
 
@@ -10026,8 +10027,8 @@ orders, 该 是 smaller 比 该 的 高-顺序 FM. 然而, CIN
 组合 的 显式 和 隐式 交互 建模
 
 作为 隐式 交互 建模 和 显式 交互 建模 工作
-在 diﬀerent ways, 集成中 它们 到  uniﬁed 框架 具有 
-potential  改进  性能. 在  最近 文献, 
+在 diﬀerent ways, 集成中 它们 到  uniﬁed 框架 具有
+potential  改进  性能. 在  最近 文献,
 报告了 最好 performances 是 获得了 通过 混合 模型 该 组合
 多个 交互 模型 (Guo 等人, 2017; Lian 等人, 2018). 我们
 brieﬂy 综述  集成 方法 在 该 小节.
@@ -10036,7 +10037,7 @@ brieﬂy 综述  集成 方法 在 该 小节.
 该 利用 手动地 构建了 交叉 特征 ( 广泛 部分) 和
  MLP 模型 该 隐式地 使用  interactions 的 特征 (
 深度 部分).  广泛 部分 是  memorize  seen 交叉 特征, 和
- 深度 部分 是  泛化  unseen 交叉 特征. Let x 是 
+ 深度 部分 是  泛化  unseen 交叉 特征. Let x 是
 原始 输入 特征 和 \phi(x) 是  构建了 交叉 特征. 则
  模型 用于 预测中  点击率 是:
 
@@ -10050,24 +10051,24 @@ deepa(L) + b),
 
 \text{where } \sigma(·) 是  Sigmoid函数  输出  概率 值, wwide
 
-010100.20……!"·$"!%·$%!&·$&EmbeddingLayerSparseInput$'$"$($%$)$&$*!"\odot!%$"$%!"\odot!&$"$&!%\odot!&$%$&PairwiseInteractionLayer,"%,"&,%&\sum./0!/\odot!0$/$0AttentionBasedPoolingPredictionScoreAttentionNet12140
+010100.20……!"· $"!%·$ %!&· $&EmbeddingLayerSparseInput$ ' $"$ ( $%$ ) $&$ *!"\odot!% $"$ %!"\odot!& $"$ &!%\odot!& $%$ &PairwiseInteractionLayer,"%,"&,%&\sum./0!/\odot!0 $/$ 0AttentionBasedPoolingPredictionScoreAttentionNet12140
 
 推荐中的深度匹配模型
 
-表示  weights 的  广泛 部分, wdeep 表示  weights 的 
+表示  weights 的  广泛 部分, wdeep 表示  weights 的
 深度 部分, (L) 表示  最后 隐藏层 的  MLP 模型, 和 b
 是  偏置 术语.
 
  工作 的 广泛&深度 inspired 许多 后来 工作  采用 相似
 ensembles, 但 在 diﬀerent 模型. 用于 例子, DeepFM (Guo 等人,
 2017) ensembles FM 和 MLP 通过: ˆyDeepF M = \sigma(ˆyF M + ˆyM LP ), 其中
-ˆyF M 和 ˆyM LP 表示  predictions 的 FM 和 MLP, 分别地. 
-FM 模型 学习 秒-顺序 特征 interactions 显式地, 和 
+ˆyF M 和 ˆyM LP 表示  predictions 的 FM 和 MLP, 分别地.
+FM 模型 学习 秒-顺序 特征 interactions 显式地, 和
 MLP 模型 学习 高-顺序 特征 interactions 隐式地. 在 添加,
 DeepFM shares  嵌入 层 的 FM 和 MLP  减少 模型
 参数. xDeepFM (Lian 等人, 2018) 进一步 ensembles DeepFM
 用 CIN, 该 显式地 模型 高-顺序 特征 interactions. 那里
-是 其他 集成 模型. 我们 进行 不 描述 它们 这里 due 
+是 其他 集成 模型. 我们 进行 不 描述 它们 这里 due
 空间 limitations.  通用 观察 是 该 组合中 模型
 该 account 用于 diﬀerent 类型 的 interactions 通常 yields 更好
 performances.
@@ -10085,7 +10086,7 @@ performances.
 behaviors 可以 不 是 严格地 formalized 作为 sequences 的 interactions.
 该 是,  序列 的 interactions 进行 不 necessarily encode 强
 语义 作为  句子 的 词, 和  recorded 序列 仅 reﬂects
- 用户’s 一 选择 和 其他 choices 可以 也 是 可能. 作为 
+ 用户’s 一 选择 和 其他 choices 可以 也 是 可能. 作为
 结果,  “左--正确” 训练 范式, 这样的 作为 RNN, 可以 不 是
 最优 因为  未来 interactions 是 ignored 在  预测 的
 interactions. 这样的 信息 是 也 indicative 的 用户’s 偏好 和
@@ -10115,7 +10116,7 @@ GCN (MMGCN) (Wei 等人, 2019) 构建  模态-aware GCN
 具有 描述, social 网络 (Wu 等人, 2019b) 和 会话 图 (Wu
 等人, 2019c; Qiu 等人, 2019) 是 也 使用了 用于 学习 的 GCN. 作为
  图 提供  形式 方式 的 描述中 diﬀerent 类型 的 entities
-和 其 relations, 匹配 基于 在  异质 图 是 
+和 其 relations, 匹配 基于 在  异质 图 是
 有前景 解决方案 用于 推荐 系统 在 diﬀerent 应用.
 作为 用于 学习 动态 表示 的 用户 用 respect  diﬀerent
 item, 注意力 网络 是 designed  学习 用户’s speciﬁc preferences
@@ -10153,7 +10154,7 @@ trade-oﬀ 当 interacting 用 用户 在 在线 recommendations. 二
 5.3.2 基准 Datasets
 
 那里 是  数量 的 基准 datasets 可用 用于 训练 和
-测试 推荐 模型 在 diﬀerent 场景. 用于 实例, 
+测试 推荐 模型 在 diﬀerent 场景. 用于 实例,
 MovieLens 集合1, Amazon 乘积 集合2 (他 和 McAuley,
 2016b), 和 Gowalla3 (Liang 等人, 2016) 是 基准 datasets
 该 由组成 的 用户-item交互 数据. Yelp4, Ciao5, 和 Epinions6 (Richardson 等人, 2003) 是 datasets 该 此外 包括
@@ -10178,14 +10179,14 @@ ommendation. Criteo9, Avazu10, 和 Frappe11 (Baltrunas 等人, 2015)
 使用了 在 CTR 预测 和 特征-基于 推荐. 此外,
 作为 Amazon, Yelp, 和 TripAdvisor12 (Wang 等人, 2018c) 提供 rich
 综述 和 comments 在 item, 它们 是 广泛 利用了 在 综述-基于
-推荐 模型. 除之外, 那里 是 若干 datasets 呈现中 
+推荐 模型. 除之外, 那里 是 若干 datasets 呈现中
 知识图谱 用于 推荐, 这样的 作为 KB4Rec13 (Zhao 等人,
 2019) 和 KGAT14 (Wang 等人, 2019).
 
 5.3.3 Open 来源 Packages
 
 若干 open-来源 packages 或 libraries 用于 推荐 是 publicly 可用, 用  aim 的 facilitating 相关 研究. Microsoft
-Recommenders15 oﬀers tens 的 例子 模型 用于 构建中 推荐 系统. NeuRec16 是  open-来源 library 该 包括 
+Recommenders15 oﬀers tens 的 例子 模型 用于 构建中 推荐 系统. NeuRec16 是  open-来源 library 该 包括
 大 数量 的 最先进的 推荐 模型, ranging 从
 协同 过滤ing 和 social 推荐  序列推荐. 它 是 worthwhile highlighting 该 NeuRec 是  modular
 框架 在 该  模型 可以 是 构建了  reusable 模块 用
@@ -10209,14 +10210,14 @@ Simiarly, OpenRec17 是  open-来源 item 该 包含 若干
 
 6.1 综述总结
 
-如何  桥接  语义鸿沟 之间 二 匹配 entities 是 
+如何  桥接  语义鸿沟 之间 二 匹配 entities 是
 大多数 基本 和 有挑战 问题 在 搜索与推荐.
 在 搜索,  searchers 和  authors 的 文档 可以 使用 diﬀerent 表达  表示  相同 meanings, resulting 在  大多数
 不期望 outcomes 在 该 相关 文档 exist 但 cannot 是
 发现. 在 推荐,  用户 和  item belong  diﬀerent
 类型 的 entities 和 是 表示了 通过 diﬀerent superﬁcial 特征,
 使 它 diﬃcult  进行 匹配 之间  特征 和 因此
-oﬀer satisfactory recommendations 在 item  用户.  桥接 
+oﬀer satisfactory recommendations 在 item  用户.  桥接
 语义鸿沟, 研究ers 在 两者 搜索与推荐 具有 提出  构建 和 利用 匹配 模型 用 机器学习
 技术.
 
@@ -10259,7 +10260,7 @@ blurry, 和 那里 emerges  趋势  unify  二 范式 (Zhang
 和 推荐. 由于 匹配 是 进行了 之间 二 集合
 的 对象, 它 可以 是 分类 作为 文本 匹配 和 实体 匹配.
 在 文本 匹配, 那里 exists  顺序 之间  元素 之内
-每个 对象 (e.g., 词 在  句子). 查询-文档匹配 是 
+每个 对象 (e.g., 词 在  句子). 查询-文档匹配 是
 典型 例子 的 文本 匹配. 在 实体 匹配, 那里 是 无 顺序
 exits 之间  对象. 用户-item匹配 在 推荐 是
  例子 的 实体 匹配. 其他 匹配 任务 具有 也 是
@@ -10267,7 +10268,7 @@ exits 之间  对象. 用户-item匹配 在 推荐 是
 
 Paraphrase 检测 Determining 是否 二 句子 是 用
  相同 含义 是  重要 主题 的 语义匹配 在
-自然语言处理.  匹配 是 进行了 在 
+自然语言处理.  匹配 是 进行了 在
 
 146
 
@@ -10289,7 +10290,7 @@ implication 或 none-implication 关系 之间 二 statements.
 水平, 和  匹配函数 是 不 symmetric.
 
 检索-基于 对话 一 关键 问题 在 检索-基于 对话
-是  发现  大多数 适合 响应 给定 话语 在 
+是  发现  大多数 适合 响应 给定 话语 在
 上下文 的  会话.  响应 是 通常  句子
 同时  话语 可以 是, 用于 例子, 一 单一 话语 或
 所有 话语 在  上下文 (在 多-轮次 dialog). 它 是 obvious
@@ -10297,7 +10298,7 @@ implication 或 none-implication 关系 之间 二 statements.
 水平.
 
 在线 advertising 在 搜索 ads, 如何  匹配  用户’s 搜索 查询
- advertisers’ 关键词 大大 ﬀects  概率 该 
+ advertisers’ 关键词 大大 ﬀects  概率 该
 用户 将 see 和 点击  ads. 在 contextual ads, 匹配 是
 进行了 之间  关键词 和  contents 的 webpages.
 在 两者 案例, 语义匹配 是 有帮助 在 choosing 正确 ads
@@ -10317,11 +10318,11 @@ implication 或 none-implication 关系 之间 二 statements.
 
 量 的 数据  训练. 如何  利用 无监督学习,
 弱-监督学习, 半-监督学习, 和 distant
-监督学习 技术  deal 用  问题 是 
+监督学习 技术  deal 用  问题 是
 重要 问题.
 
 2.  大 fraction 的 深度匹配 模型 是 训练了 用 点击
-数据. 现有 研究 显示 该 直接地 使用中 点击 数据 作为 训练 signals 经常 yields 次优 results. 在 学习  排序, 
+数据. 现有 研究 显示 该 直接地 使用中 点击 数据 作为 训练 signals 经常 yields 次优 results. 在 学习  排序,
 counterfactual 推理 框架 是 提出  推导 unbiased
 学习  排序 模型 (Joachims 等人, 2017). 如何  overcome
  偏置 问题 在 深度匹配 是  exciting 未来 方向.
@@ -10357,7 +10358,7 @@ trustworthiness 的  系统. 如何  创建  解释
 
 干预 和 counterfactual 推理 到  模型 (Pearl,
 2019). 此外,  collected 数据 是 通常 biased 通过 许多
-factors, 如  位置 偏置, exposure 偏置, 和 因此 在. 它 是 
+factors, 如  位置 偏置, exposure 偏置, 和 因此 在. 它 是
 新兴 方向  开发 因果 方法 用于 匹配, 该
 是 鲁棒   各种 数据 偏置 和 able  reveal  reasons
 在之后  数据. 章-结论 2020-05-28 19.21.04
@@ -10384,7 +10385,7 @@ Acknowledgements
 
 我们 thank  编辑 和  三 anonymous reviewers 用于 其
 valuable comments  改进  manuscript. 我们 thank Dr. Wang
-Xiang 和 Dr. Yuan Fajie 用于 提供中 材料 用于  writing 的 
+Xiang 和 Dr. Yuan Fajie 用于 提供中 材料 用于  writing 的
 书.  工作 是 支持了 通过  National 自然 科学 基础
 的 China (61872338, 61972372, U19207, 61832017), Beijing Academy
 的 Artiﬁcial 智能 (BAAI2019ZD0305), 和 Beijing 杰出的
@@ -10788,7 +10789,7 @@ References
 AAAI 会议 在 Artiﬁcial 智能. AAAI’16. Phoenix, Arizona: AAAI Press. 144–150. url: http://dl.acm.org/引用.cfm?
 id=3015812.3015834.
 
-他, R. 和 J. J. McAuley. 2016b. “Ups 和 Downs: 建模 
+他, R. 和 J. J. McAuley. 2016b. “Ups 和 Downs: 建模
 Visual 演化 的 Fashion Trends 用 一-类 协同
 过滤”. 在: 会议论文集 的  25th 国际 会议
 在 世界 广泛 Web, WWW 2016, Montreal, Canada, April 11
@@ -10896,7 +10897,7 @@ Huang, Y., Q. Wu, W. Wang, 和 L. Wang. 2018. “图像 和 句子
 匹配 通过 语义 Concepts 和 顺序 学习”. IEEE Transactions 在 模式 分析 和 机器 智能: 1–1. issn:
 0162-8828. doi: 10.1109/TPAMI.2018.2883466.
 
-Hui, K., . Yates, K. Berberich, 和 G. de Melo. 2017. “PACRR: 
+Hui, K., . Yates, K. Berberich, 和 G. de Melo. 2017. “PACRR:
 位置-Aware 神经 IR 模型 用于 相关性 匹配”. 在: 会议论文集 的  2017 会议 在 经验的 方法 在 自然
 语言 Processing. Copenhagen, Denmark: 协会 用于 计算 语言学. 1049–1058. doi: 10.18653/v1/D17-1110. url:
 http://aclweb.org/anthology/D17-1110.
@@ -10905,7 +10906,7 @@ References
 
 163
 
-Hui, K., . Yates, K. Berberich, 和 G. de Melo. 2018. “Co-PACRR: 
+Hui, K., . Yates, K. Berberich, 和 G. de Melo. 2018. “Co-PACRR:
 上下文-Aware 神经 IR 模型 用于 临时检索”. 在: 会议论文集 的  Eleventh ACM 国际 会议 在 网页搜索
 和 数据 挖掘. WSDM ’18. Marina Del Rey, CA, USA: ACM.
 279–287. isbn: 978-1-4503-5581-0. doi: 10.1145/3159652.3159689.
@@ -10932,7 +10933,7 @@ doi: 10.1145/775047.775067. url: http://doi.acm.org/10.1145/
 775047.775067.
 
 Joachims, T., . Swaminathan, 和 T. Schnabel. 2017. “Unbiased
-学习--排序 用 Biased 反馈”. 在: 会议论文集 的 
+学习--排序 用 Biased 反馈”. 在: 会议论文集 的
 第十 ACM 国际 会议 在 网页搜索 和 数据
 挖掘. WSDM ’17. Cambridge, United Kingdom. 781–789. doi:
 10.1145/3018661.3018699. url: https://doi.org/10.1145/3018661.
@@ -10954,7 +10955,7 @@ Kang, W. 和 J. J. McAuley. 2018. “自身-Attentive 序列推荐”. 在: IEEE
 
 Karatzoglou, ., X. Amatriain, L. Baltrunas, 和 N. Oliver. 2010.
 “Multiverse 推荐: N-维 张量 Factorization
-用于 上下文-aware 协同过滤”. 在: 会议论文集 的 
+用于 上下文-aware 协同过滤”. 在: 会议论文集 的
 第四 ACM 会议 在 推荐 系统. RecSys ’10.
 Barcelona, Spain: ACM. 79–86. isbn: 978-1-60558-906-0. doi: 10.
 1145/1864708.1864727. url: http://doi.acm.org/10.1145/1864708.
@@ -11047,7 +11048,7 @@ Li, H. 和 J. Xu. 2014. “语义匹配 在 搜索”. Foundations 和
 Trends 在 信息检索. 7(5): 343–469. issn: 1554-0669. doi:
 10.1561/1500000035. url: http://dx.doi.org/10.1561/1500000035.
 Li, J., P. Ren, Z. Chen, Z. Ren, T. Lian, 和 J. Ma. 2017. “神经
-Attentive 基于会话的推荐”. 在: 会议论文集 的 
+Attentive 基于会话的推荐”. 在: 会议论文集 的
 2017 ACM 在 会议 在 信息 和 知识 管理. CIKM ’17. Singapore, Singapore: ACM. 1419–1428. isbn:
 978-1-4503-4918-5. doi: 10 . 1145 / 3132847 . 3132926. url: http :
 //doi.acm.org/10.1145/3132847.3132926.
@@ -11100,7 +11101,7 @@ Liu, T.-Y. 2009. “学习  排序 用于 信息检索”. 发现.
 Trends Inf. Retr. 3(3): 225–331. issn: 1554-0669. doi: 10 . 1561 /
 1500000016. url: http://dx.doi.org/10.1561/1500000016.
 
-Liu, Y., Y. Guo, E. M. Bakker, 和 M. S. Lew. 2017. “学习 
+Liu, Y., Y. Guo, E. M. Bakker, 和 M. S. Lew. 2017. “学习
 Recurrent Residual 融合 网络 用于 Multimodal 匹配”. 在:
 2017 IEEE 国际 会议 在 计算机 视觉 (ICCV).
 4127–4136. doi: 10.1109/ICCV.2017.442.
@@ -11251,7 +11252,7 @@ Parikh, ., O. Täckström, D. Das, 和 J. Uszkoreit. 2016. “ Decomposable 注�
 //www.aclweb.org/anthology/D16-1244.
 
 Pasricha, R. 和 J. McAuley. 2018. “翻译-基于 Factorization
-Machines 用于 序列推荐”. 在: 会议论文集 的 
+Machines 用于 序列推荐”. 在: 会议论文集 的
 12th ACM 会议 在 推荐 系统. RecSys ’18. Vancouver, British Columbia, Canada: 协会 用于 计算中 Machinery. 63–71. isbn: 9781450359016. doi: 10.1145/3240323.3240356.
 url: https://doi.org/10.1145/3240323.3240356.
 
@@ -11290,7 +11291,7 @@ Zettlemoyer. 2018. “深度 Contextualized 词 表示”. 在:
 的  协会 用于 计算 语言学: 人类 语言
 Technologies, 卷 1 (长 Papers). 新 Orleans, Louisiana: 协会 用于 计算 语言学. 2227–2237. doi: 10.18653/
 v1/N18-1202. url: https://www.aclweb.org/anthology/N18-1202.
-Qiao, Y., C. Xiong, Z. Liu, 和 Z. Liu. 2019. “理解 
+Qiao, Y., C. Xiong, Z. Liu, 和 Z. Liu. 2019. “理解
 Behaviors 的 BERT 在 排序”. CoRR. abs/1904.07531. arXiv:
 1904.07531. url: http://arxiv.org/abs/1904.07531.
 
@@ -11396,7 +11397,7 @@ Schedl, M., H. Zamani, C.-W. Chen, Y. Deldjoo, 和 M. Elahi. 2018.
 10.1007/s13735-018-0154-2.
 
 Sedhain, S., . K. Menon, S. Sanner, 和 L. Xie. 2015. “AutoRec:
-Autoencoders Meet 协同过滤”. 在: 会议论文集 的 
+Autoencoders Meet 协同过滤”. 在: 会议论文集 的
 24th 国际 会议 在 世界 广泛 Web. WWW ’15
 Companion. Florence, Italy: ACM. 111–112. isbn: 978-1-4503-3473-0.
 doi: 10.1145/2740908.2742726. url: http://doi.acm.org/10.1145/
@@ -11437,12 +11438,12 @@ Srivastava, N., G. Hinton, . Krizhevsky, I. Sutskever, 和 R. Salakhutdinov. 201
 从 超过ﬁtting”. J. Mach. 学习. Res. 15(1): 1929–1958. issn:
 1532-4435. url: http://jmlr.org/papers/v15/srivastava14.html.
 Sun, F., J. Liu, J. Wu, C. Pei, X. Lin, W. Ou, 和 P. Jiang. 2019.
-“BERT4Rec: 序列推荐 用 Bidirectional 编码器 表示 从 Transformer”. 在: 会议论文集 的 
+“BERT4Rec: 序列推荐 用 Bidirectional 编码器 表示 从 Transformer”. 在: 会议论文集 的
 28th ACM 国际 会议 在 信息 和 知识 管理. CIKM ’19. Beijing, China: ACM. 1441–1450.
 isbn: 978-1-4503-6976-3. doi: 10.1145/3357384.3357895. url: http:
 //doi.acm.org/10.1145/3357384.3357895.
 
-Surdeanu, M., M. Ciaramita, 和 H. Zaragoza. 2011. “学习 
+Surdeanu, M., M. Ciaramita, 和 H. Zaragoza. 2011. “学习
 排序 答案  Non-Factoid 问题 从 Web Collections”.
 计算 语言学. 37(2): 351–383. doi: 10.1162/COLI\_\
 _00051. eprint: https://doi.org/10.1162/COLI__00051. url:
@@ -11523,7 +11524,7 @@ References
 179
 
 Van Gysel, C., M. de Rijke, 和 M. Worring. 2016b. “无监督,
-Eﬃcient 和 语义 专长 检索”. 在: 会议论文集 的 
+Eﬃcient 和 语义 专长 检索”. 在: 会议论文集 的
 25th 国际 会议 在 世界 广泛 Web. WWW ’16.
 Montr&#233;al, Qu&#233;bec, Canada. 1069–1079. isbn: 978-1-
 4503-4143-1. doi: 10.1145/2872427.2882974. url: https://doi.org/
@@ -11621,7 +11622,7 @@ Navigation”. 在:  IEEE 会议 在 计算机 视觉 和
 模式 识别 (CVPR).
 
 Wang, Z., W. Hamza, 和 R. Florian. 2017c. “Bilateral 多-视角
-匹配 用于 自然 语言 句子”. 在: 会议论文集 的 
+匹配 用于 自然 语言 句子”. 在: 会议论文集 的
 二十-第六 国际 联合 会议 在 Artiﬁcial 智能, IJCAI-17. 4144–4150. doi: 10.24963/ijcai.2017/579. url:
 https://doi.org/10.24963/ijcai.2017/579.
 
@@ -11675,7 +11676,7 @@ References
 
 183
 
-Wu, S., Y. Tang, Y. Zhu, L. Wang, X. Xie, 和 T. Tan. 2019c. “SessionBased 推荐 用 图 神经 网络”. 在: 
+Wu, S., Y. Tang, Y. Zhu, L. Wang, X. Xie, 和 T. Tan. 2019c. “SessionBased 推荐 用 图 神经 网络”. 在:
 三十-第三 AAAI 会议 在 Artiﬁcial 智能, AAAI
 2019, Honolulu, Hawaii, USA, 2019. 346–353. doi: 10.1609/aaai.
 v33i01.3301346. url: https://doi.org/10.1609/aaai.v33i01.3301346.
@@ -11872,8 +11873,8 @@ Indiana, USA: ACM. 1483–1492. isbn: 978-1-4503-4073-1. doi: 10.
 2983844.
 
 Zamani, H., M. Dehghani, W. B. Croft, E. 学会了-Miller, 和 J. Kamps.
-2018b. “从 神经 Re-排序  神经 排序: 学习 
-稀疏 表示 用于 Inverted 索引”. 在: 会议论文集 的 
+2018b. “从 神经 Re-排序  神经 排序: 学习
+稀疏 表示 用于 Inverted 索引”. 在: 会议论文集 的
 27th ACM 国际 会议 在 信息 和 知识
 管理. CIKM ’18. Torino, Italy: 协会 用于 计算中
 Machinery. 497–506. isbn: 9781450360142. doi: 10.1145/3269206.
@@ -11893,7 +11894,7 @@ Zhang, S., L. Yao, . Sun, 和 Y. Tay. 2019. “深度学习 基于
 Comput. Surv. 52(1). issn: 0360-0300. doi: 10.1145/3285029. url:
 https://doi.org/10.1145/3285029.
 
-Zhang, X., H. Xie, H. Li, 和 J. C.S. Lui. 2020. “Conversational Contextual Bandit: 算法 和 应用”. 在: 会议论文集 的 
+Zhang, X., H. Xie, H. Li, 和 J. C.S. Lui. 2020. “Conversational Contextual Bandit: 算法 和 应用”. 在: 会议论文集 的
 Web 会议 2020. WWW ’20. Taipei, Taiwan: 协会 用于
 计算中 Machinery. 662–672. isbn: 9781450370233. doi: 10.1145/
 3366423.3380148. url: https://doi.org/10.1145/3366423.3380148.

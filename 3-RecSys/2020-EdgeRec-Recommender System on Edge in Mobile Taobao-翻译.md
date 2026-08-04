@@ -1,6 +1,8 @@
 # EdgeRec: Recommender System on Edge in Mobile Taobao
 
-> Yu Gong\*¹, Ziwen Jiang\*¹, Yufei Feng¹, Binbin Hu², Kaiqi Zhao³, Qingwen Liu¹, Wenwu Ou¹ | 1阿里巴巴集团, 2蚂蚁金融服务集团, 3奥克兰大学
+> Yu Gong\*¹, Ziwen Jiang\*¹, Yufei Feng¹, Binbin Hu², Kaiqi Zhao³, Qingwen Liu¹, Wenwu Ou¹ | 1Alibaba Group, 2Ant Financial Services Group, 3University of Auckland
+>
+> CIKM '20, October 19–23, 2020, Virtual Event, Ireland
 
 本文介绍了 EdgeRec 推荐系统，通过将推荐计算部署在移动设备端侧，实现了实时用户感知和实时系统反馈，无需对云服务器做额外请求。核心内容：
 
@@ -12,18 +14,16 @@
 
 - EdgeRec 在淘宝首页信息流上实现了实时感知和实时反馈
 - 在线 A/B 测试贡献了高达 1.57% PV、7.18% CTR、8.87% CLICK 和 10.92% GMV 提升
-- 用户行为延迟从 $\leq 1\text{min}$ 降至 $\leq 300\text{ms}$，系统响应从 $\leq 1\text{s}$ 降至 $\leq 100\text{ms}$
+- 用户行为延迟从 $\leq 1\text{min}$ 降至 $\leq 300\text{ms}$ ，系统响应从 $\leq 1\text{s}$ 降至 $\leq 100\text{ms}$
 
 ---
 
 ## 摘要
 推荐系统（Recommender System, RS）已成为大多数网络规模应用中的关键模块。近来，大多数推荐系统基于云到端（cloud-to-edge）框架采用瀑布流形式，其中推荐结果通过在云服务器中预先计算后被传输到端侧（例如用户移动端）。尽管有效，但云服务器与端侧之间的网络带宽和延迟可能导致系统反馈和用户感知的延迟。因此，端侧上的实时计算能够帮助更精准地捕获用户偏好，从而做出更令人满意的推荐。据我们所知，我们的工作是首次尝试设计并实现新型的端侧推荐系统（EdgeRec），该系统实现了实时用户感知（Real-time User Perception）和实时系统反馈（Real-time System Feedback）。此外，我们提出了异构用户行为序列建模（Heterogeneous User Behavior Sequence Modeling）和基于行为注意力网络的上下文感知重排序（Context-aware Reranking with Behavior Attention Networks）来捕获用户的多样兴趣并相应地调整推荐结果。在淘宝首页信息流（Taobao home-page feeds）上的离线评估和在线性能实验结果均证明了EdgeRec的有效性。
 
-## 关键词
+**关键词**：Recommender System; Edge Computing
 
-推荐系统；边缘计算
-
-## ACM引用格式（ACM Reference Format）
+ACM引用格式：
 
 Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 2020. EdgeRec: Recommender System on Edge in Mobile Taobao. In Proceedings of the 29th ACM International Conference on Information and Knowledge Management (CIKM '20), October 19–23, 2020, Virtual Event, Ireland. ACM, New York, NY, USA, 8 pages. https://doi.org/10.1145/3340531.3412700
 
@@ -36,6 +36,8 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 \* 两位作者贡献相同。
 
 如图1所示，大多数瀑布流推荐系统基于云到端框架部署。当用户在瀑布流推荐系统场景中滚动时，移动端客户端首先向云服务器发起分页请求。然后，服务于云服务器的匹配和排序模型响应分页请求，生成一个排序后的item列表展示给用户。在这种情形下，当前基于云到端的瀑布流推荐系统存在以下局限：
+
+**图1：流行的基于云到端的瀑布流推荐系统示意图。**
 
 • **系统反馈延迟（Delay for System Feedback）：** 由于云到端框架中的分页机制，云端的推荐系统无法在两个相邻分页请求之间及时调整推荐结果，从而无法满足用户变化的需求。以图1中的一个例子说明，用户点击了当前页面第5个位置的一件连衣裙，这反映了他/她对连衣裙类别的突发偏好。然而，云端的推荐系统无法对此做出响应，除非用户滚动到下一页，这因此无法及时满足他/她的需求并降低了用户体验。
 
@@ -55,8 +57,8 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 
 我们在淘宝首页信息流的真实流量上进行了广泛的离线和在线评估。定量和定性分析都证明了我们提出的EdgeRec系统的合理性和有效性。此外，EdgeRec在在线A/B测试²中贡献了高达1.57%的PV、7.18%的CTR、8.87%的CLICK和10.92%的GMV提升，为当前淘宝推荐系统带来了显著改进。目前EdgeRec已上线并为主要流量提供服务。
 
-¹这里用户的移动设备即为端侧。  
-²PV和CLICK定义为用户浏览和点击的item总数。CTR是点击率，计算公式为CLICK/PV。GMV是用户在推荐item上花费的总金额（收入）。
+¹这里用户的移动设备即为端侧。
+²PV（Page View，页面浏览量）和CLICK定义为用户浏览和点击的item总数。CTR（Click-Through Rate，点击率）的计算公式为CLICK/PV。GMV（Gross Merchandise Volume，商品交易总额）是用户在推荐item上花费的总金额（收入）。
 
 ---
 
@@ -68,6 +70,8 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 
 在图2中，我们展示了EdgeRec系统的概览。注意EdgeRec旨在与云端推荐系统协同工作而非替代它。主要模块和工作流程说明如下：
 
+**图2：EdgeRec系统概览。左侧的模块部署在移动端淘宝客户端中，右侧的模块在云端提供服务。**
+
 **客户端原生模块（Client Native, CN）** 首先发起分页请求并缓存来自推荐系统服务器的候选item及其对应特征。在EdgeRec中，分页大小设置为50，与淘宝原始推荐系统保持一致以保持稳定性。同时，为给设备端重排序提供更多空间，来自推荐系统服务器的返回item数量设置为100³。然后，CN收集用户在曝光item上的行为并触发模型服务模块。在从模型服务模块接收到候选（即未曝光）item的排序结果后，CN调整item的UI展示。
 
 **模型服务模块（Model Serving, MS）** 是EdgeRec系统的核心模块。当被CN触发时，MS首先对从CN接收到的用户行为和候选item进行特征工程，然后执行基于神经网络的模型，目的是通过用户行为建模捕获及时的用户行为，并通过上下文感知重排序及时响应用户⁴。最后，MS将日志发送到云端并将候选item的排序结果返回给CN。
@@ -76,7 +80,7 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 
 **离线训练模块（Offline Training, OT）** 首先从MS收集日志并在模型训练前构建样本。接下来，训练好的模型被拆分为三部分：（1）用户行为建模的子模型，（2）上下文感知重排序的子模型，以及（3）嵌入矩阵（例如类别和品牌）。最后，前两个子模型部署在MS模块上，而嵌入矩阵以键值形式保存在云端。
 
-³配置根据具体的推荐系统环境经验性地设置。  
+³配置根据具体的推荐系统环境经验性地设置。
 ⁴我们使用MNN（https://github.com/alibaba/MNN）作为设备上的在线深度神经网络推理引擎。
 
 ### 2.2 系统实现（System Implementation）
@@ -91,9 +95,9 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 
 在移动设备上服务深度神经网络模型面临许多相对于传统云端服务的挑战，例如计算和存储的开销。针对EdgeRec模型服务，有两个关键实现分别面向计算和存储效率。其思想是将模型分布在端侧和云上，这使得EdgeRec支持在移动设备上为推荐系统服务大规模神经网络模型。
 
-**计算效率（Computing Efficiency）。** 用户行为建模（见第3.3节）和上下文感知重排序（见第3.4节）共同训练但分开部署并在设备上异步运行。用户行为建模利用循环神经网络（RNN）[13]的序列建模方法，如果总是从头开始推断（即 $O(n)$ 时间复杂度）则效率非常低下。因此，它利用RNN的循环特性（即 $O(1)$ 时间复杂度）随用户的在线实时行为独立地进行实时推断，并生成行为编码存储在设备上的数据库中。上下文感知重排序将首先从数据库中检索行为编码，然后基于它们进行模型推断。
+**计算效率（Computing Efficiency）。** 用户行为建模（见第3.3节）和上下文感知重排序（见第3.4节）共同训练但分开部署并在设备上异步运行。用户行为建模利用循环神经网络（Recurrent Neural Network, RNN）[13]的序列建模方法，如果总是从头开始推断（即 $O(n)$ 时间复杂度）则效率非常低下。因此，它利用RNN的循环特性（即 $O(1)$ 时间复杂度）随用户的在线实时行为独立地进行实时推断，并生成行为编码存储在设备上的数据库中。上下文感知重排序将首先从数据库中检索行为编码，然后基于它们进行模型推断。
 
-**存储效率（Storage Efficiency）。** ID类型的特征在推荐系统模型中常见且重要，我们总是利用嵌入（embedding）[10, 23]技术来转换它们。然而，在移动设备上服务时它们面临存储效率的挑战。例如，我们模型中的item品牌是一个ID特征，字典大小约为150万，通过嵌入层将转换为40维的隐状态，其中嵌入矩阵大小将为 $1500000 \times 40$（即约230MB）。具有如此大嵌入矩阵的模型在部署到移动设备时会面临存储开销问题。在我们提出的系统中，我们将嵌入矩阵从训练好的模型中提取出来，部署到云端的键值数据库中。这些嵌入矩阵将在推荐系统服务器响应客户端原生模块的分页请求时被对应item检索，并作为item特征发送到客户端。部署在设备上的模型其余部分（不含嵌入层，约3MB）将接收嵌入特征作为输入，然后进行模型推断。
+**存储效率（Storage Efficiency）。** ID类型的特征在推荐系统模型中常见且重要，我们总是利用嵌入（embedding）[10, 23]技术来转换它们。然而，在移动设备上服务时它们面临存储效率的挑战。例如，我们模型中的item品牌是一个ID特征，字典大小约为150万，通过嵌入层将转换为40维的隐状态，其中嵌入矩阵大小将为 $1500000 \times 40$ （即约230MB）。具有如此大嵌入矩阵的模型在部署到移动设备时会面临存储开销问题。在我们提出的系统中，我们将嵌入矩阵从训练好的模型中提取出来，部署到云端的键值数据库中。这些嵌入矩阵将在推荐系统服务器响应客户端原生模块的分页请求时被对应item检索，并作为item特征发送到客户端。部署在设备上的模型其余部分（不含嵌入层，约3MB）将接收嵌入特征作为输入，然后进行模型推断。
 
 此外，我们设计了一个模型版本策略以确保模型更新时的同步，因为模型成功部署到设备可能远滞后于模型（即嵌入矩阵）部署到云端，这取决于用户移动设备的当前状态（例如连接WiFi还是3G）。在EdgeRec系统中，我们将为每个训练好的模型生成一个唯一的版本ID。该版本ID与部署在设备上的模型和存储在云端的嵌入矩阵一起保存。客户端原生模块首先携带设备上的模型版本ID发起分页请求，然后云端推荐系统获取模型版本ID并在响应客户端之前检索对应版本的嵌入矩阵。
 
@@ -105,7 +109,7 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 
 ### 3.1 问题定义（Problem Definition）
 
-我们提出的EdgeRec系统旨在针对瀑布流推荐场景在端侧上应用重排序方法。给定由云端现有推荐系统生成的缓存于端侧的初始排序 item 列表 $S_r$，对于客户端原生模块触发的模型服务模块中的重排序请求 $r \in R$，我们的目标是找到一个评分函数 $\phi(\mathbf{x}_i, \mathbf{s}, C)$，该函数考虑：（1）item $i$ 的特征 $\mathbf{x}_i$，（2）来自初始模型的局部排序上下文 $\mathbf{s}$，以及（3）当前推荐环境下的实时用户行为上下文 $C$。
+我们提出的EdgeRec系统旨在针对瀑布流推荐场景在端侧上应用重排序方法。给定由云端现有推荐系统生成的缓存于端侧的初始排序 item 列表 $S_r$ ，对于客户端原生模块触发的模型服务模块中的重排序请求 $r \in R$ ，我们的目标是找到一个评分函数 $\phi(\mathbf{x}_i, \mathbf{s}, C)$ ，该函数考虑：（1）item $i$ 的特征 $\mathbf{x}_i$ ，（2）来自初始模型的局部排序上下文 $\mathbf{s}$ ，以及（3）当前推荐环境下的实时用户行为上下文 $C$ 。
 
 考虑局部排序上下文的重排序模型在先前的工作中已被充分研究。局部排序上下文被表示为初始排序候选item之间的列表式交互，可以通过RNN [1, 26]或Transformer [15]建模。这里我们认为实时用户行为上下文对于重排序问题也很重要，尤其是在瀑布流推荐场景中，而之前很少有工作考虑这一点。第3.3节介绍了我们如何通过异构用户行为序列建模来建模实时用户行为上下文，第3.4节介绍了我们如何通过基于行为注意力网络的上下文感知重排序来建模候选item与实时用户行为上下文之间的交互。通过结合边缘计算系统和上下文感知重排序模型，我们可以在推荐系统中实现实时感知和实时反馈，以更好地满足用户在线变化的需求。
 
@@ -125,60 +129,62 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 
 #### 3.2.2 item曝光用户动作特征（Item Exposure User Action Feature）
 
-item曝光（Item Exposure, IE）用户动作揭示了用户在推荐系统当前展示页面中对item曝光的行为方式。图3(a)展示了移动端淘宝瀑布流推荐系统中的item曝光。其上对应的用户动作特征可分为（详见Tab. 1）：（1）item曝光统计量（e1∼e2），（2）用户滚动统计量（e3∼e5），（3）用户删除反馈（e6），以及（4）时间衰减（e7）。这里我们将对应itemi的e1∼e7的拼接表示为item曝光动作特征向量a_IE^i。
+item曝光（Item Exposure, IE）用户动作揭示了用户在推荐系统当前展示页面中对item曝光的行为方式。图3(a)展示了移动端淘宝瀑布流推荐系统中的item曝光。其上对应的用户动作特征可分为（详见表1）：（1）item曝光统计量（$e_1 \sim e_2$），（2）用户滚动统计量（$e_3 \sim e_5$），（3）用户删除反馈（$e_6$），以及（4）时间衰减（$e_7$）。这里我们将对应item $i$ 的 $e_1 \sim e_7$ 的拼接表示为item曝光动作特征向量 $\mathbf{a}_{IE}^i$。
 
 #### 3.2.3 item浏览用户动作特征（Item Page-View User Action Feature）
 
-item浏览（Item Page-View, IPV）用户动作揭示了用户在点击item后进入item详情页中的行为方式。图3(b)展示了移动端淘宝中的item浏览。其中对应的用户动作特征可分为（详见Tab. 1）：（1）item浏览统计量（d1），（2）每个区块是否点击（d2∼d11），以及（3）时间衰减（d12）。这里我们将对应itemi的d1∼d12的拼接表示为item浏览动作特征向量a_IPV^i。
+item浏览（Item Page-View, IPV）用户动作揭示了用户在点击item后进入item详情页中的行为方式。图3(b)展示了移动端淘宝中的item浏览。其中对应的用户动作特征可分为（详见表1）：（1）item浏览统计量（$d_1$），（2）每个区块是否点击（$d_2 \sim d_{11}$），以及（3）时间衰减（$d_{12}$）。这里我们将对应item $i$ 的 $d_1 \sim d_{12}$ 的拼接表示为item浏览动作特征向量 $\mathbf{a}_{IPV}^i$。
+
+**图3：移动端淘宝中用户动作的示意图。**
 
 #### 3.2.4 item特征（Item Feature）
 
-除了用户动作的特征之外，我们还需要对应item的特征。它们可分为（详见Tab. 1）：（1）通过嵌入学习的离散特征（p1∼p6）和（2）从基础排序模型提供的原始特征（p7）。这里我们将itemi的p1∼p7的拼接表示为item特征向量pi。
+除了用户动作的特征之外，我们还需要对应item的特征。它们可分为（详见表1）：（1）通过嵌入学习的离散特征（$p_1 \sim p_6$）和（2）从基础排序模型提供的原始特征（$p_7$）。这里我们将item $i$ 的 $p_1 \sim p_7$ 的拼接表示为item特征向量 $\mathbf{p}_i$。
 
-**表1：特征系统详情（e1∼e7：item曝光用户动作特征；d1∼d12：item浏览用户动作特征；p1∼p7：item特征）**
+**表1：特征系统详情（$e_1 \sim e_7$：item曝光用户动作特征；$d_1 \sim d_{12}$：item浏览用户动作特征；$p_1 \sim p_7$：item特征）**
 
 | 变量 | 属性 | 描述 | 类型 |
 |------|------|------|------|
-| e1 | exposure_duration | item曝光总时长 | 分桶 |
-| e2 | exposure_count | item曝光总次数 | 分桶 |
-| e3 | scroll_speed | item曝光最大滚动速度 | 分桶 |
-| e4 | scroll_duration | item曝光最大滚动时长 | 分桶 |
-| e5 | scroll_count | item曝光总滚动次数 | 分桶 |
-| e6 | delete_reason | 删除item（长按）的原因或否 | 独热 |
-| e7 | expose_decay | 从item曝光到当前的时间衰减 | 分桶 |
-| d1 | ipv_duration | item浏览总时长 | 分桶 |
-| d2 | cart | 加购 | 二值 |
-| d3 | buy | 立即购买 | 二值 |
-| d4 | favorite | 收藏 | 二值 |
-| d5 | comment | 进入评论页 | 二值 |
-| d6 | select_SKU | 选择库存量单位（SKU） | 二值 |
-| d7 | WDJ | 问大家 | 二值 |
-| d8 | wangwang | 点击客服 | 二值 |
-| d9 | detail | 进入item详情页 | 二值 |
-| d10 | shop | 进入店铺 | 二值 |
-| d11 | recommendation | 进入推荐页 | 二值 |
-| d12 | ipv_decay | 从item浏览到当前的时间衰减 | 分桶 |
-| p1 | category | 产品类别 | 嵌入 |
-| p2 | brand | 产品品牌 | 嵌入 |
-| p3 | gender | 产品适用性别 | 嵌入 |
-| p4 | price_level | 产品价格等级 | 嵌入 |
-| p5 | age_level | 产品年龄等级 | 嵌入 |
-| p6 | bc_type | 产品bc类型 | 嵌入 |
-| p7 | scores | 产品特征分数（例如ctr, cvr等） | 原始 |
+| $e_1$ | exposure_duration | item曝光总时长 | 分桶 |
+| $e_2$ | exposure_count | item曝光总次数 | 分桶 |
+| $e_3$ | scroll_speed | item曝光最大滚动速度 | 分桶 |
+| $e_4$ | scroll_duration | item曝光最大滚动时长 | 分桶 |
+| $e_5$ | scroll_count | item曝光总滚动次数 | 分桶 |
+| $e_6$ | delete_reason | 删除item（长按）的原因或否 | 独热 |
+| $e_7$ | expose_decay | 从item曝光到当前的时间衰减 | 分桶 |
+| $d_1$ | ipv_duration | item浏览总时长 | 分桶 |
+| $d_2$ | cart | 加购 | 二值 |
+| $d_3$ | buy | 立即购买 | 二值 |
+| $d_4$ | favorite | 收藏 | 二值 |
+| $d_5$ | comment | 进入评论页 | 二值 |
+| $d_6$ | select_SKU | 选择库存量单位（SKU） | 二值 |
+| $d_7$ | WDJ | 问大家 | 二值 |
+| $d_8$ | wangwang | 点击客服 | 二值 |
+| $d_9$ | detail | 进入item详情页 | 二值 |
+| $d_{10}$ | shop | 进入店铺 | 二值 |
+| $d_{11}$ | recommendation | 进入推荐页 | 二值 |
+| $d_{12}$ | ipv_decay | 从item浏览到当前的时间衰减 | 分桶 |
+| $p_1$ | category | 产品类别 | 嵌入 |
+| $p_2$ | brand | 产品品牌 | 嵌入 |
+| $p_3$ | gender | 产品适用性别 | 嵌入 |
+| $p_4$ | price_level | 产品价格等级 | 嵌入 |
+| $p_5$ | age_level | 产品年龄等级 | 嵌入 |
+| $p_6$ | bc_type | 产品bc类型 | 嵌入 |
+| $p_7$ | scores | 产品特征分数（例如ctr, cvr等） | 原始 |
 
 ### 3.3 异构用户行为序列建模（Heterogeneous User Behavior Sequence Modeling）
 
-在本节中，我们将介绍如何对定义为C的实时用户行为上下文进行建模。遵循先前的工作[7, 14, 23]，我们也采用序列建模方法。然而，如第3.2.1节所讨论的，先前的工作只考虑用户正向交互的item，因此它们无法基于我们提出的特征系统很好地处理用户行为序列建模。挑战在于用户行为数据存在两个方面的异构性。在我们的工作中，我们提出了异构用户行为序列建模（Heterogeneous User Behavior Sequence Modeling, HUBSM），特别针对以下两种异构性。
+在本节中，我们将介绍如何对定义为 $C$ 的实时用户行为上下文进行建模。遵循先前的工作[7, 14, 23]，我们也采用序列建模方法。然而，如第3.2.1节所讨论的，先前的工作只考虑用户正向交互的item，因此它们无法基于我们提出的特征系统很好地处理用户行为序列建模。挑战在于用户行为数据存在两个方面的异构性。在我们的工作中，我们提出了异构用户行为序列建模（Heterogeneous User Behavior Sequence Modeling, HUBSM），特别针对以下两种异构性。
 
 第一种是"item曝光行为"和"item浏览行为"的异构性。由于在推荐系统中item点击相比item曝光要稀疏得多，如果它们在一个序列中一起编码，我们认为item浏览行为将占主导地位。因此我们选择分别对它们进行建模（即item曝光行为序列建模和item浏览行为序列建模）。第二种是"用户行为动作"和对应的"用户交互item"的异构性，它们代表两种特征空间。用户行为动作特征揭示了用户如何对某个item行为分布的规律，而item特征则表征了对应item特征的分布。我们选择先分别对它们进行编码，然后在后续的上下文感知重排序模型中融合以用于行为注意力机制（见第3.4节）。
 
-这里，我们采用常用的门控循环单元（GRU）[6]作为编码器函数，通过更新门和重置门控制网络状态的更新（图4(b)）。我们定义使用多层GRU网络的序列编码器函数如下：
+这里，我们采用常用的门控循环单元（Gated Recurrent Unit, GRU）[6]作为编码器函数，通过更新门和重置门控制网络状态的更新（图4(b)）。我们定义使用多层GRU网络的序列编码器函数如下：
 
 $$
-\hat{\mathbf{X}}, \mathbf{s} = \text{GRU}(\mathbf{X}) \qquad (1)
+(\hat{\mathbf{X}}, \mathbf{s}) = \text{GRU}(\mathbf{X}) \qquad (1)
 $$
 
-其中 $\mathbf{X} = \{\mathbf{x}_i\}_{1 \leq i \leq n}$ 是特征向量的输入序列，$\hat{\mathbf{X}} = \{\hat{\mathbf{x}}_i\}_{1 \leq i \leq n}$ 是编码的输出序列，$\mathbf{s}$ 是 RNN 的最终状态。这里的融合函数是两个输入特征向量序列 $\mathbf{X} = \{\mathbf{x}_i\}_{1 \leq i \leq n}$ 和 $\mathbf{Y} = \{\mathbf{y}_i\}_{1 \leq i \leq n}$ 的简单拼接，定义如下：
+其中 $\mathbf{X} = \{\mathbf{x}_i\}_{1 \leq i \leq n}$ 是特征向量的输入序列， $\hat{\mathbf{X}} = \{\hat{\mathbf{x}}_i\}_{1 \leq i \leq n}$ 是编码的输出序列， $\mathbf{s}$ 是 RNN 的最终状态。这里的融合函数是两个输入特征向量序列 $\mathbf{X} = \{\mathbf{x}_i\}_{1 \leq i \leq n}$ 和 $\mathbf{Y} = \{\mathbf{y}_i\}_{1 \leq i \leq n}$ 的简单拼接，定义如下：
 
 $$
 \mathbf{Z} = \text{CONCAT}(\mathbf{X}, \mathbf{Y}) \qquad (2)
@@ -188,7 +194,7 @@ $$
 
 在以下两个段落中，我们将正式定义我们的两个具体建模：item曝光行为序列建模和item浏览行为序列建模（见图4(a)），其中用户行为上下文 $C$ 由两个对应的元组 $(\hat{\mathbf{P}}_{IE}, \hat{\mathbf{B}}_{IE})$ 和 $(\hat{\mathbf{P}}_{IPV}, \hat{\mathbf{B}}_{IPV})$ 表示。我们将HUBSM部署在EdgeRec的设备上。基于RNN的循环计算特性，我们如第2.2.2节所讨论的那样同步且实时地对在线传入的用户行为进行建模。
 
-**item曝光行为序列建模（Item Exposure Behavior Sequence Modeling）。** 我们定义 IE 行为的动作特征向量输入序列为 $\mathbf{A}_{IE} = \{\mathbf{a}_{IE}^i\}_{1 \leq i \leq m}$，对应的 item 特征向量为 $\mathbf{P}_{IE} = \{\mathbf{p}_{IE}^i\}_{1 \leq i \leq m}$。这里 $m$ 是 IE 行为序列的预定义最大长度，对于更短的序列我们应用零填充。我们得到 IE 行为的动作编码输出序列 $\hat{\mathbf{A}}_{IE}$、item 编码 $\hat{\mathbf{P}}_{IE}$ 和融合行为编码 $\hat{\mathbf{B}}_{IE}$，分别如下列方程所示：
+**item曝光行为序列建模（Item Exposure Behavior Sequence Modeling）。** 我们定义 IE 行为的动作特征向量输入序列为 $\mathbf{A}_{IE} = \{\mathbf{a}_{IE}^i\}_{1 \leq i \leq m}$ ，对应的 item 特征向量为 $\mathbf{P}_{IE} = \{\mathbf{p}_{IE}^i\}_{1 \leq i \leq m}$ 。这里 $m$ 是 IE 行为序列的预定义最大长度，对于更短的序列我们应用零填充。我们得到 IE 行为的动作编码输出序列 $\hat{\mathbf{A}}_{IE}$ 、item 编码 $\hat{\mathbf{P}}_{IE}$ 和融合行为编码 $\hat{\mathbf{B}}_{IE}$ ，分别如下列方程所示：
 
 $$
 (\hat{\mathbf{A}}_{IE} = \{\hat{\mathbf{a}}_{IE}^i\}_{1 \leq i \leq m}, \_) = \text{GRU}(\mathbf{A}_{IE}) \qquad (3)
@@ -200,7 +206,7 @@ $$
 \hat{\mathbf{B}}_{IE} = \{\hat{\mathbf{b}}_{IE}^i\}_{1 \leq i \leq m} = \text{CONCAT}(\hat{\mathbf{A}}_{IE}, \hat{\mathbf{P}}_{IE}) \qquad (5)
 $$
 
-**item浏览行为序列建模（Item Page-View Behavior Sequence Modeling）。** 我们定义 IPV 行为的动作特征向量输入序列为 $\mathbf{A}_{IPV} = \{\mathbf{a}_{IPV}^i\}_{1 \leq i \leq n}$，对应的 item 特征向量为 $\mathbf{P}_{IPV} = \{\mathbf{p}_{IPV}^i\}_{1 \leq i \leq n}$。这里 $n$ 是 IPV 行为序列的预定义最大长度，对于更短的序列我们应用零填充。我们得到 IPV 行为的动作编码输出序列 $\hat{\mathbf{A}}_{IPV}$、item 编码 $\hat{\mathbf{P}}_{IPV}$ 和融合行为编码 $\hat{\mathbf{B}}_{IPV}$，分别如下列方程所示：
+**item浏览行为序列建模（Item Page-View Behavior Sequence Modeling）。** 我们定义 IPV 行为的动作特征向量输入序列为 $\mathbf{A}_{IPV} = \{\mathbf{a}_{IPV}^i\}_{1 \leq i \leq n}$ ，对应的 item 特征向量为 $\mathbf{P}_{IPV} = \{\mathbf{p}_{IPV}^i\}_{1 \leq i \leq n}$ 。这里 $n$ 是 IPV 行为序列的预定义最大长度，对于更短的序列我们应用零填充。我们得到 IPV 行为的动作编码输出序列 $\hat{\mathbf{A}}_{IPV}$ 、item 编码 $\hat{\mathbf{P}}_{IPV}$ 和融合行为编码 $\hat{\mathbf{B}}_{IPV}$ ，分别如下列方程所示：
 
 $$
 (\hat{\mathbf{A}}_{IPV} = \{\hat{\mathbf{a}}_{IPV}^i\}_{1 \leq i \leq n}, \_) = \text{GRU}(\mathbf{A}_{IPV}) \qquad (6)
@@ -212,38 +218,40 @@ $$
 \hat{\mathbf{B}}_{IPV} = \{\hat{\mathbf{b}}_{IPV}^i\}_{1 \leq i \leq n} = \text{CONCAT}(\hat{\mathbf{A}}_{IPV}, \hat{\mathbf{P}}_{IPV}) \qquad (8)
 $$
 
+**图4：EdgeRec中所提出算法的网络架构。**
+
 ### 3.4 基于行为注意力网络的上下文感知重排序（Context-aware Reranking with Behavior Attention Networks）
 
-在本节中，我们将深入探讨我们的重排序方法——基于行为注意力网络的上下文感知重排序（见图4(a)），以同时捕获局部排序上下文以及候选item与实时用户行为上下文之间的交互。遵循[1]，我们使用GRU网络对由初始排序模型排序的候选item序列进行编码，并将最终状态作为局部排序上下文s。借助注意力技术，我们的重排序模型能够自动（软）搜索与排序目标item相关的用户行为上下文部分。之前的CTR预测模型（例如DIN [23]和DUPN [14]）仅学习关注用户历史上与目标item交互过的item，因此无法基于上述注意力机制建模用户行为动作。相比之下，我们的方法首先从用户行为上下文中关注相关的交互item（即找到相似的交互item），然后注意力地组合对应的用户行为动作（这些动作指示用户对这些item的潜在意图），共同表示为指导目标item预测的上下文。我们称之为行为注意力（Behavior Attention），它特别利用了item曝光行为上下文和item浏览行为上下文。
+在本节中，我们将深入探讨我们的重排序方法——基于行为注意力网络的上下文感知重排序（见图4(a)），以同时捕获局部排序上下文以及候选item与实时用户行为上下文之间的交互。遵循[1]，我们使用GRU网络对由初始排序模型排序的候选item序列进行编码，并将最终状态作为局部排序上下文 $\mathbf{s}$ 。借助注意力技术，我们的重排序模型能够自动（软）搜索与排序目标item相关的用户行为上下文部分。之前的CTR预测模型（例如DIN（Deep Interest Network，深度兴趣网络）[23]和DUPN（Deep User Perception Network，深度用户感知网络）[14]）仅学习关注用户历史上与目标item交互过的item，因此无法基于上述注意力机制建模用户行为动作。相比之下，我们的方法首先从用户行为上下文中关注相关的交互item（即找到相似的交互item），然后注意力地组合对应的用户行为动作（这些动作指示用户对这些item的潜在意图），共同表示为指导目标item预测的上下文。我们称之为行为注意力（Behavior Attention），它特别利用了item曝光行为上下文和item浏览行为上下文。
 
-**候选 item 序列编码器（Candidate Item Sequence Encoder）。** 我们定义候选 item 序列为 $\mathbf{P}_{CND} = \{\mathbf{p}_{CND}^i\}_{1 \leq i \leq k}$，由推荐系统服务器中的先前模型生成并排序。这里 $k$ 是候选 item 序列的预定义最大长度，对于更短的序列我们应用零填充。我们应用 GRU 网络对其进行编码，并将 RNN 的最终状态表示为局部排序上下文，如下列方程所示：
+**候选 item 序列编码器（Candidate Item Sequence Encoder）。** 我们定义候选 item 序列为 $\mathbf{P}_{CND} = \{\mathbf{p}_{CND}^i\}_{1 \leq i \leq k}$ ，由推荐系统服务器中的先前模型生成并排序。这里 $k$ 是候选 item 序列的预定义最大长度，对于更短的序列我们应用零填充。我们应用 GRU 网络对其进行编码，并将 RNN 的最终状态表示为局部排序上下文，如下列方程所示：
 
 $$
 (\hat{\mathbf{P}}_{CND} = \{\hat{\mathbf{p}}_{CND}^i\}_{1 \leq i \leq k}, \mathbf{s}_{CND}) = \text{GRU}(\mathbf{P}_{CND}) \qquad (9)
 $$
 
-其中 $\hat{\mathbf{P}}_{CND}$ 是候选 item 编码的输出序列，$\mathbf{s}_{CND}$ 表示局部排序上下文。
+其中 $\hat{\mathbf{P}}_{CND}$ 是候选 item 编码的输出序列， $\mathbf{s}_{CND}$ 表示局部排序上下文。
 
-**行为注意力（Behavior Attention）。** 针对编码为 $\hat{\mathbf{p}}_{CND}^t$ 的目标候选 item $t$，我们首先分别关注用户行为 item 序列编码 $\hat{\mathbf{P}}_{IE}$ 和 $\hat{\mathbf{P}}_{IPV}$，分别对应 item 曝光和 item 浏览行为。然后我们按照 Bahdanau 注意力机制 [2] 指示注意力分布为 $\{\text{att}_{IE}^{tj}\}_{1 \leq j \leq m}$ 和 $\{\text{att}_{IPV}^{tj}\}_{1 \leq j \leq n}$。最后，我们通过结合注意力分布与用户行为序列的融合行为编码 $\hat{\mathbf{B}}_{IE}$ 和 $\hat{\mathbf{B}}_{IPV}$ 来生成用户行为上下文 $\mathbf{c}_{IE}^t$ 和 $\mathbf{c}_{IPV}^t$。
+**行为注意力（Behavior Attention）。** 针对编码为 $\hat{\mathbf{p}}_{CND}^t$ 的目标候选 item $t$ ，我们首先分别关注用户行为 item 序列编码 $\hat{\mathbf{P}}_{IE}$ 和 $\hat{\mathbf{P}}_{IPV}$ ，分别对应 item 曝光和 item 浏览行为。然后我们按照 Bahdanau 注意力机制 [2] 指示注意力分布为 $\{\text{att}_{IE}^{tj}\}_{1 \leq j \leq m}$ 和 $\{\text{att}_{IPV}^{tj}\}_{1 \leq j \leq n}$ 。最后，我们通过结合注意力分布与用户行为序列的融合行为编码 $\hat{\mathbf{B}}_{IE}$ 和 $\hat{\mathbf{B}}_{IPV}$ 来生成用户行为上下文 $\mathbf{c}_{IE}^t$ 和 $\mathbf{c}_{IPV}^t$ 。
 
-具体来说，按照 Transformer [21] 中三元组（Query, Key, Value）的表示法，我们定义 $\hat{\mathbf{p}}_{CND}^t$ 为 Query，$\hat{\mathbf{P}}_{IE} / \hat{\mathbf{P}}_{IPV}$ 为 Key，$\hat{\mathbf{B}}_{IE} / \hat{\mathbf{B}}_{IPV}$ 为 Value。我们在这里认为注意力计算是为了（软）查找相似或相关的 item，因此比较的两个特征空间的表示应该是同质的。这就是为什么我们在第3.3节中选择分别编码"用户行为动作"和对应的"用户交互 item"，并使用用户行为 item 序列作为相对于目标 item Query 的 Key。详见以下方程：
+具体来说，按照 Transformer [21] 中三元组（Query, Key, Value）的表示法，我们定义 $\hat{\mathbf{p}}_{CND}^t$ 为 Query， $\hat{\mathbf{P}}_{IE} / \hat{\mathbf{P}}_{IPV}$ 为 Key， $\hat{\mathbf{B}}_{IE} / \hat{\mathbf{B}}_{IPV}$ 为 Value。我们在这里认为注意力计算是为了（软）查找相似或相关的 item，因此比较的两个特征空间的表示应该是同质的。这就是为什么我们在第3.3节中选择分别编码"用户行为动作"和对应的"用户交互 item"，并使用用户行为 item 序列作为相对于目标 item Query 的 Key。详见以下方程：
 
 $$
-\text{att}_{IE}^{tj} = \text{softmax}(\mathbf{v}_1^\top \tanh(\mathbf{W}_1 \hat{\mathbf{p}}_{CND}^t + \mathbf{W}_2 \hat{\mathbf{p}}_{IE}^j)), \quad 1 \leq j \leq m \qquad (10)
+\text{att}_{IE}^{tj} = \text{softmax}(\mathbf{v}_1^\top \tanh(\mathbf{W}_1 \hat{\mathbf{p}}_{CND}^t + \mathbf{W}_2 \hat{\mathbf{p}}_{IE}^j)), \quad 1 \leq j \leq m
 $$
 $$
-\mathbf{c}_{IE}^t = \sum_{j=1}^m \text{att}_{IE}^{tj} \hat{\mathbf{b}}_{IE}^j \qquad (11)
+\mathbf{c}_{IE}^t = \sum_{j=1}^m \text{att}_{IE}^{tj} \hat{\mathbf{b}}_{IE}^j \qquad (10)
 $$
 $$
-\text{att}_{IPV}^{tj} = \text{softmax}(\mathbf{v}_2^\top \tanh(\mathbf{W}_3 \hat{\mathbf{p}}_{CND}^t + \mathbf{W}_4 \hat{\mathbf{p}}_{IPV}^j)), \quad 1 \leq j \leq n \qquad (12)
+\text{att}_{IPV}^{tj} = \text{softmax}(\mathbf{v}_2^\top \tanh(\mathbf{W}_3 \hat{\mathbf{p}}_{CND}^t + \mathbf{W}_4 \hat{\mathbf{p}}_{IPV}^j)), \quad 1 \leq j \leq n
 $$
 $$
-\mathbf{c}_{IPV}^t = \sum_{j=1}^n \text{att}_{IPV}^{tj} \hat{\mathbf{b}}_{IPV}^j \qquad (13)
+\mathbf{c}_{IPV}^t = \sum_{j=1}^n \text{att}_{IPV}^{tj} \hat{\mathbf{b}}_{IPV}^j \qquad (11)
 $$
 
 其中权重 $\mathbf{W}_1, \mathbf{W}_2, \mathbf{W}_3, \mathbf{W}_4, \mathbf{v}_1$ 和 $\mathbf{v}_2$ 是训练参数。
 
-**模型学习（Model Learning）。** 为了建模 $\phi(\cdot)$，我们首先简单拼接 IPV 和 IE 上的用户行为上下文（即 $C$）、目标候选 item 的表示（即 $\hat{\mathbf{p}}_{CND}^t$）和局部排序上下文（即 $\mathbf{s}$），然后将它们输入多层感知机（MLP）进行非线性变换。随后，采用交叉熵损失进行模型训练。
+**模型学习（Model Learning）。** 为了建模 $\phi(\cdot)$ ，我们首先简单拼接 IPV 和 IE 上的用户行为上下文（即 $C$ ）、目标候选 item 的表示（即 $\hat{\mathbf{p}}_{CND}^t$ ）和局部排序上下文（即 $\mathbf{s}$ ），然后将它们输入多层感知机（Multi-Layer Perceptron, MLP）进行非线性变换。随后，采用交叉熵损失进行模型训练。
 
 ---
 
@@ -255,18 +263,18 @@ $$
 
 #### 4.1.1 数据集（Dataset）
 
-我们从移动端淘宝的EdgeRec系统中收集在线日志和对应的item特征（Tab. 1）。具体来说，我们从两个不同日期（2019-11-14和2019-11-15）的日志中随机采样，并将它们划分为训练集（22,072,671个样本）和测试集（200,000个样本）。此外，我们收集的数据集的IE行为序列和IPV行为序列的平均长度分别为56和26。
+我们从移动端淘宝的EdgeRec系统中收集在线日志和对应的item特征（表1）。具体来说，我们从两个不同日期（2019-11-14和2019-11-15）的日志中随机采样，并将它们划分为训练集（22,072,671个样本）和测试集（200,000个样本）。此外，我们收集的数据集的IE行为序列和IPV行为序列的平均长度分别为56和26。
 
 #### 4.1.2 对比方法与评估协议（Comparing Methods and Evaluation Protocol）
 
-我们将我们的模型与两个在工业应用中广泛使用的代表性方法进行对比，即DNN-rank [5]和DLCM [1]。为了检验我们提出的异构用户行为序列建模（HUBSM）和基于行为注意力网络的上下文感知重排序（CRBAN）的有效性，除了我们的完整方法CRBAN+HUBSM(IE&IPV)之外，我们还准备了CRBAN的四个变体：（1）CRBAN+HUBSM(IE)，仅考虑item曝光行为序列建模（IE-BSM）；（2）CRBAN+HUBSM(IPV)，仅考虑item浏览行为序列建模（IPV-BSM）；（3）CRBAN+HUISM(IE&IPV)，使用DIN [23]而不是HUBSM建模用户行为上下文，尽管IE-BSM和IPV-BSM都被考虑。
+我们将我们的模型与两个在工业应用中广泛使用的代表性方法进行对比，即DNN-rank [5]和DLCM [1]。为了检验我们提出的异构用户行为序列建模（HUBSM）和基于行为注意力网络的上下文感知重排序（Context-aware Reranking with Behavior Attention Networks, CRBAN）的有效性，除了我们的完整方法CRBAN+HUBSM(IE&IPV)之外，我们还准备了CRBAN的四个变体：（1）CRBAN+HUBSM(IE)，仅考虑item曝光行为序列建模（IE-BSM）；（2）CRBAN+HUBSM(IPV)，仅考虑item浏览行为序列建模（IPV-BSM）；（3）CRBAN+HUISM(IE&IPV)，使用DIN [23]而不是HUBSM建模用户行为上下文，尽管IE-BSM和IPV-BSM都被考虑。
 
-我们使用PAI⁵支持的分布式TensorFlow训练模型，训练设置如下：batch size = 512, learning rate = 0.005, GRU层数 = 3, GRU隐层单元数 = 32, 注意力隐层单元数 = 32, MLP隐层大小 = 32, optimizer = "Adam"。注意DNN-rank和DLCM仅利用云端的特征，因为它们无法捕获端侧的特征（Tab. 1）。
+我们使用PAI⁵支持的分布式TensorFlow训练模型，训练设置如下：batch size = 512, learning rate = 0.005, GRU层数 = 3, GRU隐层单元数 = 32, 注意力隐层单元数 = 32, MLP隐层大小 = 32, optimizer = "Adam"。注意DNN-rank和DLCM仅利用云端的特征，因为它们无法捕获端侧的特征（表1）。
 
-GAUC [25]是通过对用户平均 AUC [8] 来广泛使用的推荐指标。在我们的论文中，我们通过将 EdgeRec 系统中对客户端原生模块请求 $r \in R$（可视为一个重排序会话）的 AUC 进行平均来扩展 GAUC，计算公式如下：
+GAUC（Group AUC，分组AUC）[25]是通过对用户平均 AUC（Area Under the Curve，曲线下面积）[8] 来广泛使用的推荐指标。在我们的论文中，我们通过将 EdgeRec 系统中对客户端原生模块请求 $r \in R$ （可视为一个重排序会话）的 AUC 进行平均来扩展 GAUC，计算公式如下：
 
 $$
-\text{GAUC} = \frac{\sum_{r \in R} \#\text{impression}_r \times \text{AUC}_r}{\sum_{r \in R} \#\text{impression}_r} \qquad (14)
+\text{GAUC} = \frac{\sum_{r \in R} \#\text{impression}_r \times \text{AUC}_r}{\sum_{r \in R} \#\text{impression}_r} \qquad (12)
 $$
 
 其中 $\#\text{impression}_r$ 和 $\text{AUC}_r$ 分别是对应请求 $r$ 的 item 曝光次数和 AUC。
@@ -298,7 +306,9 @@ $$
 
 EdgeRec已全面部署在移动端淘宝应用中并为数十亿用户提供服务。基线（即A测试）是没有EdgeRec的传统淘宝推荐系统。此处数百万不同的随机用户在同一时间分别参与在线测试A和B。在从2019-10-26到2019-11-08近两周的测试期间，带有完整模型CRBAN+HUBSM(IE&IPV)的EdgeRec平均贡献了高达1.57%的PV、7.18%的CTR、8.87%的CLICK和10.92%的GMV提升。这无疑是一个显著的改进，并证明了我们提出系统的有效性。
 
-此外，我们回顾了淘宝推荐系统中沿展示位置的在线平均itemCTR。图5显示，部署EdgeRec后，当前页面末尾的CTR得到了大幅提升，这表明引入实时感知和实时反馈可以大大增加用户在推荐系统中的点击意愿，因为推荐系统能够及时满足用户的在线需求。
+此外，我们回顾了淘宝推荐系统中沿展示位置的在线平均item CTR。图5显示，部署EdgeRec后，当前页面末尾的CTR得到了大幅提升，这表明引入实时感知和实时反馈可以大大增加用户在推荐系统中的点击意愿，因为推荐系统能够及时满足用户的在线需求。
+
+**图5：移动端淘宝推荐系统中沿展示位置的在线平均item CTR。**
 
 ⁶我们使用一种名为"分层分桶（hierarchical bucketing）"的策略，其中云服务器上的不同算法对于端侧的在线实验是透明的。
 
@@ -323,6 +333,8 @@ EdgeRec已全面部署在移动端淘宝应用中并为数十亿用户提供服�
 ### 4.3 案例研究（Case Study）
 
 我们在移动端淘宝上进行了一个案例研究（图6），以展示HUBSM和CRBAN的有效性。总结来说，我们有以下观察：（1）用户在IPV中的动作揭示了他/她对该item的正向意图程度偏好，例如加购或咨询客服，而用户在IE中的动作通常推断对该item的负向意图，例如快速滚动或删除。这意味着HUBSM能够捕获用户对历史交互item的潜在正向和负向意图。（2）候选衬衫借助IPV中的两件类似衬衫被预测为正向，而候选帽子借助IE中的两个具有较低负向意图程度的相似交互item被预测为负向。这表明CRBAN能够建模候选item与用户行为上下文之间的交互，从而更好地指导目标item的预测。
+
+**图6：移动端淘宝中的一个案例，用于说明我们提出的HUBSM和CRBAN模块的影响。**
 
 ---
 

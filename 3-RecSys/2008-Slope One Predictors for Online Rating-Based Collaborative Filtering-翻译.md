@@ -148,11 +148,11 @@ SLOPE ONE的一个缺点是没有考虑观测到的评分数量。直观地说�
 
 给定CF算法的有效性可以被精确度量。为此，我们采用了留一法平均绝对误差（All But One Mean Average Error，MAE）[2]。在计算MAE时，我们依次从测试集中的所有评价中隐藏单个评分，预测该隐藏评分，然后计算预测的平均误差。给定预测器P和来自用户的评价u，P在一组评价\chi'上的误差率由以下公式给出：
 
-`MAE = (1 / card(\chi')) * \Sigmaᵤ\in\chi' ((1 / card(S(u))) * \Sigmaᵢ\inS(u) |P(u^(i)) - uᵢ|)`
+`MAE = (1 / card(\chi^{\prime})) * \Sigmaᵤ\in\chi' ((1 / card(S(u))) * \Sigmaᵢ\inS(u) |P(u^(i)) - uᵢ|)`
 
 其中 `u^(i)` 是隐藏了用户对第i个item评分uᵢ后的用户评价u。
 
-我们在Compaq Research提供的EachMovie数据集和明尼苏达大学Grouplens Research Group提供的MovieLens数据集上测试了我们的方案。这些数据来自电影评分网站，EachMovie的评分范围为0.0到1.0，步长为0.2；MovieLens的评分范围为1到5，步长为1。按照[8, 11]的做法，我们使用足够多的评价来构成总量为50,000个评分的训练集(\chi)，并使用额外的一组评价构成总量至少100,000个评分的测试集(\chi')。当预测值超出给定数据集的允许评分范围时，进行相应修正：例如，对于EachMovie的0到1评分范围，预测值1.2被解释为1。由于MovieLens的评分范围是EachMovie的4倍，MovieLens上的MAE除以4以使结果直接可比。
+我们在Compaq Research提供的EachMovie数据集和明尼苏达大学Grouplens Research Group提供的MovieLens数据集上测试了我们的方案。这些数据来自电影评分网站，EachMovie的评分范围为0.0到1.0，步长为0.2；MovieLens的评分范围为1到5，步长为1。按照[8, 11]的做法，我们使用足够多的评价来构成总量为50,000个评分的训练集(\chi)，并使用额外的一组评价构成总量至少100,000个评分的测试集(\chi^{\prime})。当预测值超出给定数据集的允许评分范围时，进行相应修正：例如，对于EachMovie的0到1评分范围，预测值1.2被解释为1。由于MovieLens的评分范围是EachMovie的4倍，MovieLens上的MAE除以4以使结果直接可比。
 
 各种方案使用相同误差度量并在相同数据集上的结果总结在表1中。各种子结果在后续的图表中突出显示。
 

@@ -1,14 +1,24 @@
-# 亿级商品嵌入：阿里巴巴电子商务推荐实践
+# Billion-scale Commodity Embedding for E-commerce Recommendation in Alibaba
 
-> Jizhe Wang, Pipei Huang, Zhibo Zhang, Binqiang Zhao | Alibaba Group
+> Jizhe Wang, Pipei Huang, Huan Zhao, Zhibo Zhang, Binqiang Zhao, Dik Lun Lee | Alibaba Group; HKUST
+>
+> {jizhe.wjz, pipei.hpp}@alibaba-inc.com, hzhaoaf@cse.ust.hk, {shaobo.zzb, bingqiang.zhao}@alibaba-inc.com, dlee@cse.ust.hk
+>
+> \* Pipei Huang 是通讯作者。
 
 
-本文介绍了 亿级商品嵌入：阿里巴巴电子商务推荐实践。核心内容：
 
+本文介绍了阿里巴巴在亿级商品嵌入（Billion-scale Commodity Embedding，EGES）方面的实践——一种基于图嵌入的电子商务推荐方法。它从用户行为历史构建商品图，学习所有商品的嵌入表示，并利用辅助信息缓解稀疏性和冷启动问题。核心内容：
+
+- 从用户行为历史构建商品图，应用图嵌入方法（BGE）学习商品的低维表示
+- 提出带辅助信息的图嵌入（GES）与增强型带辅助信息的图嵌入（EGES），聚合商品嵌入和相应辅助信息
+- 在 XTensorflow（XTF）平台构建图嵌入系统，处理淘宝亿级数据
 
 关键发现：
 
----
+- 融入辅助信息的方法在离线实验中优于未融入辅助信息的方法
+- 在线 A/B 测试表明 CTR 相较于淘宝之前广泛使用的基于协同过滤的方法有所提升
+- 所提框架显著提高手机淘宝 App 的推荐性能，同时满足训练效率和即时服务的要求
 
 ---
 
@@ -16,17 +26,11 @@
 
 推荐系统（RS）已成为中国最大的在线消费者对消费者（C2C）平台——淘宝中最重要的业务增长技术。淘宝中的推荐系统面临三大主要挑战：可扩展性、稀疏性和冷启动。在本文中，我们提出了解决这三项挑战的技术方案。这些方法基于一个广为人知的图嵌入框架。我们首先从用户行为历史中构建商品图，并学习图中所有商品的嵌入表示。商品嵌入用于计算所有商品之间的 pairwise 相似度，然后将其用于推荐过程。为了缓解稀疏性和冷启动问题，我们将辅助信息融入图嵌入框架中。我们提出了两种聚合方法，用于整合商品嵌入和相应的辅助信息。离线实验结果表明，融入辅助信息的方法优于未融入的方法。此外，我们介绍了部署这些嵌入方法的平台以及在淘宝中处理亿级数据的工作流程。通过 A/B 测试，我们表明在线点击率（CTR）相较于淘宝之前广泛使用的基于协同过滤的方法有所提升，进一步证明了我们提出的方法在淘宝实际生产环境中的有效性和可行性。
 
-**CCS 概念** • 信息系统 \rightarrow 协同过滤；推荐系统； • 数学计算 \rightarrow 图算法； • 计算方法 \rightarrow 学习潜在表示；
+**CCS 概念** • 信息系统 $\rightarrow$ 协同过滤；推荐系统； • 数学计算 $\rightarrow$ 图算法； • 计算方法 $\rightarrow$ 学习潜在表示；
 
-**关键词** 推荐系统；协同过滤；图嵌入；电子商务推荐
+**关键词** Recommendation system; Collaborative filtering; Graph Embedding; E-commerce Recommendation.
 
 ---
-本文介绍了 亿级商品嵌入：阿里巴巴电子商务推荐实践。核心内容：
-
-
-关键发现：
-
-
 
 ## 1 引言
 
@@ -64,15 +68,15 @@
 
 在本节中，我们概述图嵌入以及最流行的方法之一 DeepWalk [15]，我们在匹配阶段基于该方法提出了我们的图嵌入方法。
 
-给定一个图 G = (V, E)，其中 V 和 E 分别表示节点集和边集。图嵌入的目的是为每个节点 v \in V 在空间 R^d 中学习一个低维表示，其中 d ≪ |V|。换句话说，我们的目标是学习一个映射函数 \Phi: V \rightarrow R^d，即将 V 中的每个节点表示为一个 d 维向量。
+给定一个图 $G = (V, E)$，其中 $V$ 和 $E$ 分别表示节点集和边集。图嵌入的目的是为每个节点 $v \in V$ 在空间 $\mathbb{R}^d$ 中学习一个低维表示，其中 $d \ll |V|$。换句话说，我们的目标是学习一个映射函数 $\Phi: V \rightarrow \mathbb{R}^d$，即将 $V$ 中的每个节点表示为一个 $d$ 维向量。
 
 在 [13, 14] 中，word2vec 被提出来学习语料库中每个词的嵌入。受 word2vec 启发，Perozzi 等人提出了 DeepWalk 来学习图中每个节点的嵌入 [15]。他们首先通过在图中进行随机游走生成节点序列，然后应用 Skip-Gram 算法来学习图中每个节点的表示。为了保持图的拓扑结构，他们需要解决以下优化问题：
 
 $$
-minimize_{\Phi} \sum_{v\inV} \sum_{c\inN(v)} − log Pr(c|\Phi(v))       (1)
+\min_{\Phi} \sum_{v \in V} \sum_{c \in N(v)} -\log \mathrm{Pr}(c|\Phi(v)) \qquad (1)
 $$
 
-其中 N(v) 是节点 v 的邻域，可以定义为距离 v 一跳或两跳内的节点。Pr(c|\Phi(v)) 定义了给定节点 v 时上下文节点 c 的条件概率。
+其中 $N(v)$ 是节点 $v$ 的邻域，可以定义为距离 $v$ 一跳或两跳内的节点。$\mathrm{Pr}(c|\Phi(v))$ 定义了给定节点 $v$ 时上下文节点 $c$ 的条件概率。
 
 在本节的剩余部分，我们首先介绍如何从用户行为中构建商品图，然后基于 DeepWalk 提出图嵌入方法，为淘宝中二十亿商品生成低维表示。
 
@@ -90,36 +94,36 @@ $$
 
 ### 2.3 基础图嵌入
 
-在获得加权有向商品图（记为 G = (V, E)）之后，我们采用 DeepWalk 来学习 G 中每个节点的嵌入。令 M 表示 G 的邻接矩阵，$M_{ij}$ 表示从节点 i 指向节点 j 的边的权重。我们首先基于随机游走生成节点序列，然后在序列上运行 Skip-Gram 算法。随机游走的转移概率定义为：
+在获得加权有向商品图（记为 $G = (V, E)$）之后，我们采用 DeepWalk 来学习 $G$ 中每个节点的嵌入。令 $\mathbf{M}$ 表示 $G$ 的邻接矩阵，$M_{ij}$ 表示从节点 $i$ 指向节点 $j$ 的边的权重。我们首先基于随机游走生成节点序列，然后在序列上运行 Skip-Gram 算法。随机游走的转移概率定义为：
 
 $$
-P(v_j|v_i) = {
-    M_{ij} / \sum_{j\inN+(v_i)} M_{ij,}   v_j \in N+(v_i)
-    0,                                e_{ij} ∉ E
-}                                     (2)
+P(v_j|v_i) = \begin{cases}
+\frac{M_{ij}}{\sum_{j \in N^+(v_i)} M_{ij}}, & v_j \in N^+(v_i) \\
+0, & e_{ij} \notin E
+\end{cases} \qquad (2)
 $$
 
-其中 N+(v_i) 表示出链邻居集，即存在从 v_i 指向 N+(v_i) 中所有节点的边。通过运行随机游走，我们可以生成如图 2(c) 所示的多条序列。
+其中 $N^+(v_i)$ 表示出链邻居集，即存在从 $v_i$ 指向 $N^+(v_i)$ 中所有节点的边。通过运行随机游走，我们可以生成如图 2(c) 所示的多条序列。
 
 然后我们应用 Skip-Gram 算法 [13, 14] 来学习嵌入，该算法最大化获得的序列中两个节点的共现概率。这导致以下优化问题：
 
 $$
-minimize_{\Phi} − log Pr({v_{i−w}, ..., v_{i+w}}\{v_i\} | \Phi(v_i))       (3)
+\min_{\Phi} -\log \mathrm{Pr}(\{v_{i-w}, \cdots, v_{i+w}\}\setminus\{v_i\} | \Phi(v_i)) \qquad (3)
 $$
 
-其中 w 是序列中上下文节点的窗口大小。利用独立性假设，我们有：
+其中 $w$ 是序列中上下文节点的窗口大小。利用独立性假设，我们有：
 
 $$
-Pr({v_{i−w}, ..., v_{i+w}}\{v_i\} | \Phi(v_i)) = \prod_{j=i−w, j\neqi}^{i+w} Pr(v_j|\Phi(v_i))       (4)
+\mathrm{Pr}(\{v_{i-w}, \cdots, v_{i+w}\}\setminus\{v_i\} | \Phi(v_i)) = \prod_{j=i-w, j \neq i}^{i+w} \mathrm{Pr}(v_j|\Phi(v_i)) \qquad (4)
 $$
 
 应用负采样 [13, 14]，式 (3) 可以转化为：
 
 $$
-minimize_{\Phi} log \sigma(\Phi(v_j)^T \Phi(v_i)) + \sum_{t\inN(v_i)'} log \sigma(−\Phi(v_t)^T \Phi(v_i))       (5)
+\min_{\Phi} \log \sigma(\Phi(v_j)^T \Phi(v_i)) + \sum_{t \in N(v_i)'} \log \sigma(-\Phi(v_t)^T \Phi(v_i)) \qquad (5)
 $$
 
-其中 N(v_i)' 是 v_i 的负样本，\sigma() 是 sigmoid 函数 \sigma(x) = 1/(1+e^{−x})。经验上，|N(v_i)'| 越大，获得的结果越好。
+其中 $N(v_i)'$ 是 $v_i$ 的负样本，$\sigma()$ 是 sigmoid 函数 $\sigma(x) = \frac{1}{1+e^{-x}}$。经验上，$|N(v_i)'|$ 越大，获得的结果越好。
 
 ### 2.4 带辅助信息的图嵌入
 
@@ -127,89 +131,94 @@ $$
 
 为了解决冷启动问题，我们提出使用附加到冷启动商品的辅助信息来增强 BGE。在电子商务推荐系统的上下文中，辅助信息指商品的类别、店铺、价格等，它们在排序阶段被广泛用作关键特征，但在匹配阶段却很少应用。我们可以通过在图嵌入中融入辅助信息来缓解冷启动问题。例如，来自优衣库（同一店铺）的两件连帽衫（相同类别）可能看起来相似，而喜欢尼康镜头的人也可能对佳能相机（相似类别和相似品牌）感兴趣。这意味着具有相似辅助信息的商品在嵌入空间中应更接近。基于这一假设，我们提出了 GES 方法，如图 3 所示。
 
-为清晰起见，我们稍微修改了符号。用 W 表示商品或辅助信息的嵌入矩阵。具体地，W_v^0 表示商品 v 的嵌入，W_v^s 表示附加到商品 v 的第 s 类辅助信息的嵌入。那么对于具有 n 类辅助信息的商品 v，我们有 n+1 个向量 W_v^0, ..., W_v^n \in R^d，其中 d 是嵌入维度。注意，商品嵌入和辅助信息嵌入的维度经验地被设置为相同的值。
+为清晰起见，我们稍微修改了符号。用 $\mathbf{W}$ 表示商品或辅助信息的嵌入矩阵。具体地，$\mathbf{W}_v^0$ 表示商品 $v$ 的嵌入，$\mathbf{W}_v^s$ 表示附加到商品 $v$ 的第 $s$ 类辅助信息的嵌入。那么对于具有 $n$ 类辅助信息的商品 $v$，我们有 $n+1$ 个向量 $\mathbf{W}_v^0, \cdots, \mathbf{W}_v^n \in \mathbb{R}^d$，其中 $d$ 是嵌入维度。注意，商品嵌入和辅助信息嵌入的维度经验地被设置为相同的值。
 
-如图 3 所示，为了融入辅助信息，我们拼接商品 v 的 n+1 个嵌入向量，并添加一个带有平均池化操作的层来聚合与商品 v 相关的所有嵌入，即：
+如图 3 所示，为了融入辅助信息，我们拼接商品 $v$ 的 $n+1$ 个嵌入向量，并添加一个带有平均池化操作的层来聚合与商品 $v$ 相关的所有嵌入，即：
 
 $$
-H_v = 1/(n+1) \sum_{s=0}^n W_v^s       (6)
+\mathbf{H}_v = \frac{1}{n+1} \sum_{s=0}^n \mathbf{W}_v^s \qquad (6)
 $$
 
-其中 H_v 是商品 v 的聚合嵌入。通过这种方式，我们融入辅助信息使得具有相似辅助信息的商品在嵌入空间中更接近。这导致冷启动商品获得更准确的嵌入，并提高了离线和在线性能（见第 3 节）。
+其中 $\mathbf{H}_v$ 是商品 $v$ 的聚合嵌入。通过这种方式，我们融入辅助信息使得具有相似辅助信息的商品在嵌入空间中更接近。这导致冷启动商品获得更准确的嵌入，并提高了离线和在线性能（见第 3 节）。
 
 ### 2.5 增强型带辅助信息的图嵌入
 
 尽管 GES 取得了性能提升，但在嵌入过程中整合不同类型的辅助信息时仍存在问题。在式 (6) 中，假设不同类型的辅助信息对最终嵌入的贡献相等，这不符合实际情况。例如，购买了 iPhone 的用户倾向于查看 Macbook 或 iPad，这是因为品牌"Apple"；而用户可能为了方便和更低的价格在淘宝的同一店铺购买不同品牌的衣服。因此，不同类型的辅助信息对用户行为中商品共现的贡献是不同的。
 
-为了解决这个问题，我们提出了 EGES 方法来聚合不同类型的辅助信息。框架与 GES 相同（见图 3）。其思想是，不同类型的辅助信息在聚合其嵌入时具有不同的贡献。因此，我们提出了一个加权平均层来聚合与商品相关的辅助信息的嵌入。给定一个商品 v，令 A \in R^{|V|$\times$(n+1)} 为权重矩阵，其中条目 $A_{ij}$ 是第 i 个商品的第 j 类辅助信息的权重。注意 $A_{*0}$（即 A 的第一列）表示商品 v 本身的权重。为简化起见，我们用 a_v^s 表示商品 v 的第 s 类辅助信息的权重，用 a_v^0 表示商品 v 本身的权重。组合不同辅助信息的加权平均层定义如下：
+为了解决这个问题，我们提出了 EGES 方法来聚合不同类型的辅助信息。框架与 GES 相同（见图 3）。其思想是，不同类型的辅助信息在聚合其嵌入时具有不同的贡献。因此，我们提出了一个加权平均层来聚合与商品相关的辅助信息的嵌入。给定一个商品 $v$，令 $\mathbf{A} \in \mathbb{R}^{|V| \times (n+1)}$ 为权重矩阵，其中条目 $A_{ij}$ 是第 $i$ 个商品的第 $j$ 类辅助信息的权重。注意 $A_{*0}$（即 $\mathbf{A}$ 的第一列）表示商品 $v$ 本身的权重。为简化起见，我们用 $a_v^s$ 表示商品 $v$ 的第 $s$ 类辅助信息的权重，用 $a_v^0$ 表示商品 $v$ 本身的权重。组合不同辅助信息的加权平均层定义如下：
 
 $$
-H_v = (\sum_{j=0}^n e^{a_v^j} W_v^j) / (\sum_{j=0}^n e^{a_v^j})       (7)
+\mathbf{H}_v = \frac{\sum_{j=0}^n e^{a_v^j} \mathbf{W}_v^j}{\sum_{j=0}^n e^{a_v^j}} \qquad (7)
 $$
 
-其中我们使用 e^{a_v^j} 而不是 a_v^j 来确保每个辅助信息的贡献大于 0，并且分母 \sum_{j=0}^n e^{a_v^j} 用于归一化与不同辅助信息嵌入相关的权重。
+其中我们使用 $e^{a_v^j}$ 而不是 $a_v^j$ 来确保每个辅助信息的贡献大于 0，并且分母 $\sum_{j=0}^n e^{a_v^j}$ 用于归一化与不同辅助信息嵌入相关的权重。
 
 EGES 的伪代码如算法 1 所示，加权 Skip-Gram 更新器的伪代码如算法 2 所示。每个商品的最终隐藏表示由式 (7) 计算。
 
 **算法 1 EGES 框架**
 
-输入：商品图 G = (V, E)，辅助信息 S，每个节点的游走次数 w，游走长度 l，Skip-Gram 窗口大小 k，负样本数量 #ns，嵌入维度 d；
-
-输出：商品和辅助信息嵌入 W^0, ..., W^n，权重矩阵 A；
-
-1: 初始化 W^0, ..., W^n, A
-2: for i = 1 \rightarrow w do
-3:   for v \in V do
-4:     SEQ = RandomWalk(G, v, l)  (式 (2))
-5:     WeightedSkipGram(W^0, ..., W^n, A, k, #ns, l, SEQ)
-6:   end for
-7: end for
-8: return W^0, ..., W^n, A
+$$
+\begin{aligned}
+&\textbf{输入：} \text{商品图 } G = (V, E) \text{，辅助信息 } S \text{，每个节点的游走次数 } w \text{，游走长度 } l \text{，Skip-Gram 窗口大小 } k \text{，负样本数量 } \#ns \text{，嵌入维度 } d \\
+&\textbf{输出：} \text{商品和辅助信息嵌入 } \mathbf{W}^0, \cdots, \mathbf{W}^n \text{，权重矩阵 } \mathbf{A} \\
+&1: \text{初始化 } \mathbf{W}^0, \cdots, \mathbf{W}^n, \mathbf{A} \\
+&\textbf{2: for } i = 1 \rightarrow w \textbf{ do} \\
+&\quad \textbf{3: for } v \in V \textbf{ do} \\
+&\quad\quad 4: SEQ = \mathrm{RandomWalk}(G, v, l) \quad \text{(式 (2))} \\
+&\quad\quad 5: \mathrm{WeightedSkipGram}(\mathbf{W}^0, \cdots, \mathbf{W}^n, \mathbf{A}, k, \#ns, l, SEQ) \\
+&\quad \textbf{6: end for} \\
+&\textbf{7: end for} \\
+&8: \textbf{return } \mathbf{W}^0, \cdots, \mathbf{W}^n, \mathbf{A}
+\end{aligned}
+$$
 
 **算法 2 加权 Skip-Gram**
 
-1: function WeightedSkipGram(W^0, ..., W^n, A, k, #ns, l, SEQ)
-2:   for i = 1 \rightarrow l do
-3:     v = SEQ[i]
-4:     for j = max(0, i−k) \rightarrow min(i+k, l) & j\neqi do
-5:       u = SEQ[j]
-6:       Update(v, u, 1)
-7:       for t = 0 \rightarrow #ns do
-8:         u = NegativeSampling(V)
-9:         Update(v, u, 0)
-10:      end for
-11:    end for
-12:  end for
-13: end function
+$$
+\begin{aligned}
+&1: \text{function } \mathrm{WeightedSkipGram}(\mathbf{W}^0, \cdots, \mathbf{W}^n, \mathbf{A}, k, \#ns, l, SEQ) \\
+&\textbf{2: for } i = 1 \rightarrow l \textbf{ do} \\
+&\quad 3: v = SEQ[i] \\
+&\quad \textbf{4: for } j = \max(0, i-k) \rightarrow \min(i+k, l) \text{ \& } j \neq i \textbf{ do} \\
+&\quad\quad 5: u = SEQ[j] \\
+&\quad\quad 6: \mathrm{Update}(v, u, 1) \\
+&\quad\quad \textbf{7: for } t = 0 \rightarrow \#ns \textbf{ do} \\
+&\quad\quad\quad 8: u = \mathrm{NegativeSampling}(V) \\
+&\quad\quad\quad 9: \mathrm{Update}(v, u, 0) \\
+&\quad\quad \textbf{10: end for} \\
+&\quad \textbf{11: end for} \\
+&\textbf{12: end for} \\
+&13: \text{end function} \\
+&14: \text{function } \mathrm{Update}(v, u, y) \\
+&\quad 15: \mathbf{Z}_u^{new} = \mathbf{Z}_u^{old} - \eta \cdot \frac{\partial L}{\partial \mathbf{Z}_u} \quad \text{(式 (9))} \\
+&\quad \textbf{16: for } s = 0 \rightarrow n \textbf{ do} \\
+&\quad\quad 17: a_v^{s_{new}} = a_v^{s_{old}} - \eta \cdot \frac{\partial L}{\partial a_v^s} \quad \text{(式 (10))} \\
+&\quad\quad 18: \mathbf{W}_v^{s_{new}} = \mathbf{W}_v^{s_{old}} - \eta \cdot \frac{\partial L}{\partial \mathbf{W}_v^s} \quad \text{(式 (11))} \\
+&\quad \textbf{19: end for} \\
+&20: \text{end function}
+\end{aligned}
+$$
 
-14: function Update(v, u, y)
-15:   Z_u^{new} = Z_u^{old} − \eta · \partialL/\partialZ_u                            (式 (9))
-16:   for s = 0 \rightarrow n do
-17:     a_v^{s_new} = a_v^{s_old} − \eta · \partialL/\partiala_v^s                    (式 (10))
-18:     W_v^{s_new} = W_v^{s_old} − \eta · \partialL/\partialW_v^s                    (式 (11))
-19:   end for
-20: end function
-
-对于训练数据中的节点 v 及其上下文节点 u，我们使用 Z_u \in R^d 表示其嵌入，用 y 表示标签。那么，EGES 的目标函数变为：
+对于训练数据中的节点 $v$ 及其上下文节点 $u$，我们使用 $\mathbf{Z}_u \in \mathbb{R}^d$ 表示其嵌入，用 $y$ 表示标签。那么，EGES 的目标函数变为：
 
 $$
-L(v, u, y) = −[y log(\sigma(H_v^T Z_u)) + (1−y) log(1 − \sigma(H_v^T Z_u))]       (8)
+L(v, u, y) = -[y \log(\sigma(\mathbf{H}_v^T \mathbf{Z}_u)) + (1-y) \log(1 - \sigma(\mathbf{H}_v^T \mathbf{Z}_u))] \qquad (8)
 $$
 
 梯度推导如下：
 
 $$
-\partialL/\partialZ_u = (\sigma(H_v^T Z_u) − y) H_v       (9)
+\frac{\partial L}{\partial \mathbf{Z}_u} = (\sigma(\mathbf{H}_v^T \mathbf{Z}_u) - y) \mathbf{H}_v \qquad (9)
 $$
 
-对于第 s 类辅助信息：
+对于第 $s$ 类辅助信息：
 
 $$
-\partialL/\partiala_v^s = (\partialL/\partialH_v) · (\partialH_v/\partiala_v^s)
+\frac{\partial L}{\partial a_v^s} = \frac{\partial L}{\partial \mathbf{H}_v} \cdot \frac{\partial \mathbf{H}_v}{\partial a_v^s} = (\sigma(\mathbf{H}_v^T \mathbf{Z}_u) - y) \mathbf{Z}_u \cdot \frac{e^{a_v^s} \mathbf{W}_v^s \sum_{j=0}^n e^{a_v^j} - e^{a_v^s} \sum_{j=0}^n e^{a_v^j} \mathbf{W}_v^j}{(\sum_{j=0}^n e^{a_v^j})^2} \qquad (10)
+$$
 
-\partialL/\partialH_v = (\sigma(H_v^T Z_u) − y) Z_u       (10)
-
-\partialH_v/\partialW_v^s = (e^{a_v^s} / \sum_{j=0}^n e^{a_v^j}) · (\sigma(H_v^T Z_u) − y) Z_u       (11)
+$$
+\frac{\partial L}{\partial \mathbf{W}_v^s} = \frac{\partial L}{\partial \mathbf{H}_v} \cdot \frac{\partial \mathbf{H}_v}{\partial \mathbf{W}_v^s} = \frac{e^{a_v^s}}{\sum_{j=0}^n e^{a_v^j}} \cdot (\sigma(\mathbf{H}_v^T \mathbf{Z}_u) - y) \mathbf{Z}_u \qquad (11)
 $$
 
 ---
@@ -224,7 +233,7 @@ $$
 
 **数据集。** 我们使用两个数据集进行链接预测任务。第一个是 Amazon Electronics（亚马逊电子）数据集，由 [12] 提供，记为 Amazon。第二个从手机淘宝 App 中提取，记为 Taobao。这两个数据集都包含不同类型的辅助信息。对于 Amazon 数据集，商品图从"共同购买"关系（在提供的数据中记为 also_bought）构建，并使用三种类型的辅助信息：类别、子类别和品牌。对于 Taobao 数据集，根据第 2.2 节的方法构建商品图。注意，出于效率和有效性的考虑，淘宝实际生产环境中使用了 12 类辅助信息，包括零售商、品牌、购买力等级、年龄、性别、风格等。根据淘宝多年的实践经验，这些类型的辅助信息已被证明是有用的。两个数据集的统计信息如表 1 所示。我们可以看到两个数据集的稀疏度都大于 99%。
 
-**表 1：两个数据集的统计信息。#SI 表示辅助信息的类型数量。稀疏度根据 1 − #Edges/(#Nodes$\times$(#Nodes−1)) 计算。**
+**表 1：两个数据集的统计信息。#SI 表示辅助信息的类型数量。稀疏度根据 $1 - \frac{\#Edges}{\#Nodes \times (\#Nodes-1)}$ 计算。**
 
 | 数据集 | #节点数 | #边数 | #SI | 稀疏度(%) |
 |--------|---------|-------|-----|-----------|
@@ -262,7 +271,7 @@ $$
 
 #### 3.3.3 EGES 中的权重
 
-在本部分，我们可视化不同商品的不同类型辅助信息的权重。选择了八个不同类别的商品，并从学习到的权重矩阵 A 中提取与这些商品相关的所有辅助信息的权重。结果显示在图 6 中，每一行记录了一个商品的结果。有几点值得注意：1) 不同商品的权重分布不同，这与我们的假设一致，即不同的辅助信息对最终表示的贡献不同。2) 在所有商品中，代表商品本身嵌入的"Item"权重大于所有其他辅助信息的权重。这证实了一个直觉：商品本身的嵌入仍然是用户行为的主要来源，而辅助信息提供了推断用户行为的额外线索。3) 除了"Item"之外，"Shop"的权重大于其他辅助信息。这与淘宝中用户的行为一致，即用户倾向于在同一店铺购买商品，以便获得便利和更低的价格。
+在本部分，我们可视化不同商品的不同类型辅助信息的权重。选择了八个不同类别的商品，并从学习到的权重矩阵 $\mathbf{A}$ 中提取与这些商品相关的所有辅助信息的权重。结果显示在图 6 中，每一行记录了一个商品的结果。有几点值得注意：1) 不同商品的权重分布不同，这与我们的假设一致，即不同的辅助信息对最终表示的贡献不同。2) 在所有商品中，代表商品本身嵌入的"Item"权重大于所有其他辅助信息的权重。这证实了一个直觉：商品本身的嵌入仍然是用户行为的主要来源，而辅助信息提供了推断用户行为的额外线索。3) 除了"Item"之外，"Shop"的权重大于其他辅助信息。这与淘宝中用户的行为一致，即用户倾向于在同一店铺购买商品，以便获得便利和更低的价格。
 
 ---
 

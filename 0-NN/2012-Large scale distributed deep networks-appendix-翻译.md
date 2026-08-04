@@ -23,60 +23,60 @@
 **算法1.1：Downpour SGD客户端**
 
 ```
-procedure DOWNPOURSGDCLIENT(α, nfetch, npush)
+procedure DOWNPOURSGDCLIENT($\alpha$, nfetch, npush)
     procedure STARTASYNCHRONOUSLYFETCHINGPARAMETERS(parameters)
-        parameters ← GETPARAMETERSFROMPARAMSERVER()
-    
+        parameters $\leftarrow$ GETPARAMETERSFROMPARAMSERVER()
+
     procedure STARTASYNCHRONOUSLYPUSHINGGRADIENTS(accruedgradients)
         SENDGRADIENTSTOPARAMSERVER(accruedgradients)
-        accruedgradients ← 0
-    
+        accruedgradients $\leftarrow$ 0
+
     main
         global parameters, accruedgradients
-        step ← 0
-        accruedgradients ← 0
+        step $\leftarrow$ 0
+        accruedgradients $\leftarrow$ 0
         while true do
             if (step mod nfetch) == 0 then
                 STARTASYNCHRONOUSLYFETCHINGPARAMETERS(parameters)
-            data ← GETNEXTMINIBATCH()
-            gradient ← COMPUTEGRADIENT(parameters, data)
-            accruedgradients ← accruedgradients + gradient
-            parameters ← parameters − α ∗ gradient
+            data $\leftarrow$ GETNEXTMINIBATCH()
+            gradient $\leftarrow$ COMPUTEGRADIENT(parameters, data)
+            accruedgradients $\leftarrow$ accruedgradients + gradient
+            parameters $\leftarrow$ parameters − $\alpha$ ∗ gradient
             if (step mod npush) == 0 then
                 STARTASYNCHRONOUSLYPUSHINGGRADIENTS(accruedgradients)
-            step ← step + 1
+            step $\leftarrow$ step + 1
 ```
 
-Sandblaster是一个用于分布式批处理优化过程的框架。Sandblaster中的一个核心概念是将操作分解为在DistBelief参数服务器上的本地计算。举例来说，假设我们有10亿个参数和10个参数服务器分片，那么每个分片拥有$1/10$的参数。可以将L-BFGS分解为一系列标量-向量乘积（$\alpha \times \mathbf{x}$）和向量-向量内积（$\mathbf{x}^T \mathbf{y}$）的序列，其中每个向量都是10亿维的。如果让第一个分片始终负责L-BFGS内部使用的每个向量的前$1/10$，第二个分片始终负责每个向量的第二个$1/10$，依此类推直到最后一个分片始终负责每个向量的最后$1/10$，那么可以证明，这些标量-向量运算和向量-向量运算都可以通过极少的通信以分布式方式完成。这样一来，任何中间向量值结果都会自动以同样的分布式方式存储，而任何中间标量值结果则会广播到所有分片。
+Sandblaster是一个用于分布式批处理优化过程的框架。Sandblaster中的一个核心概念是将操作分解为在DistBelief参数服务器上的本地计算。举例来说，假设我们有10亿个参数和10个参数服务器分片，那么每个分片拥有 $1/10$ 的参数。可以将L-BFGS分解为一系列标量-向量乘积（ $\alpha \times \mathbf{x}$ ）和向量-向量内积（ $\mathbf{x}^T \mathbf{y}$ ）的序列，其中每个向量都是10亿维的。如果让第一个分片始终负责L-BFGS内部使用的每个向量的前 $1/10$ ，第二个分片始终负责每个向量的第二个 $1/10$ ，依此类推直到最后一个分片始终负责每个向量的最后 $1/10$ ，那么可以证明，这些标量-向量运算和向量-向量运算都可以通过极少的通信以分布式方式完成。这样一来，任何中间向量值结果都会自动以同样的分布式方式存储，而任何中间标量值结果则会广播到所有分片。
 
 **算法1.2：Sandblaster L-BFGS**
 
 ```
 procedure REPLICA.PROCESSPORTION(portion)
     if (!hasParametersForStep) then
-        parameters ← GETPARAMETERSFROMPARAMSERVER()
-    data ← GETDATAPORTION(portion)
-    gradient ← COMPUTEGRADIENT(parameters, data)
-    localAccruedGradients ← localAccruedGradients + gradient
+        parameters $\leftarrow$ GETPARAMETERSFROMPARAMSERVER()
+    data $\leftarrow$ GETDATAPORTION(portion)
+    gradient $\leftarrow$ COMPUTEGRADIENT(parameters, data)
+    localAccruedGradients $\leftarrow$ localAccruedGradients + gradient
 
 procedure PARAMETERSERVER.PERFORMOPERATION(operation)
     PerformOperation
 
 main
-    step ← 0
+    step $\leftarrow$ 0
     while true do
         comment: PS: ParameterServer
-        PS.accruedgradients ← 0
+        PS.accruedgradients $\leftarrow$ 0
         while (batchProcessed < batchSize) do
             for all (modelReplicas) do comment: Loop is parallel and asynchronous
                 if (modelReplicaAvailable) then
                     REPLICA.PROCESSPORTION(modelReplica)
-                    batchProcessed ← batchProcessed + portion
+                    batchProcessed $\leftarrow$ batchProcessed + portion
                 if (modelReplicaWorkDone and timeToSendGradients) then
                     SENDGRADIENTS(modelReplica)
-                    PS.accruedGradients ← PS.accruedGradients + gradient
+                    PS.accruedGradients $\leftarrow$ PS.accruedGradients + gradient
         COMPUTELBFGSDIRECTION(PS.Gradients, PS.History, PS.Direction)
         LINESEARCH(PS.Parameters, PS.Direction)
         PS.UPDATEPARAMETERS(PS.parameters, PS.accruedGradients)
-        step ← step + 1
+        step $\leftarrow$ step + 1
 ```

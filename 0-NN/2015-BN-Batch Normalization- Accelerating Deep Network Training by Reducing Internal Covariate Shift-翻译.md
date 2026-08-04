@@ -5,7 +5,7 @@
 本文分享了Batch Normalization（批归一化）论文，该论文提出了一种通过在网络架构中嵌入归一化操作来加速深度网络训练的机制。核心内容如下：
 
 - 定义了"内部协变量偏移"（Internal Covariate Shift）现象——训练过程中网络层输入分布随前层参数变化而改变，这迫使网络以更慢的学习率训练并需要精细的参数初始化
-- 提出Batch Normalization（BN）层：对每个mini-batch计算均值和方差进行归一化，并引入可学习的缩放参数 $\gamma$ 和平移参数 $\beta$以保持网络表达能力
+- 提出Batch Normalization（BN）层：对每个mini-batch计算均值和方差进行归一化，并引入可学习的缩放参数 $\gamma$ 和平移参数 $\beta$ 以保持网络表达能力
 - BN使得可以使用更高的学习率、减少对Dropout的依赖、允许使用饱和非线性函数，并在ImageNet分类上以14倍少的训练步数达到相同精度
 
 关键发现：
@@ -26,19 +26,23 @@
 
 深度学习在视觉、语音和许多其他领域极大地推动了技术发展。随机梯度下降（SGD）已被证明是训练深度网络的有效方法，动量[20]和Adagrad[4]等SGD变体也被用于实现最先进的性能。SGD优化网络的参数 $\Theta$ 以最小化损失：
 
-$$\Theta = \arg\min_{\Theta} \frac{1}{N} \sum_{i=1}^{N} \ell(\mathbf{x}_i, \Theta)$$
+$$
+\Theta = \arg\min_{\Theta} \frac{1}{N} \sum_{i=1}^{N} \ell(\mathbf{x}_i, \Theta)
+$$
 
-其中 $\mathbf{x}_{1\ldots N}$ 是训练数据集。使用SGD时，训练逐步进行，每一步我们考虑一个大小为 $m$ 的 mini-batch $\mathbf{x}_{1\ldots m}$。Mini-batch 用于通过计算 $\frac{1}{m} \frac{\partial \ell(\mathbf{x}_i, \Theta)}{\partial \Theta}$ 来近似损失函数关于参数的梯度。使用 mini-batch 而非每次一个样本在多个方面都有帮助。首先，mini-batch 上的损失梯度是对训练集上梯度的估计，其质量随着 batch 大小的增加而提高。其次，由于现代计算平台提供的并行性，一个 batch 上的计算比 $m$ 个单独样本的计算高效得多。
+其中 $\mathbf{x}_{1\ldots N}$ 是训练数据集。使用SGD时，训练逐步进行，每一步我们考虑一个大小为 $m$ 的 mini-batch $\mathbf{x}_{1\ldots m}$ 。Mini-batch 用于通过计算 $\frac{1}{m} \frac{\partial \ell(\mathbf{x}_i, \Theta)}{\partial \Theta}$ 来近似损失函数关于参数的梯度。使用 mini-batch 而非每次一个样本在多个方面都有帮助。首先，mini-batch 上的损失梯度是对训练集上梯度的估计，其质量随着 batch 大小的增加而提高。其次，由于现代计算平台提供的并行性，一个 batch 上的计算比 $m$ 个单独样本的计算高效得多。
 
 尽管随机梯度简单有效，但它需要仔细调整模型的超参数，特别是优化中使用的学习率以及模型参数的初始值。训练的复杂性还在于：每一层的输入受到所有前面层参数的影响——因此网络参数上的微小变化会随着网络的加深而被放大。
 
-层输入分布的变化带来了问题，因为这些层需要不断地适应新的分布。当一个学习系统的输入分布发生变化时，我们说它经历了协变量偏移（covariate shift）[18]。这通常通过领域自适应（domain adaptation）[8]来处理。然而，协变量偏移的概念可以扩展到整个学习系统之外，应用于其组成部分，例如子网络或层。考虑一个计算 $\ell = F_2(F_1(\mathbf{u}, \Theta_1), \Theta_2)$ 的网络，其中 $F_1$ 和 $F_2$ 是任意变换，参数 $\Theta_1, \Theta_2$ 需要被学习以最小化损失 $\ell$。学习 $\Theta_2$ 可以看作是将输入 $\mathbf{x} = F_1(\mathbf{u}, \Theta_1)$ 送入子网络 $\ell = F_2(\mathbf{x}, \Theta_2)$。例如，梯度下降步骤
+层输入分布的变化带来了问题，因为这些层需要不断地适应新的分布。当一个学习系统的输入分布发生变化时，我们说它经历了协变量偏移（covariate shift）[18]。这通常通过领域自适应（domain adaptation）[8]来处理。然而，协变量偏移的概念可以扩展到整个学习系统之外，应用于其组成部分，例如子网络或层。考虑一个计算 $\ell = F_2(F_1(\mathbf{u}, \Theta_1), \Theta_2)$ 的网络，其中 $F_1$ 和 $F_2$ 是任意变换，参数 $\Theta_1, \Theta_2$ 需要被学习以最小化损失 $\ell$ 。学习 $\Theta_2$ 可以看作是将输入 $\mathbf{x} = F_1(\mathbf{u}, \Theta_1)$ 送入子网络 $\ell = F_2(\mathbf{x}, \Theta_2)$ 。例如，梯度下降步骤
 
-$$\Theta_2 \leftarrow \Theta_2 - \frac{\alpha}{m} \sum_{i=1}^{m} \frac{\partial F_2(\mathbf{x}_i, \Theta_2)}{\partial \Theta_2}$$
+$$
+\Theta_2 \leftarrow \Theta_2 - \frac{\alpha}{m} \sum_{i=1}^{m} \frac{\partial F_2(\mathbf{x}_i, \Theta_2)}{\partial \Theta_2}
+$$
 
-（对于 batch 大小 $m$ 和学习率 $\alpha$）与以 $\mathbf{x}$ 为输入的独立网络 $F_2$ 的步骤完全等价。因此，使训练更高效的输入分布特性——例如训练数据和测试数据具有相同的分布——也适用于子网络的训练。因此，让 $\mathbf{x}$ 的分布随时间保持固定是有利的。这样，$\Theta_2$ 就不必为了补偿 $\mathbf{x}$ 分布的变化而重新调整。
+（对于 batch 大小 $m$ 和学习率 $\alpha$ ）与以 $\mathbf{x}$ 为输入的独立网络 $F_2$ 的步骤完全等价。因此，使训练更高效的输入分布特性——例如训练数据和测试数据具有相同的分布——也适用于子网络的训练。因此，让 $\mathbf{x}$ 的分布随时间保持固定是有利的。这样， $\Theta_2$ 就不必为了补偿 $\mathbf{x}$ 分布的变化而重新调整。
 
-子网络输入分布的固定也会对子网络之外的层产生积极的影响。考虑一个带有 sigmoid 激活函数的层 $z = g(W\mathbf{u} + b)$，其中 $\mathbf{u}$ 是层输入，权重矩阵 $W$ 和偏置向量 $b$ 是需要学习的层参数，而 $g(x) = \frac{1}{1+\exp(-x)}$。随着 $|x|$ 增大，$g'(x)$ 趋近于零。这意味着对于 $\mathbf{x} = W\mathbf{u} + b$ 的所有维度——除了那些绝对值很小的维度——向下传播到 $\mathbf{u}$ 的梯度将消失，模型将训练缓慢。然而，由于 $\mathbf{x}$ 受 $W$、$b$ 以及所有下面层参数的影响，训练过程中这些参数的变化很可能将 $\mathbf{x}$ 的许多维度推入非线性的饱和区域，从而减慢收敛速度。这种效应随着网络深度的增加而加剧。在实践中，饱和问题及由此产生的梯度消失通常通过使用修正线性单元（ReLU）[12]、精心的初始化[1, 17]和小学习率来应对。然而，如果我们能确保非线性输入的分布在网络训练过程中保持更稳定，那么优化器就不太可能陷入饱和区域，训练也会加速。
+子网络输入分布的固定也会对子网络之外的层产生积极的影响。考虑一个带有 sigmoid 激活函数的层 $z = g(W\mathbf{u} + b)$ ，其中 $\mathbf{u}$ 是层输入，权重矩阵 $W$ 和偏置向量 $b$ 是需要学习的层参数，而 $g(x) = \frac{1}{1+\exp(-x)}$ 。随着 $|x|$ 增大， $g'(x)$ 趋近于零。这意味着对于 $\mathbf{x} = W\mathbf{u} + b$ 的所有维度——除了那些绝对值很小的维度——向下传播到 $\mathbf{u}$ 的梯度将消失，模型将训练缓慢。然而，由于 $\mathbf{x}$ 受 $W$ 、 $b$ 以及所有下面层参数的影响，训练过程中这些参数的变化很可能将 $\mathbf{x}$ 的许多维度推入非线性的饱和区域，从而减慢收敛速度。这种效应随着网络深度的增加而加剧。在实践中，饱和问题及由此产生的梯度消失通常通过使用修正线性单元（ReLU）[12]、精心的初始化[1, 17]和小学习率来应对。然而，如果我们能确保非线性输入的分布在网络训练过程中保持更稳定，那么优化器就不太可能陷入饱和区域，训练也会加速。
 
 我们将训练过程中深度网络内部节点分布的变化称为**内部协变量偏移**（Internal Covariate Shift）。消除它为更快的训练提供了可能。我们提出了一种新机制，称为**Batch Normalization**，它朝着减少内部协变量偏移迈出了一步，从而显著加速了深度神经网络的训练。它通过一个归一化步骤固定层输入的均值和方差来实现这一点。Batch Normalization 还对流经网络的梯度流动产生有益影响，因为它减少了梯度对参数尺度或其初始值的依赖。这使我们能够使用高得多的学习率而没有发散的风险。此外，批归一化对模型有正则化作用，减少了对 Dropout[19] 的需求。最后，Batch Normalization 通过防止网络陷入饱和模式，使得使用饱和非线性函数成为可能。
 
@@ -48,13 +52,15 @@ $$\Theta_2 \leftarrow \Theta_2 - \frac{\alpha}{m} \sum_{i=1}^{m} \frac{\partial 
 
 我们将内部协变量偏移定义为训练过程中网络参数变化导致的网络激活值分布的变化。为了改善训练，我们寻求减少内部协变量偏移。通过固定层输入 $\mathbf{x}$ 的分布随着训练进程的推进，我们期望提高训练速度。早有研究[10, 22]表明，如果网络的输入被白化——即通过线性变换使其具有零均值和单位方差，并去除相关性——网络训练会收敛得更快。由于每一层观察其下层产生的输入，对每一层的输入实现同样的白化将是有利的。通过白化每一层的输入，我们将朝着实现输入分布的固定迈进一步，从而消除内部协变量偏移的不良影响。
 
-我们可以考虑在每个训练步骤或每隔一定间隔对激活值进行白化，既可以直接修改网络，也可以通过改变优化算法的参数使其依赖于网络激活值[23, 15, 14, 3]。然而，如果这些修改穿插在优化步骤之间，那么梯度下降步骤可能会尝试以一种需要更新归一化的方式来更新参数，这降低了梯度步骤的效果。例如，考虑一个输入为 $\mathbf{u}$ 的层，它加上学习到的偏置 $b$，然后通过减去在训练数据上计算的激活值均值来归一化结果：$\hat{\mathbf{x}} = \mathbf{x} - \mathbb{E}[\mathbf{x}]$，其中 $\mathbf{x} = \mathbf{u} + b$，$\mathcal{X} = \{\mathbf{x}_{1\ldots N}\}$ 是 $\mathbf{x}$ 在训练集上的取值集合，且 $\mathbb{E}[\mathbf{x}] = \frac{1}{N} \sum_{i=1}^{N} \mathbf{x}_i$。如果梯度下降步骤忽略了 $\mathbb{E}[\mathbf{x}]$ 对 $b$ 的依赖，那么它将更新 $b \leftarrow b + \Delta b$，其中 $\Delta b \propto -\partial \ell / \partial \hat{\mathbf{x}}$。那么 $\mathbf{u} + (b + \Delta b) - \mathbb{E}[\mathbf{u} + (b + \Delta b)] = \mathbf{u} + b - \mathbb{E}[\mathbf{u} + b]$。因此，对 $b$ 的更新和随后的归一化变化相结合，导致层输出没有变化，因此损失也没有变化。随着训练的继续，$b$ 将无限增长而损失保持不变。如果归一化不仅进行中心化还进行缩放，这个问题可能变得更糟。我们在初步实验中经验性地观察到了这一点：当标准化参数在梯度下降步骤之外计算时，模型会发散。
+我们可以考虑在每个训练步骤或每隔一定间隔对激活值进行白化，既可以直接修改网络，也可以通过改变优化算法的参数使其依赖于网络激活值[23, 15, 14, 3]。然而，如果这些修改穿插在优化步骤之间，那么梯度下降步骤可能会尝试以一种需要更新归一化的方式来更新参数，这降低了梯度步骤的效果。例如，考虑一个输入为 $\mathbf{u}$ 的层，它加上学习到的偏置 $b$ ，然后通过减去在训练数据上计算的激活值均值来归一化结果： $\hat{\mathbf{x}} = \mathbf{x} - \mathbb{E}[\mathbf{x}]$ ，其中 $\mathbf{x} = \mathbf{u} + b$ ， $\mathcal{X} = \{\mathbf{x}_{1\ldots N}\}$ 是 $\mathbf{x}$ 在训练集上的取值集合，且 $\mathbb{E}[\mathbf{x}] = \frac{1}{N} \sum_{i=1}^{N} \mathbf{x}_i$ 。如果梯度下降步骤忽略了 $\mathbb{E}[\mathbf{x}]$ 对 $b$ 的依赖，那么它将更新 $b \leftarrow b + \Delta b$ ，其中 $\Delta b \propto -\partial \ell / \partial \hat{\mathbf{x}}$ 。那么 $\mathbf{u} + (b + \Delta b) - \mathbb{E}[\mathbf{u} + (b + \Delta b)] = \mathbf{u} + b - \mathbb{E}[\mathbf{u} + b]$ 。因此，对 $b$ 的更新和随后的归一化变化相结合，导致层输出没有变化，因此损失也没有变化。随着训练的继续， $b$ 将无限增长而损失保持不变。如果归一化不仅进行中心化还进行缩放，这个问题可能变得更糟。我们在初步实验中经验性地观察到了这一点：当标准化参数在梯度下降步骤之外计算时，模型会发散。
 
-上述方法的问题在于梯度下降优化没有考虑归一化的存在。为了解决这个问题，我们希望确保对于任何参数值，网络总是产生具有期望分布的激活值。这样做将使得损失关于模型参数的梯度能够考虑归一化及其对模型参数 $\Theta$ 的依赖。再次令 $\mathbf{x}$ 为层输入（视为向量），$\mathcal{X}$ 为这些输入在训练数据集上的集合。归一化可以写成一个变换
+上述方法的问题在于梯度下降优化没有考虑归一化的存在。为了解决这个问题，我们希望确保对于任何参数值，网络总是产生具有期望分布的激活值。这样做将使得损失关于模型参数的梯度能够考虑归一化及其对模型参数 $\Theta$ 的依赖。再次令 $\mathbf{x}$ 为层输入（视为向量）， $\mathcal{X}$ 为这些输入在训练数据集上的集合。归一化可以写成一个变换
 
-$$\hat{\mathbf{x}} = \text{Norm}(\mathbf{x}, \mathcal{X})$$
+$$
+\hat{\mathbf{x}} = \text{Norm}(\mathbf{x}, \mathcal{X})
+$$
 
-它不仅依赖于给定的训练样本 $\mathbf{x}$，还依赖于所有样本 $\mathcal{X}$——如果 $\mathbf{x}$ 是由另一层生成的，则每个 $\mathcal{X}$ 都依赖于 $\Theta$。对于反向传播，我们需要计算 Jacobian $\frac{\partial \text{Norm}(\mathbf{x}, \mathcal{X})}{\partial \mathbf{x}}$ 和 $\frac{\partial \text{Norm}(\mathbf{x}, \mathcal{X})}{\partial \mathcal{X}}$；忽略后一项将导致上述发散。在这个框架内，白化层输入是昂贵的，因为它需要计算协方差矩阵 $\text{Cov}[\mathbf{x}] = \mathbb{E}_{\mathbf{x} \in \mathcal{X}}[\mathbf{x}\mathbf{x}^T] - \mathbb{E}[\mathbf{x}]\mathbb{E}[\mathbf{x}]^T$ 及其逆平方根，以产生白化后的激活值 $\text{Cov}[\mathbf{x}]^{-1/2}(\mathbf{x} - \mathbb{E}[\mathbf{x}])$，以及反向传播时这些变换的导数。这促使我们寻找一种替代方案，以可微分的方式执行输入归一化，且不需要在每次参数更新后分析整个训练集。
+它不仅依赖于给定的训练样本 $\mathbf{x}$ ，还依赖于所有样本 $\mathcal{X}$ ——如果 $\mathbf{x}$ 是由另一层生成的，则每个 $\mathcal{X}$ 都依赖于 $\Theta$ 。对于反向传播，我们需要计算 Jacobian $\frac{\partial \text{Norm}(\mathbf{x}, \mathcal{X})}{\partial \mathbf{x}}$ 和 $\frac{\partial \text{Norm}(\mathbf{x}, \mathcal{X})}{\partial \mathcal{X}}$ ；忽略后一项将导致上述发散。在这个框架内，白化层输入是昂贵的，因为它需要计算协方差矩阵 $\text{Cov}[\mathbf{x}] = \mathbb{E}_{\mathbf{x} \in \mathcal{X}}[\mathbf{x}\mathbf{x}^T] - \mathbb{E}[\mathbf{x}]\mathbb{E}[\mathbf{x}]^T$ 及其逆平方根，以产生白化后的激活值 $\text{Cov}[\mathbf{x}]^{-1/2}(\mathbf{x} - \mathbb{E}[\mathbf{x}])$ ，以及反向传播时这些变换的导数。这促使我们寻找一种替代方案，以可微分的方式执行输入归一化，且不需要在每次参数更新后分析整个训练集。
 
 之前的一些方法（例如[11]）使用基于单个训练样本计算的统计量，或者在图像网络的情况下，使用给定位置的不同特征图上的统计量。然而，这丢弃了激活值的绝对尺度，从而改变了网络的表示能力。我们希望通过相对于整个训练数据的统计量来归一化训练样本中的激活值，从而保留网络中的信息。
 
@@ -62,29 +68,35 @@ $$\hat{\mathbf{x}} = \text{Norm}(\mathbf{x}, \mathcal{X})$$
 
 由于对每一层输入进行完全白化代价高昂且并非处处可微，我们做了两个必要的简化。第一，我们不联合白化层输入和输出的特征，而是独立地归一化每个标量特征，使其均值为0、方差为1。对于一个 $d$ 维输入 $\mathbf{x} = (x^{(1)} \ldots x^{(d)})$ 的层，我们将归一化每个维度：
 
-$$\hat{x}^{(k)} = \frac{x^{(k)} - \mathbb{E}[x^{(k)}]}{\sqrt{\text{Var}[x^{(k)}]}}$$
+$$
+\hat{x}^{(k)} = \frac{x^{(k)} - \mathbb{E}[x^{(k)}]}{\sqrt{\text{Var}[x^{(k)}]}}
+$$
 
 其中期望和方差在整个训练数据集上计算。如[10]所示，即使特征之间没有去相关，这种归一化也能加速收敛。
 
-注意，仅仅归一化层的每个输入可能会改变该层所能表示的内容。例如，归一化 sigmoid 的输入会将其约束到非线性的线性区域。为了解决这个问题，我们确保插入到网络中的变换能够表示恒等变换。为此，我们为每个激活值 $x^{(k)}$ 引入一对参数 $\gamma^{(k)}$ 和 $\beta^{(k)}$，用于缩放和平移归一化后的值：
+注意，仅仅归一化层的每个输入可能会改变该层所能表示的内容。例如，归一化 sigmoid 的输入会将其约束到非线性的线性区域。为了解决这个问题，我们确保插入到网络中的变换能够表示恒等变换。为此，我们为每个激活值 $x^{(k)}$ 引入一对参数 $\gamma^{(k)}$ 和 $\beta^{(k)}$ ，用于缩放和平移归一化后的值：
 
-$$y^{(k)} = \gamma^{(k)} \hat{x}^{(k)} + \beta^{(k)}$$
+$$
+y^{(k)} = \gamma^{(k)} \hat{x}^{(k)} + \beta^{(k)}
+$$
 
-这些参数与原始模型参数一起学习，恢复了网络的表达能力。实际上，通过设置 $\gamma^{(k)} = \sqrt{\text{Var}[x^{(k)}]}$ 和 $\beta^{(k)} = \mathbb{E}[x^{(k)}]$，如果这是最优选择，我们可以恢复原始激活值。
+这些参数与原始模型参数一起学习，恢复了网络的表达能力。实际上，通过设置 $\gamma^{(k)} = \sqrt{\text{Var}[x^{(k)}]}$ 和 $\beta^{(k)} = \mathbb{E}[x^{(k)}]$ ，如果这是最优选择，我们可以恢复原始激活值。
 
 在基于整个训练集的 batch 设定中，我们将使用整个集来归一化激活值。然而，在使用随机优化时这是不现实的。因此，我们做了第二个简化：由于我们在随机梯度训练中使用 mini-batch，每个 mini-batch 会产生每个激活值的均值和方差估计。这样，用于归一化的统计量可以完全参与梯度反向传播。注意，mini-batch 的使用是通过计算每个维度的方差而非联合协方差来实现的；在联合情况下，由于 mini-batch 大小可能小于被白化的激活值数量，导致奇异协方差矩阵，因此需要正则化。
 
-考虑一个大小为 $m$ 的 mini-batch $\mathcal{B}$。由于归一化独立应用于每个激活值，我们专注于一个特定的激活 $x^{(k)}$，为清晰起见省略 $k$。我们在 mini-batch 中有该激活的 $m$ 个值，$\mathcal{B} = \{x_{1\ldots m}\}$。令归一化后的值为 $\hat{x}_{1\ldots m}$，它们的线性变换为 $y_{1\ldots m}$。我们将变换
+考虑一个大小为 $m$ 的 mini-batch $\mathcal{B}$ 。由于归一化独立应用于每个激活值，我们专注于一个特定的激活 $x^{(k)}$ ，为清晰起见省略 $k$ 。我们在 mini-batch 中有该激活的 $m$ 个值， $\mathcal{B} = \{x_{1\ldots m}\}$ 。令归一化后的值为 $\hat{x}_{1\ldots m}$ ，它们的线性变换为 $y_{1\ldots m}$ 。我们将变换
 
-$$\text{BN}_{\gamma,\beta}: x_{1\ldots m} \to y_{1\ldots m}$$
+$$
+\text{BN}_{\gamma,\beta}: x_{1\ldots m} \to y_{1\ldots m}
+$$
 
-称为**批归一化变换**（Batch Normalizing Transform）。我们在算法1中展示BN变换。在算法中，$\epsilon$ 是一个添加到 mini-batch 方差中的常数，用于数值稳定性。
+称为**批归一化变换**（Batch Normalizing Transform）。我们在算法1中展示BN变换。在算法中， $\epsilon$ 是一个添加到 mini-batch 方差中的常数，用于数值稳定性。
 
 ---
 
-**算法1：批归一化变换（Batch Normalizing Transform），应用于mini-batch上的激活值 $x$。**
+**算法1：批归一化变换（Batch Normalizing Transform），应用于mini-batch上的激活值 $x$ 。**
 
-**输入：** Mini-batch 上的 $x$ 值：$\mathcal{B} = \{x_{1\ldots m}\}$；需要学习的参数：$\gamma, \beta$
+**输入：** Mini-batch 上的 $x$ 值： $\mathcal{B} = \{x_{1\ldots m}\}$ ；需要学习的参数： $\gamma, \beta$
 
 **输出：** $\{y_i = \text{BN}_{\gamma,\beta}(x_i)\}$
 
@@ -95,50 +107,64 @@ $$\text{BN}_{\gamma,\beta}: x_{1\ldots m} \to y_{1\ldots m}$$
 
 ---
 
-BN 变换可以添加到网络中，用于操作任何激活值。记法 $y = \text{BN}_{\gamma,\beta}(x)$ 表明参数 $\gamma$ 和 $\beta$ 是需要学习的，但应注意 BN 变换并不独立处理每个训练样本中的激活值。相反，$\text{BN}_{\gamma,\beta}(x)$ 既依赖于训练样本，也依赖于 mini-batch 中的其他样本。缩放和平移后的值 $y$ 被传递到其他网络层。归一化后的激活值 $\hat{x}$ 是我们的变换内部的值，但它们的存在至关重要。任何 $\hat{x}$ 值的分布都具有期望值 0 和方差 1——只要每个 mini-batch 的样本来自同一分布，并且我们忽略 $\epsilon$。这可以通过观察 $\sum_{i=1}^{m} \hat{x}_i = 0$ 和 $\frac{1}{m} \sum_{i=1}^{m} \hat{x}_i^2 = 1$ 并取期望看出。每个归一化后的激活值 $\hat{x}^{(k)}$ 可以视为一个子网络的输入，该子网络由线性变换 $y^{(k)} = \gamma^{(k)} \hat{x}^{(k)} + \beta^{(k)}$ 及原始网络的其他处理组成。这些子网络输入都具有固定的均值和方差，尽管这些归一化的 $\hat{x}^{(k)}$ 的联合分布在训练过程中可以变化，但我们期望归一化输入的引入能够加速子网络以及整个网络的训练。
+BN 变换可以添加到网络中，用于操作任何激活值。记法 $y = \text{BN}_{\gamma,\beta}(x)$ 表明参数 $\gamma$ 和 $\beta$ 是需要学习的，但应注意 BN 变换并不独立处理每个训练样本中的激活值。相反， $\text{BN}_{\gamma,\beta}(x)$ 既依赖于训练样本，也依赖于 mini-batch 中的其他样本。缩放和平移后的值 $y$ 被传递到其他网络层。归一化后的激活值 $\hat{x}$ 是我们的变换内部的值，但它们的存在至关重要。任何 $\hat{x}$ 值的分布都具有期望值 0 和方差 1——只要每个 mini-batch 的样本来自同一分布，并且我们忽略 $\epsilon$ 。这可以通过观察 $\sum_{i=1}^{m} \hat{x}_i = 0$ 和 $\frac{1}{m} \sum_{i=1}^{m} \hat{x}_i^2 = 1$ 并取期望看出。每个归一化后的激活值 $\hat{x}^{(k)}$ 可以视为一个子网络的输入，该子网络由线性变换 $y^{(k)} = \gamma^{(k)} \hat{x}^{(k)} + \beta^{(k)}$ 及原始网络的其他处理组成。这些子网络输入都具有固定的均值和方差，尽管这些归一化的 $\hat{x}^{(k)}$ 的联合分布在训练过程中可以变化，但我们期望归一化输入的引入能够加速子网络以及整个网络的训练。
 
 在训练过程中，我们需要通过这个变换反向传播损失 $\ell$ 的梯度，并计算关于BN变换参数的梯度。我们使用链式法则，如下所示（简化前）：
 
-$$\frac{\partial \ell}{\partial \hat{x}_i} = \frac{\partial \ell}{\partial y_i} \cdot \gamma$$
+$$
+\frac{\partial \ell}{\partial \hat{x}_i} = \frac{\partial \ell}{\partial y_i} \cdot \gamma
+$$
 
-$$\frac{\partial \ell}{\partial \sigma_{\mathcal{B}}^2} = \sum_{i=1}^{m} \frac{\partial \ell}{\partial \hat{x}_i} \cdot (x_i - \mu_{\mathcal{B}}) \cdot \frac{-1}{2} (\sigma_{\mathcal{B}}^2 + \epsilon)^{-3/2}$$
+$$
+\frac{\partial \ell}{\partial \sigma_{\mathcal{B}}^2} = \sum_{i=1}^{m} \frac{\partial \ell}{\partial \hat{x}_i} \cdot (x_i - \mu_{\mathcal{B}}) \cdot \frac{-1}{2} (\sigma_{\mathcal{B}}^2 + \epsilon)^{-3/2}
+$$
 
-$$\frac{\partial \ell}{\partial \mu_{\mathcal{B}}} = \left( \sum_{i=1}^{m} \frac{\partial \ell}{\partial \hat{x}_i} \cdot \frac{-1}{\sqrt{\sigma_{\mathcal{B}}^2 + \epsilon}} \right) + \frac{\partial \ell}{\partial \sigma_{\mathcal{B}}^2} \cdot \frac{\sum_{i=1}^{m} -2(x_i - \mu_{\mathcal{B}})}{m}$$
+$$
+\frac{\partial \ell}{\partial \mu_{\mathcal{B}}} = \left( \sum_{i=1}^{m} \frac{\partial \ell}{\partial \hat{x}_i} \cdot \frac{-1}{\sqrt{\sigma_{\mathcal{B}}^2 + \epsilon}} \right) + \frac{\partial \ell}{\partial \sigma_{\mathcal{B}}^2} \cdot \frac{\sum_{i=1}^{m} -2(x_i - \mu_{\mathcal{B}})}{m}
+$$
 
-$$\frac{\partial \ell}{\partial x_i} = \frac{\partial \ell}{\partial \hat{x}_i} \cdot \frac{1}{\sqrt{\sigma_{\mathcal{B}}^2 + \epsilon}} + \frac{\partial \ell}{\partial \sigma_{\mathcal{B}}^2} \cdot \frac{2(x_i - \mu_{\mathcal{B}})}{m} + \frac{\partial \ell}{\partial \mu_{\mathcal{B}}} \cdot \frac{1}{m}$$
+$$
+\frac{\partial \ell}{\partial x_i} = \frac{\partial \ell}{\partial \hat{x}_i} \cdot \frac{1}{\sqrt{\sigma_{\mathcal{B}}^2 + \epsilon}} + \frac{\partial \ell}{\partial \sigma_{\mathcal{B}}^2} \cdot \frac{2(x_i - \mu_{\mathcal{B}})}{m} + \frac{\partial \ell}{\partial \mu_{\mathcal{B}}} \cdot \frac{1}{m}
+$$
 
-$$\frac{\partial \ell}{\partial \gamma} = \sum_{i=1}^{m} \frac{\partial \ell}{\partial y_i} \cdot \hat{x}_i$$
+$$
+\frac{\partial \ell}{\partial \gamma} = \sum_{i=1}^{m} \frac{\partial \ell}{\partial y_i} \cdot \hat{x}_i
+$$
 
-$$\frac{\partial \ell}{\partial \beta} = \sum_{i=1}^{m} \frac{\partial \ell}{\partial y_i}$$
+$$
+\frac{\partial \ell}{\partial \beta} = \sum_{i=1}^{m} \frac{\partial \ell}{\partial y_i}
+$$
 
 因此，BN 变换是一个可微变换，它将归一化的激活值引入网络。这确保了在模型训练过程中，层可以继续在表现出较少内部协变量偏移的输入分布上学习，从而加速训练。此外，应用于这些归一化激活值的学习到的仿射变换允许 BN 变换表示恒等变换，并保留了网络容量。
 
 ### 3.1 批归一化网络的训练与推理
 
-要对网络进行 Batch Normalization，我们指定一个激活子集，并为每个激活值根据算法1插入 BN 变换。任何之前以 $x$ 作为输入的层，现在接收 $\text{BN}(x)$。采用 Batch Normalization 的模型可以使用 batch 梯度下降、或 mini-batch 大小 $m > 1$ 的随机梯度下降、或其任何变体（如 Adagrad[4]）进行训练。依赖于 mini-batch 的激活值归一化可以实现高效训练，但在推理期间既非必要也不可取——我们希望输出仅确定性地依赖于输入。为此，在网络训练完成后，我们使用总体（population）统计量而非 mini-batch 统计量进行归一化：
+要对网络进行 Batch Normalization，我们指定一个激活子集，并为每个激活值根据算法1插入 BN 变换。任何之前以 $x$ 作为输入的层，现在接收 $\text{BN}(x)$ 。采用 Batch Normalization 的模型可以使用 batch 梯度下降、或 mini-batch 大小 $m > 1$ 的随机梯度下降、或其任何变体（如 Adagrad[4]）进行训练。依赖于 mini-batch 的激活值归一化可以实现高效训练，但在推理期间既非必要也不可取——我们希望输出仅确定性地依赖于输入。为此，在网络训练完成后，我们使用总体（population）统计量而非 mini-batch 统计量进行归一化：
 
-$$\hat{x} = \frac{x - \mathbb{E}[x]}{\sqrt{\text{Var}[x] + \epsilon}}$$
+$$
+\hat{x} = \frac{x - \mathbb{E}[x]}{\sqrt{\text{Var}[x] + \epsilon}}
+$$
 
-忽略 $\epsilon$，这些归一化激活值与训练时具有相同的均值0和方差1。我们使用无偏方差估计 $\text{Var}[x] = \frac{m}{m-1} \cdot \mathbb{E}_{\mathcal{B}}[\sigma_{\mathcal{B}}^2]$，其中期望是针对大小为 $m$ 的训练 mini-batch 的，$\sigma_{\mathcal{B}}^2$ 是它们的样本方差。使用移动平均（moving averages），我们可以追踪模型在训练过程中的精度。由于推理过程中均值和方差是固定的，归一化只是一个应用于每个激活值的线性变换。它还可以进一步与 $\gamma$ 的缩放和 $\beta$ 的平移相结合，得到一个单一的线性变换来替代 $\text{BN}(x)$。算法2总结了训练批归一化网络的流程。
+忽略 $\epsilon$ ，这些归一化激活值与训练时具有相同的均值0和方差1。我们使用无偏方差估计 $\text{Var}[x] = \frac{m}{m-1} \cdot \mathbb{E}_{\mathcal{B}}[\sigma_{\mathcal{B}}^2]$ ，其中期望是针对大小为 $m$ 的训练 mini-batch 的， $\sigma_{\mathcal{B}}^2$ 是它们的样本方差。使用移动平均（moving averages），我们可以追踪模型在训练过程中的精度。由于推理过程中均值和方差是固定的，归一化只是一个应用于每个激活值的线性变换。它还可以进一步与 $\gamma$ 的缩放和 $\beta$ 的平移相结合，得到一个单一的线性变换来替代 $\text{BN}(x)$ 。算法2总结了训练批归一化网络的流程。
 
 ---
 
 **算法2：训练批归一化网络**
 
-**输入：** 具有可训练参数 $\Theta$ 的网络 $\mathcal{N}$；激活值子集 $\{x^{(k)}\}_{k=1}^{K}$
+**输入：** 具有可训练参数 $\Theta$ 的网络 $\mathcal{N}$ ；激活值子集 $\{x^{(k)}\}_{k=1}^{K}$
 
 **输出：** 用于推理的批归一化网络 $\mathcal{N}_{\text{BN}}^{\text{inf}}$
 
 1: $\mathcal{N}_{\text{BN}}^{\text{tr}} \leftarrow \mathcal{N}$ // 训练 BN 网络
 2: **for** $k = 1 \ldots K$ **do**
-3:    向 $\mathcal{N}_{\text{BN}}^{\text{tr}}$ 添加变换 $y^{(k)} = \text{BN}_{\gamma^{(k)}, \beta^{(k)}}(x^{(k)})$（算法1）
+3:    向 $\mathcal{N}_{\text{BN}}^{\text{tr}}$ 添加变换 $y^{(k)} = \text{BN}_{\gamma^{(k)}, \beta^{(k)}}(x^{(k)})$ （算法1）
 4:    修改 $\mathcal{N}_{\text{BN}}^{\text{tr}}$ 中每个以 $x^{(k)}$ 作为输入的层，改为接收 $y^{(k)}$
 5: **end for**
 6: 训练 $\mathcal{N}_{\text{BN}}^{\text{tr}}$ 以优化参数 $\Theta \cup \{\gamma^{(k)}, \beta^{(k)}\}_{k=1}^{K}$
 7: $\mathcal{N}_{\text{BN}}^{\text{inf}} \leftarrow \mathcal{N}_{\text{BN}}^{\text{tr}}$ // 推理 BN 网络，参数冻结
 8: **for** $k = 1 \ldots K$ **do**
-9:    // 为清晰起见，$x \equiv x^{(k)}$, $\gamma \equiv \gamma^{(k)}$, $\mu_{\mathcal{B}} \equiv \mu_{\mathcal{B}}^{(k)}$ 等
-10:   处理多个大小为 $m$ 的训练 mini-batch $\mathcal{B}$，并对它们进行平均：
+9:    // 为清晰起见， $x \equiv x^{(k)}$ , $\gamma \equiv \gamma^{(k)}$ , $\mu_{\mathcal{B}} \equiv \mu_{\mathcal{B}}^{(k)}$ 等
+10:   处理多个大小为 $m$ 的训练 mini-batch $\mathcal{B}$ ，并对它们进行平均：
 11:   $\mathbb{E}[x] \leftarrow \mathbb{E}_{\mathcal{B}}[\mu_{\mathcal{B}}]$
 12:   $\text{Var}[x] \leftarrow \frac{m}{m-1} \mathbb{E}_{\mathcal{B}}[\sigma_{\mathcal{B}}^2]$
 13:   在 $\mathcal{N}_{\text{BN}}^{\text{inf}}$ 中，将变换 $y = \text{BN}_{\gamma,\beta}(x)$ 替换为：
@@ -151,35 +177,45 @@ $$\hat{x} = \frac{x - \mathbb{E}[x]}{\sqrt{\text{Var}[x] + \epsilon}}$$
 
 Batch Normalization 可以应用于网络中任何一组激活值。这里，我们关注由仿射变换后接逐元素非线性组成的变换：
 
-$$z = g(W\mathbf{u} + b)$$
+$$
+z = g(W\mathbf{u} + b)
+$$
 
-其中 $W$ 和 $b$ 是模型学习到的参数，$g(\cdot)$ 是诸如 sigmoid 或 ReLU 之类的非线性。这种形式涵盖了全连接层和卷积层。我们通过在非线性之前归一化 $\mathbf{x} = W\mathbf{u} + b$ 来添加BN变换。我们也可以归一化层输入 $\mathbf{u}$，但由于 $\mathbf{u}$ 很可能是另一个非线性的输出，其分布的形状在训练过程中很可能发生变化，约束其一阶和二阶矩并不能消除协变量偏移。相比之下，$W\mathbf{u} + b$ 更可能具有对称的、非稀疏的分布，更接近高斯分布[7]；归一化它更可能产生具有稳定分布的激活值。
+其中 $W$ 和 $b$ 是模型学习到的参数， $g(\cdot)$ 是诸如 sigmoid 或 ReLU 之类的非线性。这种形式涵盖了全连接层和卷积层。我们通过在非线性之前归一化 $\mathbf{x} = W\mathbf{u} + b$ 来添加BN变换。我们也可以归一化层输入 $\mathbf{u}$ ，但由于 $\mathbf{u}$ 很可能是另一个非线性的输出，其分布的形状在训练过程中很可能发生变化，约束其一阶和二阶矩并不能消除协变量偏移。相比之下， $W\mathbf{u} + b$ 更可能具有对称的、非稀疏的分布，更接近高斯分布[7]；归一化它更可能产生具有稳定分布的激活值。
 
-注意，由于我们对 $W\mathbf{u} + b$ 进行归一化，偏置 $b$ 可以被忽略，因为其效果会被随后的均值减法抵消（偏置的作用已被算法1中的 $\beta$ 所包含）。因此，$z = g(W\mathbf{u} + b)$ 被替换为：
+注意，由于我们对 $W\mathbf{u} + b$ 进行归一化，偏置 $b$ 可以被忽略，因为其效果会被随后的均值减法抵消（偏置的作用已被算法1中的 $\beta$ 所包含）。因此， $z = g(W\mathbf{u} + b)$ 被替换为：
 
-$$z = g(\text{BN}(W\mathbf{u}))$$
+$$
+z = g(\text{BN}(W\mathbf{u}))
+$$
 
-其中 BN 变换独立应用于 $\mathbf{x} = W\mathbf{u}$ 的每个维度，每个维度有一对独立的学习参数 $\gamma^{(k)}, \beta^{(k)}$。
+其中 BN 变换独立应用于 $\mathbf{x} = W\mathbf{u}$ 的每个维度，每个维度有一对独立的学习参数 $\gamma^{(k)}, \beta^{(k)}$ 。
 
-对于卷积层，我们额外希望归一化遵循卷积的性质——即同一特征图在不同位置的不同元素以相同方式进行归一化。为此，我们在 mini-batch 中跨所有位置联合归一化所有激活值。在算法1中，我们令 $\mathcal{B}$ 为特征图中所有值的集合，跨越 mini-batch 的元素和空间位置——因此对于大小为 $m$ 的 mini-batch 和大小为 $p \times q$ 的特征图，我们使用的有效 mini-batch 大小为 $m' = |\mathcal{B}| = m \cdot pq$。我们为每个特征图学习一对参数 $\gamma^{(k)}$ 和 $\beta^{(k)}$，而不是为每个激活值学习。算法2也进行了类似的修改，使得在推理过程中BN变换将相同的线性变换应用于给定特征图中的每个激活值。
+对于卷积层，我们额外希望归一化遵循卷积的性质——即同一特征图在不同位置的不同元素以相同方式进行归一化。为此，我们在 mini-batch 中跨所有位置联合归一化所有激活值。在算法1中，我们令 $\mathcal{B}$ 为特征图中所有值的集合，跨越 mini-batch 的元素和空间位置——因此对于大小为 $m$ 的 mini-batch 和大小为 $p \times q$ 的特征图，我们使用的有效 mini-batch 大小为 $m' = |\mathcal{B}| = m \cdot pq$ 。我们为每个特征图学习一对参数 $\gamma^{(k)}$ 和 $\beta^{(k)}$ ，而不是为每个激活值学习。算法2也进行了类似的修改，使得在推理过程中BN变换将相同的线性变换应用于给定特征图中的每个激活值。
 
 ### 3.3 Batch Normalization 支持更高的学习率
 
 在传统深度网络中，过高的学习率可能导致梯度爆炸或消失，以及陷入不良局部最小值。Batch Normalization 有助于解决这些问题。通过在整个网络中归一化激活值，它防止了参数的小变化被放大为激活值和梯度中更大且次优的变化；例如，它防止训练陷入非线性的饱和区域。
 
-Batch Normalization 还使训练对参数尺度更具鲁棒性。通常，大的学习率可能增加层参数的尺度，这随后在反向传播中放大梯度并导致模型爆炸。然而，使用 Batch Normalization 时，通过层的反向传播不受其参数尺度的影响。实际上，对于标量 $a$：
+Batch Normalization 还使训练对参数尺度更具鲁棒性。通常，大的学习率可能增加层参数的尺度，这随后在反向传播中放大梯度并导致模型爆炸。然而，使用 Batch Normalization 时，通过层的反向传播不受其参数尺度的影响。实际上，对于标量 $a$ ：
 
-$$\text{BN}(W\mathbf{u}) = \text{BN}((aW)\mathbf{u})$$
+$$
+\text{BN}(W\mathbf{u}) = \text{BN}((aW)\mathbf{u})
+$$
 
 并且我们可以证明：
 
-$$\frac{\partial \text{BN}((aW)\mathbf{u})}{\partial \mathbf{u}} = \frac{\partial \text{BN}(W\mathbf{u})}{\partial \mathbf{u}}$$
+$$
+\frac{\partial \text{BN}((aW)\mathbf{u})}{\partial \mathbf{u}} = \frac{\partial \text{BN}(W\mathbf{u})}{\partial \mathbf{u}}
+$$
 
-$$\frac{\partial \text{BN}((aW)\mathbf{u})}{\partial (aW)} = \frac{1}{a} \cdot \frac{\partial \text{BN}(W\mathbf{u})}{\partial W}$$
+$$
+\frac{\partial \text{BN}((aW)\mathbf{u})}{\partial (aW)} = \frac{1}{a} \cdot \frac{\partial \text{BN}(W\mathbf{u})}{\partial W}
+$$
 
 尺度不影响层的 Jacobian，因此也不影响梯度传播。此外，更大的权重导致更小的梯度，Batch Normalization 将稳定参数的增长。
 
-我们进一步推测，Batch Normalization 可能使层的 Jacobian 矩阵的奇异值接近1，众所周知这有利于训练[17]。考虑两个具有归一化输入的连续层，以及这些归一化向量之间的变换：$\hat{\mathbf{z}} = F(\hat{\mathbf{x}})$。如果我们假设 $\hat{\mathbf{x}}$ 和 $\hat{\mathbf{z}}$ 是高斯分布且不相关，并且 $F(\hat{\mathbf{x}}) \approx J\hat{\mathbf{x}}$ 对于给定的模型参数是一个线性变换，那么 $\hat{\mathbf{x}}$ 和 $\hat{\mathbf{z}}$ 都具有单位协方差，且 $I = \text{Cov}[\hat{\mathbf{z}}] = J \text{Cov}[\hat{\mathbf{x}}] J^T = JJ^T$。因此 $JJ^T = I$，所以 $J$ 的所有奇异值都等于1，这保持了反向传播中的梯度幅值。实际上，变换不是线性的，归一化后的值也不能保证是高斯的或独立的，但我们仍然期望 Batch Normalization 有助于使梯度传播更良性。Batch Normalization 对梯度传播的确切影响仍是进一步研究的领域。
+我们进一步推测，Batch Normalization 可能使层的 Jacobian 矩阵的奇异值接近1，众所周知这有利于训练[17]。考虑两个具有归一化输入的连续层，以及这些归一化向量之间的变换： $\hat{\mathbf{z}} = F(\hat{\mathbf{x}})$ 。如果我们假设 $\hat{\mathbf{x}}$ 和 $\hat{\mathbf{z}}$ 是高斯分布且不相关，并且 $F(\hat{\mathbf{x}}) \approx J\hat{\mathbf{x}}$ 对于给定的模型参数是一个线性变换，那么 $\hat{\mathbf{x}}$ 和 $\hat{\mathbf{z}}$ 都具有单位协方差，且 $I = \text{Cov}[\hat{\mathbf{z}}] = J \text{Cov}[\hat{\mathbf{x}}] J^T = JJ^T$ 。因此 $JJ^T = I$ ，所以 $J$ 的所有奇异值都等于1，这保持了反向传播中的梯度幅值。实际上，变换不是线性的，归一化后的值也不能保证是高斯的或独立的，但我们仍然期望 Batch Normalization 有助于使梯度传播更良性。Batch Normalization 对梯度传播的确切影响仍是进一步研究的领域。
 
 ### 3.4 Batch Normalization 对模型的正则化
 
@@ -189,9 +225,9 @@ $$\frac{\partial \text{BN}((aW)\mathbf{u})}{\partial (aW)} = \frac{1}{a} \cdot \
 
 ### 4.1 激活值随时间的演变
 
-为了验证内部协变量偏移对训练的影响以及 Batch Normalization 对抗它的能力，我们考虑了在 MNIST 数据集[9]上预测数字类别的问题。我们使用了一个非常简单的网络，输入为 $28 \times 28$ 的二值图像，包含3个全连接隐藏层，每层100个激活值。每个隐藏层使用 sigmoid 非线性计算 $y = g(W\mathbf{u} + b)$，权重 $W$ 初始化为小的随机高斯值。最后一个隐藏层之后是一个全连接层（每类一个激活值，共10个），以及交叉熵损失。我们训练网络50000步，每个 mini-batch 包含60个样本。我们按照第3.1节为网络的每个隐藏层添加了 Batch Normalization。我们关注的是基线网络和批归一化网络之间的比较（所描述的架构并不旨在达到 MNIST 上的最先进性能）。
+为了验证内部协变量偏移对训练的影响以及 Batch Normalization 对抗它的能力，我们考虑了在 MNIST 数据集[9]上预测数字类别的问题。我们使用了一个非常简单的网络，输入为 $28 \times 28$ 的二值图像，包含3个全连接隐藏层，每层100个激活值。每个隐藏层使用 sigmoid 非线性计算 $y = g(W\mathbf{u} + b)$ ，权重 $W$ 初始化为小的随机高斯值。最后一个隐藏层之后是一个全连接层（每类一个激活值，共10个），以及交叉熵损失。我们训练网络50000步，每个 mini-batch 包含60个样本。我们按照第3.1节为网络的每个隐藏层添加了 Batch Normalization。我们关注的是基线网络和批归一化网络之间的比较（所描述的架构并不旨在达到 MNIST 上的最先进性能）。
 
-图1(a)显示了两个网络在留出测试数据上的正确预测比例随训练过程的变化。批归一化网络获得了更高的测试精度。为了研究原因，我们考察了训练过程中原始网络 $\mathcal{N}$ 和批归一化网络 $\mathcal{N}_{\text{BN}}^{\text{tr}}$（算法2）中 sigmoid 的输入。在图1(b,c)中，我们展示了每个网络最后一个隐藏层中一个典型激活值的分布如何演变。原始网络中的分布随时间的推移发生显著变化，无论是均值还是方差，这使后续层的训练变得复杂。相比之下，批归一化网络中的分布在训练过程中更加稳定，这有助于训练。
+图1(a)显示了两个网络在留出测试数据上的正确预测比例随训练过程的变化。批归一化网络获得了更高的测试精度。为了研究原因，我们考察了训练过程中原始网络 $\mathcal{N}$ 和批归一化网络 $\mathcal{N}_{\text{BN}}^{\text{tr}}$ （算法2）中 sigmoid 的输入。在图1(b,c)中，我们展示了每个网络最后一个隐藏层中一个典型激活值的分布如何演变。原始网络中的分布随时间的推移发生显著变化，无论是均值还是方差，这使后续层的训练变得复杂。相比之下，批归一化网络中的分布在训练过程中更加稳定，这有助于训练。
 
 <img src="fig1.png" alt="Figure 1">
 
@@ -199,7 +235,7 @@ $$\frac{\partial \text{BN}((aW)\mathbf{u})}{\partial (aW)} = \frac{1}{a} \cdot \
 
 ### 4.2 ImageNet 分类
 
-我们将 Batch Normalization 应用于 Inception 网络[21]的一个新变体，在 ImageNet 分类任务[16]上进行训练。该网络包含大量卷积层和池化层，以及一个用于预测图像类别的 softmax 层（共1000类）。卷积层使用 ReLU 作为非线性函数。与[21]描述的网络的主要区别在于：$5 \times 5$ 卷积层被替换为两个连续的 $3 \times 3$ 卷积层，最多128个滤波器。该网络包含 $13.6 \times 10^6$ 个参数，除了顶部的 softmax 层外，没有全连接层。更多细节见附录。我们在后文中将此模型称为 Inception。该模型使用带有动量的随机梯度下降[20]进行训练，mini-batch 大小为32。训练使用大规模分布式架构（类似于[2]）。所有网络在训练过程中通过在留出集上使用每张图像单次裁剪来计算验证集 top-1 准确率（即从1000个类别中预测正确标签的概率）进行评估。
+我们将 Batch Normalization 应用于 Inception 网络[21]的一个新变体，在 ImageNet 分类任务[16]上进行训练。该网络包含大量卷积层和池化层，以及一个用于预测图像类别的 softmax 层（共1000类）。卷积层使用 ReLU 作为非线性函数。与[21]描述的网络的主要区别在于： $5 \times 5$ 卷积层被替换为两个连续的 $3 \times 3$ 卷积层，最多128个滤波器。该网络包含 $13.6 \times 10^6$ 个参数，除了顶部的 softmax 层外，没有全连接层。更多细节见附录。我们在后文中将此模型称为 Inception。该模型使用带有动量的随机梯度下降[20]进行训练，mini-batch 大小为32。训练使用大规模分布式架构（类似于[2]）。所有网络在训练过程中通过在留出集上使用每张图像单次裁剪来计算验证集 top-1 准确率（即从1000个类别中预测正确标签的概率）进行评估。
 
 在我们的实验中，我们评估了 Inception 的几种带有 Batch Normalization 的修改版本。在所有情况下，Batch Normalization 按照第3.2节描述的卷积方式应用于每个非线性函数的输入，同时保持其余架构不变。
 

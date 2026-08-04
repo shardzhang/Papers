@@ -40,45 +40,55 @@ Dai和Le（2015）[18]以及Ramachandran等人（2017）[19]使用语言模型�
 
 ### 3.1 双向语言模型
 
-给定一个包含N个token的序列 $(t_1, t_2, \ldots, t_N)$，前向语言模型通过对token $t_k$ 在给定历史 $(t_1, \ldots, t_{k-1})$ 条件下的概率建模来计算序列的概率：
+给定一个包含N个token的序列 $(t_1, t_2, \ldots, t_N)$ ，前向语言模型通过对token $t_k$ 在给定历史 $(t_1, \ldots, t_{k-1})$ 条件下的概率建模来计算序列的概率：
 
-$$p(t_1, t_2, \ldots, t_N) = \prod_{k=1}^{N} p(t_k \mid t_1, t_2, \ldots, t_{k-1})$$
+$$
+p(t_1, t_2, \ldots, t_N) = \prod_{k=1}^{N} p(t_k \mid t_1, t_2, \ldots, t_{k-1})
+$$
 
-最近最先进的神经语言模型（Józefowicz et al., 2016; Melis et al., 2017; Merity et al., 2017）[20][21][22]计算与上下文无关的token表示 $x_k^{LM}$（通过token嵌入或字符上的CNN），然后将其通过 $L$ 层前向LSTM。在每个位置 $k$，每个LSTM层输出一个上下文相关的表示 $\overrightarrow{h}_{k,j}^{LM}$，其中 $j = 1, \ldots, L$。顶层LSTM的输出 $\overrightarrow{h}_{k,L}^{LM}$ 用于通过Softmax层预测下一个token $t_{k+1}$。
+最近最先进的神经语言模型（Józefowicz et al., 2016; Melis et al., 2017; Merity et al., 2017）[20][21][22]计算与上下文无关的token表示 $x_k^{LM}$ （通过token嵌入或字符上的CNN），然后将其通过 $L$ 层前向LSTM。在每个位置 $k$ ，每个LSTM层输出一个上下文相关的表示 $\overrightarrow{h}_{k,j}^{LM}$ ，其中 $j = 1, \ldots, L$ 。顶层LSTM的输出 $\overrightarrow{h}_{k,L}^{LM}$ 用于通过Softmax层预测下一个token $t_{k+1}$ 。
 
 后向LM与前向LM类似，只是它反向运行序列，在给定未来上下文的条件下预测前一个token：
 
-$$p(t_1, t_2, \ldots, t_N) = \prod_{k=1}^{N} p(t_k \mid t_{k+1}, t_{k+2}, \ldots, t_N)$$
+$$
+p(t_1, t_2, \ldots, t_N) = \prod_{k=1}^{N} p(t_k \mid t_{k+1}, t_{k+2}, \ldots, t_N)
+$$
 
-它可以以与前向LM类似的方式实现，深度为 $L$ 层的模型中的每个后向LSTM层 $j$ 生成给定 $(t_{k+1}, \ldots, t_N)$ 条件下 $t_k$ 的表示 $\overleftarrow{h}_{k,j}^{LM}$。
+它可以以与前向LM类似的方式实现，深度为 $L$ 层的模型中的每个后向LSTM层 $j$ 生成给定 $(t_{k+1}, \ldots, t_N)$ 条件下 $t_k$ 的表示 $\overleftarrow{h}_{k,j}^{LM}$ 。
 
 biLM结合了前向和后向LM。我们的公式联合最大化前向和后向方向的对数似然：
 
-$$\sum_{k=1}^{N} \big( \log p(t_k \mid t_1, \ldots, t_{k-1}; \Theta_x, \overrightarrow{\Theta}_{\text{LSTM}}, \Theta_s) + \log p(t_k \mid t_{k+1}, \ldots, t_N; \Theta_x, \overleftarrow{\Theta}_{\text{LSTM}}, \Theta_s) \big)$$
+$$
+\sum_{k=1}^{N} \big( \log p(t_k \mid t_1, \ldots, t_{k-1}; \Theta_x, \overrightarrow{\Theta}_{\text{LSTM}}, \Theta_s) + \log p(t_k \mid t_{k+1}, \ldots, t_N; \Theta_x, \overleftarrow{\Theta}_{\text{LSTM}}, \Theta_s) \big)
+$$
 
-我们将前向和后向方向的token表示（$\Theta_x$）和Softmax层（$\Theta_s$）的参数绑定在一起，同时为每个方向上的LSTM保留独立的参数。总体而言，这个公式与Peters等人（2017）[3]的方法类似，不同之处在于我们在方向之间共享一些权重，而不是使用完全独立的参数。在下一节中，我们与之前的工作不同，引入了一种新的学习词表示的方法，该表示是biLM层的线性组合。
+我们将前向和后向方向的token表示（ $\Theta_x$ ）和Softmax层（ $\Theta_s$ ）的参数绑定在一起，同时为每个方向上的LSTM保留独立的参数。总体而言，这个公式与Peters等人（2017）[3]的方法类似，不同之处在于我们在方向之间共享一些权重，而不是使用完全独立的参数。在下一节中，我们与之前的工作不同，引入了一种新的学习词表示的方法，该表示是biLM层的线性组合。
 
 ### 3.2 ELMo
 
-ELMo是biLM中间层表示的任务特定组合。对于每个token $t_k$，一个 $L$ 层的biLM计算一组 $2L + 1$ 个表示：
+ELMo是biLM中间层表示的任务特定组合。对于每个token $t_k$ ，一个 $L$ 层的biLM计算一组 $2L + 1$ 个表示：
 
-$$R_k = \{ x_k^{LM}, \overrightarrow{h}_{k,j}^{LM}, \overleftarrow{h}_{k,j}^{LM} \mid j = 1, \ldots, L \} = \{ h_{k,j}^{LM} \mid j = 0, \ldots, L \}$$
+$$
+R_k = \{ x_k^{LM}, \overrightarrow{h}_{k,j}^{LM}, \overleftarrow{h}_{k,j}^{LM} \mid j = 1, \ldots, L \} = \{ h_{k,j}^{LM} \mid j = 0, \ldots, L \}
+$$
 
-其中 $h_{k,0}^{LM}$ 是token层，$h_{k,j}^{LM} = [\overrightarrow{h}_{k,j}^{LM}; \overleftarrow{h}_{k,j}^{LM}]$，对应每个biLSTM层。
+其中 $h_{k,0}^{LM}$ 是token层， $h_{k,j}^{LM} = [\overrightarrow{h}_{k,j}^{LM}; \overleftarrow{h}_{k,j}^{LM}]$ ，对应每个biLSTM层。
 
-为了纳入下游模型，ELMo将 $R$ 中的所有层折叠为一个向量 $\text{ELMo}_k = E(R_k; \Theta_e)$。在最简单的情况下，ELMo仅选择顶层 $E(R_k) = h_{k,L}^{LM}$，如TagLM（Peters et al., 2017）[3]和CoVe（McCann et al., 2017）[4]中。更一般地，我们计算所有biLM层的任务特定加权：
+为了纳入下游模型，ELMo将 $R$ 中的所有层折叠为一个向量 $\text{ELMo}_k = E(R_k; \Theta_e)$ 。在最简单的情况下，ELMo仅选择顶层 $E(R_k) = h_{k,L}^{LM}$ ，如TagLM（Peters et al., 2017）[3]和CoVe（McCann et al., 2017）[4]中。更一般地，我们计算所有biLM层的任务特定加权：
 
-$$\text{ELMo}_k^{\text{task}} = E(R_k; \Theta^{\text{task}}) = $\gamma$^{\text{task}} \sum_{j=0}^{L} s_j^{\text{task}} h_{k,j}^{LM} \qquad (1)$$
+$$
+\text{ELMo}_k^{\text{task}} = E(R_k; \Theta^{\text{task}}) = $\gamma$^{\text{task}} \sum_{j=0}^{L} s_j^{\text{task}} h_{k,j}^{LM} \qquad (1)
+$$
 
-在式(1)中，$s^{\text{task}}$ 是softmax归一化的权重，标量参数 $\gamma^{\text{task}}$ 允许任务模型缩放整个ELMo向量。$\gamma$ 对于辅助优化过程具有实际重要性（详见补充材料）。考虑到每个biLM层的激活具有不同的分布，在某些情况下，在加权之前对每个biLM层应用层归一化（Ba et al., 2016）[23]也是有帮助的。
+在式(1)中， $s^{\text{task}}$ 是softmax归一化的权重，标量参数 $\gamma^{\text{task}}$ 允许任务模型缩放整个ELMo向量。 $\gamma$ 对于辅助优化过程具有实际重要性（详见补充材料）。考虑到每个biLM层的激活具有不同的分布，在某些情况下，在加权之前对每个biLM层应用层归一化（Ba et al., 2016）[23]也是有帮助的。
 
 ### 3.3 使用biLM进行监督NLP任务
 
 给定一个预训练的biLM和一个目标NLP任务的监督架构，使用biLM来改进任务模型是一个简单的过程。我们只需运行biLM并记录每个词的所有层表示。然后，让最终任务模型学习这些表示的线性组合，如下所述。
 
-首先考虑没有biLM的监督模型的最低层。大多数监督NLP模型在最低层共享一个通用架构，这使我们能够以一致、统一的方式添加ELMo。给定一个token序列 $(t_1, \ldots, t_N)$，标准做法是使用预训练的词嵌入和可选的基于字符的表示为每个token位置形成一个与上下文无关的token表示 $x_k$。然后，模型形成一个上下文敏感的表示 $h_k$，通常使用双向RNN、CNN或前馈网络。
+首先考虑没有biLM的监督模型的最低层。大多数监督NLP模型在最低层共享一个通用架构，这使我们能够以一致、统一的方式添加ELMo。给定一个token序列 $(t_1, \ldots, t_N)$ ，标准做法是使用预训练的词嵌入和可选的基于字符的表示为每个token位置形成一个与上下文无关的token表示 $x_k$ 。然后，模型形成一个上下文敏感的表示 $h_k$ ，通常使用双向RNN、CNN或前馈网络。
 
-为了将ELMo添加到监督模型中，我们首先冻结biLM的权重，然后将ELMo向量 $\text{ELMo}_k^{\text{task}}$ 与 $x_k$ 拼接起来，并将ELMo增强的表示 $[x_k; \text{ELMo}_k^{\text{task}}]$ 传入任务RNN。对于某些任务（例如，SNLI、SQuAD），我们观察到通过引入另一组特定于输出的线性权重并将 $h_k$ 替换为 $[h_k; \text{ELMo}_k^{\text{task}}]$，在任务RNN的输出处也包含ELMo能带来进一步改进。由于监督模型的其余部分保持不变，这些添加可以在更复杂的神经模型中进行。例如，参见第4节中SNLI实验（其中biLSTM之后是双向注意力层），或共指消解实验（其中在biLSTM之上分层聚类模型）。
+为了将ELMo添加到监督模型中，我们首先冻结biLM的权重，然后将ELMo向量 $\text{ELMo}_k^{\text{task}}$ 与 $x_k$ 拼接起来，并将ELMo增强的表示 $[x_k; \text{ELMo}_k^{\text{task}}]$ 传入任务RNN。对于某些任务（例如，SNLI、SQuAD），我们观察到通过引入另一组特定于输出的线性权重并将 $h_k$ 替换为 $[h_k; \text{ELMo}_k^{\text{task}}]$ ，在任务RNN的输出处也包含ELMo能带来进一步改进。由于监督模型的其余部分保持不变，这些添加可以在更复杂的神经模型中进行。例如，参见第4节中SNLI实验（其中biLSTM之后是双向注意力层），或共指消解实验（其中在biLSTM之上分层聚类模型）。
 
 最后，我们发现向ELMo添加适量的dropout（Srivastava et al., 2014）[24]并在某些情况下通过在损失中添加 $\lambda \| w \|_2^2$ 来正则化ELMo权重是有益的。这施加了一个归纳偏置，使ELMo权重保持在所有biLM层的平均附近。
 
@@ -116,9 +126,9 @@ $$\text{ELMo}_k^{\text{task}} = E(R_k; \Theta^{\text{task}}) = $\gamma$^{\text{t
 
 ### 5.1 替代层加权方案
 
-对于组合biLM层，公式(1)有许多替代方案。先前关于上下文表示的工作仅使用最后一层，无论是来自biLM（Peters et al., 2017）[3]还是MT编码器（CoVe; McCann et al., 2017）[4]。正则化参数 $\lambda$ 的选择也很重要，因为较大的值（如 $\lambda = 1$）有效地将加权函数简化为各层的简单平均，而较小的值（例如 $\lambda = 0.001$）允许层权重变化。
+对于组合biLM层，公式(1)有许多替代方案。先前关于上下文表示的工作仅使用最后一层，无论是来自biLM（Peters et al., 2017）[3]还是MT编码器（CoVe; McCann et al., 2017）[4]。正则化参数 $\lambda$ 的选择也很重要，因为较大的值（如 $\lambda = 1$ ）有效地将加权函数简化为各层的简单平均，而较小的值（例如 $\lambda = 0.001$ ）允许层权重变化。
 
-表2比较了这些替代方案在SQuAD、SNLI和SRL上的表现。包含所有层的表示比仅使用最后一层提高了整体性能，而包含来自最后一层的上下文表示比基线提高了性能。例如，在SQuAD的情况下，仅使用最后一层biLM层比基线提高了开发集F1的3.9%。使用所有biLM层的平均值而非仅使用最后一层使F1又提高了0.3%（比较"Last Only"和 $\lambda=1$ 列），而允许任务模型学习各层权重使F1再提高0.2%（$\lambda=1$ 对比 $\lambda=0.001$）。在大多数情况下，ELMo偏好较小的 $\lambda$，尽管对于NER（一个训练集较小的任务），结果对 $\lambda$ 不敏感（未显示）。
+表2比较了这些替代方案在SQuAD、SNLI和SRL上的表现。包含所有层的表示比仅使用最后一层提高了整体性能，而包含来自最后一层的上下文表示比基线提高了性能。例如，在SQuAD的情况下，仅使用最后一层biLM层比基线提高了开发集F1的3.9%。使用所有biLM层的平均值而非仅使用最后一层使F1又提高了0.3%（比较"Last Only"和 $\lambda=1$ 列），而允许任务模型学习各层权重使F1再提高0.2%（ $\lambda=1$ 对比 $\lambda=0.001$ ）。在大多数情况下，ELMo偏好较小的 $\lambda$ ，尽管对于NER（一个训练集较小的任务），结果对 $\lambda$ 不敏感（未显示）。
 
 CoVe的总体趋势类似，但相对于基线的提升更小。对于SNLI，使用 $\lambda=1$ 对所有层取平均相比仅使用最后一层将开发准确率从88.2%提高到88.7%。SRL的F1在 $\lambda=1$ 情况下相比于仅使用最后一层仅增加了边际的0.1%，达到82.2。
 
@@ -268,15 +278,15 @@ CoVe的总体趋势类似，但相对于基线的提升更小。对于SNLI，使
 
 微调对监督性能的影响取决于任务。以SNLI为例，微调biLM使单个最佳模型的开发准确率从88.9%提高了0.6%至89.5%。然而，对于情感分类，无论是否使用微调的biLM，开发集准确率大致相同。
 
-## A.2 式(1)中$\gamma$的重要性
+## A.2 式(1)中 $\gamma$ 的重要性
 
-式(1)中的$\gamma$参数对于辅助优化具有实际重要性，因为biLM内部表示和任务特定表示之间存在不同的分布。在第5.1节的仅用最后一层的情况下尤为重要。没有这个参数，仅用最后一层的情况在SNLI上表现不佳（远低于基线），而在SRL上训练完全失败。
+式(1)中的 $\gamma$ 参数对于辅助优化具有实际重要性，因为biLM内部表示和任务特定表示之间存在不同的分布。在第5.1节的仅用最后一层的情况下尤为重要。没有这个参数，仅用最后一层的情况在SNLI上表现不佳（远低于基线），而在SRL上训练完全失败。
 
 ## A.3 文本蕴含
 
 我们的SNLI基线模型是来自Chen等人（2017）[7]的ESIM序列模型。遵循原始实现，我们对所有LSTM和前馈层使用300维，并使用预训练的300维GloVe嵌入，在训练期间固定。对于正则化，我们对每个LSTM层的输入添加了50%变分dropout（Gal and Ghahramani, 2016）[49]，并在最后两个全连接层的输入处添加了50% dropout（Srivastava et al., 2014）[24]。所有前馈层使用ReLU激活。参数使用Adam（Kingma and Ba, 2015）[50]优化，梯度范数裁剪在5.0，初始学习率0.0004，每当开发集准确率在后续epoch中没有增加时减半。批大小为32。
 
-最佳ELMo配置将ELMo向量添加到最低层LSTM的输入和输出，使用公式(1)并带层归一化和 $\lambda = 0.001$。由于ELMo模型参数增加，我们向所有循环和前馈权重矩阵添加了正则化系数为0.0001的 $\ell_2$ 正则化，并在注意力层后添加了50%的dropout。
+最佳ELMo配置将ELMo向量添加到最低层LSTM的输入和输出，使用公式(1)并带层归一化和 $\lambda = 0.001$ 。由于ELMo模型参数增加，我们向所有循环和前馈权重矩阵添加了正则化系数为0.0001的 $\ell_2$ 正则化，并在注意力层后添加了50%的dropout。
 
 表8比较了我们系统与先前已发表系统的测试集准确率。总体而言，将ELMo添加到ESIM模型提高了0.7%的准确率，建立了88.7%的新单模型最先进水平，五成员集成将整体准确率推至89.3%。
 
@@ -286,13 +296,13 @@ CoVe的总体趋势类似，但相对于基线的提升更小。对于SNLI，使
 
 在GRU和线性层的输入之前使用0.2比率的变分dropout。GRU使用90维，线性层使用180维。我们使用Adadelta优化模型，批大小为45。测试时，我们使用权重的指数移动平均，并将输出跨度限制为最多17。训练期间我们不更新词向量。
 
-当ELMo不带层归一化添加到上下文GRU层的输入和输出，且ELMo权重不进行正则化（$\lambda=0$）时，性能最高。
+当ELMo不带层归一化添加到上下文GRU层的输入和输出，且ELMo权重不进行正则化（ $\lambda=0$ ）时，性能最高。
 
 表9比较了当我们在2017年11月17日提交系统时SQuAD排行榜的测试集结果。总体而言，我们的提交获得了最高的单模型和集成结果，将先前单模型结果（SAN）提高了1.4% F1，将我们的基线提高了4.2%。11成员集成将F1推至87.4%，比之前最佳集成提高了1.0%。
 
 ## A.5 语义角色标注
 
-我们的SRL基线模型是He等人（2017）[8]的精确复现。词使用100维向量表示的拼接来表示，初始化使用GloVe（Pennington et al., 2014）[2]和每个词的二元谓语特征（使用100维嵌入表示）。这个200维的token表示然后通过一个8层"交错"biLSTM，隐藏层大小为300维，其中LSTM层的方向逐层交替。这个深层LSTM使用层间高速连接（Srivastava et al., 2015）[26]和变分循环dropout（Gal and Ghahramani, 2016）[49]。这个深度表示然后通过一个最终稠密层后接softmax激活进行投影，形成对所有可能标签的分布。标签包括来自PropBank（Palmer et al., 2005）[51]的语义角色，并使用BIO标注方案表示论元跨度。在训练期间，我们使用Adadelta（学习率1.0，$\rho = 0.95$）（Zeiler, 2012）[52]最小化标签序列的负对数似然。在测试时，我们执行Viterbi解码以使用BIO约束强制有效跨度。对所有LSTM隐藏层添加10%的变分dropout。梯度值超过1.0时进行裁剪。模型训练最多500个epoch，或直到验证F1在200个epoch内不改善（以先到者为准）。预训练的GloVe向量在训练期间微调。最终稠密层和所有LSTM的所有单元初始化为正交。所有LSTM的遗忘门偏置初始化为1，所有其他门初始化为0，按照Józefowicz等人（2015）[53]的方法。
+我们的SRL基线模型是He等人（2017）[8]的精确复现。词使用100维向量表示的拼接来表示，初始化使用GloVe（Pennington et al., 2014）[2]和每个词的二元谓语特征（使用100维嵌入表示）。这个200维的token表示然后通过一个8层"交错"biLSTM，隐藏层大小为300维，其中LSTM层的方向逐层交替。这个深层LSTM使用层间高速连接（Srivastava et al., 2015）[26]和变分循环dropout（Gal and Ghahramani, 2016）[49]。这个深度表示然后通过一个最终稠密层后接softmax激活进行投影，形成对所有可能标签的分布。标签包括来自PropBank（Palmer et al., 2005）[51]的语义角色，并使用BIO标注方案表示论元跨度。在训练期间，我们使用Adadelta（学习率1.0， $\rho = 0.95$ ）（Zeiler, 2012）[52]最小化标签序列的负对数似然。在测试时，我们执行Viterbi解码以使用BIO约束强制有效跨度。对所有LSTM隐藏层添加10%的变分dropout。梯度值超过1.0时进行裁剪。模型训练最多500个epoch，或直到验证F1在200个epoch内不改善（以先到者为准）。预训练的GloVe向量在训练期间微调。最终稠密层和所有LSTM的所有单元初始化为正交。所有LSTM的遗忘门偏置初始化为1，所有其他门初始化为0，按照Józefowicz等人（2015）[53]的方法。
 
 表10比较了我们使用ELMo增强的He等人（2017）[8]实现的测试集F1分数与先前的结果。我们单模型的84.6 F1分数代表了CONLL 2012语义角色标注任务的新最先进结果，超过了先前单模型结果2.9 F1和5模型集成1.2 F1。
 
@@ -300,7 +310,7 @@ CoVe的总体趋势类似，但相对于基线的提升更小。对于SNLI，使
 
 我们的共指消解基线模型是Lee等人（2017）[35]的端到端神经模型，所有超参数严格遵循原始实现。
 
-最佳配置将ELMo添加到最低层biLSTM的输入，并使用公式(1)对biLM层进行加权，不进行任何正则化（$\lambda=0$）或层归一化。对ELMo表示添加了50%的dropout。
+最佳配置将ELMo添加到最低层biLSTM的输入，并使用公式(1)对biLM层进行加权，不进行任何正则化（ $\lambda=0$ ）或层归一化。对ELMo表示添加了50%的dropout。
 
 表11比较了我们的结果与先前已发表的结果。总体而言，我们将单模型最先进水平提高了3.2%的平均F1，并且我们的单模型结果比之前的最佳集成提高了1.6%的F1。除了biLSTM输入外在biLSTM输出也添加ELMo使F1降低了约0.7%（未显示）。
 

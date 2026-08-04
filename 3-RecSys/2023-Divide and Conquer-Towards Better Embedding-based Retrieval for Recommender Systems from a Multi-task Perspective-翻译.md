@@ -8,26 +8,25 @@
 关键发现：
 
 
+**Biao Li**
+快手科技
+biaoli6@139.com
 
-**Biao Li**  
-快手科技  
-biaoli6@139.com  
+**Xue Dong**
+山东大学
+dongxue.sdu@gmail.com
 
-**Xue Dong**  
-山东大学  
-dongxue.sdu@gmail.com  
+**Peng Jiang**
+快手科技
+jp2006@139.com
 
-**Peng Jiang**  
-快手科技  
-jp2006@139.com  
+**Weijie Ding**
+快手科技
+dingweijie@kuaishou.com
 
-**Weijie Ding**  
-快手科技  
-dingweijie@kuaishou.com  
-
-**Kun Gai**  
-独立学者  
-gai.kun@qq.com  
+**Kun Gai**
+独立学者
+gai.kun@qq.com
 
 
 ---
@@ -82,7 +81,7 @@ gai.kun@qq.com
 
 在训练过程中，item相关分数被训练用于区分用户点击的item（即 I_u）和其余item（即 I \ I_u）。例如，SASRec使用二元交叉熵损失来训练相关性模型：
 
-L = −\sum_{u\inU} \sum_{i^+\inI_u} [log(\sigma(r_ui^+)) + $E_{i^−∼I\I_u}$[log(1 − \sigma(r_ui^−))]]   (2)
+L = −\sum_{u\inU} \sum_{i^+\inI_u} [log(\sigma(r_ui^+)) + $E_{i^−∼I\I_u}$ [log(1 − \sigma(r_ui^−))]]   (2)
 
 ### 2.2 提出的分而治之方法
 
@@ -92,11 +91,11 @@ L = −\sum_{u\inU} \sum_{i^+\inI_u} [log(\sigma(r_ui^+)) + $E_{i^−∼I\I_u}$[
 
 检索空间的划分使得基于嵌入的检索模型只需处理每个聚类内的候选。因此，我们只需使用与正样本属于同一聚类（如前所述，这些主要是困难负样本）的负样本来进行训练。换句话说，这种方式帮助基于嵌入的检索模型变得更加专注，从而可能更加"高效"。训练损失相应地改写为：
 
-L = −\sum_{k=1}^{K} \sum_{u\inU} \sum_{i^+\inI_u\capC_k} [log(\sigma(r_ui^+)) + $E_{i^−∼C_k\I_u}$[log(1 − \sigma(r_ui^−))]]   (3)
+L = −\sum_{k=1}^{K} \sum_{u\inU} \sum_{i^+\inI_u\capC_k} [log(\sigma(r_ui^+)) + $E_{i^−∼C_k\I_u}$ [log(1 − \sigma(r_ui^−))]]   (3)
 
-一旦从每个聚类中获得了得分最高的item，我们可以为每个聚类分配适当的配额，以满足最终检索结果的自定义要求。例如，假设我们想要生成一个大小为 M 的最终候选集。我们可以使用与用户编码器相同的特征训练一个用户意图模型，预测相关项落入聚类 C_k 的概率 p_uk。然后，我们从每个聚类中合并 top-M_k 个项作为最终结果，其中 M_k = M · [(p_uk)^\alpha / \sum_{k'=1}^{K} (p_uk')^\alpha]，\alpha 是一个可调节的超参数[2]。由于基于嵌入的检索可以在不同的item聚类上并行运行，且每次运行的搜索空间大约缩小了 K 倍，这种分而治之的过程不会显著增加响应延迟。
+一旦从每个聚类中获得了得分最高的item，我们可以为每个聚类分配适当的配额，以满足最终检索结果的自定义要求。例如，假设我们想要生成一个大小为 M 的最终候选集。我们可以使用与用户编码器相同的特征训练一个用户意图模型，预测相关项落入聚类 C_k 的概率 p_uk。然后，我们从每个聚类中合并 top-M_k 个项作为最终结果，其中 M_k = M · [(p_uk)^\alpha / \sum_{k'=1}^{K} (p_uk^{\prime})^\alpha]，\alpha 是一个可调节的超参数[2]。由于基于嵌入的检索可以在不同的item聚类上并行运行，且每次运行的搜索空间大约缩小了 K 倍，这种分而治之的过程不会显著增加响应延迟。
 
-[1] 例如，如果追求聚类之间的绝对公平，我们可以从每个聚类中提取相同大小的item作为最终结果。  
+[1] 例如，如果追求聚类之间的绝对公平，我们可以从每个聚类中提取相同大小的item作为最终结果。
 [2] 设置 \alpha = 0 导致绝对公平推荐，而 \alpha \rightarrow +\infty 对应仅推荐最相关的聚类。
 
 ### 2.3 提示式多任务学习

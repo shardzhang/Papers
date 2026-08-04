@@ -2,32 +2,31 @@
 
 > Junlin Zhang, Tongwen Huang, Zhiqi Zhang | Sina Weibo
 
-本文介绍了 FAT-DeepFFM：场注意力深度场感知分解机。核心内容：
+本文介绍了场注意力深度场感知分解机（FAT-DeepFFM）。核心内容：
 
+- 提出一种名为场注意力深度场感知分解机（FAT-DeepFFM）的新型神经CTR模型，将深度场感知分解机（DeepFFM）与组合激励网络（CENet）场注意力机制相结合
+- CENet 是压缩激励网络（SENet）的增强版本，用于突出特征重要性
+- 在显式特征交互过程之前动态捕捉每个特征的重要性
+- 比较两种注意力机制：显式特征交互之前的特征注意力 vs. 显式特征交互之后的交叉特征注意力
 
 关键发现：
 
----
-
-
-张俊林，黄桐文，张志强
-新浪微博，北京，中国
-{junlin6,tongwen,zhiqizhang}@staff.weibo.com
-
+- FAT-DeepFFM 在 Criteo 和 Avazu 数据集上取得了最佳性能，相比最先进方法获得了不同程度的提升
+- 显式特征交互之前的注意力显著优于显式特征交互之后的注意力
 
 ---
 
 ## 摘要
 
-点击率（CTR）预估是个性化广告和推荐系统中的一项基础任务。近年来，基于深度学习模型和注意力机制在计算机视觉（CV）和自然语言处理（NLP）的各项任务中取得了成功。如何将注意力机制与深度CTR模型相结合是一个有前景的方向，因为它可能融合两者的优势。尽管已有一些CTR模型如注意力分解机（AFM）被提出用于建模二阶交互特征的权重，但我们认为在显式特征交互过程之前评估特征重要性对于CTR预测任务同样重要，因为当任务包含大量输入特征时，模型可以学习选择性地突出信息性特征并抑制不太有用的特征。在本文中，我们提出了一种名为场注意力深度场感知分解机（FAT-DeepFFM）的新型神经CTR模型，它将深度场感知分解机（DeepFFM）与我们提出的组合激励网络（CENet）场注意力机制相结合，CENet是压缩激励网络（SENet）的增强版本，用于突出特征重要性。我们在两个真实世界数据集上进行了大量实验，实验结果表明FAT-DeepFFM取得了最佳性能，并且相比最先进方法获得了不同程度的提升。我们还比较了两种注意力机制（显式特征交互前的注意力 vs. 显式特征交互后的注意力），并证明了前者显著优于后者。
+CTR（Click-Through Rate，点击率）预估是个性化广告和推荐系统中的一项基础任务。近年来，基于深度学习模型和注意力机制在计算机视觉（CV，Computer Vision）和自然语言处理（NLP，Natural Language Processing）的各项任务中取得了成功。如何将注意力机制与深度CTR模型相结合是一个有前景的方向，因为它可能融合两者的优势。尽管已有一些CTR模型如注意力分解机（AFM，Attentional Factorization Machine）被提出用于建模二阶交互特征的权重，但我们认为在显式特征交互过程之前评估特征重要性对于CTR预测任务同样重要，因为当任务包含大量输入特征时，模型可以学习选择性地突出信息性特征并抑制不太有用的特征。在本文中，我们提出了一种名为场注意力深度场感知分解机（FAT-DeepFFM，Field Attentive Deep Field-aware Factorization Machine）的新型神经CTR模型，它将深度场感知分解机（DeepFFM，Deep Field-aware Factorization Machine）与我们提出的组合激励网络（CENet，Compose-Excitation Network）场注意力机制相结合，CENet是压缩激励网络（SENet，Squeeze-Excitation Network）的增强版本，用于突出特征重要性。我们在两个真实世界数据集上进行了大量实验，实验结果表明FAT-DeepFFM取得了最佳性能，并且相比最先进方法获得了不同程度的提升。我们还比较了两种注意力机制（显式特征交互前的注意力 vs. 显式特征交互后的注意力），并证明了前者显著优于后者。
 
 ## 1 引言
 
-CTR预估是个性化广告和推荐系统中的一个基础任务。许多模型已被提出用于解决这一问题，例如逻辑回归（LR）[McMahan et al., 2013]、Poly2 [Juan et al., 2016]、基于树的模型[He et al., 2014]、基于张量的模型[Koren et al., 2009]、贝叶斯模型[Graepel et al., 2010]以及场感知分解机（FFM）[Juan et al., 2016]。深度学习技术已在计算机视觉[Krizhevsky et al., 2012; He et al., 2016]、语音识别[Graves et al., 2013]和自然语言理解[Mikolov et al., 2010; Cho et al., 2014]等多个研究领域展现出令人瞩目的成果。因此，在CTR预估中采用深度神经网络也已成为该领域的一个研究趋势[Zhang et al., 2016; Cheng et al., 2016; Xiao et al., 2017; Guo et al., 2017; Lian et al., 2018; Wang et al., 2017; Zhou et al., 2018; He and Chua, 2017]。一些基于深度学习的模型已被提出并取得成功，例如分解机支持的神经网络（FNN）[Zhang et al., 2016]、注意力分解机（AFM）[Xiao et al., 2017]、Wide & Deep [Cheng et al., 2016]、DeepFM [Guo et al., 2017]等。
+CTR预估是个性化广告和推荐系统中的一个基础任务。许多模型已被提出用于解决这一问题，例如逻辑回归（LR，Logistic Regression）[15]、Poly2（Polynomial-2，多项式-2）[11]、基于树的模型[8]、基于张量的模型[12]、贝叶斯模型[4]以及场感知分解机（FFM，Field-aware Factorization Machine）[11]。深度学习技术已在计算机视觉[9, 13]、语音识别[5]和自然语言理解[2, 16]等多个研究领域展现出令人瞩目的成果。因此，在CTR预估中采用深度神经网络（DNN，Deep Neural Network）也已成为该领域的一个研究趋势[1, 6, 7, 14, 19, 20, 22, 23]。一些基于深度学习的模型已被提出并取得成功，例如分解机支持的神经网络（FNN，Factorization Machine Supported Neural Network）[22]、注意力分解机（AFM，Attentional Factorization Machine）[20]、Wide & Deep [1]、DeepFM [6]等。
 
-另一方面，注意力机制可以过滤掉原始输入中无信息的特征，基于注意力的模型已被广泛使用并在各种任务中展现出令人期待的效果。如何将注意力机制与深度CTR模型相结合是一个有前景的方向，因为它可能融合两者的优势。尽管已有一些CTR模型如注意力分解机（AFM）[Xiao et al., 2017]被提出用于建模二阶交互特征的权重，但我们认为在显式特征交互之前评估特征重要性对于CTR预测任务也很重要，因为当任务包含大量输入特征时，模型可以学习选择性地突出信息性特征并抑制不太有用的特征。
+另一方面，注意力机制可以过滤掉原始输入中无信息的特征，基于注意力的模型已被广泛使用并在各种任务中展现出令人期待的效果。如何将注意力机制与深度CTR模型相结合是一个有前景的方向，因为它可能融合两者的优势。尽管已有一些CTR模型如注意力分解机（AFM）[20]被提出用于建模二阶交互特征的权重，但我们认为在显式特征交互之前评估特征重要性对于CTR预测任务也很重要，因为当任务包含大量输入特征时，模型可以学习选择性地突出信息性特征并抑制不太有用的特征。
 
-在这项工作中，我们提出了一种名为场注意力深度场感知分解机（FAT-DeepFFM）的新型神经CTR模型，它将神经场感知分解机[Yang et al., 2017]与场注意力机制相结合。具体来说，我们在这项工作中所做的是将组合激励网络（CENet）——一种压缩激励网络（SENet）[Hu et al., 2017]的增强版本——类似注意力的机制引入DeepFFM模型中，以提高深度CTR网络的表示能力。我们的目标是在分解机特征交互过程之前，通过显式建模输入实例中所有不同特征之间的相互依赖关系，动态捕捉每个特征的重要性。我们的目标是使用CENet类注意力机制执行特征重新校准，通过该机制，模型可以学习选择性地突出信息性特征并有效抑制不太有用的特征。
+在这项工作中，我们提出了一种名为场注意力深度场感知分解机（FAT-DeepFFM）的新型神经CTR模型，它将神经场感知分解机[21]与场注意力机制相结合。具体来说，我们在这项工作中所做的是将组合激励网络（CENet）——一种压缩激励网络（SENet）[10]的增强版本——类似注意力的机制引入DeepFFM模型中，以提高深度CTR网络的表示能力。我们的目标是在分解机特征交互过程之前，通过显式建模输入实例中所有不同特征之间的相互依赖关系，动态捕捉每个特征的重要性。我们的目标是使用CENet类注意力机制执行特征重新校准，通过该机制，模型可以学习选择性地突出信息性特征并有效抑制不太有用的特征。
 
 我们的工作贡献总结如下：
 
@@ -43,123 +42,128 @@ CTR预估是个性化广告和推荐系统中的一个基础任务。许多模�
 
 ### 2.1 分解机与场感知分解机
 
-分解机（FM）[Rendle, 2010]和场感知分解机（FFM）[Juan et al., 2016]是两个最成功的CTR模型。FM使用两个嵌入向量的点积来建模成对特征交互的效果。FFM扩展了分解机的思想，额外利用了场信息，并赢得了Criteo和Avazu举办的两个竞赛。当一个特征与来自不同场的其他特征交互时，FFM将为每个特征学习不同的嵌入向量。
+分解机（FM，Factorization Machine）[17]和场感知分解机（FFM）[11]是两个最成功的CTR模型。FM使用两个嵌入向量的点积来建模成对特征交互的效果。FFM扩展了分解机的思想，额外利用了场信息，并赢得了Criteo和Avazu举办的两个竞赛。当一个特征与来自不同场的其他特征交互时，FFM将为每个特征学习不同的嵌入向量。
 
 ### 2.2 基于深度学习的CTR模型
 
 随着深度学习在计算机视觉和自然语言处理等许多研究领域的巨大成功，近年来也提出了许多基于深度学习的CTR模型。如何有效建模特征交互是大多数这类神经网络模型的关键因素。
 
-分解机支持的神经网络（FNN）[Zhang et al., 2016]是一个使用FM预训练嵌入层的前馈神经网络。然而，FNN只能捕捉高阶特征交互。Wide & Deep Learning [Cheng et al., 2016]最初是为Google Play中的App推荐而引入的。Wide & Deep Learning联合训练宽线性模型和深度神经网络，以结合推荐系统中记忆和泛化的优势。然而，Wide & Deep模型的宽部分仍然需要专业特征工程，这意味着叉积变换也需要手动设计。为了减轻特征工程中的人工工作量，DeepFM [Guo et al., 2017]用FM替换了Wide & Deep模型的宽部分，并在FM和深度组件之间共享特征嵌入。DeepFM被认为是CTR预估领域中最先进的模型之一。
+分解机支持的神经网络（FNN）[22]是一个使用FM预训练嵌入层的前馈神经网络。然而，FNN只能捕捉高阶特征交互。Wide & Deep Learning [1]最初是为Google Play中的App推荐而引入的。Wide & Deep Learning联合训练宽线性模型和深度神经网络，以结合推荐系统中记忆和泛化的优势。然而，Wide & Deep模型的宽部分仍然需要专业特征工程，这意味着叉积变换也需要手动设计。为了减轻特征工程中的人工工作量，DeepFM [6]用FM替换了Wide & Deep模型的宽部分，并在FM和深度组件之间共享特征嵌入。DeepFM被认为是CTR预估领域中最先进的模型之一。
 
-深度交叉网络（DCN）[Wang et al., 2017]以显式方式高效地捕获有界度的特征交互。类似地，极深分解机（xDeepFM）[Lian et al., 2018]通过提出一种新颖的压缩交互网络（CIN）部分，以显式方式建模低阶和高阶特征交互。
+深度交叉网络（DCN，Deep & Cross Network）[19]以显式方式高效地捕获有界度的特征交互。类似地，极深分解机（xDeepFM，eXtreme Deep Factorization Machine）[14]通过提出一种新颖的压缩交互网络（CIN，Compressed Interaction Network）部分，以显式方式建模低阶和高阶特征交互。
 
-我们的方法基于神经FFM，该模型首次由Yang [Yang et al., 2017]在腾讯社交广告竞赛中提出。它可以被视为将DeepFM的FM部分替换为FFM，我们将在第3节中详细描述该模型。
+我们的方法基于神经FFM，该模型首次由Yang等[21]在腾讯社交广告竞赛中提出。它可以被视为将DeepFM的FM部分替换为FFM，我们将在第3节中详细描述该模型。
 
 ### 2.3 注意力CTR模型
 
-注意力机制的灵感来源于人类视觉注意力，它可以通过减少噪声数据的副作用来过滤掉原始输入中无信息的特征。基于注意力的模型已被广泛使用，并在语音识别和机器翻译等任务上展现出令人期待的效果。注意力机制也被引入到一些CTR模型中。例如，注意力分解机（AFM）[Xiao et al., 2017]通过神经注意力网络从数据中区分和学习不同特征交互的重要性，从而改进了FM。DIN [Zhou et al., 2018]用兴趣分布表示用户的多样化兴趣，并设计了一个类似注意力的网络结构，根据候选广告局部激活相关兴趣。
+注意力机制的灵感来源于人类视觉注意力，它可以通过减少噪声数据的副作用来过滤掉原始输入中无信息的特征。基于注意力的模型已被广泛使用，并在语音识别和机器翻译等任务上展现出令人期待的效果。注意力机制也被引入到一些CTR模型中。例如，注意力分解机（AFM）[20]通过神经注意力网络从数据中区分和学习不同特征交互的重要性，从而改进了FM。DIN（Deep Interest Network，深度兴趣网络）[23]用兴趣分布表示用户的多样化兴趣，并设计了一个类似注意力的网络结构，根据候选广告局部激活相关兴趣。
 
 ## 3 场注意力深度FFM
 
 ### 3.1 DeepFFM
 
-我们的工作最初旨在将FFM模型引入神经CTR系统。然而，Yang等[Yang et al., 2017]在2017年腾讯社交广告竞赛中报告了一项与我们的工作类似的努力。作者报告说，在他们的CTR预测系统中使用神经FFM后取得了显著的收益。神经FFM在该竞赛中相当成功：第三名获奖方案就基于这个单一模型，而集成版本赢得了竞赛的第一名。由于很难找到关于该模型的详细技术描述，我们将首先介绍神经FFM，本文中将其称为DeepFFM模型。
+我们的工作最初旨在将FFM模型引入神经CTR系统。然而，Yang等[21]在2017年腾讯社交广告竞赛中报告了一项与我们的工作类似的努力。作者报告说，在他们的CTR预测系统中使用神经FFM后取得了显著的收益。神经FFM在该竞赛中相当成功：第三名获奖方案就基于这个单一模型，而集成版本赢得了竞赛的第一名。由于很难找到关于该模型的详细技术描述，我们将首先介绍神经FFM，本文中将其称为DeepFFM模型。
 
-众所周知，FM [Rendle, 2010]将特征i和j之间的交互建模为它们对应嵌入向量的点积，如下所示：
-
-$$
-ŷ(x) = w₀ + \Sigmaᵢ wᵢxᵢ + \Sigmaᵢ \Sigmaⱼ$_{+}$₁ ⟨vᵢ, vⱼ⟩ xᵢxⱼ    (1)
-$$
-
-FM为每个特征学习一个嵌入向量$v_i$ $\in$ ℝᵏ，其中k是一个超参数（通常是一个小整数），m是特征数量。然而，FM忽略了一个事实，即一个特征在与来自其他场的特征交互时可能表现不同。为了显式考虑这种差异，场感知分解机（FFM）为每个特征学习额外的n-1个嵌入向量（这里n表示场的数量）：
+众所周知，FM [17]将特征 $i$ 和 $j$ 之间的交互建模为它们对应嵌入向量的点积，如下所示：
 
 $$
-ŷ(x) = w₀ + \Sigmaᵢ wᵢxᵢ + \Sigmaᵢ \Sigmaⱼ$_{+}$₁ ⟨vᵢⱼ, vⱼᵢ⟩ xᵢxⱼ    (2)
+\hat{y}(x) = w_0 + \sum_{i=1}^{m} w_i x_i + \sum_{i=1}^{m} \sum_{j=i+1}^{m} \langle v_i, v_j \rangle x_i x_j \qquad (1)
 $$
 
-其中$v_ij$ $\in$ ℝᵏ表示特征i在与场j交互时，特征i的第j个条目的嵌入向量。k是嵌入大小。
-
-如图1所示，DeepFFM旨在通过神经网络体现FFM的思想。一个输入实例首先通过独热编码转换为高维稀疏特征，以表示原始特征输入。接下来的嵌入矩阵层与稀疏输入层全连接，将原始特征压缩为低维、稠密的实值矩阵。具体来说，对于特征i，使用一个大小为k$$\times$$n的对应二维嵌入矩阵E$M_i$ = [$v_i1$, $v_i2$, ..., $v_ij$, ..., $v_in$]来衡量其与其他特征交互的影响，其中$v_ij$ $\in$ ℝᵏ表示场i的第j个嵌入向量，n是场的数量，k是嵌入向量的大小。因此，很明显嵌入矩阵层EM是一个大小为k$$\times$$n$$\times$$n的三维矩阵，因为我们有n个场，每个场对应一个二维嵌入矩阵。
-
-接下来的特征交互层尝试在嵌入矩阵EM上捕捉任意一对来自不同场的特征之间的双向特征交互。将特征交互层记为向量A，我们有两种不同类型的特征交互方法：内积版本和哈达玛积版本。我们可以将该层中的两种方法形式化如下：
+FM为每个特征学习一个嵌入向量 $v_i \in \mathbb{R}^{k}$，其中 $k$ 是一个超参数（通常是一个小整数），$m$ 是特征数量。然而，FM忽略了一个事实，即一个特征在与来自其他场的特征交互时可能表现不同。为了显式考虑这种差异，场感知分解机（FFM）为每个特征学习额外的 $n-1$ 个嵌入向量（这里 $n$ 表示场的数量）：
 
 $$
-A = [v₁₂ \oplus v₂₁, ..., vᵢⱼ \oplus vⱼᵢ, ..., v₍ₙ$_{-}$₁₎ₙ \oplus vₙ₍ₙ$_{-}$₁₎]    内积
-A = [v₁₂ \otimes v₂₁, ..., vᵢⱼ $\times$ vⱼᵢ, ..., v₍ₙ$_{-}$₁₎ₙ \otimes vₙ₍ₙ$_{-}$₁₎]    哈达玛积
+\hat{y}(x) = w_0 + \sum_{i=1}^{m} w_i x_i + \sum_{i=1}^{m} \sum_{j=i+1}^{m} \langle v_{ij}, v_{ji} \rangle x_i x_j \qquad (2)
 $$
 
-其中n是场的数量，$v_ij$ $\oplus$ $v_ji$表示两个嵌入向量的内积为一个标量⟨$v_ij$, $v_ji$⟩，而$v_ij$ $$\times$$ $v_ji$表示两个嵌入向量的哈达玛积，结果为一个向量：
+其中 $v_{ij} \in \mathbb{R}^{k}$ 表示特征 $i$ 在与场 $j$ 交互时，特征 $i$ 的第 $j$ 个条目的嵌入向量。$k$ 是嵌入大小。
+
+如图1所示，DeepFFM旨在通过神经网络体现FFM的思想。一个输入实例首先通过独热编码转换为高维稀疏特征，以表示原始特征输入。接下来的嵌入矩阵（EM，Embedding Matrix）层与稀疏输入层全连接，将原始特征压缩为低维、稠密的实值矩阵。具体来说，对于特征 $i$，使用一个大小为 $k \times n$ 的对应二维嵌入矩阵 $EM_i = [v_{i1}, v_{i2}, \ldots, v_{ij}, \ldots, v_{in}]$ 来衡量其与其他特征交互的影响，其中 $v_{ij} \in \mathbb{R}^{k}$ 表示场 $i$ 的第 $j$ 个嵌入向量，$n$ 是场的数量，$k$ 是嵌入向量的大小。因此，很明显嵌入矩阵层 $EM$ 是一个大小为 $k \times n \times n$ 的三维矩阵，因为我们有 $n$ 个场，每个场对应一个二维嵌入矩阵。
+
+接下来的特征交互层尝试在嵌入矩阵 $EM$ 上捕捉任意一对来自不同场的特征之间的双向特征交互。将特征交互层记为向量 $A$，我们有两种不同类型的特征交互方法：内积版本和哈达玛积版本。我们可以将该层中的两种方法形式化如下：
 
 $$
-vᵢⱼ \oplus vⱼᵢ = [v¹ᵢⱼ·v¹ⱼᵢ, v²ᵢⱼ·v²ⱼᵢ, ..., vᵏᵢⱼ·vᵏⱼᵢ]
+\begin{aligned}
+A &= [v_{12} \oplus v_{21}, \ldots, v_{ij} \oplus v_{ji}, \ldots, v_{(n-1)n} \oplus v_{n(n-1)}] \quad \text{Inner Product} \\
+A &= [v_{12} \otimes v_{21}, \ldots, v_{ij} \times v_{ji}, \ldots, v_{(n-1)n} \otimes v_{n(n-1)}] \quad \text{Hadamard Product}
+\end{aligned}
 $$
 
-其中k是嵌入向量$v_ji$的大小。注意需要j > i以避免重复计算。从这里可以看出，特征交互层A是一个宽的拼接向量，如果采用内积版本，该向量的大小为n(n-1)/2；如果采用哈达玛积版本，大小为kn(n-1)/2。
-
-多个隐藏层是在特征交互层上的前馈神经网络，用于隐式学习高阶特征交互。将特征交互层的输出记为向量A，我们可以将其输入前馈神经网络的隐藏层。前向过程为：
+其中 $n$ 是场的数量， $v_{ij} \oplus v_{ji}$ 表示两个嵌入向量的内积为一个标量 $\langle v_{ij}, v_{ji} \rangle$，而 $v_{ij} \times v_{ji}$ 表示两个嵌入向量的哈达玛积，结果为一个向量：
 
 $$
-x¹ = \sigma(W¹A + b¹)    (3)
-xˡ = \sigma(Wˡxˡ⁻¹ + bˡ)    (4)
+v_{ij} \oplus v_{ji} = [v_{ij}^{1} \cdot v_{ji}^{1}, v_{ij}^{2} \cdot v_{ji}^{2}, \ldots, v_{ij}^{k} \cdot v_{ji}^{k}]
 $$
 
-其中l是层深度，\sigma是激活函数，xˡ是第l个隐藏层的输出。
+其中 $k$ 是嵌入向量 $v_{ji}$ 的大小。注意需要 $j > i$ 以避免重复计算。从这里可以看出，特征交互层 $A$ 是一个宽的拼接向量，如果采用内积版本，该向量的大小为 $n(n-1)/2$；如果采用哈达玛积版本，大小为 $kn(n-1)/2$。
+
+多个隐藏层是在特征交互层上的前馈神经网络，用于隐式学习高阶特征交互。将特征交互层的输出记为向量 $A$，我们可以将其输入前馈神经网络的隐藏层。前向过程为：
+
+$$
+x^{1} = \sigma(W^{1} A + b^{1}) \qquad (3)
+$$
+
+$$
+x^{l} = \sigma(W^{l} x^{l-1} + b^{l}) \qquad (4)
+$$
+
+其中 $l$ 是层深度，$\sigma$ 是激活函数，$x^{l}$ 是第 $l$ 个隐藏层的输出。
 
 加上线性部分，DeepFFM的输出单元如下：
 
 $$
-ŷ(X) = \sigma(W_linear x_linear + Wˡ⁺¹xˡ + bˡ⁺¹)    (5)
+\hat{y}(X) = \sigma(W_{linear} x_{linear} + W^{l+1} x^{l} + b^{l+1}) \qquad (5)
 $$
 
-其中\sigma是sigmoid函数，x_linear是原始特征，xˡ是多个隐藏层的输出，W_linear、Wˡ⁺¹和bˡ⁺¹是可学习参数。
+其中 $\sigma$ 是sigmoid函数，$x_{linear}$ 是原始特征，$x^{l}$ 是多个隐藏层的输出，$W_{linear}$、$W^{l+1}$ 和 $b^{l+1}$ 是可学习参数。
 
 ### 3.2 嵌入矩阵层上的CENet场注意力
 
-Hu提出了"压缩激励网络"（SENet）[Hu et al., 2017]，通过显式建模各种图像分类任务中卷积特征通道之间的相互依赖关系，来提高网络的表示能力。SENet被证明在图像分类任务中非常成功，并在ILSVRC 2017分类任务中获得了第一名。
+Hu提出了"压缩激励网络"（SENet）[10]，通过显式建模各种图像分类任务中卷积特征通道之间的相互依赖关系，来提高网络的表示能力。SENet被证明在图像分类任务中非常成功，并在ILSVRC（ImageNet Large Scale Visual Recognition Challenge，ImageNet大规模视觉识别挑战赛）2017分类任务中获得了第一名。
 
 我们的工作受到SENet在计算机视觉领域成功的启发。为了提高深度CTR网络的表示能力，我们将组合激励网络（CENet）注意力机制——SENet的增强版本——引入到DeepFFM模型的嵌入矩阵层。我们的目标是在FM的特征交互过程之前，通过显式建模所有不同特征之间的相互依赖关系，动态捕捉每个特征的重要性。我们的目标是使用CENet注意力机制执行特征重新校准，通过该机制，模型可以学习选择性地突出信息性特征并抑制不太有用的特征。
 
 从图2可以看出，CENet类场注意力机制包括两个阶段：组合阶段和激励阶段。第一阶段通过将一个嵌入向量的所有信息组合成一个简单的特征描述符，来计算每个场中每个嵌入向量的"汇总统计量"；第二阶段对这些特征描述符应用注意力变换，然后使用计算出的注意力值重新缩放原始嵌入矩阵。
 
-**组合阶段**：令E$M_i$ = [$v_i1$, $v_i2$, ..., $v_ij$, ..., $v_in$]表示场i的二维k$$\times$$n嵌入矩阵，其中$v_ij$ $\in$ ℝᵏ指的是场i的第j个嵌入向量，n是场的数量，k是嵌入向量的大小。在此阶段，我们将嵌入向量$v_ij$组合成单个数字，以表示该特征的汇总信息。这可以通过使用1$$\times$$1卷积[Szegedy et al., 2016; Chollet, 2017]生成特征级统计量来实现，而不是使用SENet中常用的全局最大池化或求和操作等压缩操作。1$$\times$$1卷积，也称为逐点卷积，负责通过计算一个输入特征嵌入的线性组合来构建新特征。在SENet中，我们通过收缩每个嵌入向量为场i生成一个统计向量z $\in$ ℝⁿ，其中z的第f个元素$z_i$ $\in$ ℝ可以通过以下方式计算：
+**组合阶段**：令 $EM_i = [v_{i1}, v_{i2}, \ldots, v_{ij}, \ldots, v_{in}]$ 表示场 $i$ 的二维 $k \times n$ 嵌入矩阵，其中 $v_{ij} \in \mathbb{R}^{k}$ 指的是场 $i$ 的第 $j$ 个嵌入向量，$n$ 是场的数量，$k$ 是嵌入向量的大小。在此阶段，我们将嵌入向量 $v_{ij}$ 组合成单个数字，以表示该特征的汇总信息。这可以通过使用 $1 \times 1$ 卷积[3, 18]生成特征级统计量来实现，而不是使用SENet中常用的全局最大池化或求和操作等压缩操作。$1 \times 1$ 卷积，也称为逐点卷积，负责通过计算一个输入特征嵌入的线性组合来构建新特征。在SENet中，我们通过收缩每个嵌入向量为场 $i$ 生成一个统计向量 $z \in \mathbb{R}^{n}$，其中 $z_i$ 的第 $f$ 个元素 $z_{if} \in \mathbb{R}$ 可以通过以下方式计算：
 
 $$
-zᵢ = F_sq(vᵢ) = max_{1\leqt\leqk} vᵢᵗ    全局最大池化    (6)
+z_{if} = F_{sq}(v_{if}) = \max_{1 \leq t \leq k} v_{if}^{t} \quad \text{Global Max Pooling} \qquad (6)
 $$
 
-这里k表示每个嵌入向量的嵌入大小。CV领域最常用的压缩操作是全局最大池化，它可以捕捉相应通道中最强的特征。我们在此阶段改变了方法，使用1$$\times$$1卷积，因为我们假设CTR任务中特征嵌入向量的每个位置都包含信息。因此，1$$\times$$1卷积可以引入参数来学习特征嵌入中每个位置的组合权重。1$$\times$$1卷积计算如下：
+这里 $k$ 表示每个嵌入向量的嵌入大小。CV领域最常用的压缩操作是全局最大池化，它可以捕捉相应通道中最强的特征。我们在此阶段改变了方法，使用 $1 \times 1$ 卷积，因为我们假设CTR任务中特征嵌入向量的每个位置都包含信息。因此，$1 \times 1$ 卷积可以引入参数来学习特征嵌入中每个位置的组合权重。$1 \times 1$ 卷积计算如下：
 
 $$
-zᵢⱼ = conv1d(Uᵢⱼ, vᵢⱼ) = ReLU(Uᵢⱼ vᵢⱼ)    (7)
+z_{if} = conv1d(U_{if}, v_{if}) = \text{ReLU}(U_{if} v_{if}) \qquad (7)
 $$
 
-其中$U_ij$是卷积权重，卷积核大小为1$$\times$$1，滤波器数量为1，激活函数设置为'ReLU'。
+其中 $U_{if}$ 是卷积权重，卷积核大小为 $1 \times 1$，滤波器数量为 $1$，激活函数设置为 'ReLU'。
 
-**激励阶段**：在第一阶段之后，场i的嵌入矩阵E$M_i$ = [$v_i1$, $v_i2$, ..., $v_ij$, ..., $v_in$]已被转换为描述符向量D$V_i$ = [$z_i1$, $z_i2$, ..., $z_ij$, ..., $z_in$]。我们有n个不同的场，因此我们通过拼接每个描述符向量来汇总所有描述符，如下所示：
-
-$$
-D = concat(DV₁, DV₂, ..., DVₙ)    (8)
-$$
-
-其中向量D的大小为n²。
-
-为了从描述符向量计算注意力，使用了两个全连接（FC）层。第一层是降维层，参数为$W_1$，降维比为r（这是一个超参数），并使用ReLU作为非线性函数。第二层使用参数$W_2$增加维度，该维度等于描述符向量D的维度，也使用ReLU作为非线性激活函数。形式上，场注意力计算如下：
+**激励阶段**：在第一阶段之后，场 $i$ 的嵌入矩阵 $EM_i = [v_{i1}, v_{i2}, \ldots, v_{ij}, \ldots, v_{in}]$ 已被转换为描述符向量 $DV_i = [z_{i1}, z_{i2}, \ldots, z_{ij}, \ldots, z_{in}]$。我们有 $n$ 个不同的场，因此我们通过拼接每个描述符向量来汇总所有描述符，如下所示：
 
 $$
-S = F_ex(D, W) = \delta(W₂ \delta(W₁ D))    (9)
+D = concat(DV_{1}, DV_{2}, \ldots, DV_{n}) \qquad (8)
 $$
 
-其中\delta指ReLU函数，$W_1$ $\in$ ℝ^(n²/r $$\times$$ n²)，$W_2$ $\in$ ℝ^(n² $$\times$$ n²/r)，注意力向量S的大小为n²。
+其中向量 $D$ 的大小为 $n^{2}$。
 
-ReLU函数的激活值被用作最终的场注意力值，而不进行softmax归一化操作，因为我们希望鼓励多个特征同时重要，而不是仅有少数几个特征重要。然后，场i的原始嵌入矩阵E$M_i$中的值根据相应计算的场注意力向量$S_i$进行重新缩放，如下所示：
+为了从描述符向量计算注意力，使用了两个全连接（FC，Fully Connected）层。第一层是降维层，参数为 $W_1$，降维比为 $r$（这是一个超参数），并使用ReLU作为非线性函数。第二层使用参数 $W_2$ 增加维度，该维度等于描述符向量 $D$ 的维度，也使用ReLU作为非线性激活函数。形式上，场注意力计算如下：
 
 $$
-AEMᵢ = F_scale(Sᵢ, EMᵢ) = [Sᵢ₁·vᵢ₁, ..., Sᵢⱼ·vᵢⱼ, ..., Sᵢₙ·vᵢₙ]    (10)
+S = F_{ex}(D, W) = \delta(W_{2} \delta(W_{1} D)) \qquad (9)
 $$
 
-其中F_scale($S_i$, E$M_i$)指的是嵌入向量$v_ij$与标量$S_ij$之间的逐向量乘法。较大的注意力值$S_ij$表示模型动态识别出了重要特征，该注意力值用于增强原始嵌入向量$v_ij$。相反，较小的注意力值$S_ij$会通过减少相应嵌入向量$v_ij$中的值来抑制无信息的特征甚至噪声。
+其中 $\delta$ 指ReLU函数，$W_1 \in \mathbb{R}^{\frac{n^2}{r} \times n^2}$，$W_2 \in \mathbb{R}^{n^2 \times \frac{n^2}{r}}$，注意力向量 $S$ 的大小为 $n^{2}$。
 
-经过组合阶段和激励阶段后，我们得到一个新的三维嵌入矩阵AEM，大小为k$$\times$$n$$\times$$n，与原始嵌入矩阵EM的大小相同。我们在本文中称这个新嵌入矩阵为注意力嵌入层。
+ReLU函数的激活值被用作最终的场注意力值，而不进行softmax归一化操作，因为我们希望鼓励多个特征同时重要，而不是仅有少数几个特征重要。然后，场 $i$ 的原始嵌入矩阵 $EM_i$ 中的值根据相应计算的场注意力向量 $S_i$ 进行重新缩放，如下所示：
+
+$$
+AEM_{i} = F_{scale}(S_{i}, EM_{i}) = [S_{i1} \cdot v_{i1}, \ldots, S_{ij} \cdot v_{ij}, \ldots, S_{in} \cdot v_{in}] \qquad (10)
+$$
+
+其中 $F_{scale}(S_i, EM_i)$ 指的是嵌入向量 $v_{ij}$ 与标量 $S_{ij}$ 之间的逐向量乘法。较大的注意力值 $S_{ij}$ 表示模型动态识别出了重要特征，该注意力值用于增强原始嵌入向量 $v_{ij}$。相反，较小的注意力值 $S_{ij}$ 会通过减少相应嵌入向量 $v_{ij}$ 中的值来抑制无信息的特征甚至噪声。
+
+经过组合阶段和激励阶段后，我们得到一个新的三维嵌入矩阵 $AEM$，大小为 $k \times n \times n$，与原始嵌入矩阵 $EM$ 的大小相同。我们在本文中称这个新嵌入矩阵为注意力嵌入矩阵（AEM，Attentive Embedding Matrix）层。
 
 ### 3.3 结合场注意力与DeepFFM
 
@@ -169,7 +173,7 @@ $$
 
 ## 4 实验结果
 
-为了全面评估我们提出的方法，我们设计了一些实验来回答以下研究问题：
+为了全面评估我们提出的方法，我们设计了一些实验来回答以下研究问题（RQ，Research Question）：
 
 - RQ1：我们提出的FAT-DeepFFM能否超越最先进的基于深度学习的CTR模型？
 - RQ2：哪种注意力机制（显式特征交互之前的特征注意力 vs. 显式特征交互之后的交叉特征注意力）在真实世界CTR数据集上表现更好？
@@ -198,7 +202,7 @@ $$
 
 **评估指标**
 
-我们在实验中使用AUC（ROC曲线下面积）和Logloss（交叉熵）作为评估指标。这两个指标在二分类任务中非常流行。AUC对分类阈值和正例比例不敏感，AUC的上限为1，值越大表示性能越好。Logloss衡量两个分布之间的距离，Logloss值越小表示性能越好。
+我们在实验中使用AUC（Area Under ROC Curve，ROC曲线下面积）和Logloss（交叉熵）作为评估指标。这两个指标在二分类任务中非常流行。AUC对分类阈值和正例比例不敏感，AUC的上限为1，值越大表示性能越好。Logloss衡量两个分布之间的距离，Logloss值越小表示性能越好。
 
 **对比模型**
 
@@ -272,48 +276,48 @@ $$
 
 ## 参考文献
 
-[Cheng et al., 2016] Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, Tal Shaked, Tushar Chandra, Hrishi Aradhye, Glen Anderson, Greg Corrado, Wei Chai, Mustafa Ispir, et al. Wide & deep learning for recommender systems. In *Proceedings of the 1st Workshop on Deep Learning for Recommender Systems*, pages 7–10. ACM, 2016.
+[1] Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, Tal Shaked, Tushar Chandra, Hrishi Aradhye, Glen Anderson, Greg Corrado, Wei Chai, Mustafa Ispir, et al. Wide & deep learning for recommender systems. In *Proceedings of the 1st Workshop on Deep Learning for Recommender Systems*, pages 7–10. ACM, 2016.
 
-[Cho et al., 2014] Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. Learning phrase representations using rnn encoder-decoder for statistical machine translation, 2014.
+[2] Kyunghyun Cho, Bart van Merrienboer, Caglar Gulcehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. Learning phrase representations using rnn encoder-decoder for statistical machine translation, 2014.
 
-[Chollet, 2017] François Chollet. Xception: Deep learning with depthwise separable convolutions. *arXiv preprint*, pages 1610–02357, 2017.
+[3] François Chollet. Xception: Deep learning with depthwise separable convolutions. *arXiv preprint*, pages 1610–02357, 2017.
 
-[Graepel et al., 2010] Thore Graepel, Joaquin Quiñonero Candela, Thomas Borchert, and Ralf Herbrich. Web-scale bayesian click-through rate prediction for sponsored search advertising in microsoft's bing search engine. Omnipress, 2010.
+[4] Thore Graepel, Joaquin Quiñonero Candela, Thomas Borchert, and Ralf Herbrich. Web-scale bayesian click-through rate prediction for sponsored search advertising in microsoft's bing search engine. Omnipress, 2010.
 
-[Graves et al., 2013] Alex Graves, Abdel-rahman Mohamed, and Geoffrey Hinton. Speech recognition with deep recurrent neural networks. In *Acoustics, speech and signal processing (icassp), 2013 ieee international conference on*, pages 6645–6649. IEEE, 2013.
+[5] Alex Graves, Abdel-rahman Mohamed, and Geoffrey Hinton. Speech recognition with deep recurrent neural networks. In *Acoustics, speech and signal processing (icassp), 2013 ieee international conference on*, pages 6645–6649. IEEE, 2013.
 
-[Guo et al., 2017] Huifeng Guo, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. Deepfm: a factorization-machine based neural network for ctr prediction. *arXiv preprint arXiv:1703.04247*, 2017.
+[6] Huifeng Guo, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. Deepfm: a factorization-machine based neural network for ctr prediction. *arXiv preprint arXiv:1703.04247*, 2017.
 
-[He and Chua, 2017] Xiangnan He and Tat-Seng Chua. Neural factorization machines for sparse predictive analytics. In *Proceedings of the 40th International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR'17*, pages 355–364, New York, NY, USA, 2017. ACM.
+[7] Xiangnan He and Tat-Seng Chua. Neural factorization machines for sparse predictive analytics. In *Proceedings of the 40th International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR'17*, pages 355–364, New York, NY, USA, 2017. ACM.
 
-[He et al., 2014] Xinran He, Junfeng Pan, Ou Jin, Tianbing Xu, Bo Liu, Tao Xu, Yanxin Shi, Antoine Atallah, Ralf Herbrich, Stuart Bowers, et al. Practical lessons from predicting clicks on ads at facebook. In *Proceedings of the Eighth International Workshop on Data Mining for Online Advertising*, pages 1–9. ACM, 2014.
+[8] Xinran He, Junfeng Pan, Ou Jin, Tianbing Xu, Bo Liu, Tao Xu, Yanxin Shi, Antoine Atallah, Ralf Herbrich, Stuart Bowers, et al. Practical lessons from predicting clicks on ads at facebook. In *Proceedings of the Eighth International Workshop on Data Mining for Online Advertising*, pages 1–9. ACM, 2014.
 
-[He et al., 2016] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In *Proceedings of the IEEE conference on computer vision and pattern recognition*, pages 770–778, 2016.
+[9] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In *Proceedings of the IEEE conference on computer vision and pattern recognition*, pages 770–778, 2016.
 
-[Hu et al., 2017] Jie Hu, Li Shen, and Gang Sun. Squeeze-and-excitation networks. *arXiv preprint arXiv:1709.01507*, 7, 2017.
+[10] Jie Hu, Li Shen, and Gang Sun. Squeeze-and-excitation networks. *arXiv preprint arXiv:1709.01507*, 7, 2017.
 
-[Juan et al., 2016] Yuchin Juan, Yong Zhuang, Wei-Sheng Chin, and Chih-Jen Lin. Field-aware factorization machines for ctr prediction. In *Proceedings of the 10th ACM Conference on Recommender Systems*, pages 43–50. ACM, 2016.
+[11] Yuchin Juan, Yong Zhuang, Wei-Sheng Chin, and Chih-Jen Lin. Field-aware factorization machines for ctr prediction. In *Proceedings of the 10th ACM Conference on Recommender Systems*, pages 43–50. ACM, 2016.
 
-[Koren et al., 2009] Yehuda Koren, Robert Bell, and Chris Volinsky. Matrix factorization techniques for recommender systems. *Computer*, (8):30–37, 2009.
+[12] Yehuda Koren, Robert Bell, and Chris Volinsky. Matrix factorization techniques for recommender systems. *Computer*, (8):30–37, 2009.
 
-[Krizhevsky et al., 2012] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. Imagenet classification with deep convolutional neural networks. In *Advances in neural information processing systems*, pages 1097–1105, 2012.
+[13] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. Imagenet classification with deep convolutional neural networks. In *Advances in neural information processing systems*, pages 1097–1105, 2012.
 
-[Lian et al., 2018] Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. xdeepfm: Combining explicit and implicit feature interactions for recommender systems. *arXiv preprint arXiv:1803.05170*, 2018.
+[14] Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. xdeepfm: Combining explicit and implicit feature interactions for recommender systems. *arXiv preprint arXiv:1803.05170*, 2018.
 
-[McMahan et al., 2013] H Brendan McMahan, Gary Holt, David Sculley, Michael Young, Dietmar Ebner, Julian Grady, Lan Nie, Todd Phillips, Eugene Davydov, Daniel Golovin, et al. Ad click prediction: a view from the trenches. In *Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining*, pages 1222–1230. ACM, 2013.
+[15] H Brendan McMahan, Gary Holt, David Sculley, Michael Young, Dietmar Ebner, Julian Grady, Lan Nie, Todd Phillips, Eugene Davydov, Daniel Golovin, et al. Ad click prediction: a view from the trenches. In *Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining*, pages 1222–1230. ACM, 2013.
 
-[Mikolov et al., 2010] Tomáš Mikolov, Martin Karafiát, Lukáš Burget, Jan Černocký, and Sanjeev Khudanpur. Recurrent neural network based language model. In *Eleventh Annual Conference of the International Speech Communication Association*, 2010.
+[16] Tomáš Mikolov, Martin Karafiát, Lukáš Burget, Jan Černocký, and Sanjeev Khudanpur. Recurrent neural network based language model. In *Eleventh Annual Conference of the International Speech Communication Association*, 2010.
 
-[Rendle, 2010] Steffen Rendle. Factorization machines. In *Data Mining (ICDM), 2010 IEEE 10th International Conference on*, pages 995–1000. IEEE, 2010.
+[17] Steffen Rendle. Factorization machines. In *Data Mining (ICDM), 2010 IEEE 10th International Conference on*, pages 995–1000. IEEE, 2010.
 
-[Szegedy et al., 2016] Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jon Shlens, and Zbigniew Wojna. Rethinking the inception architecture for computer vision. In *Proceedings of the IEEE conference on computer vision and pattern recognition*, pages 2818–2826, 2016.
+[18] Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jon Shlens, and Zbigniew Wojna. Rethinking the inception architecture for computer vision. In *Proceedings of the IEEE conference on computer vision and pattern recognition*, pages 2818–2826, 2016.
 
-[Wang et al., 2017] Ruoxi Wang, Bin Fu, Gang Fu, and Mingliang Wang. Deep & cross network for ad click predictions. In *Proceedings of the ADKDD'17*, page 12. ACM, 2017.
+[19] Ruoxi Wang, Bin Fu, Gang Fu, and Mingliang Wang. Deep & cross network for ad click predictions. In *Proceedings of the ADKDD'17*, page 12. ACM, 2017.
 
-[Xiao et al., 2017] Jun Xiao, Hao Ye, Xiangnan He, Hanwang Zhang, Fei Wu, and Tat-Seng Chua. Attentional factorization machines: Learning the weight of feature interactions via attention networks. *arXiv preprint arXiv:1708.04617*, 2017.
+[20] Jun Xiao, Hao Ye, Xiangnan He, Hanwang Zhang, Fei Wu, and Tat-Seng Chua. Attentional factorization machines: Learning the weight of feature interactions via attention networks. *arXiv preprint arXiv:1708.04617*, 2017.
 
-[Yang et al., 2017] Yi Yang, Shaofeng Shen, and Yu liang. Neural field-aware factorization machine. https://cs.nju.edu.cn/31/60/c1654a209248/page.htm, 2017.
+[21] Yi Yang, Shaofeng Shen, and Yu liang. Neural field-aware factorization machine. https://cs.nju.edu.cn/31/60/c1654a209248/page.htm, 2017.
 
-[Zhang et al., 2016] Weinan Zhang, Tianming Du, and Jun Wang. Deep learning over multi-field categorical data. In *European conference on information retrieval*, pages 45–57. Springer, 2016.
+[22] Weinan Zhang, Tianming Du, and Jun Wang. Deep learning over multi-field categorical data. In *European conference on information retrieval*, pages 45–57. Springer, 2016.
 
-[Zhou et al., 2018] Guorui Zhou, Xiaoqiang Zhu, Chenru Song, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, and Kun Gai. Deep interest network for click-through rate prediction. In *Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining*, pages 1059–1068. ACM, 2018.
+[23] Guorui Zhou, Xiaoqiang Zhu, Chenru Song, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, and Kun Gai. Deep interest network for click-through rate prediction. In *Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining*, pages 1059–1068. ACM, 2018.

@@ -2,11 +2,13 @@
 
 > Guorui Zhou, Chengru Song, Xiaoqiang Zhu, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, Kun Gai | 阿里巴巴集团
 
-本文介绍了深度兴趣网络（DIN），该模型通过引入局部激活单元，根据给定候选广告自适应地从历史行为中学习用户兴趣的表示向量。核心内容：
 
-- 指出现有 Embedding&MLP 方法中使用固定长度向量表达用户多样化兴趣的局限性
+
+本文介绍了深度兴趣网络（DIN），该模型通过引入**局部激活单元**，根据给定候选广告自适应地从历史行为中学习用户兴趣的表示向量。核心内容：
+
+- 指出现有 Embedding&MLP 方法中 **使用固定长度向量表达用户多样化兴趣的局限性**
 - 提出 DIN 模型，通过局部激活单元实现自适应变化的用户兴趣表示
-- 开发小批量感知正则化（MBA）和数据自适应激活函数（Dice）两种训练技术
+- 开发小批量感知正则化（MBA） 和 数据自适应激活函数（Dice）两种训练技术
 
 关键发现：
 
@@ -16,13 +18,17 @@
 
 ---
 
+
+
 ## 摘要
 
 点击率预测是工业应用中的一项基本任务，如在线广告。近年来，基于深度学习的方法被提出，这些方法遵循类似的Embedding&MLP范式。在这些方法中，大规模稀疏输入特征首先映射到低维嵌入向量，然后以分组方式转换为固定长度向量，最后拼接在一起输入多层感知机以学习特征之间的非线性关系。这样一来，用户特征被压缩成一个固定长度的表示向量，而与候选广告无关。固定长度向量的使用将成为一个瓶颈，给Embedding&MLP方法从丰富的历史行为中有效捕获用户多样化兴趣带来困难。本文提出了一种新颖的模型：深度兴趣网络，通过设计一个局部激活单元来根据特定广告自适应地从历史行为中学习用户兴趣的表示。该表示向量随不同广告而变化，大大提高了模型的表达能力。此外，我们开发了两种技术：小批量感知正则化和数据自适应激活函数，它们有助于训练具有数亿参数的工业深度网络。在两个公开数据集以及一个包含超过20亿样本的阿里巴巴真实生产数据集上的实验证明了所提方法的有效性，其性能优于最先进的方法。DIN现已成功部署在阿里巴巴的在线展示广告系统中，服务于主要流量。
 
-**CCS概念：** 信息系统 \rightarrow 展示广告；推荐系统；
+**CCS概念：** 信息系统 $\rightarrow$ 展示广告；推荐系统；
 
 **关键词：** 点击率预测，展示广告，电子商务
+
+
 
 ## 1 引言
 
@@ -46,6 +52,8 @@
 
 本文其余部分组织如下。第2节讨论相关工作，第3节介绍电子商务网站展示广告系统中用户行为数据的特征背景。第4节和第5节详细描述了DIN模型以及两种提出的训练技术。我们在第6节展示实验，并在第7节总结。
 
+
+
 ## 2 相关工作
 
 CTR预测模型的结构已从浅层演变为深层。同时，CTR模型中使用的样本数量和特征维度变得越来越大。为了更好地提取特征关系以提升性能，一些工作关注于模型结构的设计。
@@ -60,9 +68,13 @@ Deep Crossing、Wide&Deep学习和YouTube推荐CTR模型通过将变换函数替
 
 我们公开了代码，并进一步展示了如何在全球最大的广告系统之一中成功部署DIN，以及为训练具有数亿参数的大规模深度网络而开发的新技术。
 
+
+
 ## 3 背景
 
 在电子商务网站（如阿里巴巴）中，广告本身就是商品。在本文的其余部分，除非特别声明，我们将广告视为商品。图1简要说明了阿里巴巴展示广告系统的运行流程，该系统包括两个主要阶段：i）匹配阶段，通过协同过滤等方法生成与访问用户相关的候选广告列表；ii）排序阶段，预测每个给定广告的CTR，然后选择排名靠前的广告。每天，数以亿计的用户访问电子商务网站，为我们留下大量用户行为数据，这些数据对构建匹配和排序模型至关重要。值得一提的是，具有丰富历史行为的用户包含多样化的兴趣。例如，一位年轻母亲最近浏览了包括羊毛外套、T恤、耳环、托特包、皮手提包和儿童外套在内的商品。这些行为数据为我们提供了她购物兴趣的线索。当她访问电子商务网站时，系统向她展示合适的广告，例如一个新款手提包。显然，展示的广告只匹配或激活了这位母亲的部分兴趣。总之，具有丰富行为的用户的兴趣是多样化的，并且可以在给定某些广告时被局部激活。我们在本文后面表明，利用这些特征对于构建CTR预测模型起着重要作用。
+
+
 
 ## 4 深度兴趣网络
 
@@ -70,7 +82,7 @@ Deep Crossing、Wide&Deep学习和YouTube推荐CTR模型通过将变换函数替
 
 ### 4.1 特征表示
 
-工业CTR预测任务中的数据主要以多组分类形式存在，例如[weekday=Friday, gender=Female, visited_cate_ids={Bag,Book}, ad_cate_id=Book]，这通常通过编码转换为高维稀疏二值特征。数学上，第 $i$ 个特征组的编码向量公式化为 $\mathbf{t}_i \in \mathbb{R}^{K_i}$。$K_i$ 表示特征组 $i$ 的维度，即特征组 $i$ 包含 $K_i$ 个唯一 ID。$\mathbf{t}_i[j]$ 是 $\mathbf{t}_i$ 的第 $j$ 个元素，$\mathbf{t}_i[j] \in \{0, 1\}$。$\sum_{j=1}^{K_i} \mathbf{t}_i[j] = k$。$k = 1$ 的向量 $\mathbf{t}_i$ 指 one-hot 编码，$k > 1$ 指 multi-hot 编码。然后一个实例可以按分组方式表示为 $\mathbf{x} = [\mathbf{t}_1^\top, \mathbf{t}_2^\top, \dots, \mathbf{t}_M^\top]^\top$，其中 $M$ 是特征组数量，$\sum_{i=1}^{M} K_i = K$，$K$ 是整个特征空间的维度。通过这种方式，上述包含[weekday=Friday, gender=Female, visited_cate_ids={Bag,Book}, ad_cate_id=Book]的实例被编码为四个二值向量，如图1所示。
+工业CTR预测任务中的数据主要以多组分类形式存在，例如[weekday=Friday, gender=Female, visited_cate_ids={Bag,Book}, ad_cate_id=Book]，这通常通过编码转换为高维稀疏二值特征。数学上，第 $i$ 个特征组的编码向量公式化为 $\mathbf{t}_i \in \mathbb{R}^{K_i}$ 。 $K_i$ 表示特征组 $i$ 的维度，即特征组 $i$ 包含 $K_i$ 个唯一 ID。 $\mathbf{t}_i[j]$ 是 $\mathbf{t}_i$ 的第 $j$ 个元素， $\mathbf{t}_i[j] \in \{0, 1\}$ 。 $\sum_{j=1}^{K_i} \mathbf{t}_i[j] = k$ 。 $k = 1$ 的向量 $\mathbf{t}_i$ 指 one-hot 编码， $k > 1$ 指 multi-hot 编码。然后一个实例可以按分组方式表示为 $\mathbf{x} = [\mathbf{t}_1^\top, \mathbf{t}_2^\top, \dots, \mathbf{t}_M^\top]^\top$ ，其中 $M$ 是特征组数量， $\sum_{i=1}^{M} K_i = K$ ， $K$ 是整个特征空间的维度。通过这种方式，上述包含[weekday=Friday, gender=Female, visited_cate_ids={Bag,Book}, ad_cate_id=Book]的实例被编码为四个二值向量，如图1所示。
 
 系统中使用的整个特征集在表1中描述。它由四个类别组成，其中用户行为特征典型地为multi-hot编码向量，包含丰富的用户兴趣信息。注意，在我们的设置中，没有组合特征。我们通过深度神经网络捕获特征的交互。
 
@@ -79,16 +91,20 @@ Deep Crossing、Wide&Deep学习和YouTube推荐CTR模型通过将变换函数替
 | 类别 | 特征组 | 维度 | 类型 | 每个实例的非零ID数 |
 |------|--------|------|------|-------------------|
 | 用户画像特征 | gender, age_level, ... | 2, ~10, ... | one-hot, one-hot, ... | 1, 1, ... |
-| 用户行为特征 | visited_goods_ids, visited_shop_ids, visited_cate_ids | ~10^9, ~10^7, ~10^4 | multi-hot, multi-hot, multi-hot | ~10^3, ~10^3, ~10^2 |
-| 广告特征 | goods_id, shop_id, cate_id, ... | ~10^7, ~10^5, ~10^4, ... | one-hot, one-hot, one-hot, ... | 1, 1, 1, ... |
+| 用户行为特征 | visited_goods_ids, visited_shop_ids, visited_cate_ids | $\sim 10^9$ , $\sim 10^7$ , $\sim 10^4$ | multi-hot, multi-hot, multi-hot | $\sim 10^3$ , $\sim 10^3$ , $\sim 10^2$ |
+| 广告特征 | goods_id, shop_id, cate_id, ... | $\sim 10^7$ , $\sim 10^5$ , $\sim 10^4$ , ... | one-hot, one-hot, one-hot, ... | 1, 1, 1, ... |
 | 上下文特征 | pid, time, ... | ~10, ~10, ... | one-hot, one-hot, ... | 1, 1, ... |
 
 四个特征组示例如下：
 
-[0, 0, 0, 0, 1, 0, 0] \rightarrow weekday=Friday
-[0, 1] \rightarrow gender=Female
-[0, .., 1, ..., 1, ...0] \rightarrow visited_cate_ids={Bag,Book}
-[0, .., 1, ..., 0] \rightarrow ad_cate_id=Book
+$$
+\begin{aligned}
+&[0, 0, 0, 0, 1, 0, 0] \rightarrow \text{weekday=Friday} \\
+&[0, 1] \rightarrow \text{gender=Female} \\
+&[0, \dots, 1, \dots, 1, \dots, 0] \rightarrow \text{visited\_cate\_ids=\{Bag,Book\}} \\
+&[0, \dots, 1, \dots, 0] \rightarrow \text{ad\_cate\_id=Book}
+\end{aligned}
+$$
 
 **图1：阿里巴巴展示广告系统运行流程示意图，其中用户行为数据起重要作用。**
 
@@ -96,10 +112,10 @@ Deep Crossing、Wide&Deep学习和YouTube推荐CTR模型通过将变换函数替
 
 大多数流行的模型结构共享类似的Embedding&MLP范式，我们称之为基础模型，如图2左侧所示。它由几个部分组成：
 
-**嵌入层。** 由于输入是高维二值向量，嵌入层用于将它们转换为低维稠密表示。对于第 $i$ 个特征组 $\mathbf{t}_i$，令 $\mathbf{W}_i = [\mathbf{w}_1^i, \mathbf{w}_2^i, \dots, \mathbf{w}_{K_i}^i] \in \mathbb{R}^{D \times K_i}$ 表示第 $i$ 个嵌入字典，其中 $\mathbf{w}_j^i \in \mathbb{R}^D$ 是维度为 $D$ 的嵌入向量。嵌入操作遵循表查找机制，如图2所示。
+**嵌入层。** 由于输入是高维二值向量，嵌入层用于将它们转换为低维稠密表示。对于第 $i$ 个特征组 $\mathbf{t}_i$ ，令 $\mathbf{W}_i = [\mathbf{w}_1^i, \mathbf{w}_2^i, \dots, \mathbf{w}_{K_i}^i] \in \mathbb{R}^{D \times K_i}$ 表示第 $i$ 个嵌入字典，其中 $\mathbf{w}_j^i \in \mathbb{R}^D$ 是维度为 $D$ 的嵌入向量。嵌入操作遵循表查找机制，如图2所示。
 
-- 如果 $\mathbf{t}_i$ 是 one-hot 向量，第 $j$ 个元素 $\mathbf{t}_i[j] = 1$，则 $\mathbf{t}_i$ 的嵌入表示是一个单一的嵌入向量 $\mathbf{e}_i = \mathbf{w}_j^i$。
-- 如果 $\mathbf{t}_i$ 是 multi-hot 向量，$\mathbf{t}_i[j] = 1$，$j \in \{i_1, i_2, \dots, i_k\}$，则 $\mathbf{t}_i$ 的嵌入表示是一个嵌入向量列表：$\{\mathbf{e}_{i_1}, \mathbf{e}_{i_2}, \dots, \mathbf{e}_{i_k}\} = \{\mathbf{w}_{i_1}^i, \mathbf{w}_{i_2}^i, \dots, \mathbf{w}_{i_k}^i\}$。
+- 如果 $\mathbf{t}_i$ 是 one-hot 向量，第 $j$ 个元素 $\mathbf{t}_i[j] = 1$ ，则 $\mathbf{t}_i$ 的嵌入表示是一个单一的嵌入向量 $\mathbf{e}_i = \mathbf{w}_j^i$ 。
+- 如果 $\mathbf{t}_i$ 是 multi-hot 向量， $\mathbf{t}_i[j] = 1$ ， $j \in \{i_1, i_2, \dots, i_k\}$ ，则 $\mathbf{t}_i$ 的嵌入表示是一个嵌入向量列表： $\{\mathbf{e}_{i_1}, \mathbf{e}_{i_2}, \dots, \mathbf{e}_{i_k}\} = \{\mathbf{w}_{i_1}^i, \mathbf{w}_{i_2}^i, \dots, \mathbf{w}_{i_k}^i\}$ 。
 
 **池化层和拼接层。** 注意，不同用户具有不同数量的行为。因此，multi-hot 行为特征向量 $\mathbf{t}_i$ 的非零值数量在不同实例间变化，导致相应嵌入向量列表的长度可变。由于全连接网络只能处理固定长度的输入，通常的做法是通过池化层将嵌入向量列表转换为固定长度向量：
 
@@ -119,7 +135,7 @@ $$
 \mathcal{L} = - \frac{1}{N} \sum_{(\mathbf{x},y) \in \mathcal{S}} \big( y \log p(\mathbf{x}) + (1 - y) \log(1 - p(\mathbf{x})) \big) \qquad (2)
 $$
 
-其中 $\mathcal{S}$ 是大小为 $N$ 的训练集，$\mathbf{x}$ 是网络的输入，$y \in \{0, 1\}$ 是标签，$p(\mathbf{x})$ 是网络经过 softmax 层后的输出，表示样本 $\mathbf{x}$ 被点击的预测概率。
+其中 $\mathcal{S}$ 是大小为 $N$ 的训练集， $\mathbf{x}$ 是网络的输入， $y \in \{0, 1\}$ 是标签， $p(\mathbf{x})$ 是网络经过 softmax 层后的输出，表示样本 $\mathbf{x}$ 被点击的预测概率。
 
 ### 4.3 深度兴趣网络的结构
 
@@ -129,19 +145,21 @@ $$
 
 是否存在一种优雅的方式在有限维度下用一个向量表示用户的多样化兴趣？用户兴趣的局部激活特性启发我们设计一种名为深度兴趣网络的新颖模型。想象当第3节中提到的年轻母亲访问电子商务网站时，她发现展示的新款手提包很可爱并点击了它。让我们剖析点击行为的驱动力。展示的广告通过软搜索她的历史行为，发现她最近浏览了类似的托特包和皮手提包，从而击中了这位年轻妈妈的相关兴趣。换句话说，与展示广告相关的行为极大地促成了点击行为。DIN通过关注相对于给定广告的局部激活兴趣的表示来模拟这一过程。DIN不是用相同的向量表达所有用户的多样化兴趣，而是通过考虑历史行为与候选广告的相关性，自适应地计算用户兴趣的表示向量。该表示向量随不同广告而变化。
 
-图2右侧展示了DIN的架构。与基础模型相比，DIN引入了一个新颖设计的局部激活单元，并保持其他结构相同。具体来说，激活单元应用于用户行为特征，执行加权和池化以自适应地计算给定候选广告 $A$ 的用户表示 $\mathbf{v}_U$，如公式(3)所示：
+图2右侧展示了DIN的架构。与基础模型相比，DIN引入了一个新颖设计的局部激活单元，并保持其他结构相同。具体来说，激活单元应用于用户行为特征，执行加权和池化以自适应地计算给定候选广告 $A$ 的用户表示 $\mathbf{v}_U$ ，如公式(3)所示：
 
 $$
 \mathbf{v}_U(A) = f(\mathbf{v}_A, \mathbf{e}_1, \mathbf{e}_2, \dots, \mathbf{e}_H) = \sum_{j=1}^{H} a(\mathbf{e}_j, \mathbf{v}_A) \mathbf{e}_j = \sum_{j=1}^{H} w_j \mathbf{e}_j \qquad (3)
 $$
 
-其中 $\{\mathbf{e}_1, \mathbf{e}_2, \dots, \mathbf{e}_H\}$ 是长度为 $H$ 的用户 $U$ 行为的嵌入向量列表，$\mathbf{v}_A$ 是广告 $A$ 的嵌入向量。通过这种方式，$\mathbf{v}_U(A)$ 随不同广告而变化。$a(\cdot)$ 是一个前馈网络，输出为激活权重，如图2所示。除了两个输入嵌入向量外，$a(\cdot)$ 还将它们的外积添加到后续网络中，这是帮助相关性建模的显式知识。
+其中 $\{\mathbf{e}_1, \mathbf{e}_2, \dots, \mathbf{e}_H\}$ 是长度为 $H$ 的用户 $U$ 行为的嵌入向量列表， $\mathbf{v}_A$ 是广告 $A$ 的嵌入向量。通过这种方式， $\mathbf{v}_U(A)$ 随不同广告而变化。 $a(\cdot)$ 是一个前馈网络，输出为激活权重，如图2所示。除了两个输入嵌入向量外， $a(\cdot)$ 还将它们的外积添加到后续网络中，这是帮助相关性建模的显式知识。
 
 **图2：网络架构。左侧为基础模型（Embedding&MLP）的网络。属于同一商品的cate_id、shop_id和goods_id的嵌入向量被拼接起来，以表示用户行为中一个访问过的商品。右侧为我们提出的DIN模型。它引入了一个局部激活单元，通过该单元，用户兴趣的表示随不同候选广告自适应地变化。**
 
-公式(3)的局部激活单元与NMT任务中开发的注意力方法共享类似的思想。然而，与传统的注意力方法不同，公式(3)放松了 $\sum_i w_i = 1$ 的约束，旨在保留用户兴趣的强度。也就是说，放弃了对 $a(\cdot)$ 输出进行 softmax 归一化。相反，$\sum_i w_i$ 的值被视为某种程度上的激活用户兴趣强度的近似。例如，如果一个用户的历史行为包含 $90\%$ 的衣服和 $10\%$ 的电子产品。给定 T 恤和手机两个候选广告，T 恤激活了大部分属于衣服的历史行为，可能比手机获得更大的 $\mathbf{v}_U$ 值（更高的兴趣强度）。传统的注意力方法通过对 $a(\cdot)$ 的输出进行归一化，失去了对 $\mathbf{v}_U$ 数值尺度的分辨率。
+公式(3)的局部激活单元与NMT任务中开发的注意力方法共享类似的思想。然而，与传统的注意力方法不同，公式(3)放松了 $\sum_i w_i = 1$ 的约束，旨在保留用户兴趣的强度。也就是说，放弃了对 $a(\cdot)$ 输出进行 softmax 归一化。相反， $\sum_i w_i$ 的值被视为某种程度上的激活用户兴趣强度的近似。例如，如果一个用户的历史行为包含 $90\%$ 的衣服和 $10\%$ 的电子产品。给定 T 恤和手机两个候选广告，T 恤激活了大部分属于衣服的历史行为，可能比手机获得更大的 $\mathbf{v}_U$ 值（更高的兴趣强度）。传统的注意力方法通过对 $a(\cdot)$ 的输出进行归一化，失去了对 $\mathbf{v}_U$ 数值尺度的分辨率。
 
 我们尝试了LSTM以顺序方式对用户历史行为数据进行建模，但没有显示出改进。与受语法约束的NLP任务中的文本不同，用户历史行为的序列可能包含多个并发的兴趣。这些兴趣之间的快速跳跃和突然结束使得用户行为的序列数据看起来很嘈杂。一个可能的方向是设计特殊结构以序列方式对这类数据进行建模。我们将其留给未来的研究。
+
+
 
 ## 5 训练技术
 
@@ -151,19 +169,19 @@ $$
 
 过拟合是训练工业网络的一个关键挑战。例如，在添加细粒度特征（如维度为6亿的goods_id特征，包括表1中描述的用户的visited_goods_ids和广告的goods_id）时，如果没有正则化，模型性能在第一个epoch后会迅速下降，如图4中深绿色线所示。直接在具有稀疏输入和数亿参数的训练网络上应用传统的正则化方法（如 $\ell_2$ 和 $\ell_1$ 正则化）是不实际的。以 $\ell_2$ 正则化为例。在没有正则化的基于SGD的优化方法中，只需要更新每个小批量中出现的非零稀疏特征的参数。然而，当添加 $\ell_2$ 正则化时，需要对每个小批量计算整个参数的 $L_2$ 范数，这导致极其繁重的计算，对于规模达数亿的参数是不可接受的。
 
-本文介绍了一种高效的小批量感知正则化器，它只计算每个小批量中出现的稀疏特征的参数的 $L_2$ 范数，使计算成为可能。实际上，嵌入字典贡献了CTR网络的大部分参数，并导致了计算困难。令 $\mathbf{W} \in \mathbb{R}^{D \times K}$ 表示整个嵌入字典的参数，其中 $D$ 是嵌入向量的维度，$K$ 是特征空间的维度。将 $\mathbf{W}$ 上的 $\ell_2$ 正则化对样本展开：
+本文介绍了一种高效的小批量感知正则化器，它只计算每个小批量中出现的稀疏特征的参数的 $L_2$ 范数，使计算成为可能。实际上，嵌入字典贡献了CTR网络的大部分参数，并导致了计算困难。令 $\mathbf{W} \in \mathbb{R}^{D \times K}$ 表示整个嵌入字典的参数，其中 $D$ 是嵌入向量的维度， $K$ 是特征空间的维度。将 $\mathbf{W}$ 上的 $\ell_2$ 正则化对样本展开：
 
 $$
 L_2(\mathbf{W}) = \|\mathbf{W}\|_2^2 = \sum_{j=1}^{K} \|\mathbf{w}_j\|_2^2 = \sum_{j=1}^{K} \sum_{(\mathbf{x},y) \in \mathcal{S}} \frac{\mathbb{I}(x_j \neq 0)}{n_j} \|\mathbf{w}_j\|_2^2 \qquad (4)
 $$
 
-其中 $\mathbf{w}_j \in \mathbb{R}^D$ 是第 $j$ 个嵌入向量，$\mathbb{I}(x_j \neq 0)$ 表示实例 $\mathbf{x}$ 是否具有特征 ID $j$，$n_j$ 表示特征 ID $j$ 在所有样本中出现的次数。公式(4)可以以小批量感知方式转换为公式(5)：
+其中 $\mathbf{w}_j \in \mathbb{R}^D$ 是第 $j$ 个嵌入向量， $\mathbb{I}(x_j \neq 0)$ 表示实例 $\mathbf{x}$ 是否具有特征 ID $j$ ， $n_j$ 表示特征 ID $j$ 在所有样本中出现的次数。公式(4)可以以小批量感知方式转换为公式(5)：
 
 $$
 L_2(\mathbf{W}) = \sum_{j=1}^{K} \sum_{m=1}^{B} \sum_{(\mathbf{x},y) \in \mathcal{B}_m} \frac{\mathbb{I}(x_j \neq 0)}{n_j} \|\mathbf{w}_j\|_2^2 \qquad (5)
 $$
 
-其中 $B$ 表示小批量的数量，$\mathcal{B}_m$ 表示第 $m$ 个小批量。令 $\alpha_{mj} = \max_{(\mathbf{x},y) \in \mathcal{B}_m} \mathbb{I}(x_j \neq 0)$ 表示小批量 $\mathcal{B}_m$ 中是否至少有一个实例具有特征 ID $j$。则公式(5)可以近似为：
+其中 $B$ 表示小批量的数量， $\mathcal{B}_m$ 表示第 $m$ 个小批量。令 $\alpha_{mj} = \max_{(\mathbf{x},y) \in \mathcal{B}_m} \mathbb{I}(x_j \neq 0)$ 表示小批量 $\mathcal{B}_m$ 中是否至少有一个实例具有特征 ID $j$ 。则公式(5)可以近似为：
 
 $$
 L_2(\mathbf{W}) \approx \sum_{j=1}^{K} \sum_{m=1}^{B} \frac{\alpha_{mj}}{n_j} \|\mathbf{w}_j\|_2^2 \qquad (6)
@@ -185,17 +203,19 @@ $$
 f(s) = \begin{cases} s, & \text{if } s > 0 \\ \alpha s, & \text{if } s \leq 0 \end{cases} = p(s) \cdot s + (1 - p(s)) \cdot \alpha s \qquad (8)
 $$
 
-其中 $s$ 是激活函数 $f(\cdot)$ 输入的一个维度，$p(s) = \mathbb{I}(s > 0)$ 是指示函数，控制 $f(s)$ 在 $f(s) = s$ 和 $f(s) = \alpha s$ 两个通道之间切换。第二个通道中的 $\alpha$ 是可学习参数。这里我们将 $p(s)$ 称为控制函数。图3左侧绘制了PReLU的控制函数。PReLU采用值为0的硬修正点，当每一层的输入遵循不同分布时可能不合适。考虑到这一点，我们设计了一种新颖的数据自适应激活函数，名为Dice：
+其中 $s$ 是激活函数 $f(\cdot)$ 输入的一个维度， $p(s) = \mathbb{I}(s > 0)$ 是指示函数，控制 $f(s)$ 在 $f(s) = s$ 和 $f(s) = \alpha s$ 两个通道之间切换。第二个通道中的 $\alpha$ 是可学习参数。这里我们将 $p(s)$ 称为控制函数。图3左侧绘制了PReLU的控制函数。PReLU采用值为0的硬修正点，当每一层的输入遵循不同分布时可能不合适。考虑到这一点，我们设计了一种新颖的数据自适应激活函数，名为Dice：
 
 $$
 f(s) = p(s) \cdot s + (1 - p(s)) \cdot \alpha s, \qquad p(s) = \frac{1}{1 + e^{-(s - \mathbb{E}[s]) / \sqrt{\text{Var}[s] + \epsilon}}} \qquad (9)
 $$
 
-其控制函数如图3右侧所示。在训练阶段，$\mathbb{E}[s]$ 和 $\text{Var}[s]$ 是每个小批量中输入的平均值和方差。在测试阶段，$\mathbb{E}[s]$ 和 $\text{Var}[s]$ 通过数据的移动平均值 $\mathbb{E}[s]$ 和 $\text{Var}[s]$ 计算。$\epsilon$ 是一个小常数，在我们的实践中设置为 $10^{-8}$。
+其控制函数如图3右侧所示。在训练阶段， $\mathbb{E}[s]$ 和 $\text{Var}[s]$ 是每个小批量中输入的平均值和方差。在测试阶段， $\mathbb{E}[s]$ 和 $\text{Var}[s]$ 通过数据的移动平均值 $\mathbb{E}[s]$ 和 $\text{Var}[s]$ 计算。 $\epsilon$ 是一个小常数，在我们的实践中设置为 $10^{-8}$ 。
 
 **图3：PReLU和Dice的控制函数。**
 
 Dice可以视为PReLU的推广。Dice的关键思想是根据输入数据的分布自适应地调整修正点，其值设置为输入的均值。此外，Dice在两个通道之间平滑地切换控制。当 $\mathbb{E}(s) = 0$ 且 $\text{Var}[s] = 0$ 时，Dice退化为PReLU。
+
+
 
 ## 6 实验
 
@@ -203,11 +223,11 @@ Dice可以视为PReLU的推广。Dice的关键思想是根据输入数据的分�
 
 ### 6.1 数据集与实验设置
 
-**Amazon数据集。** Amazon数据集包含来自Amazon的产品评论和元数据，被用作基准数据集。我们在名为Electronics的子集上进行实验，该子集包含192,403个用户、63,001个商品、801个类别和1,689,188个样本。该数据集中的用户行为丰富，每个用户和商品有超过5条评论。特征包括goods_id、cate_id、用户评论的goods_id_list和cate_id_list。令用户的所有行为为 $(b_1, b_2, \dots, b_k, \dots, b_n)$，任务是利用前 $k$ 个评论商品预测第 $(k + 1)$ 个评论商品。对每个用户以 $k = 1, 2, \dots, n - 2$ 生成训练数据集。在测试集中，给定前 $n - 1$ 个评论商品预测最后一个。对于所有模型，我们使用带有指数衰减的SGD作为优化器，初始学习率为1，衰减率设置为0.1。小批量大小设置为32。
+**Amazon数据集。** Amazon数据集包含来自Amazon的产品评论和元数据，被用作基准数据集。我们在名为Electronics的子集上进行实验，该子集包含192,403个用户、63,001个商品、801个类别和1,689,188个样本。该数据集中的用户行为丰富，每个用户和商品有超过5条评论。特征包括goods_id、cate_id、用户评论的goods_id_list和cate_id_list。令用户的所有行为为 $(b_1, b_2, \dots, b_k, \dots, b_n)$ ，任务是利用前 $k$ 个评论商品预测第 $(k + 1)$ 个评论商品。对每个用户以 $k = 1, 2, \dots, n - 2$ 生成训练数据集。在测试集中，给定前 $n - 1$ 个评论商品预测最后一个。对于所有模型，我们使用带有指数衰减的SGD作为优化器，初始学习率为1，衰减率设置为0.1。小批量大小设置为32。
 
 **MovieLens数据集。** MovieLens数据包含138,493个用户、27,278部电影、21个类别和20,000,263个样本。为使其适用于CTR预测任务，我们将其转换为二分类数据。原始用户对电影的评分为0到5之间的连续值。我们将评分为4和5的样本标记为正样本，其余为负样本。我们基于用户ID将数据分割为训练集和测试集。在全部138,493个用户中，随机选择100,000个进入训练集（约14,470,000个样本），其余38,493个进入测试集（约5,530,000个样本）。任务是基于历史行为预测用户是否会对给定电影评分为3以上（正标签）。特征包括movie_id、movie_cate_id以及用户评分的movie_id_list、movie_cate_id_list。我们使用与Amazon数据集相同的优化器、学习率和小批量大小。
 
-**Alibaba数据集。** 我们从阿里巴巴在线展示广告系统收集流量日志，使用两周的样本进行训练，之后一天的样本进行测试。训练集和测试集的大小分别约为20亿和1.4亿。对于所有深度模型，全部16组特征的嵌入向量维度为12。MLP层设置为 $192 \times 200 \times 80 \times 2$。由于数据量巨大，我们将小批量大小设置为5000，并使用Adam作为优化器。我们应用指数衰减，初始学习率为0.001，衰减率设置为0.9。
+**Alibaba数据集。** 我们从阿里巴巴在线展示广告系统收集流量日志，使用两周的样本进行训练，之后一天的样本进行测试。训练集和测试集的大小分别约为20亿和1.4亿。对于所有深度模型，全部16组特征的嵌入向量维度为12。MLP层设置为 $192 \times 200 \times 80 \times 2$ 。由于数据量巨大，我们将小批量大小设置为5000，并使用Adam作为优化器。我们应用指数衰减，初始学习率为0.001，衰减率设置为0.9。
 
 以上所有数据集的统计信息如表2所示。Alibaba数据集的规模远大于Amazon和MovieLens，带来了更多挑战。
 
@@ -241,9 +261,9 @@ $$
 \text{AUC} = \frac{\sum_{i=1}^{n} \#\text{impression}_i \times \text{AUC}_i}{\sum_{i=1}^{n} \#\text{impression}_i} \qquad (10)
 $$
 
-其中 $n$ 是用户数，$\#\text{impression}_i$ 和 $\text{AUC}_i$ 分别是第 $i$ 个用户的展示数和AUC。
+其中 $n$ 是用户数， $\#\text{impression}_i$ 和 $\text{AUC}_i$ 分别是第 $i$ 个用户的展示数和AUC。
 
-此外，我们遵循[25]引入RelaImpr指标来衡量模型的相对改进。对于随机猜测，AUC值为0.5。因此RelaImpr定义如下：
+此外，我们遵循[25]**引入RelaImpr指标来衡量模型的相对改进**。对于随机猜测，AUC值为0.5。因此RelaImpr定义如下：
 
 $$
 \text{RelaImpr} = \frac{\text{AUC}(\text{measured\_model}) - 0.5}{\text{AUC}(\text{base\_model}) - 0.5} - 1 \times 100\% \qquad (11)
@@ -274,7 +294,7 @@ a 除LR外，其他行使用PReLU作为激活函数。
 - **Dropout。** 在每个样本中随机丢弃50%的特征ID。
 - **Filter。** 按样本中出现频率过滤访问过的goods_id，只保留最频繁的。在我们的设置中，保留前2000万个goods_id。
 - **DiFacto正则化。** 频繁特征的参数受到较少的过度正则化。
-- **MBA。** 我们提出的小批量感知正则化方法（公式4）。DiFacto和MBA的正则化参数 $\lambda$ 都经过搜索并设置为 $0.01$。
+- **MBA。** 我们提出的小批量感知正则化方法（公式4）。DiFacto和MBA的正则化参数 $\lambda$ 都经过搜索并设置为 $0.01$ 。
 
 图4和表4给出了比较结果。关注图4的细节，与不使用细粒度goods_id特征相比，使用该特征训练的模型在第一个epoch中在测试AUC性能上带来了很大提升。然而，在没有正则化训练的情况下（深绿色线），过拟合迅速发生。Dropout防止了快速过拟合，但导致收敛较慢。频率过滤器在一定程度上缓解了过拟合。DiFacto中的正则化对高频率的goods_id设置了更大的惩罚，表现不如频率过滤器。我们提出的小批量感知正则化与其他所有方法相比表现最佳，显著防止了过拟合。
 
@@ -342,7 +362,7 @@ b 这些行使用dropout正则化。
 
 ## 参考文献
 
-**[1] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. 2015. Neural Machine Translation by Jointly Learning to Align and Translate. In Proceedings of the 3rd International Conference on Learning Representations.**
+[1] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. 2015. Neural Machine Translation by Jointly Learning to Align and Translate. In Proceedings of the 3rd International Conference on Learning Representations.
 
 [2] Ducharme Réjean Bengio Yoshua et al. 2003. A neural probabilistic language model. Journal of Machine Learning Research (2003), 1137–1155.
 
@@ -354,7 +374,7 @@ b 这些行使用dropout正则化。
 
 [6] Wang H. et al. 2018. DKN: Deep Knowledge-Aware Network for News Recommendation. In Proceedings of 26th International World Wide Web Conference.
 
-[7] Zhu H. et al. 2017. Optimized Cost per Click in Taobao Display Advertising. In Proceedings of the 23rd International Conference on Knowledge Discovery and Data Mining. ACM, 2191–2200.
+[7] Zhu H. et al. 2017. **Optimized Cost per Click in Taobao Display Advertising**. In Proceedings of the 23rd International Conference on Knowledge Discovery and Data Mining. ACM, 2191–2200.
 
 [8] Tom Fawcett. 2006. An introduction to ROC analysis. Pattern recognition letters 27, 8 (2006), 861–874.
 
@@ -374,7 +394,7 @@ b 这些行使用dropout正则化。
 
 [16] Mu Li, Ziqi Liu, Alexander J Smola, and Yu-Xiang Wang. 2016. DiFacto: Distributed factorization machines. In Proceedings of the 9th ACM International Conference on Web Search and Data Mining. 377–386.
 
-[17] Laurens van der Maaten and Geoffrey Hinton. 2008. Visualizing data using t-SNE. Journal of Machine Learning Research 9, Nov (2008), 2579–2605.
+[17] Laurens van der Maaten and Geoffrey Hinton. 2008. **Visualizing data using t-SNE**. Journal of Machine Learning Research 9, Nov (2008), 2579–2605.
 
 [18] Julian Mcauley, Christopher Targett, Qinfeng Shi, and Van Den Hengel Anton. Image-Based Recommendations on Styles and Substitutes. In Proceedings of the 38th International ACM SIGIR Conference on Research and Development in Information Retrieval. 43–52.
 
@@ -382,7 +402,7 @@ b 这些行使用dropout正则化。
 
 [20] Steffen Rendle. 2010. Factorization machines. In Proceedings of the 10th International Conference on Data Mining. IEEE, 995–1000.
 
-[21] Ying Shan, T Ryan Hoens, Jian Jiao, Haijing Wang, Dong Yu, and JC Mao. Deep Crossing: Web-scale modeling without manually crafted combinatorial features.
+[21] Ying Shan, T Ryan Hoens, Jian Jiao, Haijing Wang, Dong Yu, and JC Mao. **Deep Crossing: Web-scale modeling without manually crafted combinatorial features**.
 
 [22] Nitish Srivastava, Geoffrey E Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan Salakhutdinov. 2014. Dropout: a simple way to prevent neural networks from overfitting. Journal of Machine Learning Research 15, 1 (2014), 1929–1958.
 
@@ -390,8 +410,8 @@ b 这些行使用dropout正则化。
 
 [24] Ronald J Williams and David Zipser. 1989. A learning algorithm for continually running fully recurrent neural networks. Neural computation (1989), 270–280.
 
-[25] Ling Yan, Wu-jun Li, Gui-Rong Xue, and Dingyi Han. 2014. Coupled group lasso for web-scale ctr prediction in display advertising. In Proceedings of the 31th International Conference on Machine Learning. 802–810.
+[25] Ling Yan, Wu-jun Li, Gui-Rong Xue, and Dingyi Han. 2014. **Coupled group lasso for web-scale ctr prediction in display advertising**. In Proceedings of the 31th International Conference on Machine Learning. 802–810.
 
 [26] Shuangfei Zhai, Keng-hao Chang, Ruofei Zhang, and Zhongfei Mark Zhang. 2016. Deepintent: Learning attentions for online advertising with recurrent neural networks. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. ACM, 1295–1304.
 
-[27] Song J et al. Zhou C, Bai J. 2018. ATRank: An Attention-Based User Behavior Modeling Framework for Recommendation. In Proceedings of 32th AAAI Conference on Artificial Intelligence.
+[27] Song J et al. Zhou C, Bai J. 2018. **ATRank: An Attention-Based User Behavior Modeling Framework for Recommendation**. In Proceedings of 32th AAAI Conference on Artificial Intelligence.

@@ -14,7 +14,7 @@ Key findings: (1) Asynchronous task dependencies and user-defined filters provid
 
 ## 1 引言
 
-在现实的工业机器学习应用中，数据集范围从1TB到1PB。例如，一个拥有1亿用户、每个用户1KB数据的社交网络就有100TB。在线广告和用户生成内容分析中的问题具有类似数量级的复杂性[12]。如此海量的数据使得学习拥有$10^9$到$10^{12}$个参数的强大而复杂的模型成为可能[9]，在这样的规模下，单台机器通常无法及时完成任务。
+在现实的工业机器学习应用中，数据集范围从1TB到1PB。例如，一个拥有1亿用户、每个用户1KB数据的社交网络就有100TB。在线广告和用户生成内容分析中的问题具有类似数量级的复杂性[12]。如此海量的数据使得学习拥有 $10^9$ 到 $10^{12}$ 个参数的强大而复杂的模型成为可能[9]，在这样的规模下，单台机器通常无法及时完成任务。
 
 分布式优化正成为解决大规模机器学习问题的关键工具[1, 3, 10, 21, 19]。工作负载被划分到工作机器（worker machines）上，这些机器在同时执行局部计算以优化模型时访问全局共享的模型。然而，为机器学习应用高效实现分布式优化算法并不容易。一个主要挑战是机器间的数据通信：
 
@@ -69,7 +69,7 @@ $$
 
 共享模型参数被表示为排序的 (key, value) 对。或者，我们可以将其视为一个稀疏向量或矩阵，通过内置的多线程线性代数函数与训练数据进行交互。数据交换可以通过两种操作实现：push 和 pull。工作机器可以将一个范围内的所有 (key, value) 对 push 到服务器，或从服务器 pull 相应的值。
 
-**分布式次梯度下降（Distributed Subgradient Descent）。** 对于(1)中介绍的激励性示例，我们可以使用参数服务器实现标准的分布式次梯度下降算法[34]。如图2和算法1所示，训练数据被划分并分布到所有工作机器上。模型 $w$ 被迭代学习。在每次迭代中，每个工作机器使用自己的训练数据计算局部梯度，服务器聚合这些梯度以更新全局共享参数 $w$。然后工作机器从服务器检索更新后的权重。
+**分布式次梯度下降（Distributed Subgradient Descent）。** 对于(1)中介绍的激励性示例，我们可以使用参数服务器实现标准的分布式次梯度下降算法[34]。如图2和算法1所示，训练数据被划分并分布到所有工作机器上。模型 $w$ 被迭代学习。在每次迭代中，每个工作机器使用自己的训练数据计算局部梯度，服务器聚合这些梯度以更新全局共享参数 $w$ 。然后工作机器从服务器检索更新后的权重。
 
 工作机器需要模型 $w$ 来计算梯度。然而，对于非常高维的训练数据，模型可能无法放入一台工作机器中。幸运的是，这些数据通常是稀疏的，工作机器通常只需要模型的一个子集。为了说明这一点，我们将第5节中使用的数据集中的样本随机分配给工作机器，然后统计工作机器计算梯度所需的模型参数。我们发现，当使用100个工作机器时，平均每个工作机器只需要模型的7.8%。当使用10,000个工作机器时，这一比例降至0.15%。因此，尽管 $w$ 的总规模很大，但特定工作机器所需的 $w$ 的工作集（working set）可以轻松地被缓存。
 
@@ -77,7 +77,7 @@ $$
 
 **Algorithm 1 Distributed Subgradient Descent Solving (1) in the Parameter Server**
 
-Worker $r = 1, \ldots, m$:
+Worker $r = 1, \ldots, m$ :
 1: Load a part of training data $\{y_{i_k}, x_{i_k}\}_{k=1}^{n_r}$
 2: Pull the working set $w^{(0)}_r$ from servers
 3: **for** $t = 1$ to $T$ **do**
@@ -94,7 +94,7 @@ Servers:
 
 ---
 
-Figure 2: One iteration of Algorithm 1. Each worker only caches the working set of $w$.
+Figure 2: One iteration of Algorithm 1. Each worker only caches the working set of $w$ .
 
 ## 3 数据一致性的两种松弛机制
 
@@ -118,7 +118,7 @@ iter 12:          gradient    pu
 
 ### 3.2 通过任务依赖图实现灵活的一致性模型
 
-上述引入的依赖图可用于放松一致性要求。独立任务通过并行化 CPU、磁盘和网络带宽的使用来提高系统效率。然而，这可能导致节点间的数据不一致。在上面的图中，工作机器 $r$ 在拉回更新后的模型 $w^{(11)}_r$ 之前就开始了迭代11，因此它使用了过时的模型 $w^{(10)}_r$ 并计算了与迭代10中相同的梯度，即 $g^{(11)}_r = g^{(10)}_r$。这种不一致可能会潜在地降低算法1的收敛速度。然而，某些算法可能对这种不一致不那么敏感。例如，如果在算法2的每次迭代中只更新 $w$ 的一个块（block），那么不等待迭代10就启动迭代11仅会导致 $w$ 的一部分不一致。
+上述引入的依赖图可用于放松一致性要求。独立任务通过并行化 CPU、磁盘和网络带宽的使用来提高系统效率。然而，这可能导致节点间的数据不一致。在上面的图中，工作机器 $r$ 在拉回更新后的模型 $w^{(11)}_r$ 之前就开始了迭代11，因此它使用了过时的模型 $w^{(10)}_r$ 并计算了与迭代10中相同的梯度，即 $g^{(11)}_r = g^{(10)}_r$ 。这种不一致可能会潜在地降低算法1的收敛速度。然而，某些算法可能对这种不一致不那么敏感。例如，如果在算法2的每次迭代中只更新 $w$ 的一个块（block），那么不等待迭代10就启动迭代11仅会导致 $w$ 的一部分不一致。
 
 算法效率和系统性能之间的权衡在实践中取决于多种因素，如特征相关性、硬件能力、数据中心负载等。与其他强制算法设计者采用可能不适合实际情况的特定一致性模型的系统不同，参数服务器可以通过创建任务依赖图（task dependency graphs）为不同的一致性模型提供完全的灵活性。任务依赖图是由任务及其依赖关系定义的有向无环图。考虑以下三个示例：
 
@@ -132,7 +132,7 @@ iter 12:          gradient    pu
 
 **最终一致性（Eventual Consistency）** 则允许所有任务同时启动。[29]为 LDA 描述了这样一个系统。只有当底层算法对延迟非常鲁棒时，才推荐使用这种方法。
 
-**有界延迟（Bounded Delay）** 限制了参数的陈旧度。当设置最大延迟时间 $\tau$ 时，新任务将被阻塞，直到 $\tau$ 时间之前的所有先前任务都已完成（$\tau=0$ 产生顺序一致性，而 $\tau=\infty$ 则恢复为最终一致性）。算法2使用了这种模型。
+**有界延迟（Bounded Delay）** 限制了参数的陈旧度。当设置最大延迟时间 $\tau$ 时，新任务将被阻塞，直到 $\tau$ 时间之前的所有先前任务都已完成（ $\tau=0$ 产生顺序一致性，而 $\tau=\infty$ 则恢复为最终一致性）。算法2使用了这种模型。
 
 请注意，依赖图允许更高级的一致性模型。例如，调度器可以根据运行时的进展增加或减少最大延迟，以动态平衡效率与收敛之间的权衡。
 
@@ -156,27 +156,27 @@ iter 12:          gradient    pu
 
 Scheduler:
 1: Partition parameters into $k$ blocks $b_1, \ldots, b_k$
-2: **for** $t = 1$ to $T$: Pick a block $b_{i_t}$ and issue the task to workers
+2: **for** $t = 1$ to $T$ : Pick a block $b_{i_t}$ and issue the task to workers
 
-Worker $r$ at iteration $t$:
+Worker $r$ at iteration $t$ :
 1: Wait until all iterations before $t - \tau$ are finished
 2: Compute first-order gradient $g^{(t)}_r$ and coordinate-specific learning rates $u^{(t)}_r$ on block $b_{i_t}$
 3: Push $g^{(t)}_r$ and $u^{(t)}_r$ to servers with user-defined filters, e.g., the random skip or the KKT filter
 4: Pull $w^{(t+1)}_r$ from servers with user-defined filters, e.g., the significantly modified filter
 
-Servers at iteration $t$:
+Servers at iteration $t$ :
 1: Aggregate $g^{(t)}$ and $u^{(t)}$
-2: Solve the generalized proximal operator (2) $w^{(t+1)} \leftarrow \operatorname{Prox}^{U}_{\gamma_t}(w^{(t)})$ with $U = \operatorname{diag}(u^{(t)})$.
+2: Solve the generalized proximal operator (2) $w^{(t+1)} \leftarrow \operatorname{Prox}^{U}_{\gamma_t}(w^{(t)})$ with $U = \operatorname{diag}(u^{(t)})$ .
 
 ---
 
-**近端梯度法（Proximal Gradient Methods）。** 对于一个闭真凸函数 $h(x): \mathbb{R}^p \to \mathbb{R} \cup \{\infty\}$，定义广义近端算子
+**近端梯度法（Proximal Gradient Methods）。** 对于一个闭真凸函数 $h(x): \mathbb{R}^p \to \mathbb{R} \cup \{\infty\}$ ，定义广义近端算子
 
 $$
 \operatorname{Prox}^{U}_{\gamma}(x) := \arg\min_{y \in \mathbb{R}^p} h(y) + \frac{1}{2\gamma} \|x - y\|^2_U \quad \text{where} \quad \|x\|^2_U := x^\top U x. \qquad (2)
 $$
 
-马氏范数（Mahalanobis norm）$\|x\|_U$ 是相对于一个半正定矩阵 $U \succeq 0$ 定义的。许多近端算法选择 $U = 1$。为最小化复合目标函数 $f(w) + h(w)$，近端梯度算法分两步更新 $w$：对 $f$ 进行最速梯度下降的前向步骤（forward step）和使用 $h$ 进行投影的后向步骤（backward step）。给定迭代 $t$ 的学习率 $\gamma_t > 0$，这两步可以写成：
+马氏范数（Mahalanobis norm） $\|x\|_U$ 是相对于一个半正定矩阵 $U \succeq 0$ 定义的。许多近端算法选择 $U = 1$ 。为最小化复合目标函数 $f(w) + h(w)$ ，近端梯度算法分两步更新 $w$ ：对 $f$ 进行最速梯度下降的前向步骤（forward step）和使用 $h$ 进行投影的后向步骤（backward step）。给定迭代 $t$ 的学习率 $\gamma_t > 0$ ，这两步可以写成：
 
 $$
 w^{(t+1)} = \operatorname{Prox}^{U}_{\gamma_t} \left[ w^{(t)} - \gamma_t \nabla f(w^{(t)}) \right] \quad \text{for } t = 1, 2, \ldots \qquad (3)
@@ -189,9 +189,9 @@ $$
 3.  迭代是异步的。我们在迭代间使用有界延迟模型（bounded-delay model）。
 4.  我们使用用户自定义过滤器来抑制传输那些对模型影响可能可忽略的部分数据。
 
-**收敛性分析（Convergence Analysis）。** 为了证明收敛性，我们需要做出一些假设。和之前一样，我们将损失 $f$ 分解为与工作机器 $i$ 存储的训练数据相关的块 $f_i$，即 $f = \sum_i f_i$。接下来，我们假设在第 $t$ 次迭代选择了块 $b_t$。一个关键假设是，对于给定的参数变化，$f$ 的梯度变化率是有界的。更具体地说，我们需要限制影响当前块的变化量以及与其他块的"串扰"量。
+**收敛性分析（Convergence Analysis）。** 为了证明收敛性，我们需要做出一些假设。和之前一样，我们将损失 $f$ 分解为与工作机器 $i$ 存储的训练数据相关的块 $f_i$ ，即 $f = \sum_i f_i$ 。接下来，我们假设在第 $t$ 次迭代选择了块 $b_t$ 。一个关键假设是，对于给定的参数变化， $f$ 的梯度变化率是有界的。更具体地说，我们需要限制影响当前块的变化量以及与其他块的"串扰"量。
 
-**假设1（块 Lipschitz 连续性）** 存在正常数 $L_{\text{var},i}$ 和 $L_{\text{cov},i}$，使得对于任意迭代 $t$ 和所有 $x, y \in \mathbb{R}^p$，其中对于任何 $i \notin b_t$ 有 $x_i = y_i$，满足：
+**假设1（块 Lipschitz 连续性）** 存在正常数 $L_{\text{var},i}$ 和 $L_{\text{cov},i}$ ，使得对于任意迭代 $t$ 和所有 $x, y \in \mathbb{R}^p$ ，其中对于任何 $i \notin b_t$ 有 $x_i = y_i$ ，满足：
 
 $$
 \|\nabla_{b_t} f_i(x) - \nabla_{b_t} f_i(y)\| \le L_{\text{var},i} \|x - y\| \quad \text{for } 1 \le i \le m \qquad (4a)
@@ -200,11 +200,11 @@ $$
 \|\nabla_{b_s} f_i(x) - \nabla_{b_s} f_i(y)\| \le L_{\text{cov},i} \|x - y\| \quad \text{for } 1 \le i \le m,\; t < s \le t + \tau \qquad (4b)
 $$
 
-其中 $\nabla_b f(x)$ 是 $\nabla f(x)$ 的块 $b$。进一步定义 $L_{\text{var}} := \sum_{i=1}^m L_{\text{var},i}$ 和 $L_{\text{cov}} := \sum_{i=1}^m L_{\text{cov},i}$。
+其中 $\nabla_b f(x)$ 是 $\nabla f(x)$ 的块 $b$ 。进一步定义 $L_{\text{var}} := \sum_{i=1}^m L_{\text{var},i}$ 和 $L_{\text{cov}} := \sum_{i=1}^m L_{\text{cov},i}$ 。
 
 下面的定理2表明，在松弛的一致性模型下，只要选择了合适的学习率，该算法会收敛到一个驻点（stationary point）。注意，由于总体目标是非凸的，通常不可能保证最优性。
 
-**定理2** 假设更新操作的延迟以 $\tau$ 为界，还假设我们在推送梯度时应用随机跳过过滤器，在拉取权重时应用显著修改过滤器，阈值为 $O(t^{-1})$。此外，假设损失的梯度如假设1所述是 Lipschitz 连续的。记 $M_t$ 为时间 $t$ 时最小坐标特定学习率。对于任意 $\epsilon > 0$，如果学习率 $\gamma_t$ 满足：
+**定理2** 假设更新操作的延迟以 $\tau$ 为界，还假设我们在推送梯度时应用随机跳过过滤器，在拉取权重时应用显著修改过滤器，阈值为 $O(t^{-1})$ 。此外，假设损失的梯度如假设1所述是 Lipschitz 连续的。记 $M_t$ 为时间 $t$ 时最小坐标特定学习率。对于任意 $\epsilon > 0$ ，如果学习率 $\gamma_t$ 满足：
 
 $$
 \gamma_t \le \frac{M_t}{L_{\text{var}} + \tau L_{\text{cov}} + \epsilon} \quad \text{对于所有 } t > 0, \qquad (5)
@@ -212,7 +212,7 @@ $$
 
 则算法2期望收敛到一个驻点。
 
-证明见附录A。直观地说，当接近驻点时，$w^{(t-\tau)}$ 和 $w^{(t)}$ 之间的差异会很小。因此，梯度的变化也会消失。因此，通过延迟和不精确模型得到的不精确梯度很可能是真实梯度的良好近似，从而可以应用近端梯度法的收敛结果。
+证明见附录A。直观地说，当接近驻点时， $w^{(t-\tau)}$ 和 $w^{(t)}$ 之间的差异会很小。因此，梯度的变化也会消失。因此，通过延迟和不精确模型得到的不精确梯度很可能是真实梯度的良好近似，从而可以应用近端梯度法的收敛结果。
 
 注意，当延迟增加时，我们应减小学习率以保证收敛。然而，当选择仔细的块划分和顺序时，可以使用更大的值。例如，如果块中的特征相关性较小，则 $L_{\text{var}}$ 减小。如果块与先前块的相关性较小，则 $L_{\text{cov}}$ 减小，如[26, 7]中所利用的。
 
@@ -224,13 +224,14 @@ $$
 
 **算法（Algorithm）。** 我们采用算法2，使用 Hessian 矩阵对角元素的上界作为坐标特定的学习率。特征根据特征组信息被随机分成580个块。我们通过观察收敛速度选择了固定学习率。
 
-我们设计了一个 Karush-Kuhn-Tucker (KKT) 过滤器来跳过非活动（inactive）坐标。它类似于 SVM 优化的主动集选择策略（active-set selection strategies）[16]和主动集选择器[22]。假设坐标 $k$ 的 $w_k = 0$，$g_k$ 为当前梯度。根据近端算子的最优性条件（也称为软收缩算子 soft-shrinkage operator），如果 $|g_k| \le \lambda$，$w_k$ 将保持为0。因此，工作机器无需发送 $g_k$（以及 $u_k$）。我们使用旧值 $\hat{g}_k$ 来近似 $g_k$ 以进一步避免计算 $g_k$。因此，如果 $|\hat{g}_k| \le \lambda - \delta$，坐标 $k$ 将在 KKT 过滤器中被跳过，其中 $\delta \in [0, \lambda]$ 控制过滤的激进程度。
+我们设计了一个 Karush-Kuhn-Tucker (KKT) 过滤器来跳过非活动（inactive）坐标。它类似于 SVM 优化的主动集选择策略（active-set selection strategies）[16]和主动集选择器[22]。假设坐标 $k$ 的 $w_k = 0$ ， $g_k$ 为当前梯度。根据近端算子的最优性条件（也称为软收缩算子 soft-shrinkage operator），如果 $|g_k| \le \lambda$ ， $w_k$ 将保持为0。因此，工作机器无需发送 $g_k$ （以及 $u_k$ ）。我们使用旧值 $\hat{g}_k$ 来近似 $g_k$ 以进一步避免计算 $g_k$ 。因此，如果 $|\hat{g}_k| \le \lambda - \delta$ ，坐标 $k$ 将在 KKT 过滤器中被跳过，其中 $\delta \in [0, \lambda]$ 控制过滤的激进程度。
 
 **实现（Implementation）。** 据我们所知，没有开源系统能够将稀疏逻辑回归扩展到本文所描述的规模。Graphlab 仅提供多线程的单机实现。我们在附录B中将其与我们的进行了比较。Mlbase、Petuum 和 REEF 不支持稀疏逻辑回归（已于2014年4月与作者确认）。我们将参数服务器与一家大型互联网公司开发的两个专用第二代参数服务器（称为系统A和系统B）进行比较。
 
 系统A和B都采用顺序一致性模型，但前者使用 L-BFGS 的变体，而后者运行与我们类似的算法。值得注意的是，这两个系统都由超过10,000行代码组成。参数服务器实现与系统B（后者由本文的一位作者开发）相同的功能仅需300行代码。参数服务器成功地将大部分系统复杂性从算法实现转移到了可重用组件中。
 
-$$ 
+$$
+
 \begin{array}{c}
 \text{Figure 3: Convergence of sparse logistic regression on a 636TB dataset.} \\
 \text{Figure 4: Average time per worker spent on computation and waiting during optimization.} \\
@@ -290,7 +291,7 @@ $$
 
 为证明定理2，我们需要几个技术引理。记 $b \subseteq \{1, \ldots, p\}$ 为一个坐标子集，并令 $x_b \in \mathbb{R}^p$ 为将 $x$ 中不在块 $b$ 中的条目设置为0后得到的向量。我们首先证明在假设1下，目标函数在子空间移动下表现良好。
 
-**引理3** 假设块 $b$ 在时间 $t$ 被选中，则在假设1下，对于任意 $f_i$ 和任意时间 $t$，对于任意 $x, y \in \mathbb{R}^p$，有：
+**引理3** 假设块 $b$ 在时间 $t$ 被选中，则在假设1下，对于任意 $f_i$ 和任意时间 $t$ ，对于任意 $x, y \in \mathbb{R}^p$ ，有：
 
 $$
 f_i(x + y_b) \le f_i(x) + \langle \nabla f_i(x), y_b \rangle + \frac{L_{\text{var},i}}{2} \|y_b\|^2, \qquad (6)
@@ -306,15 +307,15 @@ $$
 
 接下来我们证明，对于块可分正则化项，解也满足适当的分解性质：
 
-**引理4** 假设 $h$ 是块可分的且 $0 \in \partial h(0)$，并且 $U$ 是对角的。对于任意 $x$ 和 $\gamma > 0$，记 $z = \operatorname{Prox}^{U}_{\gamma}(x)$ 和 $z_b = \operatorname{Prox}^{U}_{\gamma}(x_b)$ 分别为作用于全向量和仅作用于子集的近端算子的解。则对于任意块 $b$，下式成立：
+**引理4** 假设 $h$ 是块可分的且 $0 \in \partial h(0)$ ，并且 $U$ 是对角的。对于任意 $x$ 和 $\gamma > 0$ ，记 $z = \operatorname{Prox}^{U}_{\gamma}(x)$ 和 $z_b = \operatorname{Prox}^{U}_{\gamma}(x_b)$ 分别为作用于全向量和仅作用于子集的近端算子的解。则对于任意块 $b$ ，下式成立：
 
 $$
 U (x_b - z_b) \in \gamma \partial h(z_b) \qquad (8)
 $$
 
-**证明。** 由于 $0 \in \partial h(0)$，可得 $\operatorname{Prox}_{\gamma}(0) = 0$。进一步由于 $h$ 是块可分的，邻近函数 $h(y) + \frac{1}{2\gamma} \|x - y\|^2_U$ 也是块可分的。通过将 $x$ 中除块 $b$ 外的所有条目设置为0，即得 $z_b = \operatorname{Prox}_{\gamma}(x_b)$。最后，(8) 通过对近端算子定义两边求导得到。
+**证明。** 由于 $0 \in \partial h(0)$ ，可得 $\operatorname{Prox}_{\gamma}(0) = 0$ 。进一步由于 $h$ 是块可分的，邻近函数 $h(y) + \frac{1}{2\gamma} \|x - y\|^2_U$ 也是块可分的。通过将 $x$ 中除块 $b$ 外的所有条目设置为0，即得 $z_b = \operatorname{Prox}_{\gamma}(x_b)$ 。最后，(8) 通过对近端算子定义两边求导得到。
 
-记 $\tilde{g}^{(t)}$ 和 $\tilde{u}^{(t)}$ 分别为服务器节点上的聚合梯度和缩放系数。假设每个工作机器以概率 $1 - q$ 随机跳过一个坐标，其中 $0 < q < 1$。令 $g^{(t)} := q^{-1} \tilde{g}^{(t)}$ 和 $u^{(t)} := q^{-1} \tilde{u}^{(t)}$ 分别为无偏不精确梯度和缩放系数估计（注意，也可以使用更复杂的子采样技术，如水库采样 reservoir sampling）。
+记 $\tilde{g}^{(t)}$ 和 $\tilde{u}^{(t)}$ 分别为服务器节点上的聚合梯度和缩放系数。假设每个工作机器以概率 $1 - q$ 随机跳过一个坐标，其中 $0 < q < 1$ 。令 $g^{(t)} := q^{-1} \tilde{g}^{(t)}$ 和 $u^{(t)} := q^{-1} \tilde{u}^{(t)}$ 分别为无偏不精确梯度和缩放系数估计（注意，也可以使用更复杂的子采样技术，如水库采样 reservoir sampling）。
 
 下一步是利用更新 $\Delta^{(t)} = w^{(t+1)} - w^{(t)}$ 以及 $g^{(t)}$ 和 $\nabla f(w^{(t)})$ 之间的差异，来界定相邻迭代 $t$ 和 $t+1$ 之间目标函数的变化。
 
@@ -326,15 +327,15 @@ $$
 
 其中期望是关于随机跳过过滤器的。
 
-**证明。** 为记号简洁，我们省略块指示符 $b_t$、缩放矩阵 $U^{(t)}$、学习率 $\gamma_t$ 和常数 $M_t$ 的下标 $t$（回忆 $M_t = \min_i U^{(t)}_i$ 是由近端算子中的马氏度量引起的最小系数特定学习率）。
+**证明。** 为记号简洁，我们省略块指示符 $b_t$ 、缩放矩阵 $U^{(t)}$ 、学习率 $\gamma_t$ 和常数 $M_t$ 的下标 $t$ （回忆 $M_t = \min_i U^{(t)}_i$ 是由近端算子中的马氏度量引起的最小系数特定学习率）。
 
-首先注意到 $g^{(t)}_b = g^{(t)}$，因为梯度是在块 $b$ 上计算的。因此更新 $\Delta^{(t)}$ 也局限于块 $b$。由引理4，我们有：
+首先注意到 $g^{(t)}_b = g^{(t)}$ ，因为梯度是在块 $b$ 上计算的。因此更新 $\Delta^{(t)}$ 也局限于块 $b$ 。由引理4，我们有：
 
 $$
 \Delta^{(t)}_b = \operatorname{Prox}^{U}_{\gamma} \left[ w^{(t)}_b - \gamma U^{-1} g^{(t)} \right] - w^{(t)}_b = \Delta^{(t)}
 $$
 
-因此 $w^{(t+1)}_b = \operatorname{Prox}^{U}_{\gamma} (w^{(t)}_b - \gamma U^{-1} g^{(t)})$。再次使用引理4，我们有：
+因此 $w^{(t+1)}_b = \operatorname{Prox}^{U}_{\gamma} (w^{(t)}_b - \gamma U^{-1} g^{(t)})$ 。再次使用引理4，我们有：
 
 $$
 \frac{U}{\gamma} \left( w^{(t)}_b - \gamma g^{(t)} - w^{(t+1)}_b \right) \in \partial h(w^{(t+1)}_b)
@@ -371,13 +372,13 @@ $$
 
 换句话说，目标函数之间的变化量上界由参数变化量 $\Delta^{(t)}$ 和块梯度差异共同决定。
 
-**定理2的证明。** 我们现在拥有证明收敛到驻点的所有要素。简而言之，我们必须界定 $\|\Delta^{(t)}\|$，其余一切随之而来。给定时间 $t$，记所选块 $b = b_t$。我们首先界定(9)中 $\|\nabla_b f(w^{(t)}) - \mathbb{E}[g^{(t)}]\|$ 项。由假设1，对于 $1 \le k \le \tau$ 有：
+**定理2的证明。** 我们现在拥有证明收敛到驻点的所有要素。简而言之，我们必须界定 $\|\Delta^{(t)}\|$ ，其余一切随之而来。给定时间 $t$ ，记所选块 $b = b_t$ 。我们首先界定(9)中 $\|\nabla_b f(w^{(t)}) - \mathbb{E}[g^{(t)}]\|$ 项。由假设1，对于 $1 \le k \le \tau$ 有：
 
 $$
 \left\| \nabla_b f_i(w^{(t-k+1)}) - \nabla_b f_i(w^{(t-k)}) \right\| \le L_{\text{cov},i} \left\| w^{(t-k+1)} - w^{(t-k)} \right\| = L_{\text{cov},i} \left\| \Delta^{(t-k)} \right\|.
 $$
 
-由于有界延迟，工作机器 $i$ 的模型在时间 $t$ 仅在过去 $t - \tau \le t_i \le t$ 范围内过时。显著修改过滤器在模型上增加了一个额外的噪声项 $\sigma(t_i)$。根据我们使用的过滤器的设计，$\|\sigma(t_i)\|_{\infty} \le \delta_{t_i} = O\left( \frac{1}{t_i} \right)$。
+由于有界延迟，工作机器 $i$ 的模型在时间 $t$ 仅在过去 $t - \tau \le t_i \le t$ 范围内过时。显著修改过滤器在模型上增加了一个额外的噪声项 $\sigma(t_i)$ 。根据我们使用的过滤器的设计， $\|\sigma(t_i)\|_{\infty} \le \delta_{t_i} = O\left( \frac{1}{t_i} \right)$ 。
 
 此外，通过随机跳过过滤器，在时间 $t$ 聚合的无偏不精确梯度的期望由下式给出：
 
@@ -398,7 +399,7 @@ $$
 \end{aligned}
 $$
 
-其中我们使用了 $\sigma(t_i) = \sigma(t_i)_{b_{t_i}}$，使得假设1适用，且 $\|x\| \le \sqrt{p} \|x\|_{\infty}$。
+其中我们使用了 $\sigma(t_i) = \sigma(t_i)_{b_{t_i}}$ ，使得假设1适用，且 $\|x\| \le \sqrt{p} \|x\|_{\infty}$ 。
 
 将(12)代入引理5的(9)中，我们有：
 
@@ -415,13 +416,13 @@ $$
 \mathbb{E}\left[ F(w^{(T+1)}) - F(w^{(1)}) \right] \le \sum_{t=1}^T \left( L_{\text{var}} + L_{\text{cov}} \tau - \frac{M_t}{\gamma_t} \right) \|\Delta^{(t)}\|^2 + L_{\text{cov}} p \delta^2_{t-\tau} \qquad (13)
 $$
 
-记 $c_t = \frac{M_t}{\gamma_t} - L_{\text{var}} - L_{\text{cov}} \tau$，由于对所有 $t$ 有 $\gamma_t \le \frac{M_t}{L_{\text{var}} + L_{\text{cov}} \tau + \epsilon}$，则所有 $c_t \ge \epsilon > 0$。因此：
+记 $c_t = \frac{M_t}{\gamma_t} - L_{\text{var}} - L_{\text{cov}} \tau$ ，由于对所有 $t$ 有 $\gamma_t \le \frac{M_t}{L_{\text{var}} + L_{\text{cov}} \tau + \epsilon}$ ，则所有 $c_t \ge \epsilon > 0$ 。因此：
 
 $$
 \epsilon \sum_{t=1}^T \|\Delta^{(t)}\|^2 \le \sum_{t=0}^T c(t) \|\Delta^{(t)}\|^2 \le \mathbb{E}\left[ F(w^{(1)}) - F(w^{(T+1)}) \right] + L_{\text{cov}} p \delta^2_{t-\tau} \qquad (14)
 $$
 
-对于任意 $T$ 成立。由于 $\delta_t = O\left(\frac{1}{t}\right)$，且根据 $1 + \frac{1}{2^2} + \frac{1}{3^2} + \ldots = \frac{\pi^2}{6}$ 的事实，当 $T \to \infty$ 时(14)的右侧为常数，这意味着 $\lim_{t \to \infty} \Delta^{(t)} \to 0$。因此 $\lim_{t \to \infty} \operatorname{Prox}^{U_t}_{\gamma_t}(w^{(t)}) - w^{(t)} \to 0$，于是我们找到了一个局部极小点。
+对于任意 $T$ 成立。由于 $\delta_t = O\left(\frac{1}{t}\right)$ ，且根据 $1 + \frac{1}{2^2} + \frac{1}{3^2} + \ldots = \frac{\pi^2}{6}$ 的事实，当 $T \to \infty$ 时(14)的右侧为常数，这意味着 $\lim_{t \to \infty} \Delta^{(t)} \to 0$ 。因此 $\lim_{t \to \infty} \operatorname{Prox}^{U_t}_{\gamma_t}(w^{(t)}) - w^{(t)} \to 0$ ，于是我们找到了一个局部极小点。
 
 ## 附录B 稀疏逻辑回归
 
@@ -441,9 +442,9 @@ $$
 
 更具体地说，我们将求解器与在一台具有32个线程/工作机器的机器上运行的 Shotgun [7] 进行了比较。同时报告了 CDN（单线程 Shotgun）的结果以供参考。图7显示了目标值随时间的变化。可以看出，所有三种算法在50次数据传递后获得了相似的目标值，然而，参数服务器在运行时间上比 Shotgun 和 CDN 都快4倍。
 
-$^2$ www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets
-$^3$ www.select.cs.cmu.edu/projects/shotgun/
-$^4$ www.csie.ntu.edu.tw/~cjlin/liblinear
+ $^2$ www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets
+ $^3$ www.select.cs.cmu.edu/projects/shotgun/
+ $^4$ www.csie.ntu.edu.tw/~cjlin/liblinear
 
 主要原因在于数据划分策略。Shotgun 的每个线程一次处理一个坐标，这通常具有不规则的非零条目模式，因此难以进行负载均衡。在最高维的数据集 CTRa 上，Shotgun 甚至比单线程版本还要慢。另一方面，参数服务器在训练数据的较大块上使用多线程线性代数算子。这种粗粒度的并行化带来了更好的加速效果。
 
@@ -462,7 +463,7 @@ $$
 
 ### C.1 问题
 
-重建 ICA（Reconstruction ICA）旨在寻找原始数据集的稀疏表示。它通过允许过完备解（overcomplete solution）来放松独立成分分析（Independent Component Analysis）[18]。记 $\{x_i\}_{i=1}^n \in \mathbb{R}^p$ 为观测值。RICA 的目标函数具有非凸的损失函数 $f(W)$ 和凸但非光滑的惩罚项 $h(W)$：
+重建 ICA（Reconstruction ICA）旨在寻找原始数据集的稀疏表示。它通过允许过完备解（overcomplete solution）来放松独立成分分析（Independent Component Analysis）[18]。记 $\{x_i\}_{i=1}^n \in \mathbb{R}^p$ 为观测值。RICA 的目标函数具有非凸的损失函数 $f(W)$ 和凸但非光滑的惩罚项 $h(W)$ ：
 
 $$
 \operatorname*{minimize}_{W \in \mathbb{R}^{\ell \times p}} \sum_{i=1}^n \frac{1}{2} \left\| W W^\top x_i - x_i \right\|_2^2 + \lambda \|W x_i\|_1, \qquad (15)
@@ -493,7 +494,7 @@ $$
 \operatorname*{minimize}_{u_i} \frac{1}{2\gamma} \|u_i - z_i\|^2_{H_i} + \lambda \|X u_i\|_1, \quad \text{对于 } i = 1 \ldots n \qquad (17)
 $$
 
-其中 $w_i \in \mathbb{R}^p$ 表示 $W$ 的第 $i$ 行，我们设 $z_i = w_i - \gamma H_i^{-1} \nabla_i f(W)$。这里 $\gamma$ 是学习率，$H_i \in \mathbb{R}^{d \times d}$ 是调整空间度量的缩放矩阵。遵循[10]，我们通过下式选择缩放矩阵：
+其中 $w_i \in \mathbb{R}^p$ 表示 $W$ 的第 $i$ 行，我们设 $z_i = w_i - \gamma H_i^{-1} \nabla_i f(W)$ 。这里 $\gamma$ 是学习率， $H_i \in \mathbb{R}^{d \times d}$ 是调整空间度量的缩放矩阵。遵循[10]，我们通过下式选择缩放矩阵：
 
 $$
 H_i(t+1)^2 = H_i(t)^2 + \operatorname{diag}\left( w(t)_i - w_i(t-1) \right)^2 \quad \text{对于 } t \ge 0
@@ -503,7 +504,7 @@ $$
 H_i(0) = 1,
 $$
 
-这可以在本地计算。为方便起见，我们从(17)的近端步骤中省略了下标 $i$。引入辅助变量 $y := X u$ 后，增广拉格朗日函数（augmented Lagrangian）为：
+这可以在本地计算。为方便起见，我们从(17)的近端步骤中省略了下标 $i$ 。引入辅助变量 $y := X u$ 后，增广拉格朗日函数（augmented Lagrangian）为：
 
 $$
 \mathcal{L}(u, y, \mu) = \frac{1}{2\gamma} \|u - z\|^2_H + \lambda \|y\|_1 + \langle \mu, X u - y \rangle + \frac{1}{2\theta} \|X u - y\|^2. \qquad (18)
@@ -519,7 +520,7 @@ y &\leftarrow S_{\lambda} \left( \theta^{-1} X u + \mu \right) \qquad (19b) \\
 \end{aligned}
 $$
 
-其中 $S_{\lambda}(\cdot)$ 是软阈值函数（soft-thresholding function）。注意，如果工作机器拥有所有观测值和 $W^\top W$（通常远小于 $W$），它可以独立更新其参数。因此，我们对 RICA 采用按参数划分的方式。服务器维护 $W^\top W$，而每个工作机器拥有 $X$ 以及 $W$ 的一部分行。换句话说，工作机器计算并保留部分参数空间。
+其中 $S_{\lambda}(\cdot)$ 是软阈值函数（soft-thresholding function）。注意，如果工作机器拥有所有观测值和 $W^\top W$ （通常远小于 $W$ ），它可以独立更新其参数。因此，我们对 RICA 采用按参数划分的方式。服务器维护 $W^\top W$ ，而每个工作机器拥有 $X$ 以及 $W$ 的一部分行。换句话说，工作机器计算并保留部分参数空间。
 
 ### C.2 实验
 
@@ -540,4 +541,4 @@ $$
 
 实验结果如图9所示。与 ℓ1-正则化逻辑回归类似，异步性带来的明显改进同样可观察到。与前者不同，增加延迟对运行时间和收敛性的影响都很小。这是因为 RICA 的实际更新延迟通常为1。当工作机器数量增加16倍时，我们在图9中看到 RICA 有13.5倍的加速。RICA 的加速比优于 ℓ1-正则化逻辑回归的主要原因是 RICA 主要由密集矩阵运算组成。它们比稀疏矩阵更容易平衡，因此提供了更好的可扩展性。
 
-$^5$ www.image-net.org
+ $^5$ www.image-net.org

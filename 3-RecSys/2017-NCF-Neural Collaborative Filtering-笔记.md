@@ -6,7 +6,7 @@
 
 离线指标：HR、NDCG
 
-数据集：MovieLens、Pinterest
+数据集：MovieLens-1M、Pinterest
 
 模型类型：rank排序模型，
 
@@ -16,6 +16,4 @@
 
 - 测试数据集：留一法
 - 带有负样本采样的logloss（二元交叉熵损失）
-
-
 

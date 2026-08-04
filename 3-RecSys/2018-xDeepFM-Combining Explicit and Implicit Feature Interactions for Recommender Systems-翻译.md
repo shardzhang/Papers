@@ -1,46 +1,49 @@
-# xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems（中文翻译）
-
-
-本文介绍了 xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems。核心内容：
-
-
-关键发现：
-
----
-
+# xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems
 
 > Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, Guangzhong Sun | USTC, Beijing University of Posts and Telecommunications, Microsoft Research
+>
 > KDD 2018
 
 
+
+本文介绍了极深因子分解机（xDeepFM）——一种通过压缩交互网络（CIN）以显式、向量级方式学习高阶特征交互，并将其与经典DNN相结合、同时学习显式与隐式特征交互的模型。核心内容：
+
+- 提出压缩交互网络（CIN），以显式、向量级方式学习高阶特征交互，且网络复杂度不会随交互度数指数增长
+- 将CIN与经典DNN组合为统一模型xDeepFM，同时学习低阶与高阶、显式与隐式的特征交互
+- 在三个真实数据集上进行综合实验，结果表明xDeepFM优于多个最先进的模型
+
+关键发现：
+
+- CIN与卷积神经网络（CNN）和循环神经网络（RNN）在结构上共享部分功能，特征交互的度数随网络深度增加
+- CrossNet每个隐藏层都是输入向量的标量倍数，只能学习一种特殊形式的高阶特征交互，故设计CIN加以替代
+- xDeepFM在所有数据集上取得最佳性能，说明结合显式与隐式高阶特征交互是必要的
+
 ---
+
+
 
 ## 摘要
 
 组合特征对许多商业模型的成功至关重要。由于网络规模系统中原始数据的多样性、海量性和高速性，手动构建这些特征通常成本高昂。基于因子分解的模型通过向量内积衡量交互，能够自动学习组合特征的模式并泛化到未见特征。随着深度神经网络（DNN）在各个领域的巨大成功，最近研究者提出了几种基于DNN的因子分解模型来学习低阶和高阶特征交互。尽管DNN具有从数据中学习任意函数的强大能力，但普通的DNN以隐式方式和位级生成特征交互。在本文中，我们提出了一种新颖的压缩交互网络（CIN），其目标是显式地以向量级方式生成特征交互。我们展示了CIN与卷积神经网络（CNN）和循环神经网络（RNN）共享一些功能。我们进一步将CIN和经典DNN组合成一个统一模型，并将这个新模型命名为极深因子分解机（xDeepFM）。一方面，xDeepFM能够显式地学习特定有界度的特征交互；另一方面，它能够隐式地学习任意的低阶和高阶特征交互。我们在三个真实数据集上进行了全面实验。我们的结果表明xDeepFM优于最先进的模型。我们已在 https://github.com/Leavingseason/xDeepFM 上发布了xDeepFM的源代码。
 
-**CCS概念**：• 信息系统 \rightarrow 个性化；• 计算方法 \rightarrow 神经网络；因子分解方法；
+**CCS概念**：• 信息系统 $\rightarrow$ 个性化；• 计算方法 $\rightarrow$ 神经网络；因子分解方法；
 
-**关键词**：因子分解机，神经网络，推荐系统，深度学习，特征交互
+**关键词**：Factorization machines, neural network, recommender systems, deep learning, feature interactions
 
 **ACM引用格式**：
-Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. 2018. xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems. 见 KDD '18: 第24届ACM SIGKDD国际知识发现与数据挖掘大会, 2018年8月19–23日, 英国伦敦. ACM, 纽约, NY, USA, 10页. https://doi.org/10.1145/3219819.3220023
+Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. 2018. xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems. In KDD '18: The 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining, August 19–23, 2018, London, United Kingdom. ACM, New York, NY, USA, 10 pages. https://doi.org/10.1145/3219819.3220023
 
 ---
-本文介绍了 xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems。核心内容：
-
-
-关键发现：
 
 
 
-## 1 引言
+## 1. 引言
 
-特征在许多预测系统的成功中起着核心作用。由于使用原始特征很难达到最优结果，数据科学家通常花费大量工作对原始特征进行变换，以生成最佳的预测系统[14, 24]或赢得数据挖掘比赛[21, 22, 26]。特征变换的主要类型之一是类别特征的交叉乘积变换[5]。这些特征被称为交叉特征或多路特征，它们衡量多个原始特征的交互。例如，一个三路特征 AND(user_organization=msra, item_category=deeplearning, time=monday) 当用户工作在微软亚洲研究院并在周一看到一篇关于深度学习的技术文章时，其值为1。
+特征在许多预测系统的成功中起着核心作用。由于使用原始特征很难达到最优结果，数据科学家通常花费大量工作对原始特征进行变换，以生成最佳的预测系统[14, 24]或赢得数据挖掘比赛[21, 22, 26]。特征变换的主要类型之一是类别特征的交叉乘积变换[5]。这些特征被称为交叉特征或多路特征，它们衡量多个原始特征的交互。例如，一个三路特征 `AND(user_organization=msra, item_category=deeplearning, time=monday)` 当用户工作在微软亚洲研究院并在周一看到一篇关于深度学习的技术文章时，其值为1。
 
 传统的交叉特征工程存在三个主要缺点。首先，获取高质量特征的成本很高。因为正确的特征通常是任务特定的，数据科学家需要花费大量时间从产品数据中探索潜在模式，然后才能成为领域专家并提取有意义的交叉特征。其次，在大规模预测系统（如网络规模的推荐系统）中，海量的原始特征使得手动提取所有交叉特征变得不可行。第三，手工制作的交叉特征不能泛化到训练数据中未见过的交互。因此，学习在没有手动工程的情况下进行特征交互是一项有意义的任务。
 
-因子分解机（FM）[32]将每个特征i嵌入到一个潜在因子向量 vi = [vi1, vi2, ..., viD] 中，成对特征交互被建模为潜在向量的内积：f^(2)(i, j) = ⟨vi, vj⟩ xi xj。在本文中，我们使用术语"位"（bit）来表示潜在向量中的一个元素（如 vi1）。经典FM可以扩展到任意高阶特征交互[2]，但一个主要缺点是，[2]提出建模所有特征交互，包括有用和无用的组合。如[43]所示，与无用特征的交互可能会引入噪声并降低性能。近年来，深度神经网络（DNN）凭借其强大的特征表示学习能力，在计算机视觉、语音识别和自然语言处理领域取得了成功。利用DNN学习复杂且具有选择性的特征交互是很有前景的。[46]提出了因子分解机支持的神经网络（FNN）来学习高阶特征交互。它在应用DNN之前使用预训练的因子分解机进行域嵌入。[31]进一步提出了基于积分的神经网络（PNN），它在嵌入层和DNN层之间引入了一个乘积层，并且不依赖预训练的FM。FNN和PNN的主要缺点是它们更关注高阶特征交互，而捕获的低阶交互很少。Wide&Deep [5]和DeepFM [9]模型通过引入混合架构克服了这个问题，该架构包含一个浅层组件和一个深层组件，目的是同时学习记忆和泛化。因此，它们可以共同学习低阶和高阶特征交互。
+因子分解机（FM）[32]将每个特征 $i$ 嵌入到一个潜在因子向量 $\mathbf{v}_i = [v_{i1}, v_{i2}, \ldots, v_{iD}]$ 中，成对特征交互被建模为潜在向量的内积： $f^{(2)}(i, j) = \langle \mathbf{v}_i, \mathbf{v}_j \rangle x_i x_j$ 。在本文中，我们使用术语"位"（bit）来表示潜在向量中的一个元素（如 $v_{i1}$ ）。经典FM可以扩展到任意高阶特征交互[2]，但一个主要缺点是，[2]提出建模所有特征交互，包括有用和无用的组合。如[43]所示，与无用特征的交互可能会引入噪声并降低性能。近年来，深度神经网络（DNN）凭借其强大的特征表示学习能力，在计算机视觉、语音识别和自然语言处理领域取得了成功。利用DNN学习复杂且具有选择性的特征交互是很有前景的。[46]提出了因子分解机支持的神经网络（FNN）来学习高阶特征交互。它在应用DNN之前使用预训练的因子分解机进行域嵌入。[31]进一步提出了基于乘积的神经网络（PNN），它在嵌入层和DNN层之间引入了一个乘积层，并且不依赖预训练的FM。FNN和PNN的主要缺点是它们更关注高阶特征交互，而捕获的低阶交互很少。Wide&Deep [5]和DeepFM [9]模型通过引入混合架构克服了这个问题，该架构包含一个浅层组件和一个深层组件，目的是同时学习记忆和泛化。因此，它们可以共同学习低阶和高阶特征交互。
 
 上述所有模型都利用DNN来学习高阶特征交互。然而，DNN以隐式方式建模高阶特征交互。DNN学到的最终函数可以是任意的，并且没有理论结论表明特征交互的最大度数是多少。此外，DNN在位级上建模特征交互，这与传统的以向量级建模特征交互的FM框架不同。因此，在推荐系统领域，DNN是否是表示高阶特征交互最有效的模型仍然是一个悬而未决的问题。在本文中，我们提出了一种基于神经网络的模型，以显式、向量级的方式学习特征交互。我们的方法基于Deep & Cross Network（DCN）[40]，该网络旨在高效捕获有界度的特征交互。然而，我们将在第2.3节中论证DCN会导致一种特殊形式的交互。因此，我们设计了一种新颖的压缩交互网络（CIN）来替代DCN中的交叉网络。CIN显式地学习特征交互，并且交互的程度随着网络深度而增加。遵循Wide&Deep和DeepFM模型的精神，我们将显式高阶交互模块与隐式交互模块以及传统FM模块结合起来，并将联合模型命名为极深因子分解机（xDeepFM）。新模型不需要手动特征工程，将数据科学家从繁琐的特征搜索工作中解放出来。总结起来，我们做出以下贡献：
 
@@ -52,89 +55,123 @@ Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzh
 
 ---
 
-## 2 预备知识
+
+
+## 2. 预备知识
 
 ### 2.1 嵌入层
 
-在计算机视觉或自然语言理解中，输入数据通常是图像或文本信号，这些信号在空间和/或时间上具有相关性，因此DNN可以直接应用于具有密集结构的原始特征。然而，在网络规模的推荐系统中，输入特征是稀疏的、维度巨大，并且没有明显的空间或时间相关性。因此，多域类别形式被相关工作广泛使用[9, 31, 37, 40, 46]。例如，一个输入实例 [user_id=s02, gender=male, organization=msra, interests=comedy&rock] 通常通过域感知独热编码转换为高维稀疏特征：
+在计算机视觉或自然语言理解中，输入数据通常是图像或文本信号，这些信号在空间和/或时间上具有相关性，因此DNN可以直接应用于具有密集结构的原始特征。然而，在网络规模的推荐系统中，输入特征是稀疏的、维度巨大，并且没有明显的空间或时间相关性。因此，多域类别形式被相关工作广泛使用[9, 31, 37, 40, 46]。例如，一个输入实例 `[user_id=s02, gender=male, organization=msra, interests=comedy&rock]` 通常通过 **域感知独热编码** 转换为高维稀疏特征：
 
-[0, 1, 0, 0, ..., 0] \leftarrow user_id
-[1, 0] \leftarrow gender
-[0, 1, 0, 0, ..., 0] \leftarrow organization
-[0, 1, 0, 1, ..., 0] \leftarrow interests
+$$
+\underbrace{[0, 1, 0, 0, \ldots, 0]}_{\text{user id}} \quad \underbrace{[1, 0]}_{\text{gender}} \quad \underbrace{[0, 1, 0, 0, \ldots, 0]}_{\text{organization}} \quad \underbrace{[0, 1, 0, 1, \ldots, 0]}_{\text{interests}}
+$$
 
-在原始特征输入之上应用嵌入层，将其压缩为低维密集实值向量。如果域是单值的，则使用特征嵌入作为域嵌入。以上述实例为例，特征"male"的嵌入被用作域"gender"的嵌入。如果域是多值的，则使用特征嵌入的和作为域嵌入。嵌入层如图1所示。嵌入层的结果是一个宽的拼接向量：
+在原始特征输入之上应用嵌入层，将其压缩为 **低维密集实值向量**。如果域是单值的，则使用特征嵌入作为域嵌入。以上述实例为例，特征"male"的嵌入被用作域"gender"的嵌入。如果域是多值的，则使用特征嵌入的和作为域嵌入。嵌入层如图1所示。嵌入层的结果是一个宽的拼接向量：
 
-e = [e1, e2, ..., em]
+$$
+\mathbf{e} = [\mathbf{e}_1, \mathbf{e}_2, \ldots, \mathbf{e}_m]
+$$
 
-其中m表示域的数量，ei \in RD表示一个域的嵌入。虽然实例的特征长度可能不同，但它们的嵌入具有相同的长度 m $\times$ D，其中D是域嵌入的维度。
+其中 $m$ 表示域的数量， $\mathbf{e}_i \in \mathbb{R}^D$ 表示一个域的嵌入。虽然实例的特征长度可能不同，但它们的嵌入具有相同的长度 $m \times D$ ，其中 $D$ 是域嵌入的维度。
 
-**图1: 域嵌入层。本例中嵌入的维度为4。**
+**图1：域嵌入层。本例中嵌入的维度为4。**
 
 ### 2.2 隐式高阶交互
 
-FNN [46]、Deep Crossing [37]以及Wide&Deep [5]中的深度部分利用域嵌入向量e上的前馈神经网络来学习高阶特征交互。前向过程为：
+FNN [46]、Deep Crossing [37]以及Wide&Deep [5]中的深度部分利用域嵌入向量 $\mathbf{e}$ 上的前馈神经网络来学习高阶特征交互。前向过程为：
 
-x1 = \sigma(W(1)e + b1)
-xk = \sigma(W(k)x(k-1) + bk)
+$$
+\mathbf{x}_1 = \sigma(\mathbf{W}^{(1)} \mathbf{e} + \mathbf{b}_1) \qquad (1)
+$$
 
-其中k是层的深度，\sigma是激活函数，xk是第k层的输出。可视化结构与图2所示的非常相似，除了它们不包括FM或乘积层。这种架构以位级方式建模交互。也就是说，即使在同一域嵌入向量内的元素也会相互影响。
+$$
+\mathbf{x}_k = \sigma(\mathbf{W}^{(k)} \mathbf{x}_{k-1} + \mathbf{b}_k) \qquad (2)
+$$
 
-PNN [31]和DeepFM [9]对上述架构进行了略微修改。除了在嵌入向量e上应用DNN之外，它们在架构中增加了一个两路交互层。因此，他们的模型同时包含位级和向量级交互。PNN和DeepFM之间的主要区别在于，PNN将乘积层的输出连接到DNN，而DeepFM将FM层直接连接到输出单元（参见图2）。
+其中 $k$ 是层的深度， $\sigma$ 是激活函数， $\mathbf{x}_k$ 是第 $k$ 层的输出。可视化结构与图2所示的非常相似，除了它们不包括FM或乘积层。这种架构以位级方式建模交互。也就是说，即使在同一域嵌入向量内的元素也会相互影响。
 
-**图2: DeepFM（省略线性部分）和PNN的架构。我们重用了[9]中的符号，其中红色边表示权重为1的连接（无参数），灰色边表示正常连接（网络参数）。**
+PNN [31]和DeepFM [9]对上述架构进行了略微修改。除了在嵌入向量 $\mathbf{e}$ 上应用DNN之外，它们在架构中增加了一个两路交互层。因此，他们的模型同时包含位级和向量级交互。PNN和DeepFM之间的主要区别在于，PNN将乘积层的输出连接到DNN，而DeepFM将FM层直接连接到输出单元（参见图2）。
+
+**图2：DeepFM（省略线性部分）和PNN的架构。我们重用了[9]中的符号，其中红色边表示权重为1的连接（无参数），灰色边表示正常连接（网络参数）。**
 
 ### 2.3 显式高阶交互
 
 [40]提出了交叉网络（CrossNet），其架构如图3所示。它旨在显式地建模高阶特征交互。与经典的全连接前馈网络不同，隐藏层通过以下交叉运算计算：
 
-xk = x0 x_(k-1)^T wk + bk + x_(k-1)
+$$
+\mathbf{x}_k = \mathbf{x}_0 \mathbf{x}_{k-1}^T \mathbf{w}_k + \mathbf{b}_k + \mathbf{x}_{k-1} \qquad (3)
+$$
 
-其中 wk、bk、xk \in R^(mD) 分别是第k层的权重、偏置和输出。我们认为CrossNet学习了一种特殊类型的高阶特征交互，其中CrossNet中的每个隐藏层都是 x0 的标量倍数。
+其中 $\mathbf{w}_k$ 、 $\mathbf{b}_k$ 、 $\mathbf{x}_k \in \mathbb{R}^{mD}$ 分别是第 $k$ 层的权重、偏置和输出。我们认为CrossNet学习了一种特殊类型的高阶特征交互，其中CrossNet中的每个隐藏层都是 $\mathbf{x}_0$ 的标量倍数。
 
-**定理2.1**。考虑一个k层交叉网络，其第(i+1)层定义为 xi+1 = x0 xi^T wi+1 + xi。那么，交叉网络的输出 xk 是 x0 的标量倍数。
+**图3：交叉网络的架构。**
 
-**证明**。当k=1时，根据矩阵乘法的结合律和分配律，我们有：
+**定理2.1**。考虑一个 $k$ 层交叉网络，其第 $(i+1)$ 层定义为 $\mathbf{x}_{i+1} = \mathbf{x}_0 \mathbf{x}_i^T \mathbf{w}_{i+1} + \mathbf{x}_i$ 。那么，交叉网络的输出 $\mathbf{x}_k$ 是 $\mathbf{x}_0$ 的标量倍数。
 
-x1 = x0(x0^T w1 + 1) = \alpha1 x0
+**证明**。当 $k=1$ 时，根据矩阵乘法的结合律和分配律，我们有：
 
-其中标量 \alpha1 = x0^T w1 + 1 实际上是x0的线性回归。因此，x1是x0的标量倍数。假设标量倍数结论对k=i成立。对于k=i+1，我们有：
+$$
+\begin{aligned}
+\mathbf{x}_1 &= \mathbf{x}_0 (\mathbf{x}_0^T \mathbf{w}_1) + \mathbf{x}_0 \\
+&= \mathbf{x}_0 (\mathbf{x}_0^T \mathbf{w}_1 + 1) \\
+&= \alpha_1 \mathbf{x}_0 \qquad (4)
+\end{aligned}
+$$
 
-xi+1 = x0 xi^T wi+1 + xi = x0((\alphai x0)^T wi+1) + \alphai x0 = \alphai+1 x0
+其中标量 $\alpha_1 = \mathbf{x}_0^T \mathbf{w}_1 + 1$ 实际上是 $\mathbf{x}_0$ 的线性回归。因此， $\mathbf{x}_1$ 是 $\mathbf{x}_0$ 的标量倍数。假设标量倍数结论对 $k=i$ 成立。对于 $k=i+1$ ，我们有：
 
-其中，\alphai+1 = \alphai (x0^T wi+1 + 1) 是一个标量。因此 xi+1 仍然是 x0 的标量倍数。通过归纳假设，交叉网络的输出 xk 是 x0 的标量倍数。□
+$$
+\begin{aligned}
+\mathbf{x}_{i+1} &= \mathbf{x}_0 \mathbf{x}_i^T \mathbf{w}_{i+1} + \mathbf{x}_i \\
+&= \mathbf{x}_0 ((\alpha_i \mathbf{x}_0)^T \mathbf{w}_{i+1}) + \alpha_i \mathbf{x}_0 \\
+&= \alpha_{i+1} \mathbf{x}_0 \qquad (5)
+\end{aligned}
+$$
 
-注意，标量倍数并不意味着 xk 与 x0 是线性关系。系数 \alphai+1 对 x0 敏感。CrossNet可以非常高效地学习特征交互（其复杂度与DNN模型相比可以忽略不计），但其缺点是：(1) CrossNet的输出被限制在一种特殊形式中，每个隐藏层是 x0 的标量倍数；(2) 交互以位级方式发生。
+其中， $\alpha_{i+1} = \alpha_i (\mathbf{x}_0^T \mathbf{w}_{i+1} + 1)$ 是一个标量。因此 $\mathbf{x}_{i+1}$ 仍然是 $\mathbf{x}_0$ 的标量倍数。通过归纳假设，交叉网络的输出 $\mathbf{x}_k$ 是 $\mathbf{x}_0$ 的标量倍数。□
+
+注意，标量倍数并不意味着 $\mathbf{x}_k$ 与 $\mathbf{x}_0$ 是线性关系。系数 $\alpha_{i+1}$ 对 $\mathbf{x}_0$ 敏感。CrossNet可以非常高效地学习特征交互（其复杂度与DNN模型相比可以忽略不计），但其缺点是：(1) CrossNet的输出被限制在一种特殊形式中，每个隐藏层是 $\mathbf{x}_0$ 的标量倍数；(2) 交互以位级方式发生。
 
 ---
 
-## 3 我们提出的模型
+
+
+## 3. 我们提出的模型
 
 ### 3.1 压缩交互网络
 
-我们设计了一种新的交叉网络，名为压缩交互网络（CIN），基于以下考虑：(1) 交互在向量级而非位级应用；(2) 高阶特征交互被显式地衡量；(3) 网络复杂度不会随交互度数指数增长。由于嵌入向量被视为向量级交互的单位，我们将域嵌入的输出形式化为一个矩阵 X0 \in R^(m$\times$D)，其中 X0 的第i行是第i个域的嵌入向量：X0_i,* = ei，D是域嵌入的维度。CIN中第k层的输出也是一个矩阵 Xk \in R^(Hk$\times$D)，其中 Hk 表示第k层中（嵌入）特征向量的数量，我们令 H0 = m。对于每一层，Xk 通过以下方式计算：
+我们设计了一种新的交叉网络，名为压缩交互网络（CIN），基于以下考虑：(1) 交互在向量级而非位级应用；(2) 高阶特征交互被显式地衡量；(3) 网络复杂度不会随交互度数指数增长。由于嵌入向量被视为向量级交互的单位，我们将域嵌入的输出形式化为一个矩阵 $\mathbf{X}_0 \in \mathbb{R}^{m \times D}$ ，其中 $\mathbf{X}_0$ 的第 $i$ 行是第 $i$ 个域的嵌入向量： $\mathbf{X}_0^{i,*} = \mathbf{e}_i$ ， $D$ 是域嵌入的维度。CIN中第 $k$ 层的输出也是一个矩阵 $\mathbf{X}_k \in \mathbb{R}^{H_k \times D}$ ，其中 $H_k$ 表示第 $k$ 层中（嵌入）特征向量的数量，我们令 $H_0 = m$ 。对于每一层， $\mathbf{X}_k$ 通过以下方式计算：
 
-X_k^h,* = \Sigma_{i=1}^{H_(k-1)} \Sigma_{j=1}^{m} W_k^h,ij (X_(k-1)^i,* \circ X_0^j,*)
+$$
+\mathbf{X}_{h,*}^{k} = \sum_{i=1}^{H_{k-1}} \sum_{j=1}^{m} W_{i,j}^{k,h} (\mathbf{X}_{i,*}^{k-1} \circ \mathbf{X}_{j,*}^{0}) \qquad (6)
+$$
 
-其中 1 \leq h \leq Hk，W_k^h \in R^(H_(k-1)$\times$m) 是第h个特征向量的参数矩阵，\circ 表示Hadamard积，例如 ⟨a1, a2, a3⟩ \circ ⟨b1, b2, b3⟩ = ⟨a1b1, a2b2, a3b3⟩。注意 Xk 是通过 X_(k-1) 和 X0 之间的交互推导得出的，因此特征交互被显式衡量，并且交互的程度随着层深度增加。CIN的结构与循环神经网络（RNN）非常相似，其中下一个隐藏层的输出依赖于上一个隐藏层和一个额外的输入。我们在所有层中保持嵌入向量的结构，因此交互是在向量级应用的。
+其中 $1 \le h \le H_k$ ， $W^{k,h} \in \mathbb{R}^{H_{k-1} \times m}$ 是第 $h$ 个特征向量的参数矩阵， $\circ$ 表示Hadamard积，例如 $\langle a_1, a_2, a_3 \rangle \circ \langle b_1, b_2, b_3 \rangle = \langle a_1 b_1, a_2 b_2, a_3 b_3 \rangle$ 。注意 $\mathbf{X}_k$ 是通过 $\mathbf{X}_{k-1}$ 和 $\mathbf{X}_0$ 之间的交互推导得出的，因此特征交互被显式衡量，并且交互的程度随着层深度增加。CIN的结构与循环神经网络（RNN）非常相似，其中下一个隐藏层的输出依赖于上一个隐藏层和一个额外的输入。我们在所有层中保持嵌入向量的结构，因此交互是在向量级应用的。
 
-有趣的是，方程6与计算机视觉中著名的卷积神经网络（CNN）有很强的联系。如图4a所示，我们引入了一个中间张量 Z^(k+1)，它是隐藏层 Xk 和原始特征矩阵 X0 的（沿每个嵌入维度的）外积。然后 Z^(k+1) 可以被视为一种特殊类型的图像，W_k^h 是一个滤波器。我们如图4b所示沿嵌入维度（D）在 Z^(k+1) 上滑动滤波器，得到一个隐藏向量 X_(k+1)^h,*，这在计算机视觉中通常称为特征图。因此，Xk 是 Hk 个不同特征图的集合。CIN名称中的"压缩"表明第k个隐藏层将 H_(k-1) $\times$ m 个向量的潜在空间压缩为 Hk 个向量。
+有趣的是，方程6与计算机视觉中著名的卷积神经网络（CNN）有很强的联系。如图4a所示，我们引入了一个中间张量 $\mathbf{Z}^{k+1}$ ，它是隐藏层 $\mathbf{X}_k$ 和原始特征矩阵 $\mathbf{X}_0$ 的（沿每个嵌入维度的）外积。然后 $\mathbf{Z}^{k+1}$ 可以被视为一种特殊类型的图像， $W^{k,h}$ 是一个滤波器。我们如图4b所示沿嵌入维度（ $D$ ）在 $\mathbf{Z}^{k+1}$ 上滑动滤波器，得到一个隐藏向量 $\mathbf{X}_{h,*}^{k+1}$ ，这在计算机视觉中通常称为特征图。因此， $\mathbf{X}_k$ 是 $H_k$ 个不同特征图的集合。CIN名称中的"压缩"表明第 $k$ 个隐藏层将 $H_{k-1} \times m$ 个向量的潜在空间压缩为 $H_k$ 个向量。
 
-图4c提供了CIN架构的概览。令T表示网络的深度。每个隐藏层 Xk, k \in [1,T] 都与输出单元有连接。我们首先对隐藏层的每个特征图应用求和池化：
+图4c提供了CIN架构的概览。令 $T$ 表示网络的深度。每个隐藏层 $\mathbf{X}_k, k \in [1, T]$ 都与输出单元有连接。我们首先对隐藏层的每个特征图应用求和池化：
 
-p_i^k = \Sigma_{j=1}^{D} X_i,j^k, for i \in [1, Hk]
+$$
+p_i^k = \sum_{j=1}^{D} \mathbf{X}_{i,j}^k \qquad (7)
+$$
 
-因此，对于第k个隐藏层，我们有一个池化向量 p^k = [p_1^k, p_2^k, ..., p_Hk^k]，长度为 Hk。来自隐藏层的所有池化向量在连接到输出单元之前被拼接起来：
+对于 $i \in [1, H_k]$ 。因此，对于第 $k$ 个隐藏层，我们有一个池化向量 $\mathbf{p}^k = [p_1^k, p_2^k, \ldots, p_{H_k}^k]$ ，长度为 $H_k$ 。来自隐藏层的所有池化向量在连接到输出单元之前被拼接起来：
 
-p^+ = [p^1, p^2, ..., p^T] \in R^(\Sigma_{i=1}^T Hi)
+$$
+\mathbf{p}^+ = [\mathbf{p}^1, \mathbf{p}^2, \ldots, \mathbf{p}^T] \in \mathbb{R}^{\sum_{i=1}^{T} H_i}
+$$
 
-如果我们直接使用CIN进行二分类，输出单元是p^+上的一个sigmoid节点：
+如果我们直接使用CIN进行二分类，输出单元是 $\mathbf{p}^+$ 上的一个sigmoid节点：
 
-ŷ = 1 / (1 + exp(p^+^T wo))
+$$
+\hat{y} = \frac{1}{1 + \exp((\mathbf{p}^+)^T \mathbf{w}_o)} \qquad (8)
+$$
 
-其中 wo 是回归参数。
+其中 $\mathbf{w}_o$ 是回归参数。
 
-**图4: 压缩交互网络（CIN）的组件和架构。(a) 沿每个维度外积用于特征交互。张量 Z^(k+1) 是用于进一步学习的中间结果。(b) CIN的第k层。它将中间张量 Z^(k+1) 压缩为 H_(k+1) 个嵌入向量（也称为特征图）。(c) CIN架构的概览。**
+**图4：压缩交互网络（CIN）的组件和架构。(a) 沿每个维度外积用于特征交互。张量 $\mathbf{Z}^{k+1}$ 是用于进一步学习的中间结果。(b) CIN的第 $k$ 层。它将中间张量 $\mathbf{Z}^{k+1}$ 压缩为 $H_{k+1}$ 个嵌入向量（也称为特征图）。(c) CIN架构的概览。**
 
 ### 3.2 CIN分析
 
@@ -142,65 +179,85 @@ p^+ = [p^1, p^2, ..., p^T] \in R^(\Sigma_{i=1}^T Hi)
 
 #### 3.2.1 空间复杂度
 
-第k层的第h个特征图包含 H_(k-1) $\times$ m 个参数，这正是 W_k^h 的大小。因此，第k层有 Hk $\times$ H_(k-1) $\times$ m 个参数。考虑到输出单元的最后一个回归层，其参数为 \Sigma_{k=1}^T Hk，CIN的总参数数为 \Sigma_{k=1}^T Hk $\times$ (1 + H_(k-1) $\times$ m)。注意CIN与嵌入维度D无关。相比之下，一个普通的T层DNN包含 m $\times$ D $\times$ H1 + HT + \Sigma_{k=2}^T Hk $\times$ H_(k-1) 个参数，并且参数数量会随着嵌入维度D的增加而增加。
+第 $k$ 层的第 $h$ 个特征图包含 $H_{k-1} \times m$ 个参数，这正是 $W^{k,h}$ 的大小。因此，第 $k$ 层有 $H_k \times H_{k-1} \times m$ 个参数。考虑到输出单元的最后一个回归层，其参数为 $\sum_{k=1}^{T} H_k$ ，CIN的总参数数为 $\sum_{k=1}^{T} H_k \times (1 + H_{k-1} \times m)$ 。注意CIN与嵌入维度 $D$ 无关。相比之下，一个普通的 $T$ 层DNN包含 $m \times D \times H_1 + H_T + \sum_{k=2}^{T} H_k \times H_{k-1}$ 个参数，并且参数数量会随着嵌入维度 $D$ 的增加而增加。
 
-通常m和Hk不会很大，所以W_k^h的规模是可接受的。必要时，我们可以利用L阶分解，用两个较小的矩阵 U_k^h \in R^(H_(k-1)$\times$L) 和 V_k^h \in R^(m$\times$L) 替换 W_k^h：
+通常 $m$ 和 $H_k$ 不会很大，所以 $W^{k,h}$ 的规模是可接受的。必要时，我们可以利用 $L$ 阶分解，用两个较小的矩阵 $U^{k,h} \in \mathbb{R}^{H_{k-1} \times L}$ 和 $V^{k,h} \in \mathbb{R}^{m \times L}$ 替换 $W^{k,h}$ ：
 
-W_k^h = U_k^h (V_k^h)^T
+$$
+W^{k,h} = U^{k,h} (V^{k,h})^T \qquad (9)
+$$
 
-其中 L ≪ H 且 L ≪ m。为简单起见，以下我们假设每个隐藏层具有相同数量（H）的特征图。通过L阶分解，CIN的空间复杂度从 O(mT H^2) 降低到 O(mT HL + T H^2)。相比之下，普通DNN的空间复杂度为 O(mDH + T H^2)，这受域嵌入维度（D）的影响。
+其中 $L \ll H$ 且 $L \ll m$ 。为简单起见，以下我们假设每个隐藏层具有相同数量（ $H$ ）的特征图。通过 $L$ 阶分解，CIN的空间复杂度从 $O(mTH^2)$ 降低到 $O(mTHL + TH^2L)$ 。相比之下，普通DNN的空间复杂度为 $O(mDH + TH^2)$ ，这受域嵌入维度（ $D$ ）的影响。
 
 #### 3.2.2 时间复杂度
 
-计算张量 Z^(k+1)（如图4a所示）的代价是 O(mHD) 时间。因为我们在一个隐藏层中有H个特征图，计算T层CIN需要 O(T H^2 DT) 时间。相比之下，T层普通DNN需要 O(mHD + H^2 T) 时间。因此，CIN的主要缺点在于时间复杂度。
+计算张量 $\mathbf{Z}^{k+1}$ （如图4a所示）的代价是 $O(mHD)$ 时间。因为我们在一个隐藏层中有 $H$ 个特征图，计算 $T$ 层CIN需要 $O(mH^2DT)$ 时间。相比之下， $T$ 层普通DNN需要 $O(mHD + H^2T)$ 时间。因此，CIN的主要缺点在于时间复杂度。
 
 #### 3.2.3 多项式逼近
 
-接下来我们检验CIN的高阶交互特性。为简单起见，我们假设隐藏层的特征图数量都等于域的数量m。令[m]表示小于或等于m的正整数集合。第一层的第h个特征图，记作 x_h^1 \in R^D，通过下式计算：
+接下来我们检验CIN的高阶交互特性。为简单起见，我们假设隐藏层的特征图数量都等于域的数量 $m$ 。令 $[m]$ 表示小于或等于 $m$ 的正整数集合。第一层的第 $h$ 个特征图，记作 $\mathbf{x}_h^1 \in \mathbb{R}^D$ ，通过下式计算：
 
-x_h^1 = \Sigma_{i\in[m]} \Sigma_{j\in[m]} W_i,j^(1,h) (x_i^0 \circ x_j^0)
+$$
+\mathbf{x}_h^1 = \sum_{i \in [m]} \sum_{j \in [m]} W_{i,j}^{1,h} (\mathbf{x}_i^0 \circ \mathbf{x}_j^0) \qquad (10)
+$$
 
-因此，第一层的每个特征图用 O(m^2) 个系数对成对交互进行建模。类似地，第二层的第h个特征图为：
+因此，第一层的每个特征图用 $O(m^2)$ 个系数对成对交互进行建模。类似地，第二层的第 $h$ 个特征图为：
 
-x_h^2 = \Sigma_{i\in[m]} \Sigma_{j\in[m]} W_i,j^(2,h) (x_i^1 \circ x_j^0)
-     = \Sigma_{i\in[m]} \Sigma_{j\in[m]} W_i,j^(2,h) \Sigma_{l\in[m]} \Sigma_{k\in[m]} W_l,k^(1,i) (x_l^0 \circ x_k^0 \circ x_j^0)
+$$
+\begin{aligned}
+\mathbf{x}_h^2 &= \sum_{i \in [m]} \sum_{j \in [m]} W_{i,j}^{2,h} (\mathbf{x}_i^1 \circ \mathbf{x}_j^0) \\
+&= \sum_{i \in [m]} \sum_{j \in [m]} W_{i,j}^{2,h} \sum_{l \in [m]} \sum_{k \in [m]} W_{l,k}^{1,i} (\mathbf{x}_j^0 \circ \mathbf{x}_k^0 \circ \mathbf{x}_l^0) \qquad (11)
+\end{aligned}
+$$
 
-注意，所有与下标l和k相关的计算已经在前一个隐藏层完成。我们展开方程11中的因子只是为了清晰。我们可以观察到，第二层的每个特征图用 O(m^2) 个新参数对三路交互进行建模。
+注意，所有与下标 $l$ 和 $k$ 相关的计算已经在前一个隐藏层完成。我们展开方程11中的因子只是为了清晰。我们可以观察到，第二层的每个特征图用 $O(m^2)$ 个新参数对三路交互进行建模。
 
-一个经典的k阶多项式有 O(m^k) 个系数。我们证明CIN通过一系列特征图链仅用 O(km^3) 个参数逼近这类多项式。通过归纳假设，我们可以证明第k层的第h个特征图是：
+一个经典的 $k$ 阶多项式有 $O(m^k)$ 个系数。我们证明CIN通过一系列特征图链仅用 $O(km^3)$ 个参数逼近这类多项式。通过归纳假设，我们可以证明第 $k$ 层的第 $h$ 个特征图是：
 
-x_h^k = \Sigma_{i\in[m]} \Sigma_{j\in[m]} W_i,j^(k,h) (x_i^(k-1) \circ x_j^0)
-     = \Sigma_{i\in[m]} \Sigma_{j\in[m]} W_i,j^(k,h) \Sigma_{l\in[m]} \Sigma_{s\in[m]} ... \Sigma_{r\in[m]} \Sigma_{t\in[m]} W_l,s^(k-1,i) ... W_r,t^(1,\alpha) (x_l^0 \circ ... \circ x_t^0 \circ x_r^0)
-       \_____________________________/
-             k个向量
+$$
+\begin{aligned}
+\mathbf{x}_h^k &= \sum_{i \in [m]} \sum_{j \in [m]} W_{i,j}^{k,h} (\mathbf{x}_i^{k-1} \circ \mathbf{x}_j^0) \\
+&= \sum_{i \in [m]} \sum_{j \in [m]} \sum_{l \in [m]} \sum_{s \in [m]} \cdots \sum_{r \in [m]} \sum_{t \in [m]} W_{l,s}^{k-1,i} \cdots W_{r,t}^{1,h} \underbrace{(\mathbf{x}_j^0 \circ \cdots \circ \mathbf{x}_s^0 \circ \mathbf{x}_l^0)}_{k \text{ vectors}} \qquad (12)
+\end{aligned}
+$$
 
-为了更好地说明，这里借用[40]中的符号。令 \alpha = [\alpha1, ..., \alpham] \in N^d 表示一个多重索引，且 |\alpha| = \Sigma_{i=1}^m \alpha_i。我们省略 x_i^0 的原始上标，直接使用 xi 表示，因为我们最终展开表达式（参见方程12）中只使用第0层的特征图（即域嵌入）。现在上标用于表示向量操作，例如 x_i^3 = xi \circ xi \circ xi。令 VP_k(X) 表示一个k阶多向量多项式：
+为了更好地说明，这里借用[40]中的符号。令 $\alpha = [\alpha_1, \ldots, \alpha_m] \in \mathbb{N}^d$ 表示一个多重索引，且 $|\alpha| = \sum_{i=1}^{m} \alpha_i$ 。我们省略 $\mathbf{x}_i^0$ 的原始上标，直接使用 $\mathbf{x}_i$ 表示，因为我们最终展开表达式（参见方程12）中只使用第 $0$ 层的特征图（即域嵌入）。现在上标用于表示向量操作，例如 $\mathbf{x}_i^3 = \mathbf{x}_i \circ \mathbf{x}_i \circ \mathbf{x}_i$ 。令 $VP_k(\mathbf{X})$ 表示一个 $k$ 阶多向量多项式：
 
-VP_k(X) = { \Sigma_\alpha w_\alpha x_1^\alpha1 \circ x_2^\alpha2 \circ ... \circ x_m^\alpham | 2 \leq |\alpha| \leq k }
+$$
+VP_k(\mathbf{X}) = \{ \sum_{\alpha} w_\alpha \mathbf{x}_1^{\alpha_1} \circ \mathbf{x}_2^{\alpha_2} \circ \cdots \circ \mathbf{x}_m^{\alpha_m} \mid 2 \leq |\alpha| \leq k \} \qquad (13)
+$$
 
-该类中的每个向量多项式有 O(m^k) 个系数。然后，我们的CIN通过以下方式逼近系数 w_\alpha：
+该类中的每个向量多项式有 $O(m^k)$ 个系数。然后，我们的CIN通过以下方式逼近系数 $w_\alpha$ ：
 
-ŵ_\alpha = \Sigma_{i=1}^m \Sigma_{j=1}^m \Sigma_{B\inP_\alpha} \prod_{t=2}^{|\alpha|} W_i,B_t^(t,j)
+$$
+\hat{w}_\alpha = \sum_{i=1}^{m} \sum_{j=1}^{m} \sum_{B \in P_\alpha} \prod_{t=2}^{|\alpha|} W_{i,B_t}^{t,j} \qquad (14)
+$$
 
-其中，B = [B1, B2, ..., B_|\alpha|] 是一个多重索引，P_\alpha 是索引 (1..1, ..., m..m) 的所有排列的集合。
+其中， $B = [B_1, B_2, \ldots, B_{|\alpha|}]$ 是一个多重索引， $P_\alpha$ 是索引 $(\underbrace{1, \ldots, 1}_{\alpha_1 \text{ times}}, \ldots, \underbrace{m, \ldots, m}_{\alpha_m \text{ times}})$ 的所有排列的集合。
 
 ### 3.3 与隐式网络的结合
 
 如第2.2节所述，普通DNN学习隐式高阶特征交互。由于CIN和普通DNN可以相互补充，使模型更强的直观方式是将这两种结构结合起来。得到的模型与Wide&Deep或DeepFM模型非常相似。架构如图5所示。我们将新模型命名为极深因子分解机（xDeepFM），考虑到一方面它包含低阶和高阶特征交互；另一方面，它包含隐式特征交互和显式特征交互。其输出单元变为：
 
-ŷ = \sigma(w_linear^T a + w_dnn^T x_dnn^k + w_cin^T p^+ + b)
+$$
+\hat{y} = \sigma(\mathbf{w}_{linear}^T \mathbf{a} + \mathbf{w}_{dnn}^T \mathbf{x}_{dnn}^k + \mathbf{w}_{cin}^T \mathbf{p}^+ + b) \qquad (15)
+$$
 
-其中\sigma是sigmoid函数，a是原始特征，x_dnn^k和p^+分别是普通DNN和CIN的输出。w_*和b是可学习参数。对于二分类问题，损失函数是对数损失：
+其中 $\sigma$ 是sigmoid函数， $\mathbf{a}$ 是原始特征， $\mathbf{x}_{dnn}^k$ 和 $\mathbf{p}^+$ 分别是普通DNN和CIN的输出。 $\mathbf{w}_*$ 和 $b$ 是可学习参数。对于二分类问题，损失函数是对数损失：
 
-L = - 1/N \Sigma_{i=1}^N (yi log ŷi + (1 - yi) log(1 - ŷi))
+$$
+\mathcal{L} = -\frac{1}{N} \sum_{i=1}^{N} (y_i \log \hat{y}_i + (1 - y_i) \log (1 - \hat{y}_i)) \qquad (16)
+$$
 
-其中N是训练实例的总数。优化过程是最小化以下目标函数：
+其中 $N$ 是训练实例的总数。优化过程是最小化以下目标函数：
 
-J = L + \lambda*||$\Theta$||
+$$
+\mathcal{J} = \mathcal{L} + \lambda^* \|\Theta\| \qquad (17)
+$$
 
-其中\lambda*表示正则化项，$\Theta$表示参数集，包括线性部分、CIN部分和DNN部分中的参数。
+其中 $\lambda^*$ 表示正则化项， $\Theta$ 表示参数集，包括线性部分、CIN部分和DNN部分中的参数。
 
-**图5: xDeepFM的架构。**
+**图5：xDeepFM的架构。**
 
 #### 3.3.1 与FM和DeepFM的关系
 
@@ -208,13 +265,15 @@ J = L + \lambda*||$\Theta$||
 
 ---
 
-## 4 实验
+
+
+## 4. 实验
 
 在本节中，我们进行大量实验来回答以下问题：
 
-* (Q1) 我们提出的CIN在高阶特征交互学习中的表现如何？
-* (Q2) 在推荐系统中，结合显式和隐式高阶特征交互是否必要？
-* (Q3) 网络设置如何影响xDeepFM的性能？
+* （Q1）我们提出的CIN在高阶特征交互学习中的表现如何？
+* （Q2）在推荐系统中，结合显式和隐式高阶特征交互是否必要？
+* （Q3）网络设置如何影响xDeepFM的性能？
 
 在介绍一些基本的实验设置后，我们将回答这些问题。
 
@@ -232,7 +291,7 @@ J = L + \lambda*||$\Theta$||
 
 对于Criteo数据集和大众点评数据集，我们按8:1:1的比例随机划分实例用于训练、验证和测试。三个数据集的特征总结在表1中。
 
-**表1: 评估数据集的统计信息。M表示百万，K表示千。**
+**表1：评估数据集的统计信息。 $M$ 表示百万， $K$ 表示千。**
 
 | 数据集 | #实例 | #域 | #特征（稀疏） |
 |--------|-------|-----|--------------|
@@ -250,9 +309,9 @@ J = L + \lambda*||$\Theta$||
 
 #### 4.1.4 可复现性
 
-我们使用Tensorflow³实现我们的方法。每个模型的超参数通过在验证集上进行网格搜索来调整，每个模型的最佳设置将在相应部分中展示。学习率设置为0.001。对于优化方法，我们使用Adam [16]，小批量大小为4096。我们对DNN、DCN、Wide&Deep、DeepFM和xDeepFM使用L2正则化，\lambda = 0.0001，对PNN使用dropout 0.5。每层神经元数量的默认设置是：(1) DNN层为400；(2) Criteo数据集上CIN层为200，大众点评和必应新闻数据集上CIN层为100。由于本文关注神经网络结构，我们使所有模型的域嵌入维度固定为10。我们使用5块Tesla K80 GPU并行进行不同设置的实验。源代码可在 https://github.com/Leavingseason/xDeepFM 获取。
+我们使用Tensorflow³实现我们的方法。每个模型的超参数通过在验证集上进行网格搜索来调整，每个模型的最佳设置将在相应部分中展示。学习率设置为0.001。对于优化方法，我们使用Adam [16]，小批量大小为4096。我们对DNN、DCN、Wide&Deep、DeepFM和xDeepFM使用L2正则化， $\lambda = 0.0001$ ，对PNN使用dropout 0.5。每层神经元数量的默认设置是：(1) DNN层为400；(2) Criteo数据集上CIN层为200，大众点评和必应新闻数据集上CIN层为100。由于本文关注神经网络结构，我们使所有模型的域嵌入维度固定为10。我们使用5块Tesla K80 GPU并行进行不同设置的实验。源代码可在 https://github.com/Leavingseason/xDeepFM 获取。
 
-**表2: 各单独模型在Criteo、大众点评和必应新闻数据集上的性能。Depth列表示每个模型的最佳网络深度。**
+**表2：各单独模型在Criteo、大众点评和必应新闻数据集上的性能。Depth列表示每个模型的最佳网络深度。**
 
 | 模型 | AUC | Logloss | Depth |
 |------|-----|---------|-------|
@@ -272,7 +331,7 @@ J = L + \lambda*||$\Theta$||
 | CrossNet | 0.8304 | 0.2765 | 6 |
 | CIN | 0.8377 | 0.2662 | 5 |
 
-**表3: 不同模型在Criteo、大众点评和必应新闻数据集上的总体性能。Depth列以(交叉层, DNN层)的格式呈现网络深度的最佳设置。**
+**表3：不同模型在Criteo、大众点评和必应新闻数据集上的总体性能。Depth列以(交叉层, DNN层)的格式呈现网络深度的最佳设置。**
 
 | 模型 | AUC | Logloss | Depth | AUC | Logloss | Depth | AUC | Logloss | Depth |
 |------|-----|---------|-------|-----|---------|-------|-----|---------|-------|
@@ -286,17 +345,17 @@ J = L + \lambda*||$\Theta$||
 | DeepFM | 0.8025 | 0.4468 | -,2 | 0.8481 | 0.3333 | -,2 | 0.8376 | 0.2671 | -,3 |
 | **xDeepFM** | **0.8052** | **0.4418** | 3,2 | **0.8639** | **0.3156** | 3,3 | **0.8400** | **0.2649** | 3,2 |
 
-### 4.2 各神经网络组件的性能比较 (Q1)
+### 4.2 各神经网络组件的性能比较（Q1）
 
 我们想了解CIN单独的表现如何。注意FM显式地衡量二阶特征交互，DNN隐式地建模高阶特征交互，CrossNet试图用少量参数建模高阶特征交互（在第2.3节中被证明效果不佳），而CIN显式地建模高阶特征交互。没有理论保证一个单独模型优于其他模型，因为这实际上取决于数据集。例如，如果实际数据集不需要高阶特征交互，FM可能是最好的单独模型。因此，我们在这个实验中对哪个模型会表现最好没有任何预期。
 
-表2显示了三个实际数据集中各单独模型的结果。令人惊讶的是，我们的CIN一致优于其他模型。一方面，结果表明对于实际数据集，稀疏特征上的高阶交互是必要的，这可以通过DNN、CrossNet和CIN在所有三个数据集上显著优于FM这一事实得到验证。另一方面，CIN是最好的单独模型，这证明了CIN在显式建模高阶特征交互方面的有效性。注意，k层CIN可以建模k度特征交互。有趣的是，CIN需要5层才能在必应新闻数据集上产生最佳结果。
+表2显示了三个实际数据集中各单独模型的结果。令人惊讶的是，我们的CIN一致优于其他模型。一方面，结果表明对于实际数据集，稀疏特征上的高阶交互是必要的，这可以通过DNN、CrossNet和CIN在所有三个数据集上显著优于FM这一事实得到验证。另一方面，CIN是最好的单独模型，这证明了CIN在显式建模高阶特征交互方面的有效性。注意， $k$ 层CIN可以建模 $k$ 度特征交互。有趣的是，CIN需要5层才能在必应新闻数据集上产生最佳结果。
 
-### 4.3 集成模型的性能 (Q2)
+### 4.3 集成模型的性能（Q2）
 
 xDeepFM将CIN和DNN集成为一个端到端模型。由于CIN和DNN在学习特征交互方面涵盖了两种截然不同的特性，我们很想知道将它们结合起来进行联合显式和隐式学习是否确实必要和有效。在这里我们比较了几个不限于单独模型的强基线，结果如表3所示。我们观察到LR远差于所有其他模型，这证明了基于因子分解的模型对于衡量稀疏特征至关重要。Wide&Deep、DCN、DeepFM和xDeepFM显著优于DNN，这直接反映出尽管它们很简单，但引入混合组件对于提升预测系统的准确性很重要。我们提出的xDeepFM在所有数据集上取得了最佳性能，这证明了结合显式和隐式高阶特征交互是必要的，并且xDeepFM在学习这类组合方面是有效的。另一个有趣的观察是，所有基于神经网络的模型都不需要非常深的网络结构来获得最佳性能。深度超参数的典型设置是2和3，xDeepFM的最佳深度设置为3，这表明我们学习的交互至多是4阶。
 
-### 4.4 超参数研究 (Q3)
+### 4.4 超参数研究（Q3）
 
 在本节中，我们研究超参数对xDeepFM的影响，包括：(1) 隐藏层数量；(2) 每层神经元数量；(3) 激活函数。我们在保持DNN部分的最佳设置的同时，改变CIN部分的设置进行实验。
 
@@ -306,13 +365,15 @@ xDeepFM将CIN和DNN集成为一个端到端模型。由于CIN和DNN在学习特�
 
 **激活函数。** 注意我们在CIN的神经元上使用恒等函数作为激活函数，如方程6所示。深度学习文献中的常见做法是在隐藏神经元上使用非线性激活函数。因此，我们比较了CIN上不同激活函数的结果（对于DNN中的神经元，我们保持relu激活函数）。如图6c和7c所示，恒等函数确实是CIN中最适合神经元的选择。
 
-**图6: 网络超参数对AUC性能的影响。(a) 层数。(b) 每层神经元数量。(c) 激活函数。**
+**图6：网络超参数对AUC性能的影响。(a) 层数。(b) 每层神经元数量。(c) 激活函数。**
 
-**图7: 网络超参数对Logloss性能的影响。(a) 层数。(b) 每层神经元数量。(c) 激活函数。**
+**图7：网络超参数对Logloss性能的影响。(a) 层数。(b) 每层神经元数量。(c) 激活函数。**
 
 ---
 
-## 5 相关工作
+
+
+## 5. 相关工作
 
 ### 5.1 经典推荐系统
 
@@ -338,7 +399,9 @@ xDeepFM将CIN和DNN集成为一个端到端模型。由于CIN和DNN在学习特�
 
 ---
 
-## 6 结论
+
+
+## 6. 结论
 
 在本文中，我们提出了一种名为压缩交互网络（CIN）的新颖网络，旨在显式地学习高阶特征交互。CIN有两个特殊优点：(1) 它可以有效地学习特定有界度的特征交互；(2) 它在向量级学习特征交互。遵循几个流行模型的精神，我们将CIN和DNN结合在一个端到端框架中，并将得到的模型命名为极深因子分解机（xDeepFM）。因此，xDeepFM能够以显式和隐式两种方式自动学习高阶特征交互，这对于减少手动特征工程工作具有重要意义。我们进行了全面的实验，结果表明我们的xDeepFM在三个真实数据集上一致优于最先进的模型。
 
@@ -346,104 +409,108 @@ xDeepFM将CIN和DNN集成为一个端到端模型。由于CIN和DNN在学习特�
 
 ---
 
+
+
 ## 致谢
 
 作者感谢匿名评审人员的深刻评审意见，这些意见对本文的修订非常有帮助。本工作部分得到中国科学院青年创新促进会的支持。
 
 ---
 
+
+
 ## 参考文献
 
-[1] Dario Amodei, Sundaram Ananthanarayanan, Rishita Anubhai, Jingliang Bai, Eric Battenberg, Carl Case, Jared Casper, Bryan Catanzaro, Qiang Cheng, Guoliang Chen, et al. 2016. Deep speech 2: End-to-end speech recognition in english and mandarin. 见 International Conference on Machine Learning. 173–182.
+[1] Dario Amodei, Sundaram Ananthanarayanan, Rishita Anubhai, Jingliang Bai, Eric Battenberg, Carl Case, Jared Casper, Bryan Catanzaro, Qiang Cheng, Guoliang Chen, et al. 2016. Deep speech 2: End-to-end speech recognition in english and mandarin. In International Conference on Machine Learning. 173–182.
 
-[2] Mathieu Blondel, Akinori Fujino, Naonori Ueda, and Masakazu Ishihata. 2016. Higher-order factorization machines. 见 Advances in Neural Information Processing Systems. 3351–3359.
+[2] Mathieu Blondel, Akinori Fujino, Naonori Ueda, and Masakazu Ishihata. 2016. Higher-order factorization machines. In Advances in Neural Information Processing Systems. 3351–3359.
 
-[3] Jingyuan Chen, Hanwang Zhang, Xiangnan He, Liqiang Nie, Wei Liu, and Tat-Seng Chua. 2017. Attentive collaborative filtering: Multimedia recommendation with item-and component-level attention. 见 Proceedings of the 40th International ACM SIGIR conference on Research and Development in Information Retrieval. ACM, 335–344.
+[3] Jingyuan Chen, Hanwang Zhang, Xiangnan He, Liqiang Nie, Wei Liu, and Tat-Seng Chua. 2017. Attentive collaborative filtering: Multimedia recommendation with item-and component-level attention. In Proceedings of the 40th International ACM SIGIR conference on Research and Development in Information Retrieval. ACM, 335–344.
 
 [4] Tianqi Chen, Weinan Zhang, Qiuxia Lu, Kailong Chen, Zhao Zheng, and Yong Yu. 2012. SVDFeature: a toolkit for feature-based collaborative filtering. Journal of Machine Learning Research 13, Dec (2012), 3619–3622.
 
-[5] Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, Tal Shaked, Tushar Chandra, Hrishi Aradhye, Glen Anderson, Greg Corrado, Wei Chai, Mustafa Ispir, et al. 2016. Wide & deep learning for recommender systems. 见 Proceedings of the 1st Workshop on Deep Learning for Recommender Systems. ACM, 7–10.
+[5] Heng-Tze Cheng, Levent Koc, Jeremiah Harmsen, Tal Shaked, Tushar Chandra, Hrishi Aradhye, Glen Anderson, Greg Corrado, Wei Chai, Mustafa Ispir, et al. 2016. Wide & deep learning for recommender systems. In Proceedings of the 1st Workshop on Deep Learning for Recommender Systems. ACM, 7–10.
 
 [6] Kyunghyun Cho, Bart Van Merriënboer, Caglar Gulcehre, Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk, and Yoshua Bengio. 2014. Learning phrase representations using RNN encoder-decoder for statistical machine translation. arXiv preprint arXiv:1406.1078 (2014).
 
-[7] Xin Dong, Lei Yu, Zhonghuo Wu, Yuxia Sun, Lingfeng Yuan, and Fangxi Zhang. 2017. A Hybrid Collaborative Filtering Model with Deep Structure for Recommender Systems. 见 AAAI. 1309–1315.
+[7] Xin Dong, Lei Yu, Zhonghuo Wu, Yuxia Sun, Lingfeng Yuan, and Fangxi Zhang. 2017. A Hybrid Collaborative Filtering Model with Deep Structure for Recommender Systems. In AAAI. 1309–1315.
 
-[8] Ali Mamdouh Elkahky, Yang Song, and Xiaodong He. 2015. A multi-view deep learning approach for cross domain user modeling in recommendation systems. 见 Proceedings of the 24th International Conference on World Wide Web. 278–288.
+[8] Ali Mamdouh Elkahky, Yang Song, and Xiaodong He. 2015. A multi-view deep learning approach for cross domain user modeling in recommendation systems. In Proceedings of the 24th International Conference on World Wide Web. International World Wide Web Conferences Steering Committee, 278–288.
 
 [9] Huifeng Guo, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. 2017. Deepfm: A factorization-machine based neural network for CTR prediction. arXiv preprint arXiv:1703.04247 (2017).
 
-[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2016. Deep residual learning for image recognition. 见 Proceedings of the IEEE conference on computer vision and pattern recognition. 770–778.
+[10] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2016. Deep residual learning for image recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition. 770–778.
 
-[11] Ruining He and Julian McAuley. 2016. VBPR: Visual Bayesian Personalized Ranking from Implicit Feedback. 见 AAAI. 144–150.
+[11] Ruining He and Julian McAuley. 2016. VBPR: Visual Bayesian Personalized Ranking from Implicit Feedback. In AAAI. 144–150.
 
-[12] Xiangnan He and Tat-Seng Chua. 2017. Neural factorization machines for sparse predictive analytics. 见 Proceedings of the 40th International ACM SIGIR conference on Research and Development in Information Retrieval. ACM, 355–364.
+[12] Xiangnan He and Tat-Seng Chua. 2017. Neural factorization machines for sparse predictive analytics. In Proceedings of the 40th International ACM SIGIR conference on Research and Development in Information Retrieval. ACM, 355–364.
 
-[13] Xiangnan He, Lizi Liao, Hanwang Zhang, Liqiang Nie, Xia Hu, and Tat-Seng Chua. 2017. Neural collaborative filtering. 见 Proceedings of the 26th International Conference on World Wide Web. 173–182.
+[13] Xiangnan He, Lizi Liao, Hanwang Zhang, Liqiang Nie, Xia Hu, and Tat-Seng Chua. 2017. Neural collaborative filtering. In Proceedings of the 26th International Conference on World Wide Web. International World Wide Web Conferences Steering Committee, 173–182.
 
-[14] Xinran He, Junfeng Pan, Ou Jin, Tianbing Xu, Bo Liu, Tao Xu, Yanxin Shi, Antoine Atallah, Ralf Herbrich, Stuart Bowers, et al. 2014. Practical lessons from predicting clicks on ads at facebook. 见 Proceedings of the Eighth International Workshop on Data Mining for Online Advertising. ACM, 1–9.
+[14] Xinran He, Junfeng Pan, Ou Jin, Tianbing Xu, Bo Liu, Tao Xu, Yanxin Shi, Antoine Atallah, Ralf Herbrich, Stuart Bowers, et al. 2014. Practical lessons from predicting clicks on ads at facebook. In Proceedings of the Eighth International Workshop on Data Mining for Online Advertising. ACM, 1–9.
 
 [15] Geoffrey Hinton, Li Deng, Dong Yu, George E Dahl, Abdel-rahman Mohamed, Navdeep Jaitly, Andrew Senior, Vincent Vanhoucke, Patrick Nguyen, Tara N Sainath, et al. 2012. Deep neural networks for acoustic modeling in speech recognition: The shared views of four research groups. IEEE Signal Processing Magazine 29, 6 (2012), 82–97.
 
 [16] Diederik P Kingma and Jimmy Ba. 2014. Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980 (2014).
 
-[17] Yehuda Koren. 2008. Factorization meets the neighborhood: a multifaceted collaborative filtering model. 见 Proceedings of the 14th ACM SIGKDD international conference on Knowledge discovery and data mining. ACM, 426–434.
+[17] Yehuda Koren. 2008. Factorization meets the neighborhood: a multifaceted collaborative filtering model. In Proceedings of the 14th ACM SIGKDD international conference on Knowledge discovery and data mining. ACM, 426–434.
 
 [18] Yehuda Koren, Robert Bell, and Chris Volinsky. 2009. Matrix factorization techniques for recommender systems. Computer 42, 8 (2009).
 
-[19] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. 2012. Imagenet classification with deep convolutional neural networks. 见 Advances in neural information processing systems. 1097–1105.
+[19] Alex Krizhevsky, Ilya Sutskever, and Geoffrey E Hinton. 2012. Imagenet classification with deep convolutional neural networks. In Advances in neural information processing systems. 1097–1105.
 
-[20] Joonseok Lee, Seungyeon Kim, Guy Lebanon, and Yoram Singer. 2013. Local low-rank matrix approximation. 见 International Conference on Machine Learning. 82–90.
+[20] Joonseok Lee, Seungyeon Kim, Guy Lebanon, and Yoram Singer. 2013. Local low-rank matrix approximation. In International Conference on Machine Learning. 82–90.
 
 [21] Jianxun Lian and Xing Xie. 2016. Cross-Device User Matching Based on Massive Browse Logs: The Runner-Up Solution for the 2016 CIKM Cup. arXiv preprint arXiv:1610.03928 (2016).
 
-[22] Jianxun Lian, Fuzheng Zhang, Min Hou, Hongwei Wang, Xing Xie, and Guangzhong Sun. 2017. Practical Lessons for Job Recommendations in the Cold-Start Scenario. 见 Proceedings of the Recommender Systems Challenge 2017 (RecSys Challenge '17). ACM, Article 4, 6 pages. https://doi.org/10.1145/3124791.3124794
+[22] Jianxun Lian, Fuzheng Zhang, Min Hou, Hongwei Wang, Xing Xie, and Guangzhong Sun. 2017. Practical Lessons for Job Recommendations in the Cold-Start Scenario. In Proceedings of the Recommender Systems Challenge 2017 (RecSys Challenge '17). ACM, New York, NY, USA, Article 4, 6 pages. https://doi.org/10.1145/3124791.3124794
 
-[23] Jianxun Lian, Fuzheng Zhang, Xing Xie, and Guangzhong Sun. 2017. CCCFNet: a content-boosted collaborative filtering neural network for cross domain recommender systems. 见 Proceedings of the 26th International Conference on World Wide Web Companion. 817–818.
+[23] Jianxun Lian, Fuzheng Zhang, Xing Xie, and Guangzhong Sun. 2017. CCCFNet: a content-boosted collaborative filtering neural network for cross domain recommender systems. In Proceedings of the 26th International Conference on World Wide Web Companion. International World Wide Web Conferences Steering Committee, 817–818.
 
-[24] Jianxun Lian, Fuzheng Zhang, Xing Xie, and Guangzhong Sun. 2017. Restaurant Survival Analysis with Heterogeneous Information. 见 Proceedings of the 26th International Conference on World Wide Web Companion. 993–1002.
+[24] Jianxun Lian, Fuzheng Zhang, Xing Xie, and Guangzhong Sun. 2017. Restaurant Survival Analysis with Heterogeneous Information. In Proceedings of the 26th International Conference on World Wide Web Companion. International World Wide Web Conferences Steering Committee, 993–1002.
 
-[25] Xiaoliang Ling, Weiwei Deng, Chen Gu, Hucheng Zhou, Cui Li, and Feng Sun. 2017. Model Ensemble for Click Prediction in Bing Search Ads. 见 Proceedings of the 26th International Conference on World Wide Web Companion. 689–698.
+[25] Xiaoliang Ling, Weiwei Deng, Chen Gu, Hucheng Zhou, Cui Li, and Feng Sun. 2017. Model Ensemble for Click Prediction in Bing Search Ads. In Proceedings of the 26th International Conference on World Wide Web Companion. International World Wide Web Conferences Steering Committee, 689–698.
 
-[26] Guimei Liu, Tam T Nguyen, Gang Zhao, Wei Zha, Jianbo Yang, Jianneng Cao, Min Wu, Peilin Zhao, and Wei Chen. 2016. Repeat buyer prediction for e-commerce. 见 Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. ACM, 155–164.
+[26] Guimei Liu, Tam T Nguyen, Gang Zhao, Wei Zha, Jianbo Yang, Jianneng Cao, Min Wu, Peilin Zhao, and Wei Chen. 2016. Repeat buyer prediction for e-commerce. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. ACM, 155–164.
 
-[27] H Brendan McMahan, Gary Holt, David Sculley, Michael Young, Dietmar Ebner, Julian Grady, Lan Nie, Todd Phillips, Eugene Davydov, Daniel Golovin, et al. 2013. Ad click prediction: a view from the trenches. 见 Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining. ACM, 1222–1230.
+[27] H Brendan McMahan, Gary Holt, David Sculley, Michael Young, Dietmar Ebner, Julian Grady, Lan Nie, Todd Phillips, Eugene Davydov, Daniel Golovin, et al. 2013. Ad click prediction: a view from the trenches. In Proceedings of the 19th ACM SIGKDD international conference on Knowledge discovery and data mining. ACM, 1222–1230.
 
-[28] Aditya Krishna Menon and Charles Elkan. 2010. A log-linear model with latent features for dyadic prediction. 见 Data Mining (ICDM), 2010 IEEE 10th International Conference on. IEEE, 364–373.
+[28] Aditya Krishna Menon and Charles Elkan. 2010. A log-linear model with latent features for dyadic prediction. In Data Mining (ICDM), 2010 IEEE 10th International Conference on. IEEE, 364–373.
 
-[29] Tomáš Mikolov, Martin Karafiát, Lukáš Burget, Jan Černocký, and Sanjeev Khudanpur. 2010. Recurrent neural network based language model. 见 Eleventh Annual Conference of the International Speech Communication Association.
+[29] Tomáš Mikolov, Martin Karafiát, Lukáš Burget, Jan Černocký, and Sanjeev Khudanpur. 2010. Recurrent neural network based language model. In Eleventh Annual Conference of the International Speech Communication Association.
 
-[30] Rong Pan, Yunhong Zhou, Bin Cao, Nathan N Liu, Rajan Lukose, Martin Scholz, and Qiang Yang. 2008. One-class collaborative filtering. 见 Data Mining, 2008. ICDM'08. Eighth IEEE International Conference on. IEEE, 502–511.
+[30] Rong Pan, Yunhong Zhou, Bin Cao, Nathan N Liu, Rajan Lukose, Martin Scholz, and Qiang Yang. 2008. One-class collaborative filtering. In Data Mining, 2008. ICDM'08. Eighth IEEE International Conference on. IEEE, 502–511.
 
-[31] Yanru Qu, Han Cai, Kan Ren, Weinan Zhang, Yong Yu, Ying Wen, and Jun Wang. 2016. Product-based neural networks for user response prediction. 见 Data Mining (ICDM), 2016 IEEE 16th International Conference on. IEEE, 1149–1154.
+[31] Yanru Qu, Han Cai, Kan Ren, Weinan Zhang, Yong Yu, Ying Wen, and Jun Wang. 2016. Product-based neural networks for user response prediction. In Data Mining (ICDM), 2016 IEEE 16th International Conference on. IEEE, 1149–1154.
 
-[32] Steffen Rendle. 2010. Factorization machines. 见 Data Mining (ICDM), 2010 IEEE 10th International Conference on. IEEE, 995–1000.
+[32] Steffen Rendle. 2010. Factorization machines. In Data Mining (ICDM), 2010 IEEE 10th International Conference on. IEEE, 995–1000.
 
-[33] Steffen Rendle, Christoph Freudenthaler, Zeno Gantner, and Lars Schmidt-Thieme. 2009. BPR: Bayesian personalized ranking from implicit feedback. 见 Proceedings of the twenty-fifth conference on uncertainty in artificial intelligence. AUAI Press, 452–461.
+[33] Steffen Rendle, Christoph Freudenthaler, Zeno Gantner, and Lars Schmidt-Thieme. 2009. BPR: Bayesian personalized ranking from implicit feedback. In Proceedings of the twenty-fifth conference on uncertainty in artificial intelligence. AUAI Press, 452–461.
 
-[34] Steffen Rendle and Lars Schmidt-Thieme. 2010. Pairwise interaction tensor factorization for personalized tag recommendation. 见 Proceedings of the third ACM international conference on Web search and data mining. ACM, 81–90.
+[34] Steffen Rendle and Lars Schmidt-Thieme. 2010. Pairwise interaction tensor factorization for personalized tag recommendation. In Proceedings of the third ACM international conference on Web search and data mining. ACM, 81–90.
 
-[35] Matthew Richardson, Ewa Dominowska, and Robert Ragno. 2007. Predicting clicks: estimating the click-through rate for new ads. 见 Proceedings of the 16th international conference on World Wide Web. ACM, 521–530.
+[35] Matthew Richardson, Ewa Dominowska, and Robert Ragno. 2007. Predicting clicks: estimating the click-through rate for new ads. In Proceedings of the 16th international conference on World Wide Web. ACM, 521–530.
 
-[36] Suvash Sedhain, Aditya Krishna Menon, Scott Sanner, and Lexing Xie. 2015. Autorec: Autoencoders meet collaborative filtering. 见 Proceedings of the 24th International Conference on World Wide Web. ACM, 111–112.
+[36] Suvash Sedhain, Aditya Krishna Menon, Scott Sanner, and Lexing Xie. 2015. Autorec: Autoencoders meet collaborative filtering. In Proceedings of the 24th International Conference on World Wide Web. ACM, 111–112.
 
-[37] Ying Shan, T Ryan Hoens, Jian Jiao, Haijing Wang, Dong Yu, and JC Mao. 2016. Deep crossing: Web-scale modeling without manually crafted combinatorial features. 见 Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. ACM, 255–262.
+[37] Ying Shan, T Ryan Hoens, Jian Jiao, Haijing Wang, Dong Yu, and JC Mao. 2016. Deep crossing: Web-scale modeling without manually crafted combinatorial features. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. ACM, 255–262.
 
-[38] Nathan Srebro, Jason Rennie, and Tommi S Jaakkola. 2005. Maximum-margin matrix factorization. 见 Advances in neural information processing systems. 1329–1336.
+[38] Nathan Srebro, Jason Rennie, and Tommi S Jaakkola. 2005. Maximum-margin matrix factorization. In Advances in neural information processing systems. 1329–1336.
 
-[39] Hao Wang, Naiyan Wang, and Dit-Yan Yeung. 2015. Collaborative deep learning for recommender systems. 见 Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. ACM, 1235–1244.
+[39] Hao Wang, Naiyan Wang, and Dit-Yan Yeung. 2015. Collaborative deep learning for recommender systems. In Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. ACM, 1235–1244.
 
 [40] Ruoxi Wang, Bin Fu, Gang Fu, and Mingliang Wang. 2017. Deep & Cross Network for Ad Click Predictions. arXiv preprint arXiv:1708.05123 (2017).
 
-[41] Xinxi Wang and Ye Wang. 2014. Improving content-based and hybrid music recommendation using deep learning. 见 Proceedings of the 22nd ACM international conference on Multimedia. ACM, 627–636.
+[41] Xinxi Wang and Ye Wang. 2014. Improving content-based and hybrid music recommendation using deep learning. In Proceedings of the 22nd ACM international conference on Multimedia. ACM, 627–636.
 
-[42] Yao Wu, Christopher DuBois, Alice X Zheng, and Martin Ester. 2016. Collaborative denoising auto-encoders for top-n recommender systems. 见 Proceedings of the Ninth ACM International Conference on Web Search and Data Mining. ACM, 153–162.
+[42] Yao Wu, Christopher DuBois, Alice X Zheng, and Martin Ester. 2016. Collaborative denoising auto-encoders for top-n recommender systems. In Proceedings of the Ninth ACM International Conference on Web Search and Data Mining. ACM, 153–162.
 
-[43] Jun Xiao, Hao Ye, Xiangnan He, Hanwang Zhang, Fei Wu, and Tat-Seng Chua. 2017. Attentional Factorization Machines: Learning the Weight of Feature Interactions via Attention Networks. 见 Proceedings of the Twenty-Sixth International Joint Conference on Artificial Intelligence, IJCAI 2017, Melbourne, Australia, August 19-25, 2017. 3119–3125. https://doi.org/10.24963/ijcai.2017/435
+[43] Jun Xiao, Hao Ye, Xiangnan He, Hanwang Zhang, Fei Wu, and Tat-Seng Chua. 2017. Attentional Factorization Machines: Learning the Weight of Feature Interactions via Attention Networks. In Proceedings of the Twenty-Sixth International Joint Conference on Artificial Intelligence, IJCAI 2017, Melbourne, Australia, August 19-25, 2017. 3119–3125. https://doi.org/10.24963/ijcai.2017/435
 
-[44] Fajie Yuan, Guibing Guo, Joemon M Jose, Long Chen, Haitao Yu, and Weinan Zhang. 2016. Lambdafm: learning optimal ranking with factorization machines using lambda surrogates. 见 Proceedings of the 25th ACM International on Conference on Information and Knowledge Management. ACM, 227–236.
+[44] Fajie Yuan, Guibing Guo, Joemon M Jose, Long Chen, Haitao Yu, and Weinan Zhang. 2016. Lambdafm: learning optimal ranking with factorization machines using lambda surrogates. In Proceedings of the 25th ACM International on Conference on Information and Knowledge Management. ACM, 227–236.
 
-[45] Fuzheng Zhang, Nicholas Jing Yuan, Defu Lian, Xing Xie, and Wei-Ying Ma. 2016. Collaborative knowledge base embedding for recommender systems. 见 Proceedings of the 22nd ACM SIGKDD international conference on knowledge discovery and data mining. ACM, 353–362.
+[45] Fuzheng Zhang, Nicholas Jing Yuan, Defu Lian, Xing Xie, and Wei-Ying Ma. 2016. Collaborative knowledge base embedding for recommender systems. In Proceedings of the 22nd ACM SIGKDD international conference on knowledge discovery and data mining. ACM, 353–362.
 
-[46] Weinan Zhang, Tianming Du, and Jun Wang. 2016. Deep learning over multi-field categorical data. 见 European conference on information retrieval. Springer, 45–57.
+[46] Weinan Zhang, Tianming Du, and Jun Wang. 2016. Deep learning over multi-field categorical data. In European conference on information retrieval. Springer, 45–57.
 
 [47] Guorui Zhou, Chengru Song, Xiaoqiang Zhu, Xiao Ma, Yanghui Yan, Xingya Dai, Han Zhu, Junqi Jin, Han Li, and Kun Gai. 2017. Deep interest network for click-through rate prediction. arXiv preprint arXiv:1706.06978 (2017).

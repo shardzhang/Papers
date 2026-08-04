@@ -492,9 +492,11 @@ LLM的卓越性能促进了其广泛应用。考虑到LLM的计算成本和能�
 
 将知识蒸馏（KD）[37]集成到小模型预训练中的结果如表16所示。LLaMA-v2 7B模型作为教师，KD损失使用大型预训练教师模型（即LLaMA-v2 7B）和小型学生网络（即125M或350M模型）的logits之间的交叉熵计算：
 
-$$L_{CE} = -\frac{1}{n} \sum_{c} \sum_{i=1}^{n} p_c^T(X_i) \log(p_c^S(X_i)) \qquad (1)$$
+$$
+L_{CE} = -\frac{1}{n} \sum_{c} \sum_{i=1}^{n} p_c^T(X_i) \log(p_c^S(X_i)) \qquad (1)
+$$
 
-这里，$i$ 表示当前批次中的第 $i$ 个样本，批次中共有 $n$ 个样本，$c$ 表示类别数量，在我们的情况下等于词表大小。$T$ 和 $S$ 分别是教师网络和学生网络。
+这里， $i$ 表示当前批次中的第 $i$ 个样本，批次中共有 $n$ 个样本， $c$ 表示类别数量，在我们的情况下等于词表大小。 $T$ 和 $S$ 分别是教师网络和学生网络。
 
 表16中的结果表明，添加KD损失与仅使用下一个token作为标签相比，结果相当甚至更低。然而，值得注意的是，使用KD的训练时间比从头开始使用标签训练慢2.6−3.2倍。所有模型在32块A100 80G GPU上训练，批大小为32，共120k次迭代。因此，我们在实验中选择了使用标签。
 
@@ -565,7 +567,9 @@ API调用数据集通过指导语言模型模拟人类与代理之间的对话�
 
 ## I. 预期的未来GPU消耗近似计算
 
-$$\#\text{GPUs} = 7.88 \times 10^9 (\text{population size}) \times 5\% (\text{individual time}^{11}) \times 220 \times 10^9 (\text{approximating FLOPs/token for 220B GPT-4 model with one expert activated}^{12}) \times 50 (\text{token/s}) \times 24 (\text{h}) \times 3600 (\text{s}) / (60 \times 10^{12} (\text{FLOPs/s, H100 computation capacity}) \times 24 (\text{h}) \times 3600 (\text{s})) \approx 1 \times 10^8$$
+$$
+\#\text{GPUs} = 7.88 \times 10^9 (\text{population size}) \times 5\% (\text{individual time}^{11}) \times 220 \times 10^9 (\text{approximating FLOPs/token for 220B GPT-4 model with one expert activated}^{12}) \times 50 (\text{token/s}) \times 24 (\text{h}) \times 3600 (\text{s}) / (60 \times 10^{12} (\text{FLOPs/s, H100 computation capacity}) \times 24 (\text{h}) \times 3600 (\text{s})) \approx 1 \times 10^8
+$$
 
 这假设序列长度较短（即几百个token，而非数万个token），此时计算由线性层主导。对于非常长的序列，自注意力计算将占主导地位，这将需要更复杂的公式。
 

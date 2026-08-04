@@ -123,9 +123,11 @@ arXiv:2203.02155v1 [cs.CL] 2022年3月4日
 
 具体来说，奖励模型的损失函数是：
 
-$$\text{loss}(\theta) = -\frac{1}{\binom{K}{2}} \mathbb{E}_{(x,y_w,y_l)\sim D} \left[ \log \left( \sigma \left( r_\theta(x,y_w) - r_\theta(x,y_l) \right) \right) \right] \qquad (1)$$
+$$
+\text{loss}(\theta) = -\frac{1}{\binom{K}{2}} \mathbb{E}_{(x,y_w,y_l)\sim D} \left[ \log \left( \sigma \left( r_\theta(x,y_w) - r_\theta(x,y_l) \right) \right) \right] \qquad (1)
+$$
 
-其中 $r_\theta(x, y)$ 是奖励模型对提示 $x$ 和完成 $y$ 的标量输出（参数为 $\theta$），$y_w$ 是 $y_w$ 和 $y_l$ 这对完成中更受偏好的一个，$D$ 是人类比较数据集。
+其中 $r_\theta(x, y)$ 是奖励模型对提示 $x$ 和完成 $y$ 的标量输出（参数为 $\theta$ ）， $y_w$ 是 $y_w$ 和 $y_l$ 这对完成中更受偏好的一个， $D$ 是人类比较数据集。
 
 [5] 也就是说，如果每个可能的 $\binom{K}{2}$ 个比较都被视为单独的数据点，那么每个完成可能被用于 $K-1$ 次单独的梯度更新。模型在一个epoch后倾向于过拟合，因此在一个epoch内重复数据也会导致过拟合。
 
@@ -135,9 +137,11 @@ $$\text{loss}(\theta) = -\frac{1}{\binom{K}{2}} \mathbb{E}_{(x,y_w,y_l)\sim D} \
 
 我们还尝试将预训练梯度混合到PPO梯度中，以修复公共NLP数据集上的性能回归。我们将这些模型称为"PPO-ptx"。我们在RL训练中最大化以下组合目标函数：
 
-$$\text{objective}(\phi) = \mathbb{E}_{(x,y)\sim D_{\pi^{RL}_\phi}} \left[ r_\theta(x,y) - \beta \log \left( \pi^{RL}_\phi(y|x) / \pi^{SFT}(y|x) \right) \right] + \gamma \mathbb{E}_{x\sim D_{\text{pretrain}}} \left[ \log(\pi^{RL}_\phi(x)) \right] \qquad (2)$$
+$$
+\text{objective}(\phi) = \mathbb{E}_{(x,y)\sim D_{\pi^{RL}_\phi}} \left[ r_\theta(x,y) - \beta \log \left( \pi^{RL}_\phi(y|x) / \pi^{SFT}(y|x) \right) \right] + \gamma \mathbb{E}_{x\sim D_{\text{pretrain}}} \left[ \log(\pi^{RL}_\phi(x)) \right] \qquad (2)
+$$
 
-其中 $\pi^{RL}_\phi$ 是学习的RL策略，$\pi^{SFT}$ 是监督训练模型，$D_{\text{pretrain}}$ 是预训练分布。KL奖励系数 $\beta$ 和预训练损失系数 $\gamma$ 分别控制KL惩罚和预训练梯度的强度。对于"PPO"模型，$\gamma$ 设为0。除非另有说明，本文中InstructGPT指PPO-ptx模型。
+其中 $\pi^{RL}_\phi$ 是学习的RL策略， $\pi^{SFT}$ 是监督训练模型， $D_{\text{pretrain}}$ 是预训练分布。KL奖励系数 $\beta$ 和预训练损失系数 $\gamma$ 分别控制KL惩罚和预训练梯度的强度。对于"PPO"模型， $\gamma$ 设为0。除非另有说明，本文中InstructGPT指PPO-ptx模型。
 
 **基线。** 我们将PPO模型的性能与SFT模型和GPT-3进行比较。我们还将GPT-3与提供给它的few-shot前缀进行比较，以将其"提示"到指令遵循模式（GPT-3-prompted）。此前缀被附加在用户指定的指令之前。[6]
 

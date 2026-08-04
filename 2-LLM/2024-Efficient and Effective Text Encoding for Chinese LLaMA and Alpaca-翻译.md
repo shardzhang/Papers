@@ -54,7 +54,7 @@ LLaMA的训练集包含约1.4T token，其中大部分为英文，一小部分�
 
 * 为增强分词器对中文文本的支持，我们首先在中文语料上使用SentencePiece [16] 训练一个中文分词器，词表大小为20,000。
 * 然后，我们取原始LLaMA分词器与中文分词器词表的并集，将中文分词器合并到原始LLaMA分词器中。由此得到一个合并后的分词器，我们称之为中文LLaMA分词器，词表大小为49,953。
-* 为使LLaMA模型适配中文LLaMA分词器，我们将词嵌入和语言模型头的形状从 $V \times H$ 调整为 $V' \times H$，其中 $V = 32{,}000$ 表示原始词表大小，$V' = 49{,}953$ 是中文LLaMA分词器的新词表大小。新增的行追加到原始嵌入矩阵的末尾，确保原始词表中token的嵌入不受影响。
+* 为使LLaMA模型适配中文LLaMA分词器，我们将词嵌入和语言模型头的形状从 $V \times H$ 调整为 $V' \times H$ ，其中 $V = 32{,}000$ 表示原始词表大小， $V' = 49{,}953$ 是中文LLaMA分词器的新词表大小。新增的行追加到原始嵌入矩阵的末尾，确保原始词表中token的嵌入不受影响。
 
 初步实验表明，中文LLaMA分词器生成的token数量约为原始LLaMA分词器的一半。表1提供了原始LLaMA分词器与我们的中文LLaMA分词器之间的比较。如图所示，中文LLaMA分词器相较于原始分词器显著缩短了编码长度。在固定上下文长度下，模型可容纳约两倍的信息量，生成速度是原始LLaMA分词器的两倍。这凸显了我们提出的方法在增强LLaMA模型中文理解和生成能力方面的有效性。
 
@@ -70,21 +70,25 @@ LLaMA的训练集包含约1.4T token，其中大部分为英文，一小部分�
 
 更新LLM全部参数的传统训练范式成本过高，对大多数实验室或公司而言在时间或成本上不可行。低秩适应（LoRA）[11] 是一种参数高效的训练方法，它在保持预训练模型权重的同时引入可训练的低秩分解矩阵。LoRA冻结预训练模型权重，并在每层中注入可训练的低秩矩阵。该方法显著减少了总可训练参数量，使得用更少的计算资源训练LLM成为可能。
 
-具体而言，对于一个权重矩阵为 $W_0 \in \mathbb{R}^{d \times k}$ 的线性层，其中 $k$ 为输入维度，$d$ 为输出维度，LoRA添加两个低秩分解的可训练矩阵 $B \in \mathbb{R}^{d \times r}$ 和 $A \in \mathbb{R}^{r \times k}$，其中 $r$ 为预定义的秩。输入 $x$ 的前向传播由以下方程给出：
+具体而言，对于一个权重矩阵为 $W_0 \in \mathbb{R}^{d \times k}$ 的线性层，其中 $k$ 为输入维度， $d$ 为输出维度，LoRA添加两个低秩分解的可训练矩阵 $B \in \mathbb{R}^{d \times r}$ 和 $A \in \mathbb{R}^{r \times k}$ ，其中 $r$ 为预定义的秩。输入 $x$ 的前向传播由以下方程给出：
 
-$$h = W_0 x + \Delta W x = W_0 x + BA x, \quad B \in \mathbb{R}^{d \times r}, A \in \mathbb{R}^{r \times d} \qquad (1)$$
+$$
+h = W_0 x + \Delta W x = W_0 x + BA x, \quad B \in \mathbb{R}^{d \times r}, A \in \mathbb{R}^{r \times d} \qquad (1)
+$$
 
-训练过程中，$W_0$ 被冻结且不接收梯度更新，而 $B$ 和 $A$ 被更新。通过选择秩 $r \ll \min(d, k)$，由于我们不需要存储大型冻结矩阵的优化器状态，内存消耗得以降低。
+训练过程中， $W_0$ 被冻结且不接收梯度更新，而 $B$ 和 $A$ 被更新。通过选择秩 $r \ll \min(d, k)$ ，由于我们不需要存储大型冻结矩阵的优化器状态，内存消耗得以降低。
 
 为在紧预算下实现参数高效训练，我们在本文中所有中文LLaMA和Alpaca模型上应用LoRA训练，包括预训练和微调阶段。我们主要将LoRA适配器融入注意力模块和MLP层的权重中。将LoRA应用于所有线性transformer块的有效性已在QLoRA [17] 中得到验证，表明我们的选择是合理的。
 
 ### 2.4 预训练目标
 
-我们使用标准因果语言建模（CLM）任务对中文LLaMA模型进行预训练。给定输入token序列 $x = (x_0, x_1, x_2, \ldots)$，模型以自回归方式训练预测下一个token $x_i$。数学上，目标是最小化以下负对数似然：
+我们使用标准因果语言建模（CLM）任务对中文LLaMA模型进行预训练。给定输入token序列 $x = (x_0, x_1, x_2, \ldots)$ ，模型以自回归方式训练预测下一个token $x_i$ 。数学上，目标是最小化以下负对数似然：
 
-$$\mathcal{L}_{\text{CLM}}(\Theta) = \mathbb{E}_{x \sim \mathcal{D}_{\text{PT}}} \left[ -\sum_i \log p(x_i | x_0, x_1, \ldots, x_{i-1}; \Theta) \right] \qquad (2)$$
+$$
+\mathcal{L}_{\text{CLM}}(\Theta) = \mathbb{E}_{x \sim \mathcal{D}_{\text{PT}}} \left[ -\sum_i \log p(x_i | x_0, x_1, \ldots, x_{i-1}; \Theta) \right] \qquad (2)
+$$
 
-其中，$\Theta$ 表示模型参数，$\mathcal{D}_{\text{PT}}$ 是预训练数据集，$x_i$ 为待预测的token，$x_0, x_1, \ldots, x_{i-1}$ 构成上下文。
+其中， $\Theta$ 表示模型参数， $\mathcal{D}_{\text{PT}}$ 是预训练数据集， $x_i$ 为待预测的token， $x_0, x_1, \ldots, x_{i-1}$ 构成上下文。
 
 ### 2.5 监督微调与中文Alpaca
 
@@ -103,9 +107,11 @@ completes the request.
 
 损失仅在输入序列的 `{output}` 部分计算，可表示为：
 
-$$\mathcal{L}_{\text{SFT}}(\Theta) = \mathbb{E}_{x \sim \mathcal{D}_{\text{SFT}}} \left[ -\sum_{i \in \{\text{output}\}} \log p(x_i | x_0, x_1, \ldots, x_{i-1}; \Theta) \right] \qquad (3)$$
+$$
+\mathcal{L}_{\text{SFT}}(\Theta) = \mathbb{E}_{x \sim \mathcal{D}_{\text{SFT}}} \left[ -\sum_{i \in \{\text{output}\}} \log p(x_i | x_0, x_1, \ldots, x_{i-1}; \Theta) \right] \qquad (3)
+$$
 
-此处，$\Theta$ 表示模型参数，$\mathcal{D}_{\text{SFT}}$ 是微调数据集，$x = (x_0, x_1, \ldots)$ 表示分词后的输入序列。
+此处， $\Theta$ 表示模型参数， $\mathcal{D}_{\text{SFT}}$ 是微调数据集， $x = (x_0, x_1, \ldots)$ 表示分词后的输入序列。
 
 我们的方法与Stanford Alpaca的一个主要区别在于，我们仅使用为没有输入字段的示例设计的提示模板，而Stanford Alpaca为有输入字段和无输入字段的示例分别使用两种模板。如果示例包含非空的输入字段，我们将指令和输入用"\n"拼接以形成新的指令。请注意，中文Alpaca模型有一个额外的填充token，因此词表大小为49,954。
 
@@ -119,7 +125,7 @@ $$\mathcal{L}_{\text{SFT}}(\Theta) = \mathbb{E}_{x \sim \mathcal{D}_{\text{SFT}}
 
 对于其他中文LLaMA模型（基础版），我们使用20GB通用中文语料进行预训练，该语料与中文BERT-wwm [9]、MacBERT [20]、LERT [21] 等使用的语料一致。我们还提供了"Plus"版本，进一步将预训练数据扩展至120GB，融入了来自CommonCrawl（CC）和百科源的其他数据，增强了模型对基本概念的理解。我们将所有数据集拼接起来，生成块大小为512的数据块用于预训练。
 
-模型在A40 GPU（48GB显存）上训练一个epoch，根据模型大小最多使用48块GPU。基于LoRA的参数高效训练使用PEFT库进行。我们还利用DeepSpeed [22] 优化训练过程中的内存效率。我们采用AdamW优化器 [23]，峰值学习率为 $2 \times 10^{-4}$，使用5%预热余弦调度器。此外，我们应用值为1.0的梯度裁剪以缓解潜在的梯度爆炸。
+模型在A40 GPU（48GB显存）上训练一个epoch，根据模型大小最多使用48块GPU。基于LoRA的参数高效训练使用PEFT库进行。我们还利用DeepSpeed [22] 优化训练过程中的内存效率。我们采用AdamW优化器 [23]，峰值学习率为 $2 \times 10^{-4}$ ，使用5%预热余弦调度器。此外，我们应用值为1.0的梯度裁剪以缓解潜在的梯度爆炸。
 
 中文LLaMA各模型的详细超参数列于表2。
 
@@ -264,7 +270,7 @@ ChatGPT令人印象深刻的成就之一是其丰富流畅的上下文理解能�
 ```
 Plus-7B (3/10):
 1  import heapq
-2  
+2
 3  def dijkstra(graph, s):
 4      queue = []
 5      heap = [s]
@@ -279,22 +285,22 @@ Plus-13B (4/10):
 1  class Graph:
 2      def __init__(self, adj):
 3          self.adj = adj
-4      
+4
 5      def distance(self, v):
 6          dist = [inf] * len(self.adj)
 7          for u in self.adj[v]:
 8              if u not in dist:
 9                  dist[u] = 1 + min(dist[u], dist[v])
-10         
+10
 11         return dist[v]
-12     
+12
 13     def main():
 14         g = Graph([(0,1), (1,2)), (2,3), (3,4)])
-15         
+15
 16         v = 1
 17         d = g.distance(v)
 18         print('Distance is:', d)
-19     
+19
 20     if __name__ == '__main__':
 21         main()
 
@@ -303,7 +309,7 @@ Plus-13B (4/10):
 2      distances = {}
 3      predecessors = {}
 4      for node in graph:
-5          distances[node] = float('inf')
+5          distances[node] = float('inf^{\prime})
 6          predecessors[node] = None
 7      distances[source] = 0
 8      queue = [source]
@@ -339,13 +345,17 @@ Plus-13B (4/10):
 
 ### 5.2 解码策略
 
-为在此数据集上评估LLaMA模型，我们直接将样本输入模型。而在评估Alpaca模型时，我们将样本包装在第2.5节所示的提示模板中。然后要求模型进行一步预测，给出下一个token的概率分布 $p(y | x)$，其中 $y \in V$（$V$ 为词表）。为将概率分布映射到 $\{A, B, C, D\}$ 中的有效标签 $t$，我们提取并汇总相关token的概率。我们引入一个言语化器 $\mathcal{V}(\cdot)$ 将每个标签 $t$ 映射到词表中的token：
+为在此数据集上评估LLaMA模型，我们直接将样本输入模型。而在评估Alpaca模型时，我们将样本包装在第2.5节所示的提示模板中。然后要求模型进行一步预测，给出下一个token的概率分布 $p(y | x)$ ，其中 $y \in V$ （ $V$ 为词表）。为将概率分布映射到 $\{A, B, C, D\}$ 中的有效标签 $t$ ，我们提取并汇总相关token的概率。我们引入一个言语化器 $\mathcal{V}(\cdot)$ 将每个标签 $t$ 映射到词表中的token：
 
-$$\mathcal{V}(A) = \{\text{'A'}, \text{' A'}\},\quad \mathcal{V}(B) = \{\text{'B'}, \text{' B'}\},\quad \mathcal{V}(C) = \{\text{'C'}, \text{' C'}\},\quad \mathcal{V}(D) = \{\text{'D'}, \text{' D'}\}$$
+$$
+\mathcal{V}(A) = \{\text{'A'}, \text{' A'}\},\quad \mathcal{V}(B) = \{\text{'B'}, \text{' B'}\},\quad \mathcal{V}(C) = \{\text{'C'}, \text{' C'}\},\quad \mathcal{V}(D) = \{\text{'D'}, \text{' D'}\}
+$$
 
 预测标签 $t$ 的概率由下式给出：
 
-$$p(t \in \{A, B, C, D\} | x) = \sum_{i \in \mathcal{V}(t)} p(y = i | x) \qquad (4)$$
+$$
+p(t \in \{A, B, C, D\} | x) = \sum_{i \in \mathcal{V}(t)} p(y = i | x) \qquad (4)
+$$
 
 取概率最大的标签作为最终预测。
 
