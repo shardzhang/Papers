@@ -234,6 +234,8 @@ $$
 
 在本文中，我们详细介绍了新一代预排序系统COLD。它从一个全新的视角设计。COLD不是通过对模型架构施加严格限制（导致模型性能损失）来节省计算能力，而是同时考虑模型设计和系统设计。在COLD中，计算能力成本也是一个可以与模型性能联合优化的变量。通过模型架构和计算能力成本的协同设计，COLD成为一个灵活的预排序系统，模型性能和计算能力成本之间的权衡是可控的。这种新的预排序系统能够更好地追求模型性能。实验表明，COLD模型相比基于向量积的DNN模型（我们上一版本的在线预排序模型）实现了超过6%的RPM提升，这对业务意义重大。此外，COLD可以以完全在线的基础设施实现训练和服务，达到了当前排序系统拥有的最佳系统实践。自2019年以来，COLD已部署在阿里巴巴的展示广告系统中，服务几乎所有产品的主要流量，为业务收入增长做出了显著贡献。
 
+
+
 ## 参考文献
 
 [1] Qiwei Chen, Huan Zhao, Wei Li, Pipei Huang, and Wenwu Ou. 2019. Behavior Sequence Transformer for E-commerce Recommendation in Alibaba. (May 2019). arXiv:1905.06874
@@ -244,11 +246,11 @@ $$
 
 [4] Kun Gai, Xiaoqiang Zhu, Han Li, Kai Liu, and Zhe Wang. 2017. Learning Piece-wise Linear Models from Large Scale Data for Ad Click Prediction. arXiv preprint arXiv:1704.05194 (2017).
 
-[5] Mihajlo Grbovic and Haibin Cheng. 2018. Real-time Personalization using Embeddings for Search Ranking at Airbnb. KDD (2018), 311–320.
+[5] Mihajlo Grbovic and Haibin Cheng. 2018. **Real-time Personalization using Embeddings for Search Ranking at Airbnb**. KDD (2018), 311–320.
 
 [6] Jie Hu, Li Shen, and Gang Sun. 2018. Squeeze-and-excitation networks. In Proceedings of the IEEE conference on computer vision and pattern recognition. 7132–7141.
 
-[7] Tongwen Huang, Zhiqi Zhang, and Junlin Zhang. 2019. FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction. arXiv.org (May 2019), 169–177. arXiv:1905.09433v1 [cs.LG]
+[7] Tongwen Huang, Zhiqi Zhang, and Junlin Zhang. 2019. **FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction**. arXiv.org (May 2019), 169–177. arXiv:1905.09433v1 [cs.LG]
 
 [8] Bin Liu, Chenxu Zhu, Guilin Li, Weinan Zhang, Jincai Lai, Ruiming Tang, Xiuqiang He, Zhenguo Li, and Yong Yu. 2020. AutoFIS: Automatic Feature Interaction Selection in Factorization Models for Click-Through Rate Prediction. (March 2020). arXiv:2003.11235
 

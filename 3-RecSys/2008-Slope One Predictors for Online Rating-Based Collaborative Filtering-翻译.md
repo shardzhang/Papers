@@ -2,6 +2,8 @@
 
 > Daniel Lemire, Anna Maclachlan | Université du Québec à Montréal, University of Prince Edward Island
 
+
+
 本文分享了 Slope One 系列协同过滤（CF，Collaborative Filtering）预测器，该系列算法基于 $f(x) = x + b$ 形式的线性回归模型，通过预先计算 item 间的平均评分差异来进行评分预测。核心内容：
 
 - 提出了三种 Slope One 方案：基本 Slope One、加权 Slope One 和双极 Slope One，这些方案简单、易实现、支持在线查询和动态更新
@@ -16,11 +18,15 @@
 
 ---
 
+
+
 ## 摘要
 
 基于评分的协同过滤（Rating-based Collaborative Filtering）是根据其他用户的评分来预测某个用户将如何评价给定item的过程。我们提出了三种相关的Slope One方案，其预测器形式为 $f(x) = x + b$ ，这些方案预先计算了同时对两个item进行评分的用户对这两个item评分之间的平均差异。Slope One算法易于实现、查询效率高、精度合理，并且支持在线查询和动态更新，这使其成为现实世界系统的理想候选。我们建议将基本的SLOPE ONE方案作为协同过滤的新参考方案。通过将用户喜欢的item与用户不喜欢的item分开处理，我们获得了与在标准基准数据集EachMovie和MovieLens上速度较慢的记忆基方案相竞争的结果，同时更好地满足了协同过滤应用的各项需求。
 
 **关键词：** Collaborative Filtering, Recommender System, e-Commerce, Data Mining, Knowledge Discovery
+
+
 
 ## 1 引言
 
@@ -38,6 +44,8 @@
 
 本文的主要贡献是提出了Slope One CF预测器，并证明它们与记忆基方案相比具有几乎相同的精度，同时更适合CF任务，从而证明了 $f(x) = x + b$ 形式的预测器可以与记忆基方案竞争。这是一个重要的结果。
 
+
+
 ## 2 相关工作
 
 ### 2.1 记忆基方案
@@ -49,6 +57,8 @@
 存在许多基于模型的CF方法。一些基于线性代数（SVD、PCA或特征向量）[3, 6, 7, 10, 15, 16]；另一些则更直接地借鉴了人工智能技术，如贝叶斯方法、潜在类别和神经网络[1, 2, 9]；还有一些基于聚类[4, 5]。与记忆基方案相比，模型基CF算法通常在查询时更快，尽管它们可能具有昂贵的训练或更新阶段。当查询速度至关重要时，模型基方案可能优于记忆基方案。
 
 我们可以用以下代数形式将我们的预测器与文献中描述的某些预测器进行比较。我们的预测器形式为 $f(x) = x + b$ ，因此得名"slope one"（斜率为一），其中 $b$ 是常数， $x$ 是表示评分值的变量。对于任意一对item，我们试图找到最佳函数 $f$ ，使其能够根据一个item的评分预测另一个item的评分。这个函数对于每对item可能不同。一个CF方案将对预测器生成的多个预测进行加权。在[14]中，作者考虑了item对之间的相关性，然后推导出用户评分的加权平均值作为预测器。在他们算法的简单版本中，预测器形式为 $f(x) = x$ 。在基于回归的版本中，预测器形式为 $f(x) = ax + b$ 。在[17]中，作者也采用了 $f(x) = ax + b$ 形式的预测器。这两篇论文工作的一个自然扩展是考虑 $f(x) = ax^2 + bx + c$ 形式的预测器。然而，在本文中，我们使用 $f(x) = x + b$ 形式的朴素预测器。我们也使用朴素加权。[14]中观察到，即使他们基于回归的 $f(x) = ax + b$ 算法也没有带来相对于记忆基算法的显著改进。因此，我们证明 $f(x) = x + b$ 形式的预测器可以与记忆基方案竞争，这本身就是一个重要结果。
+
+
 
 ## 3 CF算法
 
@@ -172,6 +182,8 @@ $$
 
 其中权重 $c^{\mathrm{like}}_{ji} = \mathrm{card}(S^{\mathrm{like}}_{ji}(\chi))$ 和 $c^{\mathrm{dislike}}_{ji} = \mathrm{card}(S^{\mathrm{dislike}}_{ji}(\chi))$ 与加权 SLOPE ONE 方案中的权重类似。
 
+
+
 ## 4 实验结果
 
 给定CF算法的有效性可以被精确度量。为此，我们采用了留一法平均绝对误差（MAE，Mean Absolute Error）[2]。在计算MAE时，我们依次从测试集中的所有评价中隐藏单个评分，预测该隐藏评分，然后计算预测的平均误差。给定预测器P和来自用户的评价u，P在一组评价 $\chi^{\prime}$ 上的误差率由以下公式给出：
@@ -204,11 +216,15 @@ $$
 
 **表1：所有方案对比：EachMovie和MovieLens数据集上的留一法平均绝对误差率，数值越低越好。**
 
+
+
 ## 5 结论
 
 本文表明，一种基于平均评分差异的易于实现的CF模型可以与更昂贵的记忆基方案相竞争。与当前使用的方案相比，我们的方法能够同时满足五个相互对抗的目标。Slope One方案易于实现、可动态更新、查询时高效、对新用户要求低，同时具有与其他常见方案相当的精度（例如，在MovieLens上MAE为1.90 vs 1.88）。考虑到所比较的记忆基方案的相对复杂性，这非常引人注目。我们方法的另一个创新之处在于，将评分分为不喜欢和喜欢子集可以成为提高精度的有效技术。希望本文提出的通用Slope One预测器能够作为CF社区的参考方案。
 
 注意，截至2004年11月，加权SLOPE ONE是Bell/MSN网站inDiscover.net使用的协同过滤算法。
+
+
 
 ## 参考文献
 
@@ -238,7 +254,7 @@ $$
 
 [13] P. Resnick, N. Iacovou, M. Suchak, P. Bergstrom, and J. Riedl. Grouplens: An open architecture for collaborative filtering of netnews. In Proc. ACM Computer Supported Cooperative Work, pages 175–186, 1994.
 
-[14] B. M. Sarwar, G. Karypis, J. A. Konstan, and J. Riedl. Item-based collaborative filtering recommender algorithms. In WWW10, 2001.
+[14] B. M. Sarwar, G. Karypis, J. A. Konstan, and J. Riedl. **Item-based collaborative filtering recommender algorithms**. In WWW10, 2001.
 
 [15] B. M. Sarwar, G. Karypis, J. A. Konstan, and J. T. Riedl. Application of dimensionality reduction in recommender system - a case study. In WEBKDD '00, pages 82–90, 2000.
 

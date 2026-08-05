@@ -59,11 +59,11 @@
 
 因子分解机支持的神经网络（FNN，Factorization-Machine Supported Neural Network）[25]是一种**使用FM预训练嵌入层的前馈神经网络**。然而，**FNN只能捕获高阶特征交互**。Wide & Deep模型（WDL，Wide & Deep Learning）[1]最初是为Google Play中的应用推荐而引入的。WDL联合训练宽线性模型和深度神经网络，以结合记忆和泛化的优势用于推荐系统。然而，**WDL的宽部分输入仍然需要专家特征工程，这意味着交叉积转换也需要人工设计**。为了减轻特征工程中的人工工作，DeepFM[4]用FM替换了WDL的宽部分，并在FM和深度组件之间共享特征嵌入。DeepFM被认为是**CTR预估领域最先进的模型之一**。
 
-Deep & Cross Network（DCN）[22]以显式方式高效捕获有界阶数的特征交互。类似地，极端深度因子分解机（xDeepFM）[15]通过提出新颖的**压缩交互网络**（CIN，Compressed Interaction Network）部分，以显式方式建模低阶和高阶特征交互。如[23]所述，FM对所有特征交互使用相同权重进行建模可能会受到限制，因为并非所有特征交互都同样有用和具有预测性。他们提出了注意力因子分解机（AFM，Attentional Factorization Machine）[23]模型，该模型使用注意力网络学习特征交互的权重。深度兴趣网络（DIN，Deep Interest Network）[26]使用兴趣分布表示用户多样化的兴趣，并设计类似注意力的网络结构，根据候选广告局部激活相关兴趣。
+Deep & Cross Network（DCN）[22]以显式方式高效捕获有界阶数的特征交互。类似地，极端深度因子分解机（xDeepFM）[15]通过提出新颖的**压缩交互网络**（CIN，Compressed Interaction Network）部分，以显式方式建模低阶和高阶特征交互。如[23]所述，FM对所有特征交互使用相同权重进行建模可能会受到限制，因为并非所有特征交互都同样有用和具有预测性。他们提出了注意力因子分解机（AFM，Attentional Factorization Machine）[23]模型，该模型使用注意力网络学习特征交互的权重。深度兴趣网络（DIN，Deep Interest Network）[26]使用兴趣分布表示用户多样化的兴趣，并设计类似注意力的网络结构，**根据候选广告 局部激活相关兴趣**。
 
 ### 2.3 SENET模块
 
-Hu等人[8]提出了"Squeeze-and-Excitation Network"（SENET），通过显式建模卷积特征通道之间的相互依赖关系来提升网络的表示能力，用于各种图像分类任务。SENET被证明在图像分类任务中非常成功，并在ILSVRC 2017分类任务中获得第一名。
+Hu等人[8]提出了"Squeeze-and-Excitation Network"（SENET），通过**显式建模卷积特征通道之间的相互依赖关系**来提升网络的表示能力，用于各种图像分类任务。SENET被证明在图像分类任务中非常成功，并在ILSVRC 2017分类任务中获得第一名。
 
 除图像分类外，SENET还有其他应用[12, 21, 24]。[21]为语义分割任务引入了SE模块的三种变体。胸部X光片上常见胸部疾病分类以及可疑病变区域的定位[24]是另一个应用领域。[16]将SENET模块与全局-局部注意力（GALA，Global-and-Local Attention）模块扩展，在ILSVRC上获得了最先进的准确率。
 

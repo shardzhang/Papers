@@ -7,11 +7,17 @@
 本文介绍了 YouTube 推荐系统的深度神经网络架构。核心内容：
 
 - 提出两阶段推荐架构：候选生成（超大规模多分类 + 采样 softmax）和排序（加权逻辑回归优化观看时间）
-- 引入Example Age特征解决视频流行度的非平稳性问题
+- 引入Example Age特征解决 视频流行度的非平稳性问题
 - 深度神经网络**通过嵌入层融合异构信号**（观看历史、搜索历史、人口统计特征）
 - 排序阶段使用加权逻辑回归直接建模预期观看时间而非点击率
 
 关键发现：
+
+- 深度神经网络显著优于YouTube之前使用的矩阵分解方法，深层隐藏单元和异构信号均带来明显收益
+- 引入"Example Age"特征有效消除了对过去的固有偏差，在A/B测试中显著增加了新上传视频的观看时间
+- 排序阶段使用加权逻辑回归（正样本按观看时间加权）比直接预测点击率效果更好
+- 向分类器隐藏具有区分能力的信号（如最后搜索查询）对防止替代问题过拟合至关重要
+- 预测用户的下一个观看（而非随机保留的观看）能更好地捕获不对称的共同观看模式
 
 ---
 
@@ -21,7 +27,11 @@
 
 YouTube 代表了现存规模最大、最复杂的工业推荐系统之一。本文从高层次描述了该系统，并重点介绍了深度学习带来的显著性能提升。本文按照经典的信息检索两阶段二分法进行组织：首先，我们详细介绍了一个深度候选生成模型，然后描述了一个独立的深度排序模型。我们还提供了从设计、迭代和维护一个对用户具有巨大影响力的大规模推荐系统中获得的实践经验与见解。
 
-**关键词**：recommender system；deep learning；scalability
+
+
+## 关键词
+
+recommender system; deep learning; scalability
 
 ---
 
@@ -83,7 +93,7 @@ $$
 
 尽管 YouTube 上存在显式反馈机制（赞/踩、产品内调查等），但我们使用观看的隐式反馈 [16] 来训练模型，其中用户完成一个视频即为正样本。这一选择基于以下考量：可用的隐式用户历史记录数量多出数个数量级，这使我们能够在显式反馈极为稀疏的长尾区域生成推荐。
 
-### 高效极多类分类
+#### 高效极多类分类
 
 为了高效训练具有数百万类别的模型，我们依赖于从背景分布中采样负类别的技术（"候选采样"），然后通过重要性加权 [10] 对此采样进行校正。对于每个样本，交叉熵损失针对真实标签和采样的负类别进行最小化。实际上，我们会采样数千个负样本，相比传统 softmax 实现了超过 100 倍的加速。另一种流行的替代方法是层次化 softmax [15]，但我们未能达到相当的精度。在层次化 softmax 中，遍历树中的每个节点都需要在通常不相关的类别集合之间进行判别，这使得分类问题更加困难并降低了性能。
 
@@ -150,7 +160,7 @@ $$
 
 我们的特征按照传统的分类法分为类别特征和连续/序数特征。我们使用的类别特征的基数差异很大——有些是二值的（例如用户是否已登录），而其他可能拥有数百万个可能值（例如用户的最后一次搜索查询）。特征进一步根据它们贡献的是单值还是多值集合来划分。单值类别特征的一个例子是被评分的展现的视频 ID，而相应的多值特征可能是用户最近看过的 $N$ 个视频 ID 的词袋。我们还根据特征是描述 item（"展现"）的属性还是描述用户/上下文（"查询"）的属性来对特征进行分类。查询特征每个请求计算一次，而展现特征则为每个被评分的 item 计算。
 
-### 特征工程
+#### 特征工程
 
 我们的排序模型通常使用数百个特征，大致在类别特征和连续特征之间平均分配。尽管深度学习有望减轻手工特征工程的负担，但我们的原始数据特性使其不易直接输入到前馈神经网络中。我们仍然投入了大量的工程资源来将用户和视频数据转换为有用的特征。主要挑战在于表示用户行为的时间序列以及这些行为与被评分的视频展现之间的关系。
 
@@ -158,13 +168,13 @@ $$
 
 描述过去视频展现频率的特征对于在推荐中引入变化也是至关重要的（连续的请求不会返回完全相同的列表）。如果用户最近被推荐了一个视频但没有观看，模型会在下次页面加载时自然地降低该展现的排序。提供精确到秒的展现和观看历史本身就是一项工程壮举，超出了本文的范围，但对于产生响应式推荐至关重要。
 
-### 嵌入类别特征
+#### 嵌入类别特征
 
 与候选生成类似，我们使用嵌入将稀疏的类别特征映射为适合神经网络的稠密表示。每个唯一的 ID 空间（"词汇表"）有一个独立的学习嵌入，其维度大致与唯一值数量的对数成比例。这些词汇表是简单的查找表，通过在训练前对数据进行一次遍历来构建。非常大基数的 ID 空间（例如视频 ID 或搜索查询词）通过在点击展现中按频率排序后仅保留前 $N$ 个来截断。词汇表外的值简单地映射到零嵌入。与候选生成一样，多值类别特征的嵌入在输入网络之前取平均。
 
 重要的是，同一 ID 空间中的类别特征共享底层嵌入。例如，存在一个全局的视频 ID 嵌入，被多个不同的特征使用（展现的视频 ID、用户最后观看的视频 ID、"种子"推荐生成的视频 ID 等）。尽管嵌入是共享的，但每个特征单独输入网络，以便上层能为每个特征学习专门的表示。共享嵌入对于提高泛化能力、加速训练和减少内存需求非常重要。绝大多数模型参数都在这些高基数的嵌入空间中——例如，在 32 维空间中嵌入 100 万个 ID 的参数数量是 2048 单元全连接层的 7 倍。
 
-### 连续特征归一化
+#### 连续特征归一化
 
 神经网络对其输入的缩放和分布非常敏感 [9]，而决策树集成等替代方法则不受单个特征缩放的影响。我们发现连续特征的正确归一化对于收敛至关重要。具有分布 $f$ 的连续特征 $x$ 通过使用累积分布将值缩放到在 $[0,1)$ 中均匀分布，从而变换为 $\tilde{x}$：
 
@@ -236,21 +246,21 @@ $$
 
 [2] X. Amatriain. Building industrial-scale real-world recommender systems. In *Proceedings of the Sixth ACM Conference on Recommender Systems*, RecSys '12, pages 7–8, New York, NY, USA, 2012. ACM.
 
-[3] J. Davidson, B. Liebald, J. Liu, P. Nandy, T. VanVleet, U. Gargi, S. Gupta, Y. He, M. Lambert, B. Livingston, and D. Sampath. The youtube video recommendation system. In *Proceedings of the Fourth ACM Conference on Recommender Systems*, RecSys '10, pages 293–296, New York, NY, USA, 2010. ACM.
+[3] J. Davidson, B. Liebald, J. Liu, P. Nandy, T. VanVleet, U. Gargi, S. Gupta, Y. He, M. Lambert, B. Livingston, and D. Sampath. **The youtube video recommendation system**. In *Proceedings of the Fourth ACM Conference on Recommender Systems*, RecSys '10, pages 293–296, New York, NY, USA, 2010. ACM.
 
 [4] J. Dean, G. S. Corrado, R. Monga, K. Chen, M. Devin, Q. V. Le, M. Z. Mao, M. Ranzato, A. Senior, P. Tucker, K. Yang, and A. Y. Ng. Large scale distributed deep networks. In *NIPS*, 2012.
 
-[5] A. M. Elkahky, Y. Song, and X. He. A multi-view deep learning approach for cross domain user modeling in recommendation systems. In *Proceedings of the 24th International Conference on World Wide Web*, WWW '15, pages 278–288, New York, NY, USA, 2015. ACM.
+[5] A. M. Elkahky, Y. Song, and X. He. **A multi-view deep learning approach for cross domain user modeling in recommendation systems**. In *Proceedings of the 24th International Conference on World Wide Web*, WWW '15, pages 278–288, New York, NY, USA, 2015. ACM.
 
-[6] X. Glorot, A. Bordes, and Y. Bengio. Deep sparse rectifier neural networks. In G. J. Gordon and D. B. Dunson, editors, *Proceedings of the Fourteenth International Conference on Artificial Intelligence and Statistics (AISTATS-11)*, volume 15, pages 315–323. Journal of Machine Learning Research - Workshop and Conference Proceedings, 2011.
+[6] X. Glorot, A. Bordes, and Y. Bengio. **Deep sparse rectifier neural networks**. In G. J. Gordon and D. B. Dunson, editors, *Proceedings of the Fourteenth International Conference on Artificial Intelligence and Statistics (AISTATS-11)*, volume 15, pages 315–323. Journal of Machine Learning Research - Workshop and Conference Proceedings, 2011.
 
-[7] X. He, J. Pan, O. Jin, T. Xu, B. Liu, T. Xu, Y. Shi, A. Atallah, R. Herbrich, S. Bowers, and J. Q. n. Candela. Practical lessons from predicting clicks on ads at facebook. In *Proceedings of the Eighth International Workshop on Data Mining for Online Advertising*, ADKDD'14, pages 5:1–5:9, New York, NY, USA, 2014. ACM.
+[7] X. He, J. Pan, O. Jin, T. Xu, B. Liu, T. Xu, Y. Shi, A. Atallah, R. Herbrich, S. Bowers, and J. Q. n. Candela. **Practical lessons from predicting clicks on ads at facebook**. In *Proceedings of the Eighth International Workshop on Data Mining for Online Advertising*, ADKDD'14, pages 5:1–5:9, New York, NY, USA, 2014. ACM.
 
 [8] W. Huang, Z. Wu, L. Chen, P. Mitra, and C. L. Giles. A neural probabilistic model for context based citation recommendation. In *AAAI*, pages 2404–2410, 2015.
 
 [9] S. Ioffe and C. Szegedy. Batch normalization: Accelerating deep network training by reducing internal covariate shift. *CoRR*, abs/1502.03167, 2015.
 
-[10] S. Jean, K. Cho, R. Memisevic, and Y. Bengio. On using very large target vocabulary for neural machine translation. *CoRR*, abs/1412.2007, 2014.
+[10] S. Jean, K. Cho, R. Memisevic, and Y. Bengio. **On using very large target vocabulary for neural machine translation**. *CoRR*, abs/1412.2007, 2014.
 
 [11] L. Jiang, Y. Miao, Y. Yang, Z. Lan, and A. G. Hauptmann. Viral video style: A closer look at viral videos on youtube. In *Proceedings of International Conference on Multimedia Retrieval*, ICMR '14, pages 193:193–193:200, New York, NY, USA, 2014. ACM.
 
@@ -258,11 +268,11 @@ $$
 
 [13] E. Meyerson. Youtube now: Why we focus on watch time. http://youtubecreator.blogspot.com/2012/08/youtube-now-why-we-focus-on-watch-time.html. Accessed: 2016-04-20.
 
-[14] T. Mikolov, I. Sutskever, K. Chen, G. Corrado, and J. Dean. Distributed representations of words and phrases and their compositionality. *CoRR*, abs/1310.4546, 2013.
+[14] T. Mikolov, I. Sutskever, K. Chen, G. Corrado, and J. Dean. **Distributed representations of words and phrases and their compositionality**. *CoRR*, abs/1310.4546, 2013.
 
 [15] F. Morin and Y. Bengio. Hierarchical probabilistic neural network language model. In *AISTATS'05*, pages 246–252, 2005.
 
-[16] D. Oard and J. Kim. Implicit feedback for recommender systems. In *Proceedings of the AAAI Workshop on Recommender Systems*, pages 81–83, 1998.
+[16] D. Oard and J. Kim. **Implicit feedback for recommender systems**. In *Proceedings of the AAAI Workshop on Recommender Systems*, pages 81–83, 1998.
 
 [17] K. J. Oh, W. J. Lee, C. G. Lim, and H. J. Choi. Personalized news recommendation using classified keywords to capture user preference. In *16th International Conference on Advanced Communication Technology*, pages 1283–1287, Feb 2014.
 
