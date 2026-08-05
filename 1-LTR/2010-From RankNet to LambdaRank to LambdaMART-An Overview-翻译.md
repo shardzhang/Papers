@@ -11,6 +11,8 @@ LambdaMART是LambdaRank的boosted tree版本，后者基于RankNet。RankNet、L
 
 ---
 
+
+
 ## 摘要
 
 LambdaMART是LambdaRank的boosted tree版本，后者基于RankNet。RankNet、LambdaRank和LambdaMART已被证明是解决实际排序问题非常成功的算法：例如，一组LambdaMART排序器赢得了最近的Yahoo! Learning To Rank挑战赛（Track 1）[5]。虽然本文将专注于排序，但很容易将MART（尤其是LambdaMART）修改为适用于广泛的监督学习问题（包括最大化信息检索函数，如NDCG，这些函数关于模型得分不是平滑的）。
@@ -491,9 +493,13 @@ end for
 
 最后给出以下说明：[11]包含一个相对简单的方法来线性组合两个排序器，使得在所有可能的线性组合中，得到的排序器获得尽可能高的NDCG（实际上这对于任何IR指标都可行）。关键技巧在于注意到如果 $s_i^1$ 是第一个排序器的输出（对于给定查询）， $s_i^2$ 是第二个的输出，则组合排序器的输出可以写为 $\alpha s_i^1 + (1 - \alpha) s_i^2$ ，且当 $\alpha$ 在其值域内变化时（比如从0到1），NDCG只会改变有限次。我们可以简单（且相当高效地）跟踪每次变化，并保留给出最佳组合NDCG的 $\alpha$ 。然而也应注意，通过简单地将先前模型的得分作为输入来训练一个线性（或非线性）LambdaRank模型，也可以达到类似的目标（但无法保证最优性）。这通常给出同样好的结果，并且更容易扩展到多个模型。
 
+
+
 ## 致谢
 
 这里描述的工作受到了许多人的影响。除了参考文献中列出的合著者之外，我还要特别感谢Qiang Wu、Krysta Svore、Ofer Dekel、Pinar Donmez、Yisong Yue和Galen Andrew。
+
+
 
 ## 参考文献
 

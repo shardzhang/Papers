@@ -47,7 +47,7 @@ https://doi.org/10.1145/3624918.3625339
 
 ## 1 引言
 
-基础模型（Foundation Models）如大语言模型（LLM）[3, 4, 27]已经显著影响了自然语言处理（NLP）和计算机视觉（CV）[19]等研究领域，并已被应用于各种推荐系统（RS，Recommender System）任务。最近的研究如P5 [9]和M6Rec [6]利用了预训练LLM用于推荐的优势[17]：它们将丰富的用户行为和知识信息融入预训练中，并受益于基础模型强大的学习能力。预训练的LLM还具有改进的推理能力[11]，能够基于上下文推断用户兴趣。因此，这些模型旨在利用在大量自然语言语料库上预训练的LLM，通过将推荐任务转化为语言生成任务来实现生成式推荐。
+基础模型（Foundation Models）如大语言模型（LLM，Large Language Model）[3, 4, 27]已经显著影响了自然语言处理（NLP，Natural Language Processing）和计算机视觉（CV，Computer Vision）[19]等研究领域，并已被应用于各种推荐系统（RS，Recommender System）任务。最近的研究如P5 [9]和M6Rec [6]利用了预训练LLM用于推荐的优势[17]：它们将丰富的用户行为和知识信息融入预训练中，并受益于基础模型强大的学习能力。预训练的LLM还具有改进的推理能力[11]，能够基于上下文推断用户兴趣。因此，这些模型旨在利用在大量自然语言语料库上预训练的LLM，通过将推荐任务转化为语言生成任务来实现生成式推荐。
 
 由于item描述可能包含大量词汇（例如，产品标题/描述可能包含数十/数百个词，新闻文章可能包含数千个词），我们很难期望LLM在决定推荐哪个item时生成完整且精确的item描述，因为生成的文本可能甚至不对应item数据库中真实存在的item，导致基于LLM推荐中的幻觉问题[8, 18]。因此，为每个item分配唯一ID，使其由少量特征性token表示且相互可区分，至关重要。例如，Yelp中的一个商业位置可能被分配ID"location_4332"，并进一步表示为token序列 $\langle location \rangle \langle \_ \rangle \langle 43 \rangle \langle 32 \rangle$ [9]。注意，item ID不一定必须是数字token，只要它是item的唯一标识符，就可以被视为该item的ID。例如，电影"The Lord of the Rings"的标题可以作为该电影的ID，它由一系列词token而非数字token组成。ID甚至可以是一系列不传达明确含义的词序列，例如"ring epic journey fellowship adventure"。
 
@@ -73,7 +73,7 @@ https://doi.org/10.1145/3624918.3625339
 
 ### 3.2 尖括号表示法
 
-在本文中，我们需要引入词汇外（OOV，Out-of-Vocabulary）token来构建某些索引方法中的item索引，这些token不属于语言模型的常规词汇表。在我们的案例中，它们是不存在于默认T5词汇表[23]中的token。为区分新创建的OOV token和现有token，我们使用尖括号"$\langle \rangle$"来表示新创建的OOV token，而使用不带"$\langle \rangle$"的文本来表示现有token。所有OOV token在模型中都是随机初始化的，因此"$\langle \rangle$"内的文本不会影响OOV token的嵌入。尖括号"$\langle \rangle$"内的文本可以是单词或数字，但无论哪种情况，尖括号内的文本仅用于区分不同的OOV token，与现有token无关。例如，$\langle restaurant \rangle \langle Greek \rangle \langle 2 \rangle$是Yelp中某个item的索引，由三个OOV token组成，其中 $\langle restaurant \rangle$ 是不同于普通英文单词"restaurant"的token，$\langle 2 \rangle$ 是不同于数字"2"的token。当我们需要使用现有的普通词token时，将不使用尖括号，如"restaurant"和"2"。
+在本文中，我们需要引入词汇外（OOV，Out-of-Vocabulary）token来构建某些索引方法中的item索引，这些token不属于语言模型的常规词汇表。在我们的案例中，它们是不存在于默认T5词汇表[23]中的token。为区分新创建的OOV token和现有token，我们使用尖括号 $\langle\rangle$ 来表示新创建的OOV token，而使用不带 $\langle\rangle$ 的文本来表示现有token。所有OOV token在模型中都是随机初始化的，因此 $\langle\rangle$ 内的文本不会影响OOV token的嵌入。尖括号 $\langle\rangle$ 内的文本可以是单词或数字，但无论哪种情况，尖括号内的文本仅用于区分不同的OOV token，与现有token无关。例如，$\langle restaurant \rangle \langle Greek \rangle \langle 2 \rangle$ 是Yelp中某个item的索引，由三个OOV token组成，其中 $\langle restaurant \rangle$ 是不同于普通英文单词"restaurant"的token，$\langle 2 \rangle$ 是不同于数字"2"的token。当我们需要使用现有的普通词token时，将不使用尖括号，如"restaurant"和"2"。
 
 ### 3.3 数据格式与预处理
 

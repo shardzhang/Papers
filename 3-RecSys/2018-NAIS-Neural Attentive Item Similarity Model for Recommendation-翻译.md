@@ -373,19 +373,19 @@ NExT研究由新加坡国家研究基金会、总理公署根据其IRC@SG资助�
 
 [1] S. Kabbur, X. Ning, and G. Karypis, "FISM: Factored item similarity models for top-n recommender systems," in KDD, 2013, pp. 659–667.
 
-[2] J. Davidson, B. Liebald, J. Liu, P. Nandy, T. Van Vleet, U. Gargi, S. Gupta, Y. He, M. Lambert, B. Livingston, and D. Sampath, "The youtube video recommendation system," in RecSys, 2010, pp. 293–296.
+[2] J. Davidson, B. Liebald, J. Liu, P. Nandy, T. Van Vleet, U. Gargi, S. Gupta, Y. He, M. Lambert, B. Livingston, and D. Sampath, "**The youtube video recommendation system**," in RecSys, 2010, pp. 293–296.
 
-[3] C. A. Gomez-Uribe and N. Hunt, "The netflix recommender system: Algorithms, business value, and innovation," ACM Transactions on Management Information Systems, vol. 6, no. 4, pp. 13:1–13:19, 2015.
+[3] C. A. Gomez-Uribe and N. Hunt, "**The netflix recommender system: Algorithms, business value, and innovation**," ACM Transactions on Management Information Systems, vol. 6, no. 4, pp. 13:1–13:19, 2015.
 
 [4] D. C. Liu, S. Rogers, R. Shiau, D. Kislyuk, K. C. Ma, Z. Zhong, J. Liu, and Y. Jing, "Related pins at pinterest: The evolution of a real-world recommender system," in WWW Companion, 2017, pp. 583–592.
 
 [5] X. He, L. Liao, H. Zhang, L. Nie, X. Hu, and T.-S. Chua, "Neural collaborative filtering," in WWW, 2017, pp. 173–182.
 
-[6] X. He, H. Zhang, M.-Y. Kan, and T.-S. Chua, "Fast matrix factorization for online recommendation with implicit feedback," in SIGIR, 2016, pp. 549–558.
+[6] X. He, H. Zhang, M.-Y. Kan, and T.-S. Chua, "**Fast matrix factorization for online recommendation with implicit feedback**," in SIGIR, 2016, pp. 549–558.
 
 [7] H. Zhang, F. Shen, W. Liu, X. He, H. Luan, and T.-S. Chua, "Discrete collaborative filtering," in SIGIR, 2016, pp. 325–334.
 
-[8] I. Bayer, X. He, B. Kanagal, and S. Rendle, "A generic coordinate descent framework for learning from implicit feedback," in WWW, 2017, pp. 1341–1350.
+[8] I. Bayer, X. He, B. Kanagal, and S. Rendle, "**A generic coordinate descent framework for learning from implicit feedback**," in WWW, 2017, pp. 1341–1350.
 
 [9] B. Smith and G. Linden, "Two decades of recommender systems at amazon. com," IEEE Internet Computing, vol. 21, no. 3, pp. 12–18, 2017.
 
@@ -395,19 +395,19 @@ NExT研究由新加坡国家研究基金会、总理公署根据其IRC@SG资助�
 
 [12] X. Ning and G. Karypis, "SLIM: Sparse linear methods for top-n recommender systems," in ICDM, 2011, pp. 497–506.
 
-[13] B. Yoshua, C. Aaron, and V. Pascal, "Representation learning: A review and new perspectives," IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 35, no. 8, pp. 1798–1828, 2013.
+[13] B. Yoshua, C. Aaron, and V. Pascal, "**Representation learning: A review and new perspectives**," IEEE Transactions on Pattern Analysis and Machine Intelligence, vol. 35, no. 8, pp. 1798–1828, 2013.
 
 [14] C. Luo, B. Ni, S. Yan, and M. Wang, "Image classification by selective regularized subspace learning," IEEE Transactions on Multimedia, vol. 18, no. 1, pp. 40–50, 2016.
 
 [15] J. Xiao, H. Ye, X. He, H. Zhang, F. Wu, and T.-S. Chua, "Attentional factorization machines: Learning the weight of feature interactions via attention networks," in IJCAI, 2017, pp. 3119–3125.
 
-[16] J. Chen, H. Zhang, X. He, L. Nie, W. Liu, and T.-S. Chua, "Attentive collaborative filtering: Multimedia recommendation with item- and component-level attention," in SIGIR, 2017, pp. 335–344.
+[16] J. Chen, H. Zhang, X. He, L. Nie, W. Liu, and T.-S. Chua, "**Attentive collaborative filtering: Multimedia recommendation with item- and component-level attention**," in SIGIR, 2017, pp. 335–344.
 
 [17] J. Li, P. Ren, Z. Chen, Z. Ren, T. Lian, and J. Ma, "Neural attentive session-based recommendation," in CIKM, 2017, pp. 1419–1428.
 
 [18] X. Wang, X. He, L. Nie, and T.-S. Chua, "Item silk road: Recommending items from information domains to social users," in SIGIR, 2017, pp. 185–194.
 
-[19] D. Bahdanau, K. Cho, and Y. Bengio, "Neural machine translation by jointly learning to align and translate," in ICLR, 2015.
+[19] D. Bahdanau, K. Cho, and Y. Bengio, "**Neural machine translation by jointly learning to align and translate**," in ICLR, 2015.
 
 [20] Z. Zhao, B. Gao, V. W. Zheng, D. Cai, X. He, and Y. Zhuang, "Link prediction via ranking metric dual-level attention network learning," in IJCAI, 2017, pp. 3525–3531.
 
@@ -435,21 +435,21 @@ NExT研究由新加坡国家研究基金会、总理公署根据其IRC@SG资助�
 
 [32] S. Wang, J. Tang, Y. Wang, and H. Liu, "Exploring implicit hierarchical structures for recommender systems," in IJCAI, 2015, pp. 1813–1819.
 
-[33] D. Cao, X. He, L. Nie, X. Wei, X. Hu, S. Wu, and T.-S. Chua, "Cross-platform app recommendation by jointly modeling ratings and texts," ACM Trans. Inf. Syst., vol. 35, no. 4, pp. 37:1–37:27, 2017.
+[33] D. Cao, X. He, L. Nie, X. Wei, X. Hu, S. Wu, and T.-S. Chua, "**Cross-platform app recommendation by jointly modeling ratings and texts**," ACM Trans. Inf. Syst., vol. 35, no. 4, pp. 37:1–37:27, 2017.
 
-[34] P. Cremonesi, Y. Koren, and R. Turrin, "Performance of recommender algorithms on top-n recommendation tasks," in RecSys, 2010, pp. 39–46.
+[34] P. Cremonesi, Y. Koren, and R. Turrin, "**Performance of recommender algorithms on top-n recommendation tasks**," in RecSys, 2010, pp. 39–46.
 
 [35] M. Wang, W. Fu, S. Hao, D. Tao, and X. Wu, "Scalable semi-supervised learning by efficient anchor graph regularization," IEEE Transactions on Knowledge and Data Engineering, vol. 28, no. 7, pp. 1864–1877, 2016.
 
 [36] X. Chen, Y. Zhang, Q. Ai, H. Xu, J. Yan, and Z. Qin, "Personalized key frame recommendation," in SIGIR, 2017, pp. 315–324.
 
-[37] X. He, Z. He, X. Du, and T.-S. Chua, "Adversarial personalized ranking for recommendation," in SIGIR, 2018.
+[37] X. He, Z. He, X. Du, and T.-S. Chua, "**Adversarial personalized ranking for recommendation**," in SIGIR, 2018.
 
 [38] X. Geng, H. Zhang, J. Bian, and T.-S. Chua, "Learning image and user features for recommendation in social networks," in ICCV, 2015, pp. 4274–4282.
 
 [39] S. Wang, Y. Wang, J. Tang, K. Shu, S. Ranganath, and H. Liu, "What your images reveal: Exploiting visual contents for point-of-interest recommendation," in WWW, 2017, pp. 391–400.
 
-[40] X. He and T.-S. Chua, "Neural factorization machines for sparse predictive analytics," in SIGIR, 2017, pp. 355–364.
+[40] X. He and T.-S. Chua, "**Neural factorization machines for sparse predictive analytics**," in SIGIR, 2017, pp. 355–364.
 
 [41] X. Wang, X. He, F. Feng, L. Nie, and T.-S. Chua, "Tem: Tree-enhanced embedding model for explainable recommendation," in WWW, 2018, pp. 1543–1552.
 
@@ -463,9 +463,11 @@ NExT研究由新加坡国家研究基金会、总理公署根据其IRC@SG资助�
 
 ---
 
+
+
 ## 作者简介
 
-**Xiangnan He** 目前是新加坡国立大学（NUS）计算机学院的高级研究学者。他在NUS获得计算机科学博士学位。他的研究兴趣涵盖推荐系统、信息检索和多媒处理。他在多个顶级会议上发表了20多篇论文，如SIGIR、WWW、MM、CIKM和IJCAI，以及期刊包括TKDE、TOIS和TMM。他在推荐系统方面的工作获得了ACM SIGIR 2016最佳论文荣誉提名。此外，他曾担任知名会议的PC成员，包括SIGIR、WWW、MM、AAAI、IJCAI、WSDM、CIKM和EMNLP，以及知名期刊的常规审稿人，包括TKDE、TOIS、TKDD、TMM等。
+**Xiangnan He** 目前是新加坡国立大学（NUS）计算机学院的高级研究学者。他在NUS获得计算机科学博士学位。他的研究兴趣涵盖推荐系统、信息检索和多媒处理。他在多个顶级会议上发表了20多篇论文，如SIGIR、WWW、MM、CIKM和IJCAI，以及期刊包括TKDE、TOIS和TMM。**他在推荐系统方面的工作获得了ACM SIGIR 2016最佳论文荣誉提名**。此外，他曾担任知名会议的PC成员，包括SIGIR、WWW、MM、AAAI、IJCAI、WSDM、CIKM和EMNLP，以及知名期刊的常规审稿人，包括TKDE、TOIS、TKDD、TMM等。
 
 **Zhankui He** 是中国复旦大学的一名本科生，也是新加坡国立大学（NUS）的交换生。他是NUS媒体搜索实验室和NExT研究中心的研究助理。他曾获得2016年上海市奖学金、2016年复旦大学优秀学生奖和2017年东方CJ奖学金。他的研究兴趣包括推荐系统和计算机视觉。
 

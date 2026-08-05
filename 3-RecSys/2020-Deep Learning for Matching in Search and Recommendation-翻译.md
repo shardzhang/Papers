@@ -4,46 +4,47 @@
 
 建议引用: 徐军、何向南和李航 (2020), "面向匹配的深度学习在搜索与推荐中的应用", : Vol. XX, No. XX, pp 1–193. DOI: XXX.
 
+
+
 本文介绍了面向匹配的深度学习在搜索与推荐中的应用。核心内容：
 
-- **统一的匹配视角**：将搜索（查询-文档匹配）与推荐（用户-item匹配）统一为构造匹配函数 $f: X \times Y \to \mathbb{R}$ 的问题，衡量两个输入对象之间的匹配程度，从而在统一框架下比较两个领域的解决方案
-- **深度学习匹配方法的两类划分**：将当前深度匹配方法分为基于表示学习的匹配（学习输入对象的分布式表示）和基于匹配函数学习的匹配（学习强大的匹配函数）
+- **统一的匹配视角**：将搜索（查询-文档匹配）与推荐（用户-item匹配）统一为构造匹配函数 $f: X \times Y \to \mathbb{R}$ 的问题，衡量**两个输入对象之间的匹配程度**，从而在统一框架下比较两个领域的解决方案
+- **深度学习匹配方法的两类划分**：将当前深度匹配方法分为 **基于表示学习的匹配**（学习输入对象的分布式表示）和 **基于匹配函数学习的匹配**（学习强大的匹配函数）
 - **搜索中的深度匹配模型**：综述了基于表示学习的方法（如DSSM、CLSM）与基于匹配函数学习的方法（如DRMM、K-NRM、Duet），并指出BERT已成为当前最先进技术
 - **推荐中的深度匹配模型**：综述了基于表示学习的方法（如矩阵分解及神经网络扩展）与基于匹配函数学习的方法，涵盖协同过滤、序列推荐、上下文感知推荐和知识图谱增强推荐等
 - **综述定位**：从匹配角度总结2019年前搜索与推荐领域最具代表性的深度学习方法，帮助工业从业者与学术研究人员获得深入理解并激发新方向
 
-关键发现：面向匹配的深度学习已成为搜索与推荐最先进的技术，其成功关键在于能够从原始数据中学习分布式表示并泛化匹配模式，避免手工特征的局限；以统一匹配视角分析搜索与推荐两类任务，有助于揭示共性技术、促进两个领域的交流与共同发展。
+关键发现：面向匹配的深度学习已成为搜索与推荐最先进的技术，其成功关键在于能够**从原始数据中学习分布式表示并泛化匹配模式**，避免手工特征的局限；以统一匹配视角分析搜索与推荐两类任务，有助于揭示共性技术、促进两个领域的交流与共同发展。
 
 ---
+
+
 
 ## 摘要
 
-匹配是搜索与推荐中的一个关键问题，即度量文档对查询的相关性或用户对item的兴趣。机器学习已被用来解决该问题，它基于输入表示并从标注数据中学习匹配函数，也称为"学习匹配"（learning to match）。近年来，人们致力于为搜索与推荐中的匹配任务开发深度学习技术。凭借大量数据的可用性、强大的计算资源和先进的深度学习技术，面向匹配的深度学习现已成为搜索与推荐的最先进技术。深度学习方法成功的关键在于其从数据（例如查询、文档、用户、item和上下文，特别是其原始形式）中学习表示并泛化匹配模式的强大能力。
+匹配是搜索与推荐中的一个关键问题，即度量 **文档对查询的相关性** 或 **用户对item的兴趣**。机器学习已被用来解决该问题，它基于输入表示并从标注数据中学习匹配函数，也称为"学习匹配"（learning to match）。近年来，人们致力于为搜索与推荐中的匹配任务开发深度学习技术。凭借大量数据的可用性、强大的计算资源和先进的深度学习技术，面向匹配的深度学习现已成为搜索与推荐的最先进技术。深度学习方法成功的关键在于其从数据（例如查询、文档、用户、item和上下文，特别是其原始形式）中学习表示并泛化匹配模式的强大能力。
 
-本综述对近年来开发的用于搜索与推荐的深度匹配模型进行了系统而全面的介绍。它首先给出匹配在搜索与推荐中的统一视角。通过这种方式，来自两个领域的解决方案可以在一个框架下进行比较。然后，综述将当前深度学习解决方案分为两类：基于表示学习的方法和基于匹配函数学习的方法。综述描述了搜索中查询-文档匹配和推荐中用户-item匹配的基本问题以及最先进的解决方案。本综述旨在帮助来自搜索与推荐两个领域的研究人员获得深入的理解和洞察，激发更多的想法和讨论，并促进新技术的发展。
+本综述对近年来开发的用于搜索与推荐的深度匹配模型进行了系统而全面的介绍。它首先给出匹配在搜索与推荐中的统一视角。通过这种方式，**来自两个领域的解决方案可以在一个框架下进行比较**。然后，综述将当前深度学习解决方案分为两类：基于表示学习的方法 和 基于匹配函数学习的方法。综述描述了搜索中 查询-文档匹配 和 推荐中 用户-item匹配 的基本问题以及最先进的解决方案。本综述旨在帮助来自搜索与推荐两个领域的研究人员获得深入的理解和洞察，激发更多的想法和讨论，并促进新技术的发展。
 
-匹配并不限于搜索与推荐。在复述、问答、图像标注和许多其他应用中也可以发现类似的问题。一般来说，本综述介绍的技术可以推广到两个空间中对象之间更一般的匹配任务。
+匹配并不限于搜索与推荐。在复述、问答、图像标注和许多其他应用中也可以发现类似的问题。一般来说，本综述介绍的技术可以**推广到两个空间中对象之间更一般的匹配任务**。
 
 ---
+
+
 
 ## 1 引言
 
 ### 1.1 搜索与推荐
 
-随着互联网的快速增长，信息科学中的一个基本问题在今天变得更加关键，即如何从一个通常巨大的信息池中识别出满足用户需求的信息。其目标是在正确的时间、地点和上下文中，仅向用户呈现其感兴趣且相关的信息。如今，搜索和推荐这两种信息获取范式已被广泛应用于各种各样的场景中。
+随着互联网的快速增长，信息科学中的一个基本问题在今天变得更加关键，即如何从一个通常巨大的信息池中识别出满足用户需求的信息。其目标是**在正确的时间、地点和上下文中，仅向用户呈现其感兴趣且相关的信息**。如今，搜索和推荐这两种信息获取范式已被广泛应用于各种各样的场景中。
 
-在搜索中，文档（例如web文档、Twitter帖子或电子商务产品）首先在搜索引擎中进行预处理和索引。之后，搜索引擎接收来自用户的查询（若干关键词）。查询描述了用户的信息需求。相关文档从索引中被检索出来，与查询进行匹配，并根据它们与查询的相关性进行排序。例如，如果用户对量子计算的新闻感兴趣，可以提交查询"quantum computing"（量子计算）给搜索引擎，然后返回关于该主题的新闻文章。
+在搜索中，文档（例如web文档、Twitter帖子或电子商务产品）首先在搜索引擎中进行预处理和索引。之后，搜索引擎接收来自用户的查询（若干关键词）。**查询描述了用户的信息需求。相关文档从索引中被检索出来，与查询进行匹配，并根据它们与查询的相关性进行排序。**例如，如果用户对量子计算的新闻感兴趣，可以提交查询"quantum computing"（量子计算）给搜索引擎，然后返回关于该主题的新闻文章。
 
-与搜索不同，推荐系统通常不接收查询。相反，它分析用户的画像（例如人口统计学信息和上下文）以及item上的历史交互，然后向用户推荐item。用户特征和item特征事先在系统中建立索引并存储。item根据用户对其感兴趣的可能性进行排序。例如，在新闻网站上，当用户浏览并点击一篇新文章时，可能会显示几篇具有相似主题的新闻文章，或显示其他用户与当前文章一起点击过的新闻文章。
+**与搜索不同，推荐系统通常不接收查询。相反，它分析用户的画像（例如人口统计学信息和上下文）以及item上的历史交互，然后向用户推荐item**。用户特征和item特征事先在系统中建立索引并存储。item根据用户对其感兴趣的可能性进行排序。例如，在新闻网站上，当用户浏览并点击一篇新文章时，可能会显示几篇具有相似主题的新闻文章，或显示其他用户与当前文章一起点击过的新闻文章。
 
 **表1.1：搜索与推荐的信息提供机制。**
 
-|  | 搜索 | 推荐 |
-|------|------|------|
-| 查询可用 | 是 | 否 |
-| 交付模型 | 拉取（Pull） | 推送（Push） |
-| 受益者 | 用户 | 用户和提供者 |
-| 意外发现 | 否 | 是 |
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805063850159.png" alt="image-20260805063850159" style="zoom:33%;" />
 
 表1.1总结了搜索与推荐之间的差异。搜索的基本机制是"拉取"（pull），因为用户首先提出特定的请求（即提交查询），然后接收信息。推荐的基本机制是"推送"（push），因为用户被提供其并未明确请求（例如提交查询）的信息。这里"受益者"（beneficiary）是指其兴趣在该任务中得到满足的人。在搜索引擎中，结果通常完全基于用户的需求而创建，因此受益者是用户。在推荐引擎中，结果通常需要同时满足用户和提供者，因此受益者是他们所有人。然而，这种区分最近正变得模糊。例如，一些搜索引擎将搜索结果与付费广告混合，这使用户和提供者都受益。至于"意外发现"（serendipity），它意味着传统搜索更关注明显相关的信息。另一方面，传统推荐则被允许提供出乎意料但有用的信息。
 
@@ -51,23 +52,25 @@
 
 Garcia-Molina等人（2011）[47]指出，搜索和推荐中的基本问题是识别满足用户信息需求的信息对象。他们还指出，搜索（信息检索）和推荐（信息过滤）是同一枚硬币的两面，具有紧密的联系和相似性（Belkin and Croft, 1992）[13]。图1.1展示了搜索与推荐的统一匹配视角。共同的目标是向用户呈现他们所需的信息。
 
-搜索是一项检索任务，旨在检索与查询相关的文档。相比之下，推荐是一项过滤任务，旨在过滤出用户感兴趣的item（Adomavicius and Tuzhilin, 2005）[1]。因此，搜索可以被视为在查询和文档之间进行匹配，而推荐可以被视为在用户和item之间进行匹配。更正式地说，搜索和推荐中的匹配都可以被视为构造一个匹配模型 $f: X \times Y \to \mathbb{R}$，它计算两个输入对象 $x$ 和 $y$ 之间的匹配程度，其中 $X$ 和 $Y$ 表示两个对象空间。在搜索中，$X$ 和 $Y$ 是查询和文档的空间；在推荐中，$X$ 和 $Y$ 是用户和item的空间。
+**搜索是一项检索任务，旨在检索与查询相关的文档。相比之下，推荐是一项过滤任务，旨在过滤出用户感兴趣的item**（Adomavicius and Tuzhilin, 2005）[1]。因此，搜索可以被视为在查询和文档之间进行匹配，而推荐可以被视为在用户和item之间进行匹配。更正式地说，搜索和推荐中的匹配都可以被视为构造一个匹配模型 $f: X \times Y \to \mathbb{R}$，它计算两个输入对象 $x$ 和 $y$ 之间的匹配程度，其中 $X$ 和 $Y$ 表示两个对象空间。在搜索中，$X$ 和 $Y$ 是查询和文档的空间；在推荐中，$X$ 和 $Y$ 是用户和item的空间。
 
 在如图1.1所示的统一匹配视角下，我们使用术语"信息对象"（information objects）来表示要检索/推荐的文档/item，使用"信息需求"（information needs）来表示各自任务中的查询/用户。通过在相同的匹配视角下统一这两个任务并比较性地回顾现有技术，我们可以为这些问题提供更深入的洞察和更强大的解决方案。此外，统一这两个任务还具有实践和理论意义。
+
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805064113332.png" alt="image-20260805064113332" style="zoom:33%;" />
 
 **图1.1：搜索与推荐中匹配的统一视角。**
 
 搜索与推荐已经在一些实际应用中被结合起来。例如，在一些电子商务网站上，当用户提交查询时，会基于不仅相关性（查询-产品匹配）而且用户兴趣（用户-产品匹配）来呈现产品排序列表。在一些生活类应用中，当用户搜索餐厅时，结果基于相关性（查询-餐厅匹配）和用户兴趣（用户-餐厅匹配）两者返回。有一种明显的趋势，即在某些场景下，搜索和推荐将被集成到单一系统中以更好地满足用户需求，其中匹配起着重要作用。
 
-由于在匹配上的相似性，搜索和推荐已经共享许多技术。一些搜索问题可以通过使用推荐技术来解决（Zamani et al., 2016）[234]，反之亦然（Costa and Roda, 2011）[31]，其基础都是匹配。随着深度学习技术的使用，搜索和推荐的匹配模型在架构和方法论上变得更加相似，这体现在以下技术中：将输入（查询、用户、文档和item）嵌入为分布式表示，组合神经网络组件来表示匹配函数，并以端到端的方式训练模型参数。此外，如果搜索和推荐共享同一组信息对象（如上述电子商务网站和生活类应用的例子），它们可以被联合建模和优化（Zamani and Croft, 2018a; Schedl et al., 2018; Zamani and Croft, 2020）[230, 161, 232]。因此，为了开发更先进的技术，有必要且有益于采取统一的匹配视角来分析和比较现有的搜索与推荐技术。
+由于在匹配上的相似性，搜索和推荐已经共享许多技术。一些搜索问题可以通过使用推荐技术来解决（Zamani et al., 2016）[234]，反之亦然（Costa and Roda, 2011）[31]，其基础都是匹配。随着深度学习技术的使用，搜索和推荐的匹配模型在架构和方法论上变得更加相似，这体现在以下技术中：**将输入（查询、用户、文档和item）嵌入为分布式表示，组合神经网络组件来表示匹配函数，并以端到端的方式训练模型参数**。此外，如果搜索和推荐共享同一组信息对象（如上述电子商务网站和生活类应用的例子），它们可以被联合建模和优化（Zamani and Croft, 2018a; Schedl et al., 2018; Zamani and Croft, 2020）[230, 161, 232]。因此，为了开发更先进的技术，有必要且有益于采取统一的匹配视角来分析和比较现有的搜索与推荐技术。
 
-搜索和推荐中的匹配任务在实践中面临不同的挑战。然而，其根本问题本质上是相同的，即失配挑战。接下来，我们分别介绍这两个任务的关键挑战。
+搜索和推荐中的匹配任务在实践中面临不同的挑战。然而，其根本问题本质上是相同的，即**失配挑战**。接下来，我们分别介绍这两个任务的关键挑战。
 
 ### 1.3 搜索中的失配挑战
 
-在搜索中，查询和文档（通常是它们的标题）被视为文本。文档对查询的相关性主要由两者之间的匹配程度来表示。如果匹配程度高，则文档被认为与查询相关。计算机对自然语言的理解仍然具有挑战性，因此匹配程度的计算仍然局限于文本层面，而不是语义层面。文本层面的高匹配度并不一定意味着语义层面的高相关性，反之亦然。此外，查询由用户发出，而文档由编辑者编纂。由于自然语言的歧义性，用户和编辑者可能使用不同的语言风格和表达方式来呈现相同的概念或主题。结果，搜索系统可能遭受所谓的查询-文档失配问题。具体来说，当搜索引擎的用户和文档的编辑者使用不同的文本来描述相同的概念（例如，"ny times"对比"new york times"）时，可能会发生查询-文档失配。这仍然是搜索的主要挑战之一。转向跨模态信息检索（例如，使用文本查询检索图像文档），查询-文档失配问题变得更加严重，因为不同的模态具有不同类型的表示。在跨模态检索中，一个主要挑战是如何构造能够弥合模态间"异质性鸿沟"（heterogeneity gap）的匹配函数。
+在搜索中，查询和文档（通常是它们的标题）被视为文本。**文档对查询的相关性主要由两者之间的匹配程度来表示**。如果匹配程度高，则文档被认为与查询相关。计算机对自然语言的理解仍然具有挑战性，因此匹配程度的计算**仍然局限于文本层面，而不是语义层面**。文本层面的高匹配度并不一定意味着语义层面的高相关性，反之亦然。此外，查询由用户发出，而文档由编辑者编纂。由于自然语言的歧义性，用户和编辑者可能使用不同的语言风格和表达方式来呈现相同的概念或主题。结果，搜索系统可能遭受所谓的查询-文档失配问题。具体来说，当搜索引擎的用户和文档的编辑者使用不同的文本来描述相同的概念（例如，"ny times"对比"new york times"）时，可能会发生查询-文档失配。这仍然是搜索的主要挑战之一。转向**跨模态信息检索**（例如，使用文本查询检索图像文档），**查询-文档失配问题**变得更加严重，因为不同的模态具有不同类型的表示。**在跨模态检索中，一个主要挑战是如何构造能够弥合模态间"异质性鸿沟"（heterogeneity gap）的匹配函数。**
 
-为了解决查询-文档失配挑战，已经提出了在语义层面进行匹配的方法，称为语义匹配。解决方案中的关键思想是：要么进行更多的查询和文档理解以更好地表示查询和文档的含义，要么构造更强大的匹配函数以弥合查询和文档之间的语义鸿沟。传统机器学习方法（Li and Xu, 2014）[105]和深度学习方法（Guo et al., 2019b; Mitra and Craswell, 2018; Onal et al., 2018a）[54, 119, 128]都已被开发用于语义匹配。
+为了解决查询-文档失配挑战，已经提出了在语义层面进行匹配的方法，称为**语义匹配**。**解决方案中的关键思想是：要么进行更多的查询和文档理解以更好地表示查询和文档的含义，要么构造更强大的匹配函数以弥合查询和文档之间的语义鸿沟。**传统机器学习方法（Li and Xu, 2014）[105]和深度学习方法（Guo et al., 2019b; Mitra and Craswell, 2018; Onal et al., 2018a）[54, 119, 128]都已被开发用于语义匹配。
 
 ### 1.4 推荐中的失配挑战
 
@@ -104,6 +107,8 @@ Garcia-Molina等人（2011）[47]指出，搜索和推荐中的基本问题是�
 本综述聚焦于使用深度学习的最先进匹配技术。我们期望读者对搜索和推荐有一定的了解。那些不熟悉这些领域的人可以查阅现有资料（例如Croft et al. (2009)[33]、Li and Xu (2014)[105]、Liu (2009)[114]、Ricci et al. (2015)[155]和Adomavicius and Tuzhilin (2005)[1]）。我们还假设读者对机器学习特别是深度学习有足够的了解。
 
 ---
+
+
 
 ## 2 传统匹配模型
 
@@ -670,26 +675,7 @@ BERT的学习包括两个阶段：预训练和微调。在预训练中，从大�
 
 **表4.1：搜索中查询-文档匹配的深度学习方法。**
 
-| 类别 | 输入表示 | 网络架构 | 匹配模型 |
-|------|------|------|------|
-| 基于表示学习 | 字母三连词袋 | MLP | DSSM（Huang et al., 2013）[80] |
-| | 词袋 | 线性 | NVSM（Gysel et al., 2018）[57] |
-| | | MLP | SNRM（Zamani et al., 2018b）[235] |
-| | 词序列 | CNN | CLSM（Shen et al., 2014）[164]，ARC-I（Hu et al., 2014）[78]，CNTN（Qiu and Huang, 2015）[146]，MACM（Nie et al., 2018）[125]，NRM-F（Zamani et al., 2018c）[236]，Multi-GranCNN（Yin and Schütze, 2015）[223] |
-| | | RNN | LSTM-RNN（Palangi et al., 2016）[130]，MV-LSTM（Wan et al., 2016a）[184] |
-| | | RNN + 注意力 | MASH RNN（Jiang et al., 2019a）[84]，CSRAN（Tay et al., 2018b）[175] |
-| | 跨模态 | CNN | Deep CCA（Andrew et al., 2013; Yan and Mikolajczyk, 2015）[3, 215]，ACMR（Wang et al., 2017a）[186]，m-CNNs（Ma et al., 2015）[116] |
-| | | RNN + CNN | BRNN（Karpathy and Li, 2015）[92] |
-| | | 注意力 | RCM（Wang et al., 2019d）[196] |
-| 基于匹配函数学习 | 词袋 | MLP | DRMM（Guo et al., 2016）[52] |
-| | | RBF-核 | K-NRM（Xiong et al., 2017）[212] |
-| | | 注意力 | Decomposable Attention Model（Parikh et al., 2016）[137]，aNMM（Yang et al., 2016）[216] |
-| | 词序列 | CNN | ARC-II（Hu et al., 2014）[78]，MatchPyramid（Pang et al., 2016b）[133]，DeepRank（Pang et al., 2017a）[134]，PACRR（Hui et al., 2017）[82]，Co-PACRR（Hui et al., 2018）[83] |
-| | | RNN | ESIM（Chen et al., 2017b）[27]，BiMPM（Wang et al., 2017c）[197] |
-| | | 空间RNN | Match-SRNN（Wan et al., 2016b）[185]，HiNT（Fan et al., 2018）[42] |
-| | | 注意力 | BERT4Match（Nogueira and Cho, 2019）[126]，MIX（Chen et al., 2018b）[25]，RE2（Yang et al., 2019a）[218]，ABCNN（Yin et al., 2016）[224]，MCAN（Tay et al., 2018d）[177]，HCRN（Tay et al., 2018c）[176]，MwAN（Tan et al., 2018）[170]，DIIN（Gong et al., 2018）[48]，HAR（Zhu et al., 2019）[247] |
-| | | RBF-核 | Conv-KNRM（Dai et al., 2018）[34] |
-| 结合 | 词序列 | CNN + MLP | Duet（Mitra et al., 2017）[121] |
+
 
 ### 4.1 基于表示学习的匹配
 
@@ -999,23 +985,13 @@ $$
 
 **表4.2：表示学习方法在MSRP数据集上的性能。**
 
-|  | 准确率 | F1 |
-|------|------|------|
-| TF-IDF（基线） | 0.7031 | 0.7762 |
-| DSSM | 0.7009 | 0.8096 |
-| CLSM | 0.6980 | 0.8042 |
-| ARC-I | 0.6960 | 0.8027 |
+
 
 我们还在表4.3中给出了多模态搜索的实验结果。实验基于Wikipedia数据集，报告在Wang等人（2017a）[186]中。实验中使用平均精度均值（MAP，Mean Average Precision）作为评估指标。结果表明，ACMR这种多模态匹配方法可以显著优于基线，尤其是使用深度特征时。
 
 **表4.3：多模态匹配方法在Wikipedia数据集上以MAP衡量的性能。**
 
-|  | 图像到文本 | 文本到图像 | 平均 |
-|------|------|------|------|
-| CCA（浅层特征） | 0.255 | 0.185 | 0.220 |
-| CCA（深度特征） | 0.267 | 0.222 | 0.245 |
-| ACMR（浅层特征） | 0.366 | 0.277 | 0.322 |
-| ACMR（深度特征） | 0.619 | 0.489 | 0.546 |
+
 
 ¹ https://www.microsoft.com/en-us/download/details.aspx?id=52398
 
@@ -1355,35 +1331,11 @@ $$
 
 **表4.4：部分表示学习方法和匹配函数学习方法在Yahoo! Answers上的性能。**
 
-|  |  | P@1 | MRR |
-|------|------|------|------|
-|  | BM25（基线） | 0.579 | 0.726 |
-| 表示学习 | ARC-I | 0.581 | 0.756 |
-|  | CNTN | 0.626 | 0.781 |
-|  | LSTM-RNN | 0.690 | 0.822 |
-| 匹配函数学习 | ARC-II | 0.591 | 0.765 |
-|  | MatchPyramid | 0.764 | 0.867 |
-|  | Match-SRNN | 0.790 | 0.882 |
-
 **表4.5：匹配函数学习方法在ad hoc检索上的性能，基于Bing搜索日志和Sogou日志。**
-
-|  | Bing搜索日志 |  | Sogou日志 |  |
-|------|------|------|------|------|
-|  | NDCG@1 | NDCG@10 | NDCG@1 | NDCG@10 |
-| DSSM | 0.258 | 0.482 | - | - |
-| Duet | 0.322 | 0.530 | - | - |
-| DRMM | 0.243 | 0.452 | 0.137 | 0.315 |
-| MatchPyramid | - | - | 0.218 | 0.379 |
-| K-NRM | - | - | 0.264 | 0.428 |
 
 **表4.6：微调的BERT $\mathrm{LARGE}$和其他方法在MS MARCO上的性能。**
 
-|  | MRR@10（Dev） | MRR@10（Eval） |
-|------|------|------|
-| BM25 | 0.167 | 0.165 |
-| K-NRM（Xiong et al., 2017）[212] | 0.218 | 0.198 |
-| Conv-KNRM（Dai et al., 2018）[34] | 0.290 | 0.271 |
-| BERT $\mathrm{LARGE}$ | 0.365 | 0.358 |
+
 
 ### 4.3 讨论与扩展阅读
 
@@ -1443,31 +1395,15 @@ $$
 
 ---
 
+
+
 ## 5 推荐中的深度匹配模型
 
 在本章中，我们介绍推荐中具有代表性的深度匹配方法。与第4章一样，我们将方法分为两类：1）表示学习方法，2）匹配函数学习方法。在第一类中，使用神经网络创建用户和item的表示，以便在它们之间进行比较并生成最终匹配分数。在第二类中，使用神经网络进行用户和item（以及可能的上下文）之间的交互，以生成匹配信号并将其聚合成最终匹配分数。表5.1展示了推荐中具有代表性的深度匹配模型的分类。
 
 **表5.1：推荐中的深度匹配模型。**
 
-| 类别 | 输入表示 | 技术分类 | 模型 |
-|------|------|------|------|
-| 基于表示学习的方法 | 无序交互 | 基于MLP | DeepMF（Xue et al., 2017）[214]，YouTubeDNN（Covington et al., 2016）[32]，MV-DNN（Elkahky et al., 2015）[40] |
-| | | 基于自动编码器 | AutoRec（Sedhain et al., 2015）[162]，CDAE（Wu et al., 2016b）[208]，Mult-VAE（Liang et al., 2018）[111] |
-| | | 基于注意力 | NAIS（He et al., 2018a）[65]，ACF（Chen et al., 2017a）[26]，DIN（Zhou et al., 2018）[246] |
-| | 顺序交互 | 基于RNN | GRU4Rec（Hidasi et al., 2016）[73]，NARM（Li et al., 2017）[106]，RRN（Wu et al., 2017）[202]，Latent Cross（Beutel et al., 2018）[19] |
-| | | 基于CNN | Caser（Tang and Wang, 2018）[172]，NextItNet（Yuan et al., 2019）[227]，GRec（Yuan et al., 2020）[226] |
-| | | 基于注意力 | SASRec（Kang and McAuley, 2018）[89]，Bert4Rec（Sun et al., 2019）[168] |
-| | 多模态内容 | 类别属性 | NSCR（Wang et al., 2017b）[193]，DeepCF（Li et al., 2015）[108] |
-| | | 用户评论 | DeepCoNN（Zheng et al., 2017）[244]，NARRE（Chen et al., 2018a）[24]，CARP（Li et al., 2019）[102] |
-| | | 多媒体内容 | VBPR（He and McAuley, 2016a）[63]，CDL（Lei et al., 2016）[100]，ACF（Chen et al., 2017a）[26]，MMGCN（Wei et al., 2019）[200]，PinSage（Ying et al., 2018）[225] |
-| | 图数据 | 用户-item图 | NGCF（Wang et al., 2019b）[194]，PinSage（Ying et al., 2018）[225]，LightGCN（He et al., 2020）[67] |
-| | | 知识图谱 | KGAT（Wang et al., 2019a）[191]，RippleNet（Wang et al., 2018a）[187]，KPRN（Wang et al., 2019c）[195] |
-| | | 社交网络 | DiffNet（Wu et al., 2019b）[203]，GraphRec（Fan et al., 2019）[41] |
-| 基于匹配函数学习的方法 | 双向匹配 | 相似度学习 | NCF（He et al., 2017c）[71]，ConvNCF（He et al., 2018b）[68]，DeepICF（Xue et al., 2019）[213]，NNCF（Bai et al., 2017）[8] |
-| | | 度量学习 | CML（Hsieh et al., 2017）[77]，TransRec（He et al., 2017a）[62]，LRML（Tay et al., 2018a）[174] |
-| | 多路匹配 | 隐式交互建模 | YouTubeDNN（Covington et al., 2016）[32]，Wide&Deep（Cheng et al., 2016）[28]，Deep Crossing（Shan et al., 2016）[163]，DIN（Zhou et al., 2018）[246] |
-| | | 显式交互建模 | NFM（He and Chua, 2017）[66]，AFM（Xiao et al., 2017）[209]，HoAFM（Tao et al., 2019）[173]，CIN（Lian et al., 2018）[109]，TransFM（Pasricha and McAuley, 2018）[138] |
-| | | 显式与隐式交互建模的组合 | Wide&Deep（Cheng et al., 2016）[28]，DeepFM（Guo et al., 2017）[51]，xDeepFM（Lian et al., 2018）[109] |
+
 
 ### 5.1 基于表示学习的匹配
 
@@ -2039,21 +1975,23 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 ---
 
+
+
 ## 6 结论与未来方向
 
 ### 6.1 本综述总结
 
-如何弥合两个匹配实体之间的语义鸿沟是搜索与推荐中最基本和最具挑战性的问题。在搜索中，搜索者和文档作者可能使用不同的表达来表示相同的含义，导致最不希望出现的结果：相关文档存在却找不到。在推荐中，用户和item属于不同类型的实体，由不同的表面特征表示，这使得在特征之间进行匹配变得困难，从而难以向用户提供令人满意的item推荐。为了弥合语义鸿沟，搜索和推荐领域的研究人员都提出用机器学习技术构建和利用匹配模型。
+**如何弥合两个匹配实体之间的语义鸿沟是搜索与推荐中最基本和最具挑战性的问题**。在搜索中，搜索者和文档作者可能使用不同的表达来表示相同的含义，导致最不希望出现的结果：相关文档存在却找不到。在推荐中，用户和item属于不同类型的实体，由不同的表面特征表示，这使得在特征之间进行匹配变得困难，从而难以向用户提供令人满意的item推荐。**为了弥合语义鸿沟，搜索和推荐领域的研究人员都提出用机器学习技术构建和利用匹配模型。**
 
-近年来，深度学习已被应用于搜索和推荐，并取得了巨大成功。在本综述中，我们首先介绍了搜索与推荐中匹配的统一视角。在这一视角下，我们然后将搜索中查询-文档匹配和推荐中用户-item匹配的学习解决方案分为两类：表示学习方法和匹配函数学习方法。之后，我们详细介绍了具有代表性的传统匹配方法和深度匹配方法。还介绍了实验结果、基准和软件包。
+近年来，深度学习已被应用于搜索和推荐，并取得了巨大成功。在本综述中，我们首先介绍了搜索与推荐中匹配的统一视角。在这一视角下，我们然后将搜索中 查询-文档匹配 和 推荐中 用户-item匹配 的学习解决方案分为两类：**表示学习方法** 和 **匹配函数学习方法**。之后，我们详细介绍了具有代表性的 **传统匹配方法** 和 **深度匹配方法**。还介绍了实验结果、基准和软件包。
 
-匹配的统一视角为比较和分析为搜索和推荐开发的机器学习方法（特别是深度学习方法）提供了一种新手段。尽管现有的搜索匹配模型和推荐匹配模型是在不同社区（例如SIGIR和RecSys）中为不同目的开发的，但它们具有相似的设计原则和模型属性。本综述凭借其统一视角对各个社区的人都有帮助。事实上，搜索和推荐之间的界限变得模糊，出现了统一这两种范式的趋势（Zhang et al., 2018; Schedl et al., 2018）[241, 161]。统一视角为搜索和推荐设计新颖模型提供了一个新角度。
+**匹配的统一视角**为比较和分析为搜索和推荐开发的机器学习方法（特别是深度学习方法）提供了一种新手段。尽管现有的搜索匹配模型和推荐匹配模型是在不同社区（例如SIGIR和RecSys）中为不同目的开发的，但它们具有**相似的设计原则和模型属性**。本综述凭借其统一视角对各个社区的人都有帮助。事实上，搜索和推荐之间的界限变得模糊，出现了统一这两种范式的趋势（Zhang et al., 2018; Schedl et al., 2018）[241, 161]。统一视角为搜索和推荐设计新颖模型提供了一个新角度。
 
 人们可以看到，用于匹配的深度学习已经在搜索和推荐中取得并将继续取得重大进展。人们也可以预见，它有潜力对其他领域的类似问题产生影响，包括在线广告、问答、图像标注和药物设计。
 
 ### 6.2 其他任务中的匹配
 
-语义匹配是搜索和推荐之外其他任务中的一个基本问题。由于匹配是在两组对象之间进行的，它可以分为文本匹配和实体匹配。在文本匹配中，每个对象内的元素之间存在顺序（例如句子中的词）。查询-文档匹配是文本匹配的典型例子。在实体匹配中，对象之间不存在顺序。推荐中的用户-item匹配是实体匹配的一个例子。还研究了其他匹配任务。我们在这里列出其中的一些。
+语义匹配是搜索和推荐之外其他任务中的一个基本问题。由于匹配是在两组对象之间进行的，它可以分为 **文本匹配 和 实体匹配**。在文本匹配中，每个对象内的元素之间存在顺序（例如句子中的词）。查询-文档匹配是文本匹配的典型例子。在实体匹配中，对象之间不存在顺序。推荐中的用户-item匹配是实体匹配的一个例子。还研究了其他匹配任务。我们在这里列出其中的一些。
 
 **复述检测** 判断两个句子是否具有相同含义是自然语言处理中语义匹配的一个重要课题。匹配在语义级别进行，学习到的匹配函数是对称的。
 
@@ -2061,9 +1999,9 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 **文本蕴含** 文本蕴含是指判断两个陈述之间是蕴含还是非蕴含关系的问题。虽然相似，但蕴含与复述检测的不同之处在于它侧重于确定两个文本之间的逻辑关系。匹配也应该在语义级别进行，并且匹配函数不是对称的。
 
-**基于检索的对话** 基于检索的对话中的一个关键问题是在对话上下文中给定话语找到最合适的回复。回复通常是一个句子，而话语可以是，例如，单个话语或上下文中的所有话语（在多轮对话中）。很明显，匹配是在语义级别的文本之间进行的。
+**基于检索的对话** 基于检索的对话中的一个关键问题是在对话上下文中给定话语 找到 最合适的回复。回复通常是一个句子，而话语可以是，例如，单个话语或上下文中的所有话语（在多轮对话中）。很明显，匹配是在语义级别的文本之间进行的。
 
-**在线广告** 在搜索广告中，如何将用户的搜索查询与广告商的关键词匹配极大地影响用户看到和点击广告的概率。在上下文广告中，匹配在关键词和网页内容之间进行。在两种情况下，语义匹配都有助于选择合适的广告并构建广告展示的正确顺序。
+**在线广告** 在搜索广告中，如何将用户的 **搜索查询** 与 **广告商的关键词** 匹配极大地影响用户看到和点击广告的概率。在上下文广告中，匹配在关键词和网页内容之间进行。在两种情况下，**语义匹配都有助于选择合适的广告并构建广告展示的正确顺序**。
 
 ### 6.3 开放问题与未来方向
 
@@ -2075,11 +2013,11 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 3. 现有深度匹配模型的学习纯粹是数据驱动的。有时确实存在丰富的先验知识（例如领域知识、知识库、匹配规则），利用它应该有助于提高匹配的性能。如何将先验知识整合到匹配模型中是值得探索的一个重要方向。
 
-4. 匹配模型通常用一个单一目标学习，即"相似度"。根据应用，可能需要在学习中利用多个目标（例如归纳能力、公平性）。如何将其他准则加入匹配模型的学习中是另一个需要研究的重要问题。
+4. 匹配模型通常用一个**单一目标学习**，即"相似度"。根据应用，可能需要在学习中利用多个目标（例如归纳能力、公平性）。如何将其他准则加入匹配模型的学习中是另一个需要研究的重要问题。
 
 5. 在很大程度上，当前的深度匹配模型是黑盒。然而，在真实的搜索和推荐系统中，通常要求匹配模型不仅要达到高精度，还要对结果给出直观的解释。这种可解释性有助于提高系统的透明度、说服力和可信度。如何创建深度匹配模型的解释能力仍然是一个开放问题。
 
-6. 大多数深度匹配模型只从数据中学习相关性。然而，相关性不是因果性，它在揭示数据背后的原因（例如用户偏好一种item而不喜欢另一种item的原因）方面有不足。为了用因果推理能力增强匹配模型，我们需要将干预和反事实推理机制引入模型（Pearl, 2019）[140]。此外，收集到的数据通常被许多因素所偏差，如位置偏差、曝光偏差等。开发对匹配的因果方法是一个新兴方向，这些方法对各种数据偏差鲁棒，并且能够揭示数据背后的原因。
+6. 大多数深度匹配模型只从数据中学习相关性。然而，相关性不是因果性，它在揭示数据背后的原因（例如用户偏好一种item而不喜欢另一种item的原因）方面有不足。为了用因果推理能力增强匹配模型，我们需要将干预和反事实推理机制引入模型（Pearl, 2019）[140]。此外，收集到的数据通常被许多因素所偏差，如**位置偏差、曝光偏差等**。开发对匹配的因果方法是一个新兴方向，这些方法对各种数据偏差鲁棒，并且能够揭示数据背后的原因。
 
 7. 在搜索和推荐系统中，匹配和排序的过程通常是分开的：先匹配后排序。因此，匹配的结果自然被用作排序的特征。然而，有时排序和匹配的分离可能不是必要的。一个自然的问题是，是否可能构建一个端到端系统，在其中联合学习匹配和排序模型。
 
@@ -2087,9 +2025,13 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 ---
 
+
+
 ## 致谢
 
 我们感谢编辑和三位匿名审稿人对改进稿件提出的宝贵意见。我们感谢王祥博士和苑法杰博士为本书写作提供的材料。这项工作得到了国家自然科学基金（61872338、61972372、U19A207、61832017）、北京智源人工智能研究院（BAAI2019ZD0305）和北京市杰出青年科学家计划（BJJWZYJH012019100020098）的支持。
+
+
 
 ## 参考文献
 
@@ -2101,13 +2043,13 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [4] Ba, J. L., J. R. Kiros, and G. E. Hinton. 2016. “Layer normalization”. CoRR. abs/1607.06450. arXiv: 1607.06450. url: http://arxiv.org/ abs/1607.06450.
 
-[5] Bahdanau, D., K. Cho, and Y. Bengio. 2015. “Neural Machine Trans- lation by Jointly Learning to Align and Translate”. In: 3rd In- ternational Conference on Learning Representations. url: http : //arxiv.org/abs/1409.0473.
+[5] Bahdanau, D., K. Cho, and Y. Bengio. 2015. “**Neural Machine Translation by Jointly Learning to Align and Translate**”. In: 3rd In- ternational Conference on Learning Representations. url: http : //arxiv.org/abs/1409.0473.
 
 [6] Bai, B., J. Weston, D. Grangier, R. Collobert, K. Sadamasa, Y. Qi, O. Chapelle, and K. Weinberger. 2009. “Supervised Semantic Indexing”. In: Proceedings of the 18th ACM Conference on Information and Knowledge Management. CIKM ’09. Hong Kong, China: ACM. 187– 196. isbn: 978-1-60558-512-3. doi: 10.1145/1645953.1645979. url: http://doi.acm.org/10.1145/1645953.1645979.
 
 [7] Bai, B., J. Weston, D. Grangier, R. Collobert, K. Sadamasa, Y. Qi, O. Chapelle, and K. Weinberger. 2010. “Learning to Rank with (a Lot of) Word Features”. Inf. Retr. 13(3): 291–314. issn: 1386-4564. doi: 10.1007/s10791-009-9117-9. url: http://dx.doi.org/10.1007/s10791- 009-9117-9.
 
-[8] Bai, T., J.-R. Wen, J. Zhang, and W. X. Zhao. 2017. “A Neural Collab- orative Filtering Model with Interaction-based Neighborhood”. In: Proceedings of the 2017 ACM on Conference on Information and Knowledge Management. CIKM ’17. Singapore, Singapore: ACM. 1979–1982. isbn: 978-1-4503-4918-5. doi: 10.1145/3132847.3133083. url: http://doi.acm.org/10.1145/3132847.3133083.
+[8] Bai, T., J.-R. Wen, J. Zhang, and W. X. Zhao. 2017. “A Neural Collaborative Filtering Model with Interaction-based Neighborhood”. In: Proceedings of the 2017 ACM on Conference on Information and Knowledge Management. CIKM ’17. Singapore, Singapore: ACM. 1979–1982. isbn: 978-1-4503-4918-5. doi: 10.1145/3132847.3133083. url: http://doi.acm.org/10.1145/3132847.3133083.
 
 [9] Balaneshin-kordan, S. and A. Kotov. 2018. “Deep Neural Architecture for Multi-Modal Retrieval Based on Joint Embedding Space for Text and Images”. In: Proceedings of the Eleventh ACM International Conference on Web Search and Data Mining. WSDM ’18. Marina Del Rey, CA, USA: ACM. 28–36. isbn: 978-1-4503-5581-0. doi: 10 . 1145 / 3159652 . 3159735. url: http : / / doi . acm . org / 10 . 1145 / 3159652.3159735.
 
@@ -2117,13 +2059,13 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [12] Batmaz, Z., A. Yurekli, A. Bilge, and C. Kaleli. 2019. “A review on deep learning for recommender systems: challenges and remedies”. Artificial Intelligence Review. 52(1): 1–37. doi: 10.1007/s10462-018- 9654-y. url: https://doi.org/10.1007/s10462-018-9654-y.
 
-[13] Belkin, N. J. and W. B. Croft. 1992. “Information Filtering and Infor- mation Retrieval: Two Sides of the Same Coin?” Commun. ACM. 35(12): 29–38. issn: 0001-0782. doi: 10.1145/138859.138861. url: http://doi.acm.org/10.1145/138859.138861.
+[13] Belkin, N. J. and W. B. Croft. 1992. “Information Filtering and Information Retrieval: Two Sides of the Same Coin?” Commun. ACM. 35(12): 29–38. issn: 0001-0782. doi: 10.1145/138859.138861. url: http://doi.acm.org/10.1145/138859.138861.
 
 [14] Bello, I., S. Kulkarni, S. Jain, C. Boutilier, E. H. Chi, E. Eban, X. Luo, A. Mackey, and O. Meshi. 2018. “Seq2Slate: Re-ranking and Slate Optimization with RNNs”. CoRR. abs/1810.02019. arXiv: 1810.02019. url: http://arxiv.org/abs/1810.02019.
 
 [15] Bendersky, M., W. B. Croft, and D. A. Smith. 2011. “Joint Annotation of Search Queries”. In: Proceedings of the 49th Annual Meeting of the Association for Computational Linguistics: Human Language Technologies - Volume 1. HLT ’11. Portland, Oregon: Association for Computational Linguistics. 102–111. isbn: 978-1-932432-87-9. url: http://dl.acm.org/citation.cfm?id=2002472.2002486.
 
-[16] Berg, R. van den, T. N. Kipf, and M. Welling. 2017. “Graph Convo- lutional Matrix Completion”. CoRR. abs/1706.02263. arXiv: 1706. 02263. url: http://arxiv.org/abs/1706.02263.
+[16] Berg, R. van den, T. N. Kipf, and M. Welling. 2017. “Graph Convolutional Matrix Completion”. CoRR. abs/1706.02263. arXiv: 1706. 02263. url: http://arxiv.org/abs/1706.02263.
 
 [17] Berger, A. and J. Lafferty. 1999. “Information Retrieval As Statistical Translation”. In: Proceedings of the 22Nd Annual International ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR ’99. Berkeley, California, USA: ACM. 222–229. isbn: 1-58113-096-1. doi: 10.1145/312624.312681. url: http://doi. acm.org/10.1145/312624.312681.
 
@@ -2135,7 +2077,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [21] Brill, E. and R. C. Moore. 2000. “An Improved Error Model for Noisy Channel Spelling Correction”. In: Proceedings of the 38th Annual Meeting on Association for Computational Linguistics. ACL ’00. Hong Kong: Association for Computational Linguistics. 286–293. doi: 10.3115/1075218.1075255. url: https://doi.org/10.3115/ 1075218.1075255.
 
-[22] Burges, C. J. 2010. “From RankNet to LambdaRank to LambdaMART: An Overview”. Tech. rep. No. MSR-TR-2010-82. url: https : / / www.microsoft.com/en-us/research/publication/from-ranknet-to- lambdarank-to-lambdamart-an-overview/.
+[22] Burges, C. J. 2010. “**From RankNet to LambdaRank to LambdaMART: An Overview**”. Tech. rep. No. MSR-TR-2010-82. url: https : / / www.microsoft.com/en-us/research/publication/from-ranknet-to- lambdarank-to-lambdamart-an-overview/.
 
 [23] Cao, Y., J. Xu, T.-Y. Liu, H. Li, Y. Huang, and H.-W. Hon. 2006. “Adapting Ranking SVM to Document Retrieval”. In: Proceedings of the 29th Annual International ACM SIGIR Conference on Re- search and Development in Information Retrieval. SIGIR ’06. Seat- tle, Washington, USA: ACM. 186–193. isbn: 1-59593-369-7. doi: 10 . 1145 / 1148170 . 1148205. url: http : / / doi . acm . org / 10 . 1145 / 1148170.1148205.
 
@@ -2143,7 +2085,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [25] Chen, H., F. X. Han, D. Niu, D. Liu, K. Lai, C. Wu, and Y. Xu. 2018b. “MIX: Multi-Channel Information Crossing for Text Matching”. In: Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. KDD ’18. London, United Kingdom: ACM. 110–119. isbn: 978-1-4503-5552-0. doi: 10.1145/ 3219819 . 3219928. url: http : / / doi . acm . org / 10 . 1145 / 3219819 . 3219928.
 
-[26] Chen, J., H. Zhang, X. He, L. Nie, W. Liu, and T.-S. Chua. 2017a. “Attentive Collaborative Filtering: Multimedia Recommendation with Item- and Component-Level Attention”. In: Proceedings of the 40th International ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR ’17. Shinjuku, Tokyo, Japan: ACM. 335–344. isbn: 978-1-4503-5022-8. doi: 10 . 1145 / 3077136 . 3080797. url: http : / / doi . acm . org / 10 . 1145 / 3077136 . 3080797.
+[26] Chen, J., H. Zhang, X. He, L. Nie, W. Liu, and T.-S. Chua. 2017a. “**Attentive Collaborative Filtering: Multimedia Recommendation with Item- and Component-Level Attention**”. In: Proceedings of the 40th International ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR ’17. Shinjuku, Tokyo, Japan: ACM. 335–344. isbn: 978-1-4503-5022-8. doi: 10 . 1145 / 3077136 . 3080797. url: http : / / doi . acm . org / 10 . 1145 / 3077136 . 3080797.
 
 [27] Chen, Q., X. Zhu, Z.-H. Ling, S. Wei, H. Jiang, and D. Inkpen. 2017b. “Enhanced LSTM for Natural Language Inference”. In: Proceedings of the 55th Annual Meeting of the Association for Computational Lin- guistics (Volume 1: Long Papers). Vancouver, Canada: Association for Computational Linguistics. 1657–1668. doi: 10.18653/v1/P17- 1152. url: https://www.aclweb.org/anthology/P17-1152.
 
@@ -2155,9 +2097,9 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [31] Costa, A. and F. Roda. 2011. “Recommender Systems by Means of Information Retrieval”. In: Proceedings of the International Con- ference on Web Intelligence, Mining and Semantics. WIMS ’11. Sogndal, Norway: ACM. 57:1–57:5. isbn: 978-1-4503-0148-0. doi: 10 . 1145 / 1988688 . 1988755. url: http : / / doi . acm . org / 10 . 1145 / 1988688.1988755.
 
-[32] Covington, P., J. Adams, and E. Sargin. 2016. “Deep neural networks for youtube recommendations”. In: Proceedings of the 10th ACM conference on recommender systems. 191–198.
+[32] Covington, P., J. Adams, and E. Sargin. 2016. “**Deep neural networks for youtube recommendations**”. In: Proceedings of the 10th ACM conference on recommender systems. 191–198.
 
-[33] Croft, W. B., D. Metzler, and T. Strohman. 2009. Search Engines: Infor- mation Retrieval in Practice. 1st. USA: Addison-Wesley Publishing Company. I–XXV, 1–524. isbn: 0136072240, 9780136072249.
+[33] Croft, W. B., D. Metzler, and T. Strohman. 2009. Search Engines: Information Retrieval in Practice. 1st. USA: Addison-Wesley Publishing Company. I–XXV, 1–524. isbn: 0136072240, 9780136072249.
 
 [34] Dai, Z., C. Xiong, J. Callan, and Z. Liu. 2018. “Convolutional Neural Networks for Soft-Matching N-Grams in Ad-hoc Search”. In: Proceed- ings of the Eleventh ACM International Conference on Web Search and Data Mining. WSDM ’18. Marina Del Rey, CA, USA: ACM. 126–134. isbn: 978-1-4503-5581-0. doi: 10.1145/3159652.3159659. url: http://doi.acm.org/10.1145/3159652.3159659.
 
@@ -2171,21 +2113,21 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [39] Eksombatchai, C., P. Jindal, J. Z. Liu, Y. Liu, R. Sharma, C. Sugnet, M. Ulrich, and J. Leskovec. 2018. “Pixie: A System for Recommending 3+ Billion Items to 200+ Million Users in Real-Time”. In: Pro- ceedings of the 2018 World Wide Web Conference on World Wide Web, WWW 2018, Lyon, France, April 23-27, 2018. 1775–1784. doi: 10.1145/3178876.3186183. url: https://doi.org/10.1145/3178876. 3186183.
 
-[40] Elkahky, A. M., Y. Song, and X. He. 2015. “A Multi-View Deep Learning Approach for Cross Domain User Modeling in Recommendation Systems”. In: Proceedings of the 24th International Conference on World Wide Web. Republic and Canton of Geneva, CHE. 278–288. isbn: 9781450334693. doi: 10.1145/2736277.2741667. url: https: //doi.org/10.1145/2736277.2741667.
+[40] Elkahky, A. M., Y. Song, and X. He. 2015. “**A Multi-View Deep Learning Approach for Cross Domain User Modeling in Recommendation Systems**”. In: Proceedings of the 24th International Conference on World Wide Web. Republic and Canton of Geneva, CHE. 278–288. isbn: 9781450334693. doi: 10.1145/2736277.2741667. url: https: //doi.org/10.1145/2736277.2741667.
 
 [41] Fan, W., Y. Ma, Q. Li, Y. He, E. Zhao, J. Tang, and D. Yin. 2019. “Graph Neural Networks for Social Recommendation”. In: The World Wide Web Conference. WWW ’19. San Francisco, CA, USA: Associ- ation for Computing Machinery. 417–426. isbn: 9781450366748. doi: 10.1145/3308558.3313488. url: https://doi.org/10.1145/3308558. 3313488.
 
-[42] Fan, Y., J. Guo, Y. Lan, J. Xu, C. Zhai, and X. Cheng. 2018. “Model- ing Diverse Relevance Patterns in Ad-hoc Retrieval”. In: The 41st International ACM SIGIR Conference on Research & Development in Information Retrieval. SIGIR ’18. Ann Arbor, MI, USA: ACM. 375–384. isbn: 978-1-4503-5657-2. doi: 10.1145/3209978.3209980. url: http://doi.acm.org/10.1145/3209978.3209980.
+[42] Fan, Y., J. Guo, Y. Lan, J. Xu, C. Zhai, and X. Cheng. 2018. “Modeling Diverse Relevance Patterns in Ad-hoc Retrieval”. In: The 41st International ACM SIGIR Conference on Research & Development in Information Retrieval. SIGIR ’18. Ann Arbor, MI, USA: ACM. 375–384. isbn: 978-1-4503-5657-2. doi: 10.1145/3209978.3209980. url: http://doi.acm.org/10.1145/3209978.3209980.
 
-[43] Gao, C., X. Chen, F. Feng, K. Zhao, X. He, Y. Li, and D. Jin. 2019a. “Cross-domain Recommendation Without Sharing User-relevant Data”. In: Proceedings of the 2019 World Wide Web Conference on World Wide Web. 491–502. doi: 10.1145/3308558.3313538. url: https://doi.org/10.1145/3308558.3313538.
+[43] Gao, C., X. Chen, F. Feng, K. Zhao, X. He, Y. Li, and D. Jin. 2019a. “**Cross-domain Recommendation Without Sharing User-relevant Data**”. In: Proceedings of the 2019 World Wide Web Conference on World Wide Web. 491–502. doi: 10.1145/3308558.3313538. url: https://doi.org/10.1145/3308558.3313538.
 
-[44] Gao, C., X. He, D. Gan, X. Chen, F. Feng, Y. Li, and T.-S. Chua. 2019b. “Neural Multi-Task Recommendation from Multi-Behavior Data”. In: ICDE.
+[44] Gao, C., X. He, D. Gan, X. Chen, F. Feng, Y. Li, and T.-S. Chua. 2019b. “**Neural Multi-Task Recommendation from Multi-Behavior Data**”. In: ICDE.
 
 [45] Gao, J., J.-Y. Nie, G. Wu, and G. Cao. 2004. “Dependence Language Model for Information Retrieval”. In: Proceedings of the 27th Annual International ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR ’04. Sheffield, United Kingdom: ACM. 170–177. isbn: 1-58113-881-4. doi: 10.1145/1008992.1009024. url: http://doi.acm.org/10.1145/1008992.1009024.
 
-[46] Gao, L., H. Yang, J. Wu, C. Zhou, W. Lu, and Y. Hu. 2018. “Rec- ommendation with Multi-Source Heterogeneous Information”. In: Proceedings of the Twenty-Seventh International Joint Conference on Artificial Intelligence, IJCAI-18. International Joint Conferences on Artificial Intelligence Organization. 3378–3384. doi: 10.24963/ ijcai.2018/469. url: https://doi.org/10.24963/ijcai.2018/469.
+[46] Gao, L., H. Yang, J. Wu, C. Zhou, W. Lu, and Y. Hu. 2018. “Recommendation with Multi-Source Heterogeneous Information”. In: Proceedings of the Twenty-Seventh International Joint Conference on Artificial Intelligence, IJCAI-18. International Joint Conferences on Artificial Intelligence Organization. 3378–3384. doi: 10.24963/ ijcai.2018/469. url: https://doi.org/10.24963/ijcai.2018/469.
 
-[47] Garcia-Molina, H., G. Koutrika, and A. Parameswaran. 2011. “Infor- mation Seeking: Convergence of Search, Recommendations, and Advertising”. Commun. ACM. 54(11): 121–130. issn: 0001-0782. doi: 10.1145/2018396.2018423. url: http://doi.acm.org/10.1145/ 2018396.2018423.
+[47] Garcia-Molina, H., G. Koutrika, and A. Parameswaran. 2011. “Information Seeking: Convergence of Search, Recommendations, and Advertising”. Commun. ACM. 54(11): 121–130. issn: 0001-0782. doi: 10.1145/2018396.2018423. url: http://doi.acm.org/10.1145/ 2018396.2018423.
 
 [48] Gong, Y., H. Luo, and J. Zhang. 2018. “Natural Language Inference over Interaction Space”. In: 6th International Conference on Learning Representations, ICLR 2018.
 
@@ -2193,11 +2135,11 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [50] Graves, A., S. Fernández, and J. Schmidhuber. 2007. “Multi-dimensional Recurrent Neural Networks”. In: Artificial Neural Networks – ICANN 2007. Berlin, Heidelberg: Springer Berlin Heidelberg. 549–558. isbn: 978-3-540-74690-4.
 
-[51] Guo, H., R. Tang, Y. Ye, Z. Li, and X. He. 2017. “DeepFM: A Factorization- machine Based Neural Network for CTR Prediction”. In: Proceedings of the 26th International Joint Conference on Artificial Intelligence. IJCAI’17. Melbourne, Australia: AAAI Press. 1725–1731. isbn: 978- 0-9992411-0-3. url: http://dl.acm.org/citation.cfm?id=3172077. 3172127.
+[51] Guo, H., R. Tang, Y. Ye, Z. Li, and X. He. 2017. “DeepFM: A Factorization-machine Based Neural Network for CTR Prediction”. In: Proceedings of the 26th International Joint Conference on Artificial Intelligence. IJCAI’17. Melbourne, Australia: AAAI Press. 1725–1731. isbn: 978- 0-9992411-0-3. url: http://dl.acm.org/citation.cfm?id=3172077. 3172127.
 
 [52] Guo, J., Y. Fan, Q. Ai, and W. B. Croft. 2016. “A Deep Relevance Matching Model for Ad-hoc Retrieval”. In: Proceedings of the 25th ACM International on Conference on Information and Knowledge Management. CIKM ’16. Indianapolis, Indiana, USA: ACM. 55– 64. isbn: 978-1-4503-4073-1. doi: 10.1145/2983323.2983769. url: http://doi.acm.org/10.1145/2983323.2983769.
 
-[53] Guo, J., Y. Fan, X. Ji, and X. Cheng. 2019a. “MatchZoo: A Learn- ing, Practicing, and Developing System for Neural Text Matching”. In: Proceedings of the 42Nd International ACM SIGIR Confer- ence on Research and Development in Information Retrieval. SI- GIR’19. Paris, France: ACM. 1297–1300. isbn: 978-1-4503-6172-9. doi: 10.1145/3331184.3331403. url: http://doi.acm.org/10.1145/ 3331184.3331403.
+[53] Guo, J., Y. Fan, X. Ji, and X. Cheng. 2019a. “MatchZoo: A Learning, Practicing, and Developing System for Neural Text Matching”. In: Proceedings of the 42Nd International ACM SIGIR Confer- ence on Research and Development in Information Retrieval. SI- GIR’19. Paris, France: ACM. 1297–1300. isbn: 978-1-4503-6172-9. doi: 10.1145/3331184.3331403. url: http://doi.acm.org/10.1145/ 3331184.3331403.
 
 [54] Guo, J., Y. Fan, L. Pang, L. Yang, Q. Ai, H. Zamani, C. Wu, W. B. Croft, and X. Cheng. 2019b. “A Deep Look into Neural Ranking Models for Information Retrieval”. CoRR. abs/1903.06902. arXiv: 1903.06902. url: http://arxiv.org/abs/1903.06902.
 
@@ -2215,7 +2157,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [61] He, K., X. Zhang, S. Ren, and J. Sun. 2016a. “Deep Residual Learning for Image Recognition”. In: 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 770–778. doi: 10.1109/ CVPR.2016.90.
 
-[62] He, R., W.-C. Kang, and J. McAuley. 2017a. “Translation-based Rec- ommendation”. In: Proceedings of the Eleventh ACM Conference on Recommender Systems. RecSys ’17. Como, Italy: ACM. 161– 169. isbn: 978-1-4503-4652-8. doi: 10.1145/3109859.3109882. url: http://doi.acm.org/10.1145/3109859.3109882.
+[62] He, R., W.-C. Kang, and J. McAuley. 2017a. “Translation-based Recommendation”. In: Proceedings of the Eleventh ACM Conference on Recommender Systems. RecSys ’17. Como, Italy: ACM. 161– 169. isbn: 978-1-4503-4652-8. doi: 10.1145/3109859.3109882. url: http://doi.acm.org/10.1145/3109859.3109882.
 
 [63] He, R. and J. McAuley. 2016a. “VBPR: Visual Bayesian Personalized Ranking from Implicit Feedback”. In: Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence. AAAI’16. Phoenix, Ari- zona: AAAI Press. 144–150. url: http://dl.acm.org/citation.cfm? id=3015812.3015834.
 
@@ -2231,15 +2173,15 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [69] He, X., M. Gao, M.-Y. Kan, and D. Wang. 2017b. “BiRank: Towards Ranking on Bipartite Graphs”. IEEE Trans. on Knowl. and Data Eng. 29(1): 57–71. issn: 1041-4347. doi: 10 . 1109 / TKDE . 2016 . 2611584. url: https://doi.org/10.1109/TKDE.2016.2611584.
 
-[70] He, X., M.-Y. Kan, P. Xie, and X. Chen. 2014. “Comment-based Multi- view Clustering of Web 2.0 Items”. In: Proceedings of the 23rd Inter- national Conference on World Wide Web. WWW ’14. Seoul, Korea: ACM. 771–782. isbn: 978-1-4503-2744-2. doi: 10.1145/2566486. 2567975. url: http://doi.acm.org/10.1145/2566486.2567975.
+[70] He, X., M.-Y. Kan, P. Xie, and X. Chen. 2014. “Comment-based Multi-view Clustering of Web 2.0 Items”. In: Proceedings of the 23rd Inter- national Conference on World Wide Web. WWW ’14. Seoul, Korea: ACM. 771–782. isbn: 978-1-4503-2744-2. doi: 10.1145/2566486. 2567975. url: http://doi.acm.org/10.1145/2566486.2567975.
 
 [71] He, X., L. Liao, H. Zhang, L. Nie, X. Hu, and T.-S. Chua. 2017c. “Neural Collaborative Filtering”. In: Proceedings of the 26th International Conference on World Wide Web. WWW ’17. Perth, Australia. 173– 182. isbn: 978-1-4503-4913-0. doi: 10.1145/3038912.3052569. url: https://doi.org/10.1145/3038912.3052569.
 
 [72] He, X., H. Zhang, M.-Y. Kan, and T.-S. Chua. 2016b. “Fast Matrix Factorization for Online Recommendation with Implicit Feedback”. In: Proceedings of the 39th International ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR ’16. Pisa, Italy: ACM. 549–558. isbn: 978-1-4503-4069-4. doi: 10.1145/2911451. 2911489. url: http://doi.acm.org/10.1145/2911451.2911489.
 
-[73] Hidasi, B., A. Karatzoglou, L. Baltrunas, and D. Tikk. 2016. “Session- based Recommendations with Recurrent Neural Networks”. In: 4th International Conference on Learning Representations, ICLR 2016, San Juan, Puerto Rico, May 2-4, 2016, Conference Track Proceed- ings. url: http://arxiv.org/abs/1511.06939.
+[73] Hidasi, B., A. Karatzoglou, L. Baltrunas, and D. Tikk. 2016. “Session-based Recommendations with Recurrent Neural Networks”. In: 4th International Conference on Learning Representations, ICLR 2016, San Juan, Puerto Rico, May 2-4, 2016, Conference Track Proceed- ings. url: http://arxiv.org/abs/1511.06939.
 
-[74] Hinton, G. E. and R. R. Salakhutdinov. 2006. “Reducing the Dimen- sionality of Data with Neural Networks”. Science. 313(5786): 504– 507. issn: 0036-8075. doi: 10.1126/science.1127647. url: https: //science.sciencemag.org/content/313/5786/504.
+[74] Hinton, G. E. and R. R. Salakhutdinov. 2006. “Reducing the Dimensionality of Data with Neural Networks”. Science. 313(5786): 504– 507. issn: 0036-8075. doi: 10.1126/science.1127647. url: https: //science.sciencemag.org/content/313/5786/504.
 
 [75] Hofmann, T. 1999. “Probabilistic latent semantic indexing”. In: Pro- ceedings of the 22nd annual international ACM SIGIR conference on Research and development in information retrieval. SIGIR ’99. Berkeley, California, United States: ACM. 50–57. isbn: 1-58113-096- 1. doi: 10.1145/312624.312649. url: http://doi.acm.org/10.1145/ 312624.312649.
 
@@ -2247,7 +2189,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [77] Hsieh, C.-K., L. Yang, Y. Cui, T.-Y. Lin, S. Belongie, and D. Estrin. 2017. “Collaborative Metric Learning”. In: Proceedings of the 26th International Conference on World Wide Web. WWW ’17. Perth, Australia. 193–201. isbn: 978-1-4503-4913-0. doi: 10.1145/3038912. 3052639. url: https://doi.org/10.1145/3038912.3052639.
 
-[78] Hu, B., Z. Lu, H. Li, and Q. Chen. 2014. “Convolutional Neural Net- work Architectures for Matching Natural Language Sentences”. In: Advances in Neural Information Processing Systems 27. Curran Associates, Inc. 2042–2050. url: http://papers.nips.cc/paper/5550- convolutional-neural-network-architectures-for-matching-natural- language-sentences.pdf.
+[78] Hu, B., Z. Lu, H. Li, and Q. Chen. 2014. “Convolutional Neural Network Architectures for Matching Natural Language Sentences”. In: Advances in Neural Information Processing Systems 27. Curran Associates, Inc. 2042–2050. url: http://papers.nips.cc/paper/5550- convolutional-neural-network-architectures-for-matching-natural- language-sentences.pdf.
 
 [79] Huang, J., S. Yao, C. Lyu, and D. Ji. 2017. “Multi-Granularity Neural Sentence Model for Measuring Short Text Similarity”. In: Database Systems for Advanced Applications. Cham: Springer International Publishing. 439–455. isbn: 978-3-319-55753-3.
 
@@ -2265,15 +2207,15 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [86] Joachims, T. 2002. “Optimizing Search Engines Using Clickthrough Data”. In: Proceedings of the Eighth ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. KDD ’02. Edmonton, Alberta, Canada: ACM. 133–142. isbn: 1-58113-567-X. doi: 10.1145/775047.775067. url: http://doi.acm.org/10.1145/ 775047.775067.
 
-[87] Joachims, T., A. Swaminathan, and T. Schnabel. 2017. “Unbiased Learning-to-Rank with Biased Feedback”. In: Proceedings of the Tenth ACM International Conference on Web Search and Data Mining. WSDM ’17. Cambridge, United Kingdom. 781–789. doi: 10.1145/3018661.3018699. url: https://doi.org/10.1145/3018661. 3018699.
+[87] Joachims, T., A. Swaminathan, and T. Schnabel. 2017. “**Unbiased Learning-to-Rank with Biased Feedback**”. In: Proceedings of the Tenth ACM International Conference on Web Search and Data Mining. WSDM ’17. Cambridge, United Kingdom. 781–789. doi: 10.1145/3018661.3018699. url: https://doi.org/10.1145/3018661. 3018699.
 
 [88] Kabbur, S., X. Ning, and G. Karypis. 2013. “FISM: Factored Item Similarity Models for top-N Recommender Systems”. In: Proceedings of the 19th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. KDD ’13. Chicago, Illinois, USA: ACM. 659–667. isbn: 978-1-4503-2174-7. doi: 10.1145/2487575.2487589. url: http://doi.acm.org/10.1145/2487575.2487589.
 
-[89] Kang, W. and J. J. McAuley. 2018. “Self-Attentive Sequential Recom- mendation”. In: IEEE International Conference on Data Mining. 197–206.
+[89] Kang, W. and J. J. McAuley. 2018. “**Self-Attentive Sequential Recommendation**”. In: IEEE International Conference on Data Mining. 197–206.
 
 [90] Karatzoglou, A., X. Amatriain, L. Baltrunas, and N. Oliver. 2010. “Multiverse Recommendation: N-dimensional Tensor Factorization for Context-aware Collaborative Filtering”. In: Proceedings of the Fourth ACM Conference on Recommender Systems. RecSys ’10. Barcelona, Spain: ACM. 79–86. isbn: 978-1-60558-906-0. doi: 10. 1145/1864708.1864727. url: http://doi.acm.org/10.1145/1864708. 1864727.
 
-[91] Karpathy, A., A. Joulin, and L. Fei-Fei. 2014. “Deep Fragment Embed- dings for Bidirectional Image Sentence Mapping”. In: Proceedings of the 27th International Conference on Neural Information Processing Systems - Volume 2. NIPS’14. Montreal, Canada: MIT Press. 1889– 1897. url: http://dl.acm.org/citation.cfm?id=2969033.2969038.
+[91] Karpathy, A., A. Joulin, and L. Fei-Fei. 2014. “Deep Fragment Embeddings for Bidirectional Image Sentence Mapping”. In: Proceedings of the 27th International Conference on Neural Information Processing Systems - Volume 2. NIPS’14. Montreal, Canada: MIT Press. 1889– 1897. url: http://dl.acm.org/citation.cfm?id=2969033.2969038.
 
 [92] Karpathy, A. and F. Li. 2015. “Deep visual-semantic alignments for generating image descriptions”. In: IEEE Conference on Computer Vision and Pattern Recognition, CVPR 2015, Boston, MA, USA, June 7-12, 2015. IEEE Computer Society. 3128–3137. doi: 10.1109/ CVPR.2015.7298932. url: https://doi.org/10.1109/CVPR.2015. 7298932.
 
@@ -2293,9 +2235,9 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [100] Lei, C., D. Liu, W. Li, Z. Zha, and H. Li. 2016. “Comparative Deep Learning of Hybrid Representations for Image Recommendations”. In: 2016 IEEE Conference on Computer Vision and Pattern Recog- nition, CVPR 2016, Las Vegas, NV, USA, June 27-30, 2016. 2545– 2553. doi: 10.1109/CVPR.2016.279. url: https://doi.org/10.1109/ CVPR.2016.279.
 
-[101] Lei, W., X. He, Y. Miao, Q. Wu, R. Hong, M.-Y. Kan, and T.-S. Chua. 2020. “Estimation-Action-Reflection: Towards Deep Interaction Be- tween Conversational and Recommender Systems”. In: Proceedings of the 13th ACM International Conference on Web Search and Data Mining. WSDM ’20. New York, NY, USA: ACM.
+[101] Lei, W., X. He, Y. Miao, Q. Wu, R. Hong, M.-Y. Kan, and T.-S. Chua. 2020. “Estimation-Action-Reflection: Towards Deep Interaction Between Conversational and Recommender Systems”. In: Proceedings of the 13th ACM International Conference on Web Search and Data Mining. WSDM ’20. New York, NY, USA: ACM.
 
-[102] Li, C., C. Quan, L. Peng, Y. Qi, Y. Deng, and L. Wu. 2019. “A Capsule Network for Recommendation and Explaining What You Like and Dislike”. In: Proceedings of the 42nd International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR 2019, Paris, France, July 21-25, 2019. 275–284. doi: 10.1145/ 3331184.3331216. url: https://doi.org/10.1145/3331184.3331216.
+[102] Li, C., C. Quan, L. Peng, Y. Qi, Y. Deng, and L. Wu. 2019. “**A Capsule Network for Recommendation and Explaining What You Like and Dislike**”. In: Proceedings of the 42nd International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR 2019, Paris, France, July 21-25, 2019. 275–284. doi: 10.1145/ 3331184.3331216. url: https://doi.org/10.1145/3331184.3331216.
 
 [103] Li, H. 2011. “Learning to rank for information retrieval and natural language processing”. Synthesis Lectures on Human Language Tech- nologies. 4(1): 1–113.
 
@@ -2311,13 +2253,13 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [109] Lian, J., X. Zhou, F. Zhang, Z. Chen, X. Xie, and G. Sun. 2018. “xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems”. In: Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. KDD ’18. London, United Kingdom: ACM. 1754–1763. isbn: 978-1- 4503-5552-0. doi: 10.1145/3219819.3220023. url: http://doi.acm. org/10.1145/3219819.3220023.
 
-[110] Liang, D., L. Charlin, J. McInerney, and D. M. Blei. 2016. “Modeling User Exposure in Recommendation”. In: Proceedings of the 25th In- ternational Conference on World Wide Web, WWW 2016, Montreal, Canada, April 11 - 15, 2016. 951–961. doi: 10.1145/2872427.2883090. url: https://doi.org/10.1145/2872427.2883090.
+[110] Liang, D., L. Charlin, J. McInerney, and D. M. Blei. 2016. “**Modeling User Exposure in Recommendation**”. In: Proceedings of the 25th In- ternational Conference on World Wide Web, WWW 2016, Montreal, Canada, April 11 - 15, 2016. 951–961. doi: 10.1145/2872427.2883090. url: https://doi.org/10.1145/2872427.2883090.
 
-[111] Liang, D., R. G. Krishnan, M. D. Hoffman, and T. Jebara. 2018. “Vari- ational Autoencoders for Collaborative Filtering”. In: Proceedings of the 2018 World Wide Web Conference. WWW ’18. Lyon, France: International World Wide Web Conferences Steering Committee. 689–698. isbn: 9781450356398. doi: 10.1145/3178876.3186150. url: https://doi.org/10.1145/3178876.3186150.
+[111] Liang, D., R. G. Krishnan, M. D. Hoffman, and T. Jebara. 2018. “Variational Autoencoders for Collaborative Filtering”. In: Proceedings of the 2018 World Wide Web Conference. WWW ’18. Lyon, France: International World Wide Web Conferences Steering Committee. 689–698. isbn: 9781450356398. doi: 10.1145/3178876.3186150. url: https://doi.org/10.1145/3178876.3186150.
 
-[112] Liu, B., D. Niu, H. Wei, J. Lin, Y. He, K. Lai, and Y. Xu. 2019a. “Match- ing Article Pairs with Graphical Decomposition and Convolutions”. In: Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics. Florence, Italy: Association for Compu- tational Linguistics. 6284–6294. doi: 10.18653/v1/P19-1632. url: https://www.aclweb.org/anthology/P19-1632.
+[112] Liu, B., D. Niu, H. Wei, J. Lin, Y. He, K. Lai, and Y. Xu. 2019a. “Matching Article Pairs with Graphical Decomposition and Convolutions”. In: Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics. Florence, Italy: Association for Compu- tational Linguistics. 6284–6294. doi: 10.18653/v1/P19-1632. url: https://www.aclweb.org/anthology/P19-1632.
 
-[113] Liu, F., Z. Cheng, C. Sun, Y. Wang, L. Nie, and M. S. Kankanhalli. 2019b. “User Diverse Preference Modeling by Multimodal Atten- tive Metric Learning”. In: Proceedings of the 27th ACM Interna- tional Conference on Multimedia. 1526–1534. doi: 10.1145/3343031. 3350953. url: https://doi.org/10.1145/3343031.3350953.
+[113] Liu, F., Z. Cheng, C. Sun, Y. Wang, L. Nie, and M. S. Kankanhalli. 2019b. “User Diverse Preference Modeling by Multimodal Attentive Metric Learning”. In: Proceedings of the 27th ACM Interna- tional Conference on Multimedia. 1526–1534. doi: 10.1145/3343031. 3350953. url: https://doi.org/10.1145/3343031.3350953.
 
 [114] Liu, T.-Y. 2009. “Learning to Rank for Information Retrieval”. Found. Trends Inf. Retr. 3(3): 225–331. issn: 1554-0669. doi: 10 . 1561 / 1500000016. url: http://dx.doi.org/10.1561/1500000016.
 
@@ -2325,7 +2267,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [116] Ma, L., Z. Lu, L. Shang, and H. Li. 2015. “Multimodal Convolutional Neural Networks for Matching Image and Sentence”. In: Proceedings of the 2015 IEEE International Conference on Computer Vision (ICCV). ICCV ’15. Washington, DC, USA: IEEE Computer Society. 2623–2631. isbn: 978-1-4673-8391-2. doi: 10.1109/ICCV.2015.301. url: http://dx.doi.org/10.1109/ICCV.2015.301.
 
-[117] Masci, J., U. Meier, D. Cireşan, and J. Schmidhuber. 2011. “Stacked Con- volutional Auto-encoders for Hierarchical Feature Extraction”. In: Proceedings of the 21th International Conference on Artificial Neural Networks - Volume Part I. ICANN’11. Espoo, Finland: Springer- Verlag. 52–59. isbn: 978-3-642-21734-0. url: http://dl.acm.org/ citation.cfm?id=2029556.2029563.
+[117] Masci, J., U. Meier, D. Cireşan, and J. Schmidhuber. 2011. “Stacked Convolutional Auto-encoders for Hierarchical Feature Extraction”. In: Proceedings of the 21th International Conference on Artificial Neural Networks - Volume Part I. ICANN’11. Espoo, Finland: Springer- Verlag. 52–59. isbn: 978-3-642-21734-0. url: http://dl.acm.org/ citation.cfm?id=2029556.2029563.
 
 [118] Mikolov, T., I. Sutskever, K. Chen, G. Corrado, and J. Dean. 2013. “Distributed Representations of Words and Phrases and Their Com- positionality”. In: Proceedings of the 26th International Conference on Neural Information Processing Systems - Volume 2. NIPS’13. Lake Tahoe, Nevada: Curran Associates Inc. 3111–3119. url: http: //dl.acm.org/citation.cfm?id=2999792.2999959.
 
@@ -2337,15 +2279,15 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [122] Nallapati, R. 2004. “Discriminative Models for Information Retrieval”. In: Proceedings of the 27th Annual International ACM SIGIR Con- ference on Research and Development in Information Retrieval. SIGIR ’04. Sheffield, United Kingdom: ACM. 64–71. isbn: 1-58113- 881-4. doi: 10.1145/1008992.1009006. url: http://doi.acm.org/10. 1145/1008992.1009006.
 
-[123] Naumov, M., D. Mudigere, H. M. Shi, J. Huang, N. Sundaraman, J. Park, X. Wang, U. Gupta, C. Wu, A. G. Azzolini, D. Dzhulgakov, A. Mallevich, I. Cherniavskii, Y. Lu, R. Krishnamoorthi, A. Yu, V. Kondratenko, S. Pereira, X. Chen, W. Chen, V. Rao, B. Jia, L. Xiong, and M. Smelyanskiy. 2019. “Deep Learning Recommendation Model for Personalization and Recommendation Systems”. CoRR. abs/1906.00091. arXiv: 1906.00091. url: http://arxiv.org/abs/1906. 00091.
+[123] Naumov, M., D. Mudigere, H. M. Shi, J. Huang, N. Sundaraman, J. Park, X. Wang, U. Gupta, C. Wu, A. G. Azzolini, D. Dzhulgakov, A. Mallevich, I. Cherniavskii, Y. Lu, R. Krishnamoorthi, A. Yu, V. Kondratenko, S. Pereira, X. Chen, W. Chen, V. Rao, B. Jia, L. Xiong, and M. Smelyanskiy. 2019. “**Deep Learning Recommendation Model for Personalization and Recommendation Systems**”. CoRR. abs/1906.00091. arXiv: 1906.00091. url: http://arxiv.org/abs/1906. 00091.
 
 [124] Nguyen, T., M. Rosenberg, X. Song, J. Gao, S. Tiwary, R. Majumder, and L. Deng. 2016. “MS MARCO: A Human Generated MAchine Reading COmprehension Dataset”. CoRR. abs/1611.09268. arXiv: 1611.09268. url: http://arxiv.org/abs/1611.09268.
 
-[125] Nie, Y., A. Sordoni, and J.-Y. Nie. 2018. “Multi-level Abstraction Con- volutional Model with Weak Supervision for Information Retrieval”. In: The 41st International ACM SIGIR Conference on Research & Development in Information Retrieval. SIGIR ’18. Ann Arbor, MI, USA: ACM. 985–988. isbn: 978-1-4503-5657-2. doi: 10.1145/3209978. 3210123. url: http://doi.acm.org/10.1145/3209978.3210123.
+[125] Nie, Y., A. Sordoni, and J.-Y. Nie. 2018. “Multi-level Abstraction Convolutional Model with Weak Supervision for Information Retrieval”. In: The 41st International ACM SIGIR Conference on Research & Development in Information Retrieval. SIGIR ’18. Ann Arbor, MI, USA: ACM. 985–988. isbn: 978-1-4503-5657-2. doi: 10.1145/3209978. 3210123. url: http://doi.acm.org/10.1145/3209978.3210123.
 
 [126] Nogueira, R. and K. Cho. 2019. “Passage Re-ranking with BERT”. CoRR. abs/1901.04085. arXiv: 1901.04085. url: http://arxiv.org/ abs/1901.04085.
 
-[127] Nogueira, R., W. Yang, K. Cho, and J. Lin. 2019. “Multi-Stage Docu- ment Ranking with BERT”. arXiv: 1910.14424. url: https://arxiv. org/abs/1910.14424.
+[127] Nogueira, R., W. Yang, K. Cho, and J. Lin. 2019. “Multi-Stage Document Ranking with BERT”. arXiv: 1910.14424. url: https://arxiv. org/abs/1910.14424.
 
 [128] Onal, K. D., Y. Zhang, I. S. Altingovde, M. M. Rahman, P. Karagoz, A. Braylan, B. Dang, H.-L. Chang, H. Kim, Q. McNamara, A. Angert, E. Banner, V. Khetan, T. McDonnell, A. T. Nguyen, D. Xu, B. C. Wallace, M. de Rijke, and M. Lease. 2018a. “Neural information retrieval: at the end of the early years”. Information Retrieval Journal. 21(2): 111–182. issn: 1573-7659. doi: 10.1007/s10791-017- 9321-y. url: https://doi.org/10.1007/s10791-017-9321-y.
 
@@ -2353,7 +2295,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [130] Palangi, H., L. Deng, Y. Shen, J. Gao, X. He, J. Chen, X. Song, and R. Ward. 2016. “Deep Sentence Embedding Using Long Short- term Memory Networks: Analysis and Application to Information Retrieval”. IEEE/ACM Trans. Audio, Speech and Lang. Proc. 24(4): 694–707. issn: 2329-9290. doi: 10.1109/TASLP.2016.2520371. url: https://doi.org/10.1109/TASLP.2016.2520371.
 
-[131] Pan, F., S. Li, X. Ao, P. Tang, and Q. He. 2019. “Warm Up Cold-start Advertisements: Improving CTR Predictions via Learning to Learn ID Embeddings”. In: Proceedings of the 42nd International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR 2019, Paris, France, July 21-25, 2019. 695–704. doi: 10.1145/3331184.3331268. url: https://doi.org/10.1145/ 3331184.3331268.
+[131] Pan, F., S. Li, X. Ao, P. Tang, and Q. He. 2019. “**Warm Up Cold-start Advertisements: Improving CTR Predictions via Learning to Learn ID Embeddings**”. In: Proceedings of the 42nd International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR 2019, Paris, France, July 21-25, 2019. 695–704. doi: 10.1145/3331184.3331268. url: https://doi.org/10.1145/ 3331184.3331268.
 
 [132] Pang, L., Y. Lan, J. Guo, J. Xu, and X. Cheng. 2016a. “A Study of MatchPyramid Models on Ad-hoc Retrieval”. CoRR. abs/1606.04648. arXiv: 1606.04648. url: http://arxiv.org/abs/1606.04648.
 
@@ -2361,23 +2303,23 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [134] Pang, L., Y. Lan, J. Guo, J. Xu, J. Xu, and X. Cheng. 2017a. “DeepRank: A New Deep Architecture for Relevance Ranking in Information Retrieval”. In: Proceedings of the 2017 ACM on Conference on Information and Knowledge Management. CIKM ’17. Singapore, Singapore: ACM. 257–266. isbn: 978-1-4503-4918-5. doi: 10.1145/ 3132847 . 3132914. url: http : / / doi . acm . org / 10 . 1145 / 3132847 . 3132914.
 
-[135] Pang, L., Y. Lan, J. Xu, J. Guo, S.-X. Wan, and X. Cheng. 2017b. “A Sur- vey on Deep Text Matching”. Chinese Journal of Computers. 40(4): 985–1003. issn: 0254-4164. doi: 10.11897/SP.J.1016.2017.00985. url: http://cjc.ict.ac.cn/online/onlinepaper/pl-201745181647.pdf.
+[135] Pang, L., Y. Lan, J. Xu, J. Guo, S.-X. Wan, and X. Cheng. 2017b. “A Survey on Deep Text Matching”. Chinese Journal of Computers. 40(4): 985–1003. issn: 0254-4164. doi: 10.11897/SP.J.1016.2017.00985. url: http://cjc.ict.ac.cn/online/onlinepaper/pl-201745181647.pdf.
 
 [136] Pang, L., J. Xu, Q. Ai, Y. Lan, X. Cheng, and J.-R. Wen. 2020. “SetRank: Learning a Permutation-Invariant Ranking Model for Information Retrieval”. In: The 43rd International ACM SIGIR Conference on Research & Development in Information Retrieval. SIGIR ’20. Association for Computing Machinery.
 
-[137] Parikh, A., O. Täckström, D. Das, and J. Uszkoreit. 2016. “A De- composable Attention Model for Natural Language Inference”. In: Proceedings of the 2016 Conference on Empirical Methods in Natural Language Processing. Austin, Texas: Association for Computational Linguistics. 2249–2255. doi: 10.18653/v1/D16- 1244. url: http: //www.aclweb.org/anthology/D16-1244.
+[137] Parikh, A., O. Täckström, D. Das, and J. Uszkoreit. 2016. “A Decomposable Attention Model for Natural Language Inference”. In: Proceedings of the 2016 Conference on Empirical Methods in Natural Language Processing. Austin, Texas: Association for Computational Linguistics. 2249–2255. doi: 10.18653/v1/D16- 1244. url: http: //www.aclweb.org/anthology/D16-1244.
 
-[138] Pasricha, R. and J. McAuley. 2018. “Translation-Based Factorization Machines for Sequential Recommendation”. In: Proceedings of the 12th ACM Conference on Recommender Systems. RecSys ’18. Van- couver, British Columbia, Canada: Association for Computing Ma- chinery. 63–71. isbn: 9781450359016. doi: 10.1145/3240323.3240356. url: https://doi.org/10.1145/3240323.3240356.
+[138] Pasricha, R. and J. McAuley. 2018. “**Translation-Based Factorization Machines for Sequential Recommendation**”. In: Proceedings of the 12th ACM Conference on Recommender Systems. RecSys ’18. Van- couver, British Columbia, Canada: Association for Computing Ma- chinery. 63–71. isbn: 9781450359016. doi: 10.1145/3240323.3240356. url: https://doi.org/10.1145/3240323.3240356.
 
 [139] Pasumarthi, R. K., S. Bruch, X. Wang, C. Li, M. Bendersky, M. Najork, J. Pfeifer, N. Golbandi, R. Anil, and S. Wolf. 2019. “TF-Ranking: Scalable TensorFlow Library for Learning-to-Rank”. In: Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. KDD ’19. Anchorage, AK, USA: ACM. 2970–2978. isbn: 978-1-4503-6201-6. doi: 10.1145/3292500.3330677. url: http://doi.acm.org/10.1145/3292500.3330677.
 
 [140] Pearl, J. 2019. “The Seven Tools of Causal Inference, with Reflections on Machine Learning”. Commun. ACM. 62(3): 54–60. issn: 0001-0782. doi: 10.1145/3241036. url: https://doi.org/10.1145/3241036.
 
-[141] Pei, C., Y. Zhang, Y. Zhang, F. Sun, X. Lin, H. Sun, J. Wu, P. Jiang, J. Ge, W. Ou, and D. Pei. 2019. “Personalized Re-Ranking for Recommendation”. In: Proceedings of the 13th ACM Conference on Recommender Systems. RecSys ’19. Copenhagen, Denmark: Associ- ation for Computing Machinery. 3–11. isbn: 9781450362436. doi: 10.1145/3298689.3347000. url: https://doi.org/10.1145/3298689. 3347000.
+[141] Pei, C., Y. Zhang, Y. Zhang, F. Sun, X. Lin, H. Sun, J. Wu, P. Jiang, J. Ge, W. Ou, and D. Pei. 2019. “**Personalized Re-Ranking for Recommendation**”. In: Proceedings of the 13th ACM Conference on Recommender Systems. RecSys ’19. Copenhagen, Denmark: Associ- ation for Computing Machinery. 3–11. isbn: 9781450362436. doi: 10.1145/3298689.3347000. url: https://doi.org/10.1145/3298689. 3347000.
 
-[142] Pennington, J., R. Socher, and C. Manning. 2014. “Glove: Global Vectors for Word Representation”. In: Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP). Doha, Qatar: Association for Computational Linguistics. 1532–1543. doi: 10.3115/v1/D14-1162. url: https://www.aclweb.org/anthology/ D14-1162.
+[142] Pennington, J., R. Socher, and C. Manning. 2014. “**Glove: Global Vectors for Word Representation**”. In: Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP). Doha, Qatar: Association for Computational Linguistics. 1532–1543. doi: 10.3115/v1/D14-1162. url: https://www.aclweb.org/anthology/ D14-1162.
 
-[143] Peters, M., M. Neumann, M. Iyyer, M. Gardner, C. Clark, K. Lee, and L. Zettlemoyer. 2018. “Deep Contextualized Word Representations”. In: Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers). New Orleans, Louisiana: As- sociation for Computational Linguistics. 2227–2237. doi: 10.18653/ v1/N18-1202. url: https://www.aclweb.org/anthology/N18-1202.
+[143] Peters, M., M. Neumann, M. Iyyer, M. Gardner, C. Clark, K. Lee, and L. Zettlemoyer. 2018. “**Deep Contextualized Word Representations**”. In: Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long Papers). New Orleans, Louisiana: As- sociation for Computational Linguistics. 2227–2237. doi: 10.18653/ v1/N18-1202. url: https://www.aclweb.org/anthology/N18-1202.
 
 [144] Qiao, Y., C. Xiong, Z. Liu, and Z. Liu. 2019. “Understanding the Behaviors of BERT in Ranking”. CoRR. abs/1904.07531. arXiv: 1904.07531. url: http://arxiv.org/abs/1904.07531.
 
@@ -2391,9 +2333,9 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [149] Ranzato, M. A., Y.-L. Boureau, and Y. LeCun. 2007. “Sparse Feature Learning for Deep Belief Networks”. In: Proceedings of the 20th International Conference on Neural Information Processing Systems. NIPS’07. Vancouver, British Columbia, Canada: Curran Associates Inc. 1185–1192. isbn: 978-1-60560-352-0. url: http://dl.acm.org/ citation.cfm?id=2981562.2981711.
 
-[150] Rasiwasia, N., J. Costa Pereira, E. Coviello, G. Doyle, G. R. Lanckriet, R. Levy, and N. Vasconcelos. 2010. “A New Approach to Cross- modal Multimedia Retrieval”. In: Proceedings of the 18th ACM International Conference on Multimedia. MM ’10. Firenze, Italy: ACM. 251–260. isbn: 978-1-60558-933-6. doi: 10.1145/1873951. 1873987. url: http://doi.acm.org/10.1145/1873951.1873987.
+[150] Rasiwasia, N., J. Costa Pereira, E. Coviello, G. Doyle, G. R. Lanckriet, R. Levy, and N. Vasconcelos. 2010. “A New Approach to Cross-modal Multimedia Retrieval”. In: Proceedings of the 18th ACM International Conference on Multimedia. MM ’10. Firenze, Italy: ACM. 251–260. isbn: 978-1-60558-933-6. doi: 10.1145/1873951. 1873987. url: http://doi.acm.org/10.1145/1873951.1873987.
 
-[151] Reimers, N. and I. Gurevych. 2019. “Sentence-BERT: Sentence Embed- dings using Siamese BERT-Networks”. In: Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing. Association for Computational Linguistics. url: http://arxiv.org/ abs/1908.10084.
+[151] Reimers, N. and I. Gurevych. 2019. “Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks”. In: Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing. Association for Computational Linguistics. url: http://arxiv.org/ abs/1908.10084.
 
 [152] Rendle, S. 2010. “Factorization Machines”. In: Proceedings of the 2010 IEEE International Conference on Data Mining. ICDM ’10. Wash- ington, DC, USA: IEEE Computer Society. 995–1000. isbn: 978-0- 7695-4256-0. doi: 10.1109/ICDM.2010.127. url: http://dx.doi.org/ 10.1109/ICDM.2010.127.
 
@@ -2403,15 +2345,15 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [155] Ricci, F., L. Rokach, and B. Shapira. 2015. Recommender Systems Handbook. 2nd. Springer Publishing Company, Incorporated. isbn: 1489976361, 9781489976369.
 
-[156] Richardson, M., R. Agrawal, and P. M. Domingos. 2003. “Trust Man- agement for the Semantic Web”. In: The Semantic Web - ISWC 2003, Second International Semantic Web Conference, Sanibel Is- land, FL, USA, October 20-23, 2003, Proceedings. 351–368. doi: 10.1007/978-3-540-39718-2\_23. url: https://doi.org/10.1007/978- 3-540-39718-2%5C_23.
+[156] Richardson, M., R. Agrawal, and P. M. Domingos. 2003. “Trust Management for the Semantic Web”. In: The Semantic Web - ISWC 2003, Second International Semantic Web Conference, Sanibel Is- land, FL, USA, October 20-23, 2003, Proceedings. 351–368. doi: 10.1007/978-3-540-39718-2\_23. url: https://doi.org/10.1007/978- 3-540-39718-2%5C_23.
 
-[157] Robertson, S., H. Zaragoza, and M. Taylor. 2004. “Simple BM25 Ex- tension to Multiple Weighted Fields”. In: Proceedings of the Thir- teenth ACM International Conference on Information and Knowl- edge Management. CIKM ’04. Washington, D.C., USA: ACM. 42–49. isbn: 1-58113-874-1. doi: 10 . 1145 / 1031171 . 1031181. url: http : //doi.acm.org/10.1145/1031171.1031181.
+[157] Robertson, S., H. Zaragoza, and M. Taylor. 2004. “Simple BM25 Etension to Multiple Weighted Fields”. In: Proceedings of the Thir- teenth ACM International Conference on Information and Knowl- edge Management. CIKM ’04. Washington, D.C., USA: ACM. 42–49. isbn: 1-58113-874-1. doi: 10 . 1145 / 1031171 . 1031181. url: http : //doi.acm.org/10.1145/1031171.1031181.
 
 [158] Rosipal, R. and N. Krämer. 2006. “Overview and recent advances in partial least squares”. In: Proceedings of the 2005 international conference on Subspace, Latent Structure and Feature Selection. SLSFS’05. Bohinj, Slovenia: Springer-Verlag. 34–51. isbn: 3-540- 34137-4, 978-3-540-34137-6. doi: 10.1007/11752790_2. url: http: //dx.doi.org/10.1007/11752790_2.
 
-[159] Salakhutdinov, R. and A. Mnih. 2007. “Probabilistic Matrix Factor- ization”. In: Proceedings of the 20th International Conference on Neural Information Processing Systems. NIPS’07. Vancouver, British Columbia, Canada: Curran Associates Inc. 1257–1264. isbn: 978- 1-60560-352-0. url: http://dl.acm.org/citation.cfm?id=2981562. 2981720.
+[159] Salakhutdinov, R. and A. Mnih. 2007. “Probabilistic Matrix Factorization”. In: Proceedings of the 20th International Conference on Neural Information Processing Systems. NIPS’07. Vancouver, British Columbia, Canada: Curran Associates Inc. 1257–1264. isbn: 978- 1-60560-352-0. url: http://dl.acm.org/citation.cfm?id=2981562. 2981720.
 
-[160] Sarwar, B., G. Karypis, J. Konstan, and J. Riedl. 2001. “Item-based Col- laborative Filtering Recommendation Algorithms”. In: Proceedings of the 10th International Conference on World Wide Web. WWW ’01. Hong Kong, Hong Kong: ACM. 285–295. isbn: 1-58113-348-0. doi: 10.1145/371920.372071. url: http://doi.acm.org/10.1145/ 371920.372071.
+[160] Sarwar, B., G. Karypis, J. Konstan, and J. Riedl. 2001. “**Item-based Collaborative Filtering Recommendation Algorithms**”. In: Proceedings of the 10th International Conference on World Wide Web. WWW ’01. Hong Kong, Hong Kong: ACM. 285–295. isbn: 1-58113-348-0. doi: 10.1145/371920.372071. url: http://doi.acm.org/10.1145/ 371920.372071.
 
 [161] Schedl, M., H. Zamani, C.-W. Chen, Y. Deldjoo, and M. Elahi. 2018. “Current challenges and visions in music recommender systems re- search”. International Journal of Multimedia Information Retrieval. 7(2): 95–116. doi: 10.1007/s13735-018-0154-2. url: https://doi.org/ 10.1007/s13735-018-0154-2.
 
@@ -2419,23 +2361,23 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [163] Shan, Y., T. R. Hoens, J. Jiao, H. Wang, D. Yu, and J. Mao. 2016. “Deep Crossing: Web-Scale Modeling Without Manually Crafted Combinatorial Features”. In: Proceedings of the 22Nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining. KDD ’16. San Francisco, California, USA: ACM. 255–262. isbn: 978-1-4503-4232-2. doi: 10.1145/2939672.2939704. url: http://doi. acm.org/10.1145/2939672.2939704.
 
-[164] Shen, Y., X. He, J. Gao, L. Deng, and G. Mesnil. 2014. “A Latent Se- mantic Model with Convolutional-Pooling Structure for Information Retrieval”. In: Proceedings of the 23rd ACM International Confer- ence on Conference on Information and Knowledge Management. CIKM ’14. Shanghai, China: ACM. 101–110. isbn: 978-1-4503-2598- 1. doi: 10.1145/2661829.2661935. url: http://doi.acm.org/10.1145/ 2661829.2661935.
+[164] Shen, Y., X. He, J. Gao, L. Deng, and G. Mesnil. 2014. “A Latent Semantic Model with Convolutional-Pooling Structure for Information Retrieval”. In: Proceedings of the 23rd ACM International Confer- ence on Conference on Information and Knowledge Management. CIKM ’14. Shanghai, China: ACM. 101–110. isbn: 978-1-4503-2598- 1. doi: 10.1145/2661829.2661935. url: http://doi.acm.org/10.1145/ 2661829.2661935.
 
 [165] Shi, Y., M. Larson, and A. Hanjalic. 2014. “Collaborative Filtering Beyond the User-Item Matrix: A Survey of the State of the Art and Future Challenges”. ACM Comput. Surv. 47(1): 3:1–3:45. issn: 0360-0300. doi: 10.1145/2556270. url: http://doi.acm.org/10.1145/ 2556270.
 
 [166] Socher, R., D. Chen, C. D. Manning, and A. Y. Ng. 2013. “Reasoning with Neural Tensor Networks for Knowledge Base Completion”. In: Proceedings of the 26th International Conference on Neural Information Processing Systems - Volume 1. NIPS’13. Lake Tahoe, Nevada: Curran Associates Inc. 926–934. url: http://dl.acm.org/ citation.cfm?id=2999611.2999715.
 
-[167] Srivastava, N., G. Hinton, A. Krizhevsky, I. Sutskever, and R. Salakhut- dinov. 2014. “Dropout: A Simple Way to Prevent Neural Networks from Overfitting”. J. Mach. Learn. Res. 15(1): 1929–1958. issn: 1532-4435. url: http://jmlr.org/papers/v15/srivastava14a.html.
+[167] Srivastava, N., G. Hinton, A. Krizhevsky, I. Sutskever, and R. Salakhutdinov. 2014. “Dropout: A Simple Way to Prevent Neural Networks from Overfitting”. J. Mach. Learn. Res. 15(1): 1929–1958. issn: 1532-4435. url: http://jmlr.org/papers/v15/srivastava14a.html.
 
-[168] Sun, F., J. Liu, J. Wu, C. Pei, X. Lin, W. Ou, and P. Jiang. 2019. “BERT4Rec: Sequential Recommendation with Bidirectional En- coder Representations from Transformer”. In: Proceedings of the 28th ACM International Conference on Information and Knowl- edge Management. CIKM ’19. Beijing, China: ACM. 1441–1450. isbn: 978-1-4503-6976-3. doi: 10.1145/3357384.3357895. url: http: //doi.acm.org/10.1145/3357384.3357895.
+[168] Sun, F., J. Liu, J. Wu, C. Pei, X. Lin, W. Ou, and P. Jiang. 2019. “**BERT4Rec: Sequential Recommendation with Bidirectional En- coder Representations from Transformer**”. In: Proceedings of the 28th ACM International Conference on Information and Knowl- edge Management. CIKM ’19. Beijing, China: ACM. 1441–1450. isbn: 978-1-4503-6976-3. doi: 10.1145/3357384.3357895. url: http: //doi.acm.org/10.1145/3357384.3357895.
 
 [169] Surdeanu, M., M. Ciaramita, and H. Zaragoza. 2011. “Learning to Rank Answers to Non-Factoid Questions from Web Collections”. Computational Linguistics. 37(2): 351–383. doi: 10.1162/COLI\_a\ _00051. eprint: https://doi.org/10.1162/COLI_a_00051. url: https://doi.org/10.1162/COLI_a_00051.
 
-[170] Tan, C., F. Wei, W. Wang, W. Lv, and M. Zhou. 2018. “Multiway At- tention Networks for Modeling Sentence Pairs”. In: Proceedings of the 27th International Joint Conference on Artificial Intelli- gence. IJCAI’18. Stockholm, Sweden: AAAI Press. 4411–4417. isbn: 9780999241127.
+[170] Tan, C., F. Wei, W. Wang, W. Lv, and M. Zhou. 2018. “Multiway Attention Networks for Modeling Sentence Pairs”. In: Proceedings of the 27th International Joint Conference on Artificial Intelli- gence. IJCAI’18. Stockholm, Sweden: AAAI Press. 4411–4417. isbn: 9780999241127.
 
-[171] Tang, J., X. Du, X. He, F. Yuan, Q. Tian, and T. Chua. 2020. “Adver- sarial Training Towards Robust Multimedia Recommender System”. IEEE Transactions on Knowledge and Data Engineering. 32(5): 855– 867. issn: 1558-2191. doi: 10.1109/TKDE.2019.2893638.
+[171] Tang, J., X. Du, X. He, F. Yuan, Q. Tian, and T. Chua. 2020. “Adversarial Training Towards Robust Multimedia Recommender System”. IEEE Transactions on Knowledge and Data Engineering. 32(5): 855– 867. issn: 1558-2191. doi: 10.1109/TKDE.2019.2893638.
 
-[172] Tang, J. and K. Wang. 2018. “Personalized Top-N Sequential Recom- mendation via Convolutional Sequence Embedding”. In: Proceedings of the Eleventh ACM International Conference on Web Search and Data Mining. WSDM ’18. Marina Del Rey, CA, USA: Association for Computing Machinery. 565–573. isbn: 9781450355810. doi: 10.1145/ 3159652.3159656. url: https://doi.org/10.1145/3159652.3159656.
+[172] Tang, J. and K. Wang. 2018. “Personalized Top-N Sequential Recommendation via Convolutional Sequence Embedding”. In: Proceedings of the Eleventh ACM International Conference on Web Search and Data Mining. WSDM ’18. Marina Del Rey, CA, USA: Association for Computing Machinery. 565–573. isbn: 9781450355810. doi: 10.1145/ 3159652.3159656. url: https://doi.org/10.1145/3159652.3159656.
 
 [173] Tao, Z., X. Wang, X. He, X. Huang, and T.-S. Chua. 2019. “HoAFM: A High-order Attentive Factorization Machine for CTR Prediction”. Information Processing &#38; Management: 102076. issn: 0306- 4573. doi: https://doi.org/10.1016/j.ipm.2019.102076. url: http: //www.sciencedirect.com/science/article/pii/S0306457319302389.
 
@@ -2443,13 +2385,13 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [175] Tay, Y., A. T. Luu, and S. C. Hui. 2018b. “Co-Stack Residual Affinity Networks with Multi-level Attention Refinement for Matching Text Sequences”. In: Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing. Brussels, Belgium: Associ- ation for Computational Linguistics. 4492–4502. doi: 10.18653/v1/ D18-1479. url: https://www.aclweb.org/anthology/D18-1479.
 
-[176] Tay, Y., A. T. Luu, and S. C. Hui. 2018c. “Hermitian Co-Attention Net- works for Text Matching in Asymmetrical Domains”. In: Proceedings of the Twenty-Seventh International Joint Conference on Artificial Intelligence, IJCAI-18. International Joint Conferences on Artificial Intelligence Organization. 4425–4431. doi: 10.24963/ijcai.2018/615. url: https://doi.org/10.24963/ijcai.2018/615.
+[176] Tay, Y., A. T. Luu, and S. C. Hui. 2018c. “Hermitian Co-Attention Networks for Text Matching in Asymmetrical Domains”. In: Proceedings of the Twenty-Seventh International Joint Conference on Artificial Intelligence, IJCAI-18. International Joint Conferences on Artificial Intelligence Organization. 4425–4431. doi: 10.24963/ijcai.2018/615. url: https://doi.org/10.24963/ijcai.2018/615.
 
 [177] Tay, Y., L. A. Tuan, and S. C. Hui. 2018d. “Multi-Cast Attention Networks”. In: Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. KDD ’18. New York, NY, USA: Association for Computing Machinery. 2299–2308. isbn: 9781450355520. doi: 10.1145/3219819.3220048. url: https: //doi.org/10.1145/3219819.3220048.
 
 [178] Van Gysel, C., M. de Rijke, and E. Kanoulas. 2016a. “Learning Latent Vector Spaces for Product Search”. In: Proceedings of the 25th ACM International on Conference on Information and Knowledge Management. CIKM ’16. Indianapolis, Indiana, USA: ACM. 165– 174. isbn: 978-1-4503-4073-1. doi: 10.1145/2983323.2983702. url: http://doi.acm.org/10.1145/2983323.2983702.
 
-[179] Van Gysel, C., M. de Rijke, and E. Kanoulas. 2017. “Structural Reg- ularities in Text-based Entity Vector Spaces”. In: Proceedings of the ACM SIGIR International Conference on Theory of Informa- tion Retrieval. ICTIR ’17. Amsterdam, The Netherlands: ACM. 3–10. isbn: 978-1-4503-4490-6. doi: 10.1145/3121050.3121066. url: http://doi.acm.org/10.1145/3121050.3121066.
+[179] Van Gysel, C., M. de Rijke, and E. Kanoulas. 2017. “Structural Regularities in Text-based Entity Vector Spaces”. In: Proceedings of the ACM SIGIR International Conference on Theory of Informa- tion Retrieval. ICTIR ’17. Amsterdam, The Netherlands: ACM. 3–10. isbn: 978-1-4503-4490-6. doi: 10.1145/3121050.3121066. url: http://doi.acm.org/10.1145/3121050.3121066.
 
 [180] Van Gysel, C., M. de Rijke, and E. Kanoulas. 2018. “Mix ’N Match: Integrating Text Matching and Product Substitutability Within Product Search”. In: Proceedings of the 27th ACM International Conference on Information and Knowledge Management. CIKM ’18. Torino, Italy: ACM. 1373–1382. isbn: 978-1-4503-6014-2. doi: 10 . 1145 / 3269206 . 3271668. url: http : / / doi . acm . org / 10 . 1145 / 3269206.3271668.
 
@@ -2457,13 +2399,13 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [182] Vaswani, A., N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, and I. Polosukhin. 2017. “Attention Is All You Need”. NIPS’17: 6000–6010.
 
-[183] Vincent, P., H. Larochelle, Y. Bengio, and P.-A. Manzagol. 2008. “Ex- tracting and Composing Robust Features with Denoising Autoen- coders”. In: Proceedings of the 25th International Conference on Machine Learning. ICML ’08. Helsinki, Finland: ACM. 1096–1103. isbn: 978-1-60558-205-4. doi: 10.1145/1390156.1390294. url: http: //doi.acm.org/10.1145/1390156.1390294.
+[183] Vincent, P., H. Larochelle, Y. Bengio, and P.-A. Manzagol. 2008. “Extracting and Composing Robust Features with Denoising Autoen- coders”. In: Proceedings of the 25th International Conference on Machine Learning. ICML ’08. Helsinki, Finland: ACM. 1096–1103. isbn: 978-1-60558-205-4. doi: 10.1145/1390156.1390294. url: http: //doi.acm.org/10.1145/1390156.1390294.
 
 [184] Wan, S., Y. Lan, J. Guo, J. Xu, L. Pang, and X. Cheng. 2016a. “A Deep Architecture for Semantic Matching with Multiple Positional Sentence Representations”. In: Proceedings of the Thirtieth AAAI Conference on Artificial Intelligence. AAAI’16. Phoenix, Arizona: AAAI Press. 2835–2841. url: http://dl.acm.org/citation.cfm?id= 3016100.3016298.
 
 [185] Wan, S., Y. Lan, J. Xu, J. Guo, L. Pang, and X. Cheng. 2016b. “Match- SRNN: Modeling the Recursive Matching Structure with Spatial RNN”. In: Proceedings of the Twenty-Fifth International Joint Con- ference on Artificial Intelligence. IJCAI’16. New York, New York, USA: AAAI Press. 2922–2928. isbn: 978-1-57735-770-4. url: http: //dl.acm.org/citation.cfm?id=3060832.3061030.
 
-[186] Wang, B., Y. Yang, X. Xu, A. Hanjalic, and H. T. Shen. 2017a. “Ad- versarial Cross-Modal Retrieval”. In: Proceedings of the 25th ACM International Conference on Multimedia. MM ’17. Mountain View, California, USA: ACM. 154–162. isbn: 978-1-4503-4906-2. doi: 10. 1145/3123266.3123326. url: http://doi.acm.org/10.1145/3123266. 3123326.
+[186] Wang, B., Y. Yang, X. Xu, A. Hanjalic, and H. T. Shen. 2017a. “Adversarial Cross-Modal Retrieval”. In: Proceedings of the 25th ACM International Conference on Multimedia. MM ’17. Mountain View, California, USA: ACM. 154–162. isbn: 978-1-4503-4906-2. doi: 10. 1145/3123266.3123326. url: http://doi.acm.org/10.1145/3123266. 3123326.
 
 [187] Wang, H., F. Zhang, J. Wang, M. Zhao, W. Li, X. Xie, and M. Guo. 2018a. “RippleNet: Propagating User Preferences on the Knowledge Graph for Recommender Systems”. In: Proceedings of the 27th ACM International Conference on Information and Knowledge Manage- ment. New York, NY, USA: Association for Computing Machinery. 417–426. isbn: 9781450360142. doi: 10.1145/3269206.3271739. url: https://doi.org/10.1145/3269206.3271739.
 
@@ -2471,19 +2413,19 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [189] Wang, L., Y. Li, J. Huang, and S. Lazebnik. 2018b. “Learning Two- Branch Neural Networks for Image-Text Matching Tasks”. IEEE Transactions on Pattern Analysis and Machine Intelligence: 1–1. issn: 0162-8828. doi: 10.1109/TPAMI.2018.2797921.
 
-[190] Wang, L., Y. Li, and S. Lazebnik. 2016. “Learning Deep Structure- Preserving Image-Text Embeddings”. In: 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR). Vol. 00. 5005– 5013. doi: 10.1109/CVPR.2016.541. url: doi.ieeecomputersociety. org/10.1109/CVPR.2016.541.
+[190] Wang, L., Y. Li, and S. Lazebnik. 2016. “Learning Deep Structure-Preserving Image-Text Embeddings”. In: 2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR). Vol. 00. 5005– 5013. doi: 10.1109/CVPR.2016.541. url: doi.ieeecomputersociety. org/10.1109/CVPR.2016.541.
 
-[191] Wang, X., X. He, Y. Cao, M. Liu, and T. Chua. 2019a. “KGAT: Knowl- edge Graph Attention Network for Recommendation”. In: Pro- ceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining, KDD 2019, Anchorage, AK, USA, August 4-8, 2019. 950–958. doi: 10.1145/3292500.3330989. url: https://doi.org/10.1145/3292500.3330989.
+[191] Wang, X., X. He, Y. Cao, M. Liu, and T. Chua. 2019a. “KGAT: Knowledge Graph Attention Network for Recommendation”. In: Pro- ceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining, KDD 2019, Anchorage, AK, USA, August 4-8, 2019. 950–958. doi: 10.1145/3292500.3330989. url: https://doi.org/10.1145/3292500.3330989.
 
-[192] Wang, X., X. He, F. Feng, L. Nie, and T. Chua. 2018c. “TEM: Tree- enhanced Embedding Model for Explainable Recommendation”. In: Proceedings of the 2018 World Wide Web Conference on World Wide Web. 1543–1552. doi: 10.1145/3178876.3186066. url: https: //doi.org/10.1145/3178876.3186066.
+[192] Wang, X., X. He, F. Feng, L. Nie, and T. Chua. 2018c. “TEM: Tree-enhanced Embedding Model for Explainable Recommendation”. In: Proceedings of the 2018 World Wide Web Conference on World Wide Web. 1543–1552. doi: 10.1145/3178876.3186066. url: https: //doi.org/10.1145/3178876.3186066.
 
 [193] Wang, X., X. He, L. Nie, and T.-S. Chua. 2017b. “Item Silk Road: Recommending Items from Information Domains to Social Users”. In: Proceedings of the 40th International ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR ’17. Shinjuku, Tokyo, Japan: ACM. 185–194. isbn: 978-1-4503-5022-8. doi: 10.1145/3077136.3080771. url: http://doi.acm.org/10.1145/ 3077136.3080771.
 
 [194] Wang, X., X. He, M. Wang, F. Feng, and T.-S. Chua. 2019b. “Neural Graph Collaborative Filtering”. In: Proceedings of the 42nd Inter- national ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR’19. Paris, France: Association for Computing Machinery. 165–174. isbn: 9781450361729. doi: 10.1145/ 3331184.3331267. url: https://doi.org/10.1145/3331184.3331267.
 
-[195] Wang, X., D. Wang, C. Xu, X. He, Y. Cao, and T. Chua. 2019c. “Ex- plainable Reasoning over Knowledge Graphs for Recommendation”. In: The Thirty-Third AAAI Conference on Artificial Intelligence, AAAI 2019. 5329–5336. url: https ://aaai.org/ ojs/index. php/ AAAI/article/view/4470.
+[195] Wang, X., D. Wang, C. Xu, X. He, Y. Cao, and T. Chua. 2019c. “Explainable Reasoning over Knowledge Graphs for Recommendation”. In: The Thirty-Third AAAI Conference on Artificial Intelligence, AAAI 2019. 5329–5336. url: https ://aaai.org/ ojs/index. php/ AAAI/article/view/4470.
 
-[196] Wang, X., Q. Huang, A. Celikyilmaz, J. Gao, D. Shen, Y.-F. Wang, W. Y. Wang, and L. Zhang. 2019d. “Reinforced Cross-Modal Match- ing and Self-Supervised Imitation Learning for Vision-Language Navigation”. In: The IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
+[196] Wang, X., Q. Huang, A. Celikyilmaz, J. Gao, D. Shen, Y.-F. Wang, W. Y. Wang, and L. Zhang. 2019d. “Reinforced Cross-Modal Matching and Self-Supervised Imitation Learning for Vision-Language Navigation”. In: The IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
 
 [197] Wang, Z., W. Hamza, and R. Florian. 2017c. “Bilateral Multi-Perspective Matching for Natural Language Sentences”. In: Proceedings of the Twenty-Sixth International Joint Conference on Artificial Intelli- gence, IJCAI-17. 4144–4150. doi: 10.24963/ijcai.2017/579. url: https://doi.org/10.24963/ijcai.2017/579.
 
@@ -2493,7 +2435,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [200] Wei, Y., X. Wang, L. Nie, X. He, R. Hong, and T.-S. Chua. 2019. “MMGCN: Multi-modal Graph Convolution Network for Personal- ized Recommendation of Micro-video”. In: Proceedings of the 27th ACM International Conference on Multimedia. MM ’19. Nice, France: ACM. 1437–1445. isbn: 978-1-4503-6889-6. doi: 10.1145/3343031. 3351034. url: http://doi.acm.org/10.1145/3343031.3351034.
 
-[201] Wu, B., X. He, Z. Sun, L. Chen, and Y. Ye. 2019a. “ATM: An At- tentive Translation Model for Next-Item Recommendation”. IEEE Transactions on Industrial Informatics: 1–1. issn: 1941-0050. doi: 10.1109/TII.2019.2947174.
+[201] Wu, B., X. He, Z. Sun, L. Chen, and Y. Ye. 2019a. “ATM: An Attentive Translation Model for Next-Item Recommendation”. IEEE Transactions on Industrial Informatics: 1–1. issn: 1941-0050. doi: 10.1109/TII.2019.2947174.
 
 [202] Wu, C.-Y., A. Ahmed, A. Beutel, A. J. Smola, and H. Jing. 2017. “Recurrent Recommender Networks”. In: Proceedings of the Tenth ACM International Conference on Web Search and Data Mining. New York, NY, USA. 495–503. doi: 10.1145/3018661.3018689. url: https://doi.org/10.1145/3018661.3018689.
 
@@ -2509,17 +2451,17 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [208] Wu, Y., C. DuBois, A. X. Zheng, and M. Ester. 2016b. “Collaborative Denoising Auto-Encoders for Top-N Recommender Systems”. In: Proceedings of the Ninth ACM International Conference on Web Search and Data Mining. WSDM ’16. San Francisco, California, USA: ACM. 153–162. isbn: 978-1-4503-3716-8. doi: 10.1145/2835776. 2835837. url: http://doi.acm.org/10.1145/2835776.2835837.
 
-[209] Xiao, J., H. Ye, X. He, H. Zhang, F. Wu, and T.-S. Chua. 2017. “At- tentional Factorization Machines: Learning the Weight of Feature Interactions via Attention Networks”. In: Proceedings of the 26th International Joint Conference on Artificial Intelligence. IJCAI’17. Melbourne, Australia: AAAI Press. 3119–3125. isbn: 978-0-9992411- 0-3. url: http://dl.acm.org/citation.cfm?id=3172077.3172324.
+[209] Xiao, J., H. Ye, X. He, H. Zhang, F. Wu, and T.-S. Chua. 2017. “Attentional Factorization Machines: Learning the Weight of Feature Interactions via Attention Networks”. In: Proceedings of the 26th International Joint Conference on Artificial Intelligence. IJCAI’17. Melbourne, Australia: AAAI Press. 3119–3125. isbn: 978-0-9992411- 0-3. url: http://dl.acm.org/citation.cfm?id=3172077.3172324.
 
-[210] Xin, X., B. Chen, X. He, D. Wang, Y. Ding, and J. Jose. 2019a. “CFM: Convolutional Factorization Machines for Context-Aware Recommen- dation”. In: Proceedings of the 28th International Joint Conference on Artificial Intelligence. IJCAI’19.
+[210] Xin, X., B. Chen, X. He, D. Wang, Y. Ding, and J. Jose. 2019a. “CFM: Convolutional Factorization Machines for Context-Aware Recommendation”. In: Proceedings of the 28th International Joint Conference on Artificial Intelligence. IJCAI’19.
 
-[211] Xin, X., X. He, Y. Zhang, Y. Zhang, and J. M. Jose. 2019b. “Rela- tional Collaborative Filtering: Modeling Multiple Item Relations for Recommendation”. In: Proceedings of the 42nd International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR 2019, Paris, France, July 21-25, 2019. 125–134. doi: 10.1145/3331184.3331188. url: https://doi.org/10.1145/ 3331184.3331188.
+[211] Xin, X., X. He, Y. Zhang, Y. Zhang, and J. M. Jose. 2019b. “Relational Collaborative Filtering: Modeling Multiple Item Relations for Recommendation”. In: Proceedings of the 42nd International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR 2019, Paris, France, July 21-25, 2019. 125–134. doi: 10.1145/3331184.3331188. url: https://doi.org/10.1145/ 3331184.3331188.
 
 [212] Xiong, C., Z. Dai, J. Callan, Z. Liu, and R. Power. 2017. “End-to-End Neural Ad-hoc Ranking with Kernel Pooling”. In: Proceedings of the 40th International ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR ’17. Shinjuku, Tokyo, Japan: ACM. 55–64. isbn: 978-1-4503-5022-8. doi: 10.1145/3077136. 3080809. url: http://doi.acm.org/10.1145/3077136.3080809.
 
-[213] Xue, F., X. He, X. Wang, J. Xu, K. Liu, and R. Hong. 2019. “Deep Item-Based Collaborative Filtering for Top-N Recommendation”. ACM Trans. Inf. Syst. 37(3). issn: 1046-8188. doi: 10.1145/3314578. url: https://doi.org/10.1145/3314578.
+[213] Xue, F., X. He, X. Wang, J. Xu, K. Liu, and R. Hong. 2019. “**Deep Item-Based Collaborative Filtering for Top-N Recommendation**”. ACM Trans. Inf. Syst. 37(3). issn: 1046-8188. doi: 10.1145/3314578. url: https://doi.org/10.1145/3314578.
 
-[214] Xue, H.-J., X. Dai, J. Zhang, S. Huang, and J. Chen. 2017. “Deep Matrix Factorization Models for Recommender Systems”. In: Proceedings of the Twenty-Sixth International Joint Conference on Artificial Intelligence, IJCAI-17. 3203–3209. doi: 10.24963/ijcai.2017/447. url: https://doi.org/10.24963/ijcai.2017/447.
+[214] Xue, H.-J., X. Dai, J. Zhang, S. Huang, and J. Chen. 2017. “**Deep Matrix Factorization Models for Recommender Systems**”. In: Proceedings of the Twenty-Sixth International Joint Conference on Artificial Intelligence, IJCAI-17. 3203–3209. doi: 10.24963/ijcai.2017/447. url: https://doi.org/10.24963/ijcai.2017/447.
 
 [215] Yan, F. and K. Mikolajczyk. 2015. “Deep correlation for matching images and text”. In: 2015 IEEE Conference on Computer Vision and Pattern Recognition (CVPR). 3441–3450. doi: 10.1109/CVPR. 2015.7298966.
 
@@ -2541,11 +2483,11 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [224] Yin, W., H. Schütze, B. Xiang, and B. Zhou. 2016. “ABCNN: Attention- Based Convolutional Neural Network for Modeling Sentence Pairs”. Transactions of the Association for Computational Linguistics. 4: 259–272. doi: 10.1162/tacl\_a\_00097. url: https://doi.org/10. 1162/tacl_a_00097.
 
-[225] Ying, R., R. He, K. Chen, P. Eksombatchai, W. L. Hamilton, and J. Leskovec. 2018. “Graph Convolutional Neural Networks for Web- Scale Recommender Systems”. In: Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. KDD ’18. London, United Kingdom: ACM. 974–983. isbn: 978-1-4503-5552-0. doi: 10.1145/3219819.3219890. url: http://doi. acm.org/10.1145/3219819.3219890.
+[225] Ying, R., R. He, K. Chen, P. Eksombatchai, W. L. Hamilton, and J. Leskovec. 2018. “**Graph Convolutional Neural Networks for Web- Scale Recommender Systems**”. In: Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. KDD ’18. London, United Kingdom: ACM. 974–983. isbn: 978-1-4503-5552-0. doi: 10.1145/3219819.3219890. url: http://doi. acm.org/10.1145/3219819.3219890.
 
-[226] Yuan, F., X. He, H. Jiang, G. Guo, J. Xiong, Z. Xu, and Y. Xiong. 2020. “Future Data Helps Training: Modeling Future Contexts for Session- Based Recommendation”. In: Proceedings of The Web Conference 2020. WWW ’20. Taipei, Taiwan: Association for Computing Machin- ery. 303–313. isbn: 9781450370233. doi: 10.1145/3366423.3380116. url: https://doi.org/10.1145/3366423.3380116.
+[226] Yuan, F., X. He, H. Jiang, G. Guo, J. Xiong, Z. Xu, and Y. Xiong. 2020. “Future Data Helps Training: Modeling Future Contexts for Session- Based Recommendation”. In: Proceedings of The Web Conference 2020. WWW ’20. Taipei, Taiwan: Association for Computing Machinery. 303–313. isbn: 9781450370233. doi: 10.1145/3366423.3380116. url: https://doi.org/10.1145/3366423.3380116.
 
-[227] Yuan, F., A. Karatzoglou, I. Arapakis, J. M. Jose, and X. He. 2019. “A Simple Convolutional Generative Network for Next Item Rec- ommendation”. In: Proceedings of the Twelfth ACM International Conference on Web Search and Data Mining. WSDM ’19. Mel- bourne VIC, Australia: Association for Computing Machinery. 582– 590. isbn: 9781450359405. doi: 10.1145/3289600.3290975. url: https://doi.org/10.1145/3289600.3290975.
+[227] Yuan, F., A. Karatzoglou, I. Arapakis, J. M. Jose, and X. He. 2019. “A Simple Convolutional Generative Network for Next Item Recommendation”. In: Proceedings of the Twelfth ACM International Conference on Web Search and Data Mining. WSDM ’19. Mel- bourne VIC, Australia: Association for Computing Machinery. 582– 590. isbn: 9781450359405. doi: 10.1145/3289600.3290975. url: https://doi.org/10.1145/3289600.3290975.
 
 [228] Zamani, H. and W. B. Croft. 2016. “Estimating Embedding Vectors for Queries”. In: Proceedings of the 2016 ACM International Confer- ence on the Theory of Information Retrieval. ICTIR ’16. Newark, Delaware, USA: Association for Computing Machinery. 123–132. isbn: 9781450344975. doi: 10.1145/2970398.2970403. url: https: //doi.org/10.1145/2970398.2970403.
 
@@ -2555,7 +2497,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [231] Zamani, H. and W. B. Croft. 2018b. “On the Theory of Weak Supervision for Information Retrieval”. In: Proceedings of the 2018 ACM SIGIR International Conference on Theory of Information Retrieval. ICTIR ’18. Tianjin, China: Association for Computing Machinery. 147–154. isbn: 9781450356565. doi: 10.1145/3234944.3234968. url: https: //doi.org/10.1145/3234944.3234968.
 
-[232] Zamani, H. and W. B. Croft. 2020. “Learning a Joint Search and Recom- mendation Model from User-Item Interactions”. In: Proceedings of the 13th International Conference on Web Search and Data Mining. WSDM ’20. Houston, TX, USA: Association for Computing Machin- ery. 717–725. isbn: 9781450368223. doi: 10.1145/3336191.3371818. url: https://doi.org/10.1145/3336191.3371818.
+[232] Zamani, H. and W. B. Croft. 2020. “Learning a Joint Search and Recommendation Model from User-Item Interactions”. In: Proceedings of the 13th International Conference on Web Search and Data Mining. WSDM ’20. Houston, TX, USA: Association for Computing Machin- ery. 717–725. isbn: 9781450368223. doi: 10.1145/3336191.3371818. url: https://doi.org/10.1145/3336191.3371818.
 
 [233] Zamani, H., W. B. Croft, and J. S. Culpepper. 2018a. “Neural Query Performance Prediction Using Weak Supervision from Multiple Signals”. In: The 41st International ACM SIGIR Conference on Research and Development in Information Retrieval. SIGIR ’18. Ann Arbor, MI, USA: Association for Computing Machinery. 105– 114. isbn: 9781450356572. doi: 10 . 1145 / 3209978 . 3210041. url: https://doi.org/10.1145/3209978.3210041.
 
@@ -2563,15 +2505,15 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 
 [235] Zamani, H., M. Dehghani, W. B. Croft, E. Learned-Miller, and J. Kamps. 2018b. “From Neural Re-Ranking to Neural Ranking: Learning a Sparse Representation for Inverted Indexing”. In: Proceedings of the 27th ACM International Conference on Information and Knowledge Management. CIKM ’18. Torino, Italy: Association for Computing Machinery. 497–506. isbn: 9781450360142. doi: 10.1145/3269206. 3271800. url: https://doi.org/10.1145/3269206.3271800.
 
-[236] Zamani, H., B. Mitra, X. Song, N. Craswell, and S. Tiwary. 2018c. “Neu- ral Ranking Models with Multiple Document Fields”. In: Proceedings of the Eleventh ACM International Conference on Web Search and Data Mining. WSDM ’18. Marina Del Rey, CA, USA: ACM. 700– 708. isbn: 978-1-4503-5581-0. doi: 10.1145/3159652.3159730. url: http://doi.acm.org/10.1145/3159652.3159730.
+[236] Zamani, H., B. Mitra, X. Song, N. Craswell, and S. Tiwary. 2018c. “Neural Ranking Models with Multiple Document Fields”. In: Proceedings of the Eleventh ACM International Conference on Web Search and Data Mining. WSDM ’18. Marina Del Rey, CA, USA: ACM. 700– 708. isbn: 978-1-4503-5581-0. doi: 10.1145/3159652.3159730. url: http://doi.acm.org/10.1145/3159652.3159730.
 
-[237] Zhang, S., L. Yao, and A. Sun. 2017a. “Deep Learning based Recom- mender System: A Survey and New Perspectives”. CoRR. abs/1707.07435. arXiv: 1707.07435. url: http://arxiv.org/abs/1707.07435.
+[237] Zhang, S., L. Yao, and A. Sun. 2017a. “Deep Learning based Recommender System: A Survey and New Perspectives”. CoRR. abs/1707.07435. arXiv: 1707.07435. url: http://arxiv.org/abs/1707.07435.
 
-[238] Zhang, S., L. Yao, A. Sun, and Y. Tay. 2019. “Deep Learning Based Recommender System: A Survey and New Perspectives”. ACM Comput. Surv. 52(1). issn: 0360-0300. doi: 10.1145/3285029. url: https://doi.org/10.1145/3285029.
+[238] Zhang, S., L. Yao, A. Sun, and Y. Tay. 2019. “**Deep Learning Based Recommender System: A Survey and New Perspectives**”. ACM Comput. Surv. 52(1). issn: 0360-0300. doi: 10.1145/3285029. url: https://doi.org/10.1145/3285029.
 
-[239] Zhang, X., H. Xie, H. Li, and J. C.S. Lui. 2020. “Conversational Con- textual Bandit: Algorithm and Application”. In: Proceedings of The Web Conference 2020. WWW ’20. Taipei, Taiwan: Association for Computing Machinery. 662–672. isbn: 9781450370233. doi: 10.1145/ 3366423.3380148. url: https://doi.org/10.1145/3366423.3380148.
+[239] Zhang, X., H. Xie, H. Li, and J. C.S. Lui. 2020. “Conversational Contextual Bandit: Algorithm and Application”. In: Proceedings of The Web Conference 2020. WWW ’20. Taipei, Taiwan: Association for Computing Machinery. 662–672. isbn: 9781450370233. doi: 10.1145/ 3366423.3380148. url: https://doi.org/10.1145/3366423.3380148.
 
-[240] Zhang, Y., Q. Ai, X. Chen, and W. B. Croft. 2017b. “Joint Represen- tation Learning for Top-N Recommendation with Heterogeneous Information Sources”. In: Proceedings of the 2017 ACM on Con- ference on Information and Knowledge Management. CIKM ’17. Singapore, Singapore: ACM. 1449–1458. isbn: 978-1-4503-4918-5. doi: 10.1145/3132847.3132892. url: http://doi.acm.org/10.1145/ 3132847.3132892.
+[240] Zhang, Y., Q. Ai, X. Chen, and W. B. Croft. 2017b. “**Joint Representation Learning for Top-N Recommendation with Heterogeneous Information Sources**”. In: Proceedings of the 2017 ACM on Con- ference on Information and Knowledge Management. CIKM ’17. Singapore, Singapore: ACM. 1449–1458. isbn: 978-1-4503-4918-5. doi: 10.1145/3132847.3132892. url: http://doi.acm.org/10.1145/ 3132847.3132892.
 
 [241] Zhang, Y., X. Chen, Q. Ai, L. Yang, and W. B. Croft. 2018. “Towards Conversational Search and Recommendation: System Ask, User Respond”. In: Proceedings of the 27th ACM International Conference on Information and Knowledge Management. CIKM ’18. Torino, Italy: ACM. 177–186. isbn: 978-1-4503-6014-2. doi: 10.1145/3269206. 3271776. url: http://doi.acm.org/10.1145/3269206.3271776.
 
@@ -2588,6 +2530,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 [247] Zhu, M., A. Ahuja, W. Wei, and C. K. Reddy. 2019. “A Hierarchical Attention Retrieval Model for Healthcare Question Answering”. In: The World Wide Web Conference. WWW ’19. San Francisco, CA, USA: Association for Computing Machinery. 2472–2482. isbn: 9781450366748. doi: 10.1145/3308558.3313699. url: https://doi. org/10.1145/3308558.3313699.
 
 
+
 ## 术语缩略语对照表
 
 | 缩写 | 英文全称 | 中文含义 |
@@ -2596,7 +2539,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 | RMLS | Regularized Matching in Latent Space | 潜在空间正则化匹配 |
 | SSI | Supervised Semantic Indexing | 监督语义索引 |
 | BMF | Biased Matrix Factorization | 偏置矩阵分解 |
-| FISM | Factored Item Similarity Model | 分解item相似度模型 |
+| **FISM** | Factored Item Similarity Model | 分解item相似度模型 |
 | FM | Factorization Machine | 分解机 |
 | FFN | Feedforward Neural Network | 前馈神经网络 |
 | MLP | Multilayer Perceptron | 多层感知机 |
@@ -2608,19 +2551,19 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 | CBOW | Continuous Bag of Words | 连续词袋 |
 | SG | Skip Gram | 跳字模型 |
 | BERT | Bidirectional Encoder Representations from Transformers | Transformer双向编码器表示 |
-| DSSM | Deep Structured Semantic Models | 深度结构化语义模型 |
+| **DSSM** | Deep Structured Semantic Models | 深度结构化语义模型 |
 | CLSM | Convolutional Latent Semantic Model | 卷积潜在语义模型 |
 | CNTN | Convolutional Neural Tensor Network | 卷积神经张量网络 |
 | LSTM-RNN | Recurrent Neural Networks with Long Short-Term Memory cells | 带长短期记忆单元的循环神经网络 |
-| NVSM | Neural Vector Space Model | 神经向量空间模型 |
+| **NVSM** | Neural Vector Space Model | 神经向量空间模型 |
 | SNRM | Standalone Neural Ranking Model | 独立神经排序模型 |
 | ACMR | Adversarial Cross Modal Retrieval | 对抗跨模态检索 |
 | ARC-II | Convolutional Matching Model II | 卷积匹配模型II |
-| DRMM | Deep Relevance Matching Model | 深度相关性匹配模型 |
+| **DRMM** | Deep Relevance Matching Model | 深度相关性匹配模型 |
 | K-NRM | Kernel based Neural Ranking Model | 基于核的神经排序模型 |
-| DeepMF | Deep Matrix Factorization | 深度矩阵分解 |
+| **DeepMF** | Deep Matrix Factorization | 深度矩阵分解 |
 | CDAE | Collaborative Denoising Auto-Encoder | 协同去噪自编码器 |
-| NAIS | Neural Attentive Item Similarity | 神经注意力item相似度 |
+| **NAIS** | Neural Attentive Item Similarity | 神经注意力item相似度 |
 | NARM | Neural Attentive Recommendation Machine | 神经注意力推荐机 |
 | DeepCoNN | Deep Cooperative Neural Networks | 深度协作神经网络 |
 | NARRE | Neural Attention Regression with Review-level Explanation | 带评论级解释的神经注意力回归 |
@@ -2635,7 +2578,7 @@ Wide&Deep的工作启发了许多后来的工作采用类似的集成方式，�
 | GMF | Generalized Matrix Factorization | 广义矩阵分解 |
 | NeuMF | Neural Matrix Factorization | 神经矩阵分解 |
 | CML | Collaborative Metric Learning | 协同度量学习 |
-| TransRec | Translation-based Recommendation | 基于翻译的推荐 |
+| **TransRec** | Translation-based Recommendation | 基于翻译的推荐 |
 | LRML | Latent Relational Metric Learning | 潜在关系度量学习 |
 | NFM | Neural Factorization Machine | 神经分解机 |
 | AFM | Attentional Factorization Machine | 注意力分解机 |
