@@ -94,7 +94,7 @@ $$
 
 其中 $K$ 表示latent空间的维度。我们可以看到，MF对用户和item latent因子的双向交互进行建模，假设latent空间的每个维度相互独立并以相同权重线性组合。因此，MF可被视为latent因子的线性模型。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260715204303341.png" alt="image-20260715204303341" style="zoom: 33%;" />
+<img src=".picture/image-20260715204303341.png" alt="image-20260715204303341" style="zoom: 33%;" />
 
 > **图1：一个说明MF局限性的示例。** 从数据矩阵(a)中， $u_4$ 与 $u_1$ 最相似，其次是 $u_3$ ，最后是 $u_2$ 。然而在latent空间(b)中，将 $p_4$ 放置在离 $p_1$ 最近的位置会使 $p_4$ 比 $p_3$ 更接近 $p_2$ ，导致较大的排序损失。
 
@@ -133,7 +133,7 @@ $$
 
 其中 $\phi_{out}$ 和 $\phi_x$ 分别表示输出层和第 $x$ 个神经协同过滤（CF）层的映射函数，总共有 $X$ 个神经CF层。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260715204334445.png" alt="image-20260715204334445" style="zoom:50%;" />
+<img src=".picture/image-20260715204334445.png" alt="image-20260715204334445" style="zoom:50%;" />
 
 > **图2：神经协同过滤框架**
 
@@ -261,7 +261,7 @@ $$
 
 其中 $\mathbf{p}_u^G$ 和 $\mathbf{p}_u^M$ 分别表示GMF和MLP部分的用户嵌入； $\mathbf{q}_i^G$ 和 $\mathbf{q}_i^M$ 类似地表示item嵌入。如前所述，我们使用ReLU作为MLP层的激活函数。该模型结合了MF的线性和DNN的非线性来建模用户-item latent结构。我们将此模型称为"NeuMF"（Neural Matrix Factorization，神经矩阵分解）。模型相对于每个参数的导数可以通过标准反向传播计算，由于篇幅限制在此省略。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260715204358553.png" alt="image-20260715204358553" style="zoom:50%;" />
+<img src=".picture/image-20260715204358553.png" alt="image-20260715204358553" style="zoom:50%;" />
 
 > **图3：神经矩阵分解模型**
 
@@ -307,7 +307,7 @@ $$
 
 > **表1：评估数据集的统计信息**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801114031161.png" alt="image-20260801114031161" style="zoom: 50%;" />
+<img src=".picture/image-20260801114031161.png" alt="image-20260801114031161" style="zoom: 50%;" />
 
 
 **评估协议。** 为了评估item推荐的性能，我们采用了 **留一法** 评估，这种方法在文献中被广泛使用[1, 14, 27]。**对于每个用户，我们将其最后一次交互作为测试集，并使用剩余数据进行训练**。由于在评估期间**对所有item进行排序对于每个用户来说过于耗时**，我们遵循常见策略[6, 21]，**随机采样100个用户未交互的item，将测试item在这100个item中进行排序**。这种策略在保证评估效率的同时，也能较好地反映模型对item的排序能力。
@@ -336,7 +336,7 @@ $$
 
 首先，我们可以看到NeuMF在两个数据集上都取得了最佳性能，显著优于最先进的方法eALS和BPR，且差距较大（平均而言，相对于eALS和BPR的相对提升分别为4.5%和4.9%）。对于Pinterest，即使使用较小的预测因子8，NeuMF也显著优于使用较大因子64的eALS和BPR。这表明通过融合线性MF和非线性MLP模型，NeuMF具有高度的表达能力。其次，另外两种NCF方法——GMF和MLP——也展示了相当强的性能。在它们之间，MLP略逊于GMF。注意，MLP可以通过添加更多隐藏层来进一步提升（见第4.4节），这里我们仅展示三层的性能。对于较小的预测因子，GMF在两个数据集上都优于eALS；尽管GMF在较大因子时会过拟合，但其获得的最佳性能优于（或持平于）eALS。最后，GMF相较于BPR表现出持续改进，这证实了分类感知的对数损失对推荐任务的有效性，因为GMF和BPR学习相同的MF模型但使用不同的目标函数。
 
-![image-20260715204459722](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260715204459722.png)
+![image-20260715204459722](.picture/image-20260715204459722.png)
 
 > **图4：两个数据集上HR@10和NDCG@10随预测因子数量的变化。** (a) MovieLens HR@10；(b) MovieLens NDCG@10；(c) Pinterest HR@10；(d) Pinterest NDCG@10。
 
@@ -348,7 +348,7 @@ MLP性能略低于GMF，但这并不意味着MLP模型没有价值。实际上�
 
 **图5显示了Top-K推荐列表的性能**，其中排序位置 $K$ 从1到10。为了使图表更清晰，我们仅展示NeuMF而非所有三种NCF方法的性能。可以看出，NeuMF在各个位置上均展现出优于其他方法的持续性改进，我们进一步进行了**单样本配对t检验**，验证了所有改进在 $p < 0.01$ 时均具有统计显著性。对于基线方法，eALS在MovieLens上优于BPR约5.1%的相对提升，而在Pinterest上在NDCG方面劣于BPR。这与[14]的发现一致，即BPR由于其成对排序感知的学习器，在排序性能方面可以表现强劲。**基于邻居的ItemKNN性能不如基于模型的方法。ItemPop表现最差，表明需要建模用户的个性化偏好，而不仅仅是向用户推荐流行item。**
 
-![image-20260715204520082](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260715204520082.png)
+![image-20260715204520082](.picture/image-20260715204520082.png)
 
 > **图5：两个数据集上Top-K item推荐评估（ $K$ 从1到10）。** (a) MovieLens HR@K；(b) MovieLens NDCG@K；(c) Pinterest HR@K；(d) Pinterest NDCG@K。
 
@@ -358,7 +358,7 @@ MLP性能略低于GMF，但这并不意味着MLP模型没有价值。实际上�
 
 > **表2：NeuMF有预训练和无预训练的性能**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801113853096.png" alt="image-20260801113853096" style="zoom: 50%;" />
+<img src=".picture/image-20260801113853096.png" alt="image-20260801113853096" style="zoom: 50%;" />
 
 
 
@@ -378,11 +378,11 @@ MLP性能略低于GMF，但这并不意味着MLP模型没有价值。实际上�
 
 第三，在两个数据集上，最优采样比率约为3到6。在Pinterest上，我们发现当采样比率大于7时，NCF方法的性能开始下降。这表明设置**过大的采样比率可能对性能产生不利影响，因为过多的负样本可能引入噪声或导致正负样本不平衡问题**。因此，在实践中需要谨慎选择负采样比率。
 
-![image-20260715204537778](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260715204537778.png)
+![image-20260715204537778](.picture/image-20260715204537778.png)
 
 > **图6：NCF方法在MovieLens上训练损失和推荐性能随迭代次数的变化（因子=8）。** (a) 训练损失；(b) HR@10；(c) NDCG@10。
 
-![image-20260715204553501](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260715204553501.png)
+![image-20260715204553501](.picture/image-20260715204553501.png)
 
 > **图7：NCF方法性能随每个正实例的负样本数量的变化（因子=16）。** 同时显示了BPR的性能，它只采样一个负实例与正实例配对学习。(a) MovieLens HR@10；(b) MovieLens NDCG@10；(c) Pinterest HR@10；(d) Pinterest NDCG@10。
 
@@ -394,11 +394,11 @@ MLP性能略低于GMF，但这并不意味着MLP模型没有价值。实际上�
 
 > **表3：不同层数MLP的HR@10**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801113936873.png" alt="image-20260801113936873" style="zoom:50%;" />
+<img src=".picture/image-20260801113936873.png" alt="image-20260801113936873" style="zoom:50%;" />
 
 > **表4：不同层数MLP的NDCG@10**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801113958731.png" alt="image-20260801113958731" style="zoom:50%;" />
+<img src=".picture/image-20260801113958731.png" alt="image-20260801113958731" style="zoom:50%;" />
 
 
 

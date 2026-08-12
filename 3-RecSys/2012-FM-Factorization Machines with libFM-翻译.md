@@ -51,7 +51,7 @@ DOI = 10.1145/2168752.2168771 http://doi.acm.org/10.1145/2168752.2168771
 
 假设预测问题的数据由一个设计矩阵 $ X \in \mathbb{R}^{n \times p} $ 描述，其中 $ X $ 的第 $ i $ 行 $ \mathbf{x}_i \in \mathbb{R}^p $ 描述了一个具**有 $ p $ 个实值变量的案例**，并且 $ y_i $ 是第 $ i $ 个案例的预测目标（见图 1 的示例）。或者，可以将此设置描述为元组 $ (\mathbf{x}, y) $ 的集合 $ S $，其中（再次）$ \mathbf{x} \in \mathbb{R}^p $ 是一个特征向量，$ y $ 是其对应的目标。这种用数据矩阵和特征向量的表示在许多机器学习方法中很常见，例如线性回归或支持向量机（SVM）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260721000000011.png" alt="image-20260721000000011" style="zoom:50%;" />
+<img src=".picture/image-20260721000000011.png" alt="image-20260721000000011" style="zoom:50%;" />
 
 > 图 1. 示例（来自 Rendle [28]），展示了如何用实值特征向量 $ \mathbf{x} $ 表示推荐问题。每一行表示一个特征向量 $ \mathbf{x}_i $ 及其对应的目标 $ y_i $。为了便于解释，特征被分组为活跃用户（蓝色）、活跃 item（红色）、同一用户评分的其他电影（橙色）、以月为单位的时间（绿色）以及最后评分的电影（棕色）的指示符。
 
@@ -188,7 +188,7 @@ $$
 \theta|\mu_\theta, \lambda_\theta \sim \mathcal{N}(\mu_\theta, 1/\lambda_\theta) \qquad (17)
 $$
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260721000000012.png" alt="image-20260721000000012" style="zoom:50%;" />
+<img src=".picture/image-20260721000000012.png" alt="image-20260721000000012" style="zoom:50%;" />
 
 图 2. 标准因子分解机中所涉变量的图形化表示。(a) 变量为目标 $ y $、输入特征 $ \mathbf{x} $、模型参数 $ w_0 $、$ w_j $、$ v_{j,f} $ 以及超参数/先验 $ \mu $、$ \lambda $、$ \alpha $。(b) 先验通过超先验 $ \Theta_0 = \{\alpha_0, \alpha_\lambda, \beta_0, \beta_\lambda, \gamma_0, \mu_0\} $ 进行扩展，这允许 MCMC 算法（算法 3）自动寻找先验参数 [6]。
 
@@ -647,7 +647,7 @@ libFM 还包含基于成对分类 [30] 的针对排序优化 FM 模型的方法 
 
 在第 4.1 节中，展示了 FM 能够模仿许多因子分解模型。现在将通过将 libFM 实现与几个经过充分研究的因子分解模型进行实证比较来证实这一点。成功将通过回归任务的均方根误差（RMSE）和排序任务的 F1 度量来衡量（参见 Gunawardana and Shani [9] 了解推荐系统评估指标的总结）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260721000000013.png" alt="image-20260721000000013" style="zoom:50%;" />
+<img src=".picture/image-20260721000000013.png" alt="image-20260721000000013" style="zoom:50%;" />
 
 图 3. 使用 MF（见方程 (40)）和 KNN（见方程 (49)）输入数据的 libFM（SGD 和 MCMC 学习）的预测误差。(a) 与 MF 方法 PMF (SGD) [36]、BPMF (MCMC) [35] 和 MF (SGD) [15] 进行比较。(b) 与 Koren [15] 的相应 KNN 方法进行比较。
 
@@ -675,7 +675,7 @@ Netflix 上最成功的方法基于矩阵分解（例如 [12, 16, 41]）。对�
 
 [^5]: 关于实验设置的详细信息请参见 Karatzoglou et al. [14] 和 Rendle et al. [32]。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260721000000014.png" alt="image-20260721000000014" style="zoom:50%;" />
+<img src=".picture/image-20260721000000014.png" alt="image-20260721000000014" style="zoom:50%;" />
 
 图 4. 上下文感知推荐的 libFM 与 Multiverse Recommendation [14] 的比较。并将 libFM 在标签推荐任务上与 ECML/PKDD Discovery Challenge 2009 任务 2 的最佳四种方法进行比较。
 

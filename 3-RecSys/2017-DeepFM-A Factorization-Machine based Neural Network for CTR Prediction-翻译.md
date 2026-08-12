@@ -52,7 +52,7 @@
 
 ### 2.1 DeepFM
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720215903218.png" alt="image-20260720215903218" style="zoom:33%;" />
+<img src=".picture/image-20260720215903218.png" alt="image-20260720215903218" style="zoom:33%;" />
 
 我们的目标是同时学习低阶和高阶特征交互。为此，我们提出了一种基于因子分解机的神经网络（DeepFM）。如图 1 所示，DeepFM 由两个组件组成：FM 组件和深度组件，它们共享相同的输入。对于特征 $i$ ，标量 $w_i$ 用于衡量其一阶重要性，隐向量 $\mathbf{V}_i$ 用于衡量其与其他特征交互的影响。 $\mathbf{V}_i$ 被输入 FM 组件以建模二阶特征交互，并输入深度组件以建模高阶特征交互。所有参数，包括 $w_i$ 、 $\mathbf{V}_i$ 以及网络参数（下文中的 $\mathbf{W}^{(l)}$ 、 $\mathbf{b}^{(l)}$ ），针对组合预测模型进行联合训练：
 
@@ -64,7 +64,7 @@ $$
 
 **FM 组件**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720215940371.png" alt="image-20260720215940371" style="zoom:33%;" />
+<img src=".picture/image-20260720215940371.png" alt="image-20260720215940371" style="zoom:33%;" />
 
 图 2：FM 的架构。
 
@@ -80,13 +80,13 @@ $$
 
 **深度组件**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220006081.png" alt="image-20260720220006081" style="zoom:33%;" />
+<img src=".picture/image-20260720220006081.png" alt="image-20260720220006081" style="zoom:33%;" />
 
 图 3：DNN 的架构。
 
 深度组件是一个前馈神经网络，用于学习高阶特征交互。如图 3 所示，数据记录（向量）被输入神经网络。与以图像 [8] 或音频 [1] 数据为输入的神经网络相比（这些输入是纯连续且稠密的），CTR 预测的输入有很大不同，这需要新的网络架构设计。具体而言，CTR 预测的原始特征输入向量通常是高度稀疏、超高维、类别-连续混合且按字段分组的（如性别、位置、年龄）。这意味着在将输入向量送入第一个隐藏层之前，需要一个嵌入层将其压缩为低维、稠密的实值向量，否则网络训练将变得非常困难。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220044868.png" alt="image-20260720220044868" style="zoom:33%;" />
+<img src=".picture/image-20260720220044868.png" alt="image-20260720220044868" style="zoom:33%;" />
 
 图 4 展示了从输入层到嵌入层的子网络结构。我们想指出该网络结构的两个有趣特点：1）不同输入字段向量的长度可以不同，但它们的嵌入具有相同的大小（ $k$ ）；2）FM 中的隐特征向量（ $\mathbf{V}$ ）现在作为网络权重，通过学习和训练来将输入字段向量压缩为嵌入向量。在 [26] 中， $\mathbf{V}$ 由 FM 预训练并用作初始化。在本文中，我们不是像 [26] 那样使用 FM 的隐特征向量来初始化网络，而是将 FM 模型作为整个学习架构的一部分，与另一个 DNN 模型并列。因此，我们消除了 FM 预训练的需要，而是以端到端的方式联合训练整个网络。将嵌入层的输出记为：
 
@@ -108,7 +108,7 @@ $$
 
 受深度学习在各种应用中巨大成功的启发，近年来针对 CTR 预测开发了几种深度模型。本节将提出的 DeepFM 与现有的 CTR 预测深度模型进行比较。
 
-![image-20260720220109581](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220109581.png)
+![image-20260720220109581](.picture/image-20260720220109581.png)
 
 **FNN**：如图 5（左）所示，FNN 是一个由 FM 初始化的前馈神经网络 [26]。FM 预训练策略导致两个局限性：1）嵌入参数可能受到 FM 的过度影响；2）预训练阶段引入的开销降低了效率。此外，FNN 仅捕获高阶特征交互。相比之下，DeepFM 不需要预训练，同时学习高阶和低阶特征交互。
 
@@ -169,7 +169,7 @@ $$
 
 深度学习模型的效率对实际应用非常重要。我们通过以下公式比较不同模型在 Criteo 数据集上的效率：|深度 CTR 模型的训练时间| / |LR 的训练时间|。结果如图 6 所示，包括在 CPU（左）和 GPU（右）上的测试，我们有以下观察：1）FNN 的预训练使其效率较低；2）尽管 IPNN 和 PNN* 在 GPU 上的加速比高于其他模型，但由于内积操作效率低下，它们仍然计算开销很大；3）DeepFM 在两种测试中几乎都达到了最高效率。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220159655.png" alt="image-20260720220159655" style="zoom:33%;" />
+<img src=".picture/image-20260720220159655.png" alt="image-20260720220159655" style="zoom:33%;" />
 
 图 6：时间对比。
 
@@ -183,7 +183,7 @@ $$
 
 表 2：CTR 预测性能
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220134866.png" alt="image-20260720220134866" style="zoom:50%;" />
+<img src=".picture/image-20260720220134866.png" alt="image-20260720220134866" style="zoom:50%;" />
 
 总体而言，我们提出的 DeepFM 模型在公司*数据集上以 AUC 和 Logloss 计分别超过竞争对手 0.37% 和 0.42% 以上。事实上，离线 AUC 评估的微小改进很可能带来在线 CTR 的显著提升。如 [4] 所报道，与 LR 相比，Wide & Deep 将 AUC 提高了 0.275%（离线），在线 CTR 的改进为 3.9%。公司*应用商店的日成交额达数百万美元，因此 CTR 即使几个百分点的提升每年也能带来额外的数百万美元收入。
 
@@ -195,7 +195,7 @@ $$
 
 根据 [13]，relu 和 tanh 比 sigmoid 更适合深度模型。在本文中，我们比较了深度模型在应用 relu 和 tanh 时的性能。如图 7 所示，除 IPNN 外，relu 比 tanh 更适合所有深度模型。可能的原因是 relu 引入了稀疏性。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220217119.png" alt="image-20260720220217119" style="zoom:50%;" />
+<img src=".picture/image-20260720220217119.png" alt="image-20260720220217119" style="zoom:50%;" />
 
 图 7：激活函数的 AUC 和 Logloss 对比。
 
@@ -203,7 +203,7 @@ $$
 
 Dropout [19] 指神经元在网络中被保留的概率。Dropout 是一种正则化技术，用于在神经网络的精度和复杂度之间取得平衡。我们将 dropout 设置为 1.0、0.9、0.8、0.7、0.6、0.5。如图 8 所示，当 dropout 设置适当时（从 0.6 到 0.9），所有模型都能达到自身的最佳性能。结果表明，向模型添加合理的随机性可以增强模型的鲁棒性。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220228154.png" alt="image-20260720220228154" style="zoom:50%;" />
+<img src=".picture/image-20260720220228154.png" alt="image-20260720220228154" style="zoom:50%;" />
 
 图 8：Dropout 的 AUC 和 Logloss 对比。
 
@@ -211,7 +211,7 @@ Dropout [19] 指神经元在网络中被保留的概率。Dropout 是一种正�
 
 其他因素保持不变时，增加每层神经元数量会增加模型复杂度。从图 9 中我们可以观察到，增加神经元数量并不总能带来益处。例如，DeepFM 在每层神经元数量从 400 增加到 800 时表现稳定；更糟糕的是，OPNN 在每层神经元数量从 400 增加到 800 时表现变差。这是因为过于复杂的模型容易过拟合。在我们的数据集中，每层 200 或 400 个神经元是较好的选择。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220239393.png" alt="image-20260720220239393" style="zoom:50%;" />
+<img src=".picture/image-20260720220239393.png" alt="image-20260720220239393" style="zoom:50%;" />
 
 图 9：神经元数量的 AUC 和 Logloss 对比。
 
@@ -219,7 +219,7 @@ Dropout [19] 指神经元在网络中被保留的概率。Dropout 是一种正�
 
 如图 10 所示，增加隐藏层数量最初提升了模型的性能，但如果继续增加隐藏层数量，模型性能反而下降。这一现象同样是由于过拟合所致。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220255882.png" alt="image-20260720220255882" style="zoom:50%;" />
+<img src=".picture/image-20260720220255882.png" alt="image-20260720220255882" style="zoom:50%;" />
 
 图 10：层数量的 AUC 和 Logloss 对比。
 
@@ -227,7 +227,7 @@ Dropout [19] 指神经元在网络中被保留的概率。Dropout 是一种正�
 
 我们测试了四种不同的网络形状：常数型、递增型、递减型和钻石型。在改变网络形状时，我们固定了隐藏层数量和神经元总数。例如，当隐藏层数为 3、神经元总数为 600 时，四种不同形状为：常数型（200-200-200）、递增型（100-200-300）、递减型（300-200-100）和钻石型（150-300-150）。从图 11 可以看出，"常数型"网络形状在经验上优于其他三种选择，这与先前的研究 [10] 一致。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720220313534.png" alt="image-20260720220313534" style="zoom:50%;" />
+<img src=".picture/image-20260720220313534.png" alt="image-20260720220313534" style="zoom:50%;" />
 
 图 11：网络形状的 AUC 和 Logloss 对比。
 

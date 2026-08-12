@@ -108,7 +108,7 @@ $$
 
 其中 $\eta$ 是学习率，必须选择足够小以确保步骤沿正确方向进行——即梯度仅在 $\theta$ 附近的小区域内（近似）正确。注意隐式反馈 $S \subseteq C \times I$  和 训练pair $D_S \subseteq C \times I \times I$ 之间的区别。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260719113143586.png" alt="image-20260719113143586" style="zoom:33%;" />
+<img src=".picture/image-20260719113143586.png" alt="image-20260719113143586" style="zoom:33%;" />
 
 均匀采样偏好 $(c, i, j) \in D_S$ 可以在**不显式存储 $D_S$ 的情况下**完成：首先采样 $(c, i) \in S$ ，然后采样负item $j \in I \setminus I^+(c)$ 。完整算法见图2。在[14]中，以贝叶斯个性化排序（BPR）的名义提出了用于item推荐的整个框架，包括已选item和所有剩余item之间的成对损失以及使用均匀采样的SGD算法。
 
@@ -132,11 +132,11 @@ $$
 
 该量取决于评分模型（使用当前模型参数 $\Theta$ ）如何在上下文 $c$ 下区分正item $i$ 和负item $j$ 。量 $\Delta_{c,i,j}$ 显然是一个概率，如果 $i$ 被正确分配了比 $j$ 更大的得分，则接近0。如果 $j$ 被错误分配了比 $i$ 更大的得分，则接近1。这意味着 $\Delta_{c,i,j}$ 可以被理解为**成对偏好 $(c, i, j)$ 对改善 $\Theta$ 有多大影响**。如果 $\Delta_{c,i,j}$ 接近0，则无法从该案例 $(c, i, j)$ 中学到任何东西，因为其梯度消失，即 $\theta$ 不会被更新步骤（式8）改变。因此，在后续内容中 $\Delta_{c,i,j}$ 被称为**采样案例 $(c, i, j)$ 的梯度幅度**。注意 $\Delta_{c,i,j}$ 依赖于模型参数 $\Theta$ ，因此 $\Delta_{c,i,j}$ 在学习过程中会变化。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717172324517.png" alt="image-20260717172324517" style="zoom:33%;" />
+<img src=".picture/image-20260717172324517.png" alt="image-20260717172324517" style="zoom:33%;" />
 
 **长尾item分布。** 在推荐系统中，item流行度通常是非均匀分布的，某些item总体上比其他的更受欢迎。图1显示了一个电影数据集和一个社交标签数据集的两种item流行度分布——参见5.1节了解数据集的详细信息。**两图均显示大多数item总体上很少被选择**。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717172446284.png" alt="image-20260717172446284" style="zoom:33%;" />
+<img src=".picture/image-20260717172446284.png" alt="image-20260717172446284" style="zoom:33%;" />
 
 > **图 3：梯度幅度（式 9）衡量训练样本对当前学习过程的影响程度（区间 [0,1]）。三条曲线分别描绘了当使用均匀采样（BPR）时梯度幅度小于 0.01、0.1 和 0.5 的样本比例。在仅仅几个训练 epoch 之后，几乎所有幅度都小于 0.1，且大多数小于 0.01。**幅度接近零的训练样本会减慢学习速度，因为对应的 SGD 更新步不会改变模型参数，但仍需消耗计算时间。平均梯度的变化情况见图 6，实验设置详情见 5.1 节。
 
@@ -342,7 +342,7 @@ $$
 
 总之，采样算法抽取一个item的摊还运行时间为 $O(k)$ ，这与MF模型单个梯度步骤的成本（ $= T_{pred}$ ）相同。由于每个梯度步骤对应一个样本，原始SGD算法的计算复杂度没有增加。图4描绘了改进后的学习算法的伪代码。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717172536309.png" alt="image-20260717172536309" style="zoom:33%;" />
+<img src=".picture/image-20260717172536309.png" alt="image-20260717172536309" style="zoom:33%;" />
 
 | 算法: LearnAdaptiveOversampling( $\eta$ , $S$ ) |
 |---|
@@ -420,7 +420,7 @@ $$
 
 对于二元的BBC数据集，使用矩阵分解模型。对于三元的ECML'09数据集，应用了获奖的成对交互张量分解（PITF）模型[15]。总共研究了简单的MF模型和复杂模型（PITF）。使用成对学习（见2.2节）来学习模型参数。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717172356710.png" alt="image-20260717172356710" style="zoom: 33%;" />
+<img src=".picture/image-20260717172356710.png" alt="image-20260717172356710" style="zoom: 33%;" />
 
 **比较的采样方法。** 负item采样器被变化为：
 
@@ -434,7 +434,7 @@ $$
 
 ### 5.2 预测质量
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717172630829.png" alt="image-20260717172630829" style="zoom:50%;" />
+<img src=".picture/image-20260717172630829.png" alt="image-20260717172630829" style="zoom:50%;" />
 
 图5显示了预测质量作为训练epoch的函数。为比较，还展示了一个非个性化的最常见基线模型，该模型根据观测数据 $S$ 中的全局流行度对item进行排序。所有三种个性化模型（无论采样算法如何）都优于该基线。
 
@@ -446,7 +446,7 @@ $$
 
 ### 5.3 梯度幅度
 
-![image-20260717172716648](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717172716648.png)
+![image-20260717172716648](.picture/image-20260717172716648.png)
 
 图6显示了平均梯度幅度。第一个观察结果是，两种过采样方法都成功地提高了梯度幅度，即采样的pair导致了实际改变模型参数的SGD更新（式8）。例如，在BBC上，自适应过采样256次迭代后的平均梯度为0.034，而BPR为0.004——提高了8.5倍。对于ECML'09，自适应过采样2000次迭代后的数字为0.016，BPR为0.0005——提高了32倍。
 

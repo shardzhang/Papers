@@ -84,7 +84,7 @@ NE本质上是计算相对信息增益（Relative Information Gain，RIG）的�
 
 在本节中，我们提出一种**混合模型结构**：提升决策树与概率稀疏线性分类器的串联，如图1所示。在第3.1节中，我们展示了决策树是非常强大的**输入特征变换方法**，能显著提高概率线性分类器的精度。在第3.2节中，我们展示了更新的训练数据如何产生更准确的预测。这启发了使用在线学习方法训练线性分类器的想法。在第3.3节中，我们比较了两类概率线性分类器的多种在线学习变体。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805193202669.png" alt="image-20260805193202669" style="zoom: 33%;" />
+<img src=".picture/image-20260805193202669.png" alt="image-20260805193202669" style="zoom: 33%;" />
 
 我们评估的在线学习方案基于应用于稀疏线性分类器的随机梯度下降（SGD，Stochastic Gradient Descent）算法[2]。经过特征变换后，一次广告展示以结构化向量 $\mathbf{x} = (e_{i_1}, \ldots, e_{i_n})$ 的形式给出，其中 $e_i$ 是第 $i$ 个单位向量，$i_1, \ldots, i_n$ 是 $n$ 个分类输入特征的值。在训练阶段，我们还假设给定一个二元标签 $y \in \{+1, -1\}$，表示点击或不点击。
 
@@ -141,7 +141,7 @@ $$
 
 **表1：逻辑回归（LR）和提升决策树（Trees）形成强大的组合。我们通过相对于仅树模型的归一化熵（NE）来评估它们。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194111403.png" alt="image-20260805194111403" style="zoom:33%;" />
+<img src=".picture/image-20260805194111403.png" alt="image-20260805194111403" style="zoom:33%;" />
 
 树特征变换帮助归一化熵相对于没有树变换的模型降低了超过3.4%。这是一个非常显著的相对改进。作为参考，典型的特征工程实验通常只能降低零点几个百分点的相对NE。有趣的是，单独使用的LR和树模型具有可比的预测精度（LR略好），但它们的结合产生了精度的跃升。预测精度的提升是显著的；**作为参考，大多数特征工程实验只能将归一化熵降低不到一个百分点**。
 
@@ -151,7 +151,7 @@ $$
 
 在此实验中，我们用一天的数据进行训练，在接下来的六天进行评估，并计算每天的归一化熵。结果显示在图2中。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194221340.png" alt="image-20260805194221340" style="zoom:33%;" />
+<img src=".picture/image-20260805194221340.png" alt="image-20260805194221340" style="zoom:33%;" />
 
 > 图2：预测精度随训练集与测试集之间延迟天数的变化。精度表示为相对于最差结果（即仅树模型延迟6天）的归一化熵。
 
@@ -201,11 +201,11 @@ $$
 
 **表2：学习率参数**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194341738.png" alt="image-20260805194341738" style="zoom:33%;" />
+<img src=".picture/image-20260805194341738.png" alt="image-20260805194341738" style="zoom:33%;" />
 
 我们将连续学习的学习率下界设为0.00001。我们使用以上学习率方案在相同数据上训练和测试LR模型。实验结果如图3所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194406786.png" alt="image-20260805194406786" style="zoom:33%;" />
+<img src=".picture/image-20260805194406786.png" alt="image-20260805194406786" style="zoom:33%;" />
 
 > 图3：不同学习率方案下LR+SGD的实验结果。X轴对应不同的学习率方案。左侧主y轴显示校准性，右侧次y轴显示归一化熵。
 
@@ -217,7 +217,7 @@ $$
 
 **表3：逐坐标在线LR与BOPR的比较**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194435360.png" alt="image-20260805194435360" style="zoom:33%;" />
+<img src=".picture/image-20260805194435360.png" alt="image-20260805194435360" style="zoom:33%;" />
 
 或许正如预期，鉴于更新方程的定性相似性，使用逐坐标学习率SGD训练的BOPR和LR在NE和校准性（表中未显示）方面具有非常相似的预测性能。
 
@@ -237,7 +237,7 @@ BOPR相对于LR的一个重要优势是，作为贝叶斯公式，它提供了�
 
 没有完全的点击覆盖率意味着实时训练集会有偏差：经验CTR会比真实值偏低。这是因为一部分被标记为未点击的展示，如果等待时间足够长，本应被标记为点击。然而在实践中，我们发现，使用导致可管理内存需求的等待窗口大小，很容易将这种偏差降低到零点几个百分点。此外，这种小偏差可以被测量并加以修正。关于窗口大小和效率的更多研究可见[6]。在线连接器被设计为执行分布式的流到流连接，将广告展示和广告点击关联起来，使用请求ID作为连接谓词的主要组成部分。每当用户在Facebook上执行触发其内容刷新的操作时，就会生成一个请求ID。图4展示了在线连接器及后续在线学习的数据和模型流程示意图。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194458945.png" alt="image-20260805194458945" style="zoom:33%;" />
+<img src=".picture/image-20260805194458945.png" alt="image-20260805194458945" style="zoom:33%;" />
 
 > 图4：在线学习数据/模型流程。特征（x）和广告展示送入在线连接器；点击（y）也送入在线连接器；在线连接器输出 {x, y} 给训练器；训练器更新模型；模型用于排序器（Ranker）进行广告排序。
 
@@ -257,7 +257,7 @@ BOPR相对于LR的一个重要优势是，作为贝叶斯公式，它提供了�
 
 我们将树的数量从1变化到2000，使用一整天数据训练模型，并在第二天测试预测性能。我们限制每棵树不超过12个叶节点。与之前的实验类似，我们使用归一化熵作为评估指标。实验结果如图5所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194537086.png" alt="image-20260805194537086" style="zoom:33%;" />
+<img src=".picture/image-20260805194537086.png" alt="image-20260805194537086" style="zoom:33%;" />
 
 > 图5：提升树数量的实验结果。不同曲线对应不同的子模型。x轴为提升树数量。y轴为归一化熵。
 
@@ -271,13 +271,13 @@ BOPR相对于LR的一个重要优势是，作为贝叶斯公式，它提供了�
 
 通常，少数特征贡献了大部分的解释能力，而其余特征只有边际贡献。当我们在图6中绘制特征数量与其累积特征重要性的关系时，可以观察到同样的模式。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194606472.png" alt="image-20260805194606472" style="zoom:33%;" />
+<img src=".picture/image-20260805194606472.png" alt="image-20260805194606472" style="zoom:33%;" />
 
 >  图6：提升特征重要性。x轴对应特征数量。左侧主y轴（对数刻度）显示特征重要性，右侧次y轴显示累积特征重要性。
 
 从上述结果可以看出，前10个特征贡献了约一半的总特征重要性，而最后300个特征贡献不到1%的特征重要性。基于这一发现，我们进一步实验仅保留前10、20、50、100和200个特征，并评估对性能的影响。实验结果如图7所示。从图中可以看出，随着我们包含更多特征，归一化熵也呈现类似的递减回报特性。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194624785.png" alt="image-20260805194624785" style="zoom:33%;" />
+<img src=".picture/image-20260805194624785.png" alt="image-20260805194624785" style="zoom:33%;" />
 
 > 图7：仅使用Top特征的提升模型结果。左侧主y轴显示校准性，右侧次y轴显示归一化熵。
 
@@ -289,7 +289,7 @@ BOPR相对于LR的一个重要优势是，作为贝叶斯公式，它提供了�
 
 在本部分，我们研究系统性能如何依赖于这两类特征。首先，我们检查这两类特征的相对重要性。我们通过按重要性对所有特征排序，然后计算前k个重要特征中历史特征的百分比来实现。结果如图8所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194648542.png" alt="image-20260805194648542" style="zoom:33%;" />
+<img src=".picture/image-20260805194648542.png" alt="image-20260805194648542" style="zoom:33%;" />
 
 >  图8：历史特征百分比结果。x轴对应特征数量。y轴给出前k个重要特征中历史特征的百分比。
 
@@ -297,13 +297,13 @@ BOPR相对于LR的一个重要优势是，作为贝叶斯公式，它提供了�
 
 **表4：具有不同类型特征的提升模型**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194718593.png" alt="image-20260805194718593" style="zoom:33%;" />
+<img src=".picture/image-20260805194718593.png" alt="image-20260805194718593" style="zoom:33%;" />
 
 仅使用上下文特征时，我们测得的预测精度损失为4.5%。相反，在没有上下文特征的情况下，预测精度的损失不到1%。需要注意的是，上下文特征对于处理冷启动问题非常重要。对于新用户和新广告，上下文特征对于合理的点击率预测是不可或缺的。
 
 接下来，我们在连续的几周上评估仅使用历史特征或上下文特征训练的模型，以测试特征对数据新鲜度的依赖性。结果如图9所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194751962.png" alt="image-20260805194751962" style="zoom:33%;" />
+<img src=".picture/image-20260805194751962.png" alt="image-20260805194751962" style="zoom:33%;" />
 
 > 图9：不同类型特征的数据新鲜度结果。x轴为评估日期，y轴为归一化熵。
 
@@ -321,7 +321,7 @@ Facebook一天的广告展示数据可能包含海量实例。注意，由于数
 
 数据量的实验结果如图10所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194816109.png" alt="image-20260805194816109" style="zoom:33%;" />
+<img src=".picture/image-20260805194816109.png" alt="image-20260805194816109" style="zoom:33%;" />
 
 > 图10：数据量的实验结果。x轴对应训练实例数量。左侧主y轴显示校准性，右侧次y轴显示归一化熵。
 
@@ -333,7 +333,7 @@ Facebook一天的广告展示数据可能包含海量实例。注意，由于数
 
 实验结果如图11所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805194835952.png" alt="image-20260805194835952" style="zoom:33%;" />
+<img src=".picture/image-20260805194835952.png" alt="image-20260805194835952" style="zoom:33%;" />
 
 > 图11：负例下采样的实验结果。x轴对应不同的负例下采样率。左侧主y轴显示校准性，右侧次y轴显示归一化熵。
 

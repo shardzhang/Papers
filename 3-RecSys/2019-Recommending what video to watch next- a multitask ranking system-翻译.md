@@ -66,7 +66,7 @@ https://doi.org/10.1145/3298689.3346997
 
 **为从有偏的训练数据中建模和减少选择偏差（如位置偏差），我们提出在主模型上添加一个浅层塔**，如图1左侧所示。浅层塔接收与选择偏差相关的输入，如当前系统决定的**排序顺序**，并输出一个**标量**作为主模型最终预测的偏差项。该架构将训练数据中的标签分解为两部分：从主模型学习到的无偏用户效用，以及从浅层塔学习到的估计倾向得分。我们提出的模型架构可以被视为宽度与深度模型的扩展，其中**浅层塔代表宽度部分**。通过将浅层塔与主模型一起直接学习，我们获得了**无需借助随机实验即可获得倾向得分的优势**[41]。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805074329001.png" alt="image-20260805074329001" style="zoom:33%;" />
+<img src=".picture/image-20260805074329001.png" alt="image-20260805074329001" style="zoom:33%;" />
 
 **图1：我们提出的排序系统的模型架构。它以用户日志为训练数据，构建多门混合专家层来预测两类用户行为，即参与度和满意度。它通过侧塔纠正排序选择偏差。在顶部，多个预测被组合成最终排序分数。**
 
@@ -165,7 +165,7 @@ Joachims等人[22]首先分析了用于训练学习排序模型的隐式反馈�
 
 我们使用用户行为作为训练标签。由于用户可以对推荐item有不同的行为类型，我们设计排序系统以支持多个目标。每个目标是预测与用户效用相关的一种用户行为。为描述目的，以下我们将目标分为两类：参与度目标和满意度目标。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805083626384.png" alt="image-20260805083626384" style="zoom:33%;" />
+<img src=".picture/image-20260805083626384.png" alt="image-20260805083626384" style="zoom:33%;" />
 
 >  图2：用MMoE替换共享底层层。
 
@@ -201,7 +201,7 @@ $$
 
 ### 4.4 建模和消除位置与选择偏差
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805084931311.png" alt="image-20260805084931311" style="zoom: 25%;" />
+<img src=".picture/image-20260805084931311.png" alt="image-20260805084931311" style="zoom: 25%;" />
 
 > 图3：添加浅层侧塔来学习选择偏差（如位置偏差）。
 
@@ -231,7 +231,7 @@ YouTube的规模和复杂性使其成为我们排序系统的完美测试平台�
 ² https://www.tensorflow.org
 ³ https://www.tensorflow.org/tfx/guide/serving
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805085612639.png" alt="image-20260805085612639" style="zoom:25%;" />
+<img src=".picture/image-20260805085612639.png" alt="image-20260805085612639" style="zoom:25%;" />
 
 >  图4：在YouTube上推荐接下来观看什么。
 
@@ -253,7 +253,7 @@ YouTube上的在线实验结果如表1所示。我们报告了参与度指标（
 
 **表1：MMoE的YouTube在线实验结果。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805085850083.png" alt="image-20260805085850083" style="zoom:33%;" />
+<img src=".picture/image-20260805085850083.png" alt="image-20260805085850083" style="zoom:33%;" />
 
 > [!NOTE]
 >
@@ -265,7 +265,7 @@ YouTube上的在线实验结果如表1所示。我们报告了参与度指标（
 
 如上所述，我们的MMoE层共享一个底层隐藏层，其门控网络从共享隐藏层获取输入。这可能使MMoE层比直接从输入层构建MMoE层更难模块化输入信息。或者，我们让门控网络直接从输入层而非共享隐藏层获取输入，以便输入特征可以直接用于选择专家。然而，在线实验结果与图2b的MMoE层相比没有实质性差异。这表明图2b的MMoE门控网络可以有效地将输入信息模块化到专家中，用于**任务关系和冲突建模**。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805090114144.png" alt="image-20260805090114144" style="zoom:33%;" />
+<img src=".picture/image-20260805090114144.png" alt="image-20260805090114144" style="zoom:33%;" />
 
 > 图5：YouTube上多个任务的专家利用率。
 
@@ -289,11 +289,11 @@ YouTube上的在线实验结果如表1所示。我们报告了参与度指标（
 
 为验证位置偏差存在于我们的训练数据中，我们对不同位置的点击率（CTR）进行了分析。图6显示了位置1到9的CTR相对比例分布。如预期，我们看到随着位置越来越低，CTR显著降低。较高位置的较高CTR是推荐更相关item和位置偏差共同作用的结果。使用我们提出的采用浅层塔的方法，我们在下文中展示它**可以将用户效用和位置偏差的学习分离开来**。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805091540935.png" alt="image-20260805091540935" style="zoom: 33%;" />
+<img src=".picture/image-20260805091540935.png" alt="image-20260805091540935" style="zoom: 33%;" />
 
 **图6：位置1到9的CTR。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805091612166.png" alt="image-20260805091612166" style="zoom: 33%;" />
+<img src=".picture/image-20260805091612166.png" alt="image-20260805091612166" style="zoom: 33%;" />
 
 **图7：每个位置的学习到的位置偏差。**
 
@@ -315,7 +315,7 @@ YouTube上的在线实验结果如表1所示。我们报告了参与度指标（
 
 **表2：建模位置偏差的YouTube在线实验结果。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805091826859.png" alt="image-20260805091826859" style="zoom:33%;" />
+<img src=".picture/image-20260805091826859.png" alt="image-20260805091826859" style="zoom:33%;" />
 
 #### 5.3.4 学习到的位置偏差
 

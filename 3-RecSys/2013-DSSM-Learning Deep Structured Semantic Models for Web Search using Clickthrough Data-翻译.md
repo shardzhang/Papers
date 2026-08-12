@@ -78,7 +78,7 @@ $$
 
 我们开发的用于将原始文本特征映射到语义空间中特征的典型DNN架构如图1所示。DNN的输入（原始文本特征）**是高维术语向量**，例如 **查询或文档中未归一化的原始术语计数**，DNN的输出是 低维语义特征空间 中的概念向量。该DNN模型用于Web文档排序，如下所示：1）将 **术语向量** 映射到其相应的 **语义概念向量**；2）计算文档和查询之间的相关性分数 为其 相应语义概念向量的余弦相似度；参见式（3）到（5）。
 
-![image-20260729195110828](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260729195110828.png)
+![image-20260729195110828](.picture/image-20260729195110828.png)
 
 >  **图1：DSSM示意图。它使用DNN将 高维稀疏文本特征 映射到 语义空间中的低维稠密特征。第一个隐藏层包含30k个单元，完成词哈希。词哈希特征然后通过多层非线性投影进行投影。该DNN中最后一层的神经活动构成语义空间中的特征。**
 
@@ -121,7 +121,7 @@ $$
 
 在我们的实现中，**基于字母n-gram的词哈希可视为固定的（即非自适应的）线性变换**，通过该变换，输入层中的术语向量被投影到 **更高层的字母n-gram向量**，如图1所示。由于字母n-gram向量的维度低得多，DNN学习可以有效地进行。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260729212857919.png" alt="image-20260729212857919" style="zoom:50%;" />
+<img src=".picture/image-20260729212857919.png" alt="image-20260729212857919" style="zoom:50%;" />
 
 **表1：词哈希token大小和冲突数量随词汇表大小和字母n-gram类型的变化。**
 
@@ -198,7 +198,7 @@ BLTM-PR（第7行）是[10]中描述的不同版本双语主题模型中的最�
 
 我们还评估了在建模嵌入在查询和文档中的语义信息时使用深度架构与浅层架构的影响。表2中的结果表明，DAE（第3行）优于LSA（第2行），而两者都是无监督模型。**我们在比较监督模型中的浅层与深层架构时也观察到了类似的结果。比较第11行和第12行的模型，我们观察到将非线性层从一个增加到三个使NDCG分数提高了0.4-0.5个点，这些点具有统计显著性，而如果两者都是单层浅层模型（第10行对第11行），线性和非线性模型之间没有显著差异。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260729212921343.png" alt="image-20260729212921343" style="zoom:33%;" />
+<img src=".picture/image-20260729212921343.png" alt="image-20260729212921343" style="zoom:33%;" />
 
 **表2：与先前最先进方法和DSSM各种设置的比较结果。**
 
@@ -372,17 +372,17 @@ $$
 
 **表5：我们的深度语义模型优于TF-IDF的示例。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260730202141368.png" alt="image-20260730202141368" style="zoom:50%;" />
+<img src=".picture/image-20260730202141368.png" alt="image-20260730202141368" style="zoom:50%;" />
 
 **表6：我们的深度语义模型劣于TF-IDF的示例。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260730202208879.png" alt="image-20260730202208879" style="zoom:50%;" />
+<img src=".picture/image-20260730202208879.png" alt="image-20260730202208879" style="zoom:50%;" />
 
 为了使我们的方法更直观，我们还可视化了 查询和文档 中学习到的**隐藏词表示**。我们通过**将每个单词视为唯一文档并将其作为输入传递给训练好的DNN来实现这一点**。在每个输出节点，我们将所有**具有高激活水平的单词分组**并相应地聚类它们。表7显示了一些示例聚类，**每个聚类对应于DNN模型的一个输出节点**。有趣的是，具有相同或相关语义含义的单词确实留在同一聚类中。
 
 **表7：训练DNN 五个不同输出节点 上的聚类词示例。聚类标准是DNN输出节点上的高激活水平。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260730202221267.png" alt="image-20260730202221267" style="zoom:50%;" />
+<img src=".picture/image-20260730202221267.png" alt="image-20260730202221267" style="zoom:50%;" />
 
 > [!NOTE]
 >

@@ -224,7 +224,7 @@ $$
 
 [^2]: http://hunch.net/~vw/
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260721000000001.png" alt="image-20260721000000001" style="zoom:50%;" />
+<img src="../3-RecSys/.picture/image-20260721000000001.png" alt="image-20260721000000001" style="zoom:50%;" />
 
 图 1. 以示意图布局总结的哈希个性化。每个 token 被复制，其中一份被个性化（例如通过将每个单词与唯一的用户标识符连接）。然后，全局哈希函数将所有 token 映射到低维特征空间中，在那里对文档进行分类。
 
@@ -232,7 +232,7 @@ $$
 
 [^3]: 作为我们数据共享协议的一部分，我们同意不包含绝对的分类错误率。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260721000000002.png" alt="image-20260721000000002" style="zoom:50%;" />
+<img src="../3-RecSys/.picture/image-20260721000000002.png" alt="image-20260721000000002" style="zoom:50%;" />
 
 图 2. 相对于基线分类器、对所有用户平均的未捕获垃圾邮件的下降。分类阈值的选择使非垃圾邮件误分类固定为 1%。哈希全局分类器（global-hashed）相对较快地收敛，表明失真误差 $\epsilon_d$ 消失。个性化分类器带来了平均高达 30% 的改善。
 
@@ -240,7 +240,7 @@ $$
 
 在个性化设置中，每个用户 $u \in U$ 都获得自己的分类器 $\phi_u(w_u)$ 以及全局分类器 $\phi_0(w_0)$ 。如果不进行哈希，特征空间会爆炸，因为 $u = 40$ 万用户和 $n = 4000$ 万 token 的叉乘会产生 16 万亿个可能的唯一个性化特征。图 2 显示，尽管进行了激进的哈希，一旦哈希表由 22 位索引，个性化就能减少 30% 的垃圾邮件。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260721000000003.png" alt="image-20260721000000003" style="zoom:50%;" />
+<img src="../3-RecSys/.picture/image-20260721000000003.png" alt="image-20260721000000003" style="zoom:50%;" />
 
 图 3. 按训练电子邮件数量聚类的用户的结果。例如，桶 $[8, 15]$ 由所有具有八到十五封训练电子邮件的用户组成。尽管拥有大量训练数据的桶中的用户确实从个性化分类器中受益更多（垃圾邮件减少高达 65%），但即使是完全没有为训练语料做出贡献的用户也获得了近 20% 的垃圾邮件减少。
 

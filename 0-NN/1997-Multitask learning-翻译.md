@@ -55,13 +55,13 @@
 
 图 1 显示了四个独立的人工神经网络（ANN，Artificial Neural Networks）。每个网络都是相同输入的函数，并且有一个输出。反向传播通过单独训练每个网络应用于这些网络。**由于四个网络没有连接，一个网络学到的内容不可能帮助另一个网络**。我们将这种方法称为单任务学习（STL，Single Task Learning）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810133348091.png" alt="image-20260810133348091" style="zoom:50%;" />
+<img src=".picture/image-20260810133348091.png" alt="image-20260810133348091" style="zoom:50%;" />
 
 图 1：四个具有相同输入的任务的单任务反向传播 (STL)
 
 图 2 显示了一个与图 1 中四个网络具有相同输入的单个网络，但具有四个输出，每个输出对应图 1 中网络正在训练的一个任务。注意这四个输出完全连接到一个它们共享的隐藏层。MTL 网络中的四个输出并行进行反向传播。由于四个输出共享一个公共隐藏层，一个任务在隐藏层中产生的内部表示可以被其他任务使用。**在任务并行训练时 共享不同任务学到的内容 是多任务学习的核心思想** [54,21,22,55,9,10,11,5,6,7,13]。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810133407926.png" alt="image-20260810133407926" style="zoom:50%;" />
+<img src=".picture/image-20260810133407926.png" alt="image-20260810133407926" style="zoom:50%;" />
 
 图 2：四个具有相同输入的任务的多任务反向传播 (MTL) 
 
@@ -108,7 +108,7 @@ MTL 是实现任务间归纳迁移的一种方法。**归纳迁移的目标是 �
 
 表 1 显示了使用具有一个隐藏层的网络在 1D-ALVINN 上进行单任务和多任务学习十次运行的性能。MTL 网络有 32 个输入、16 个隐藏单元和 9 个输出。36 个 STL 网络有 32 个输入、2、4、8 或 16 个隐藏单元，每个网络有 1 个输出。注意 MTL 网络的大小没有经过优化。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810212018883.png" alt="image-20260810212018883" style="zoom:33%;" />
+<img src=".picture/image-20260810212018883.png" alt="image-20260810212018883" style="zoom:33%;" />
 
 表 1：1D-ALVINN 领域中具有一个隐藏层的 STL 和 MTL 在任务上的性能
 
@@ -118,7 +118,7 @@ STL 和 MTL 标题下的条目是 使用 提前停止来停止训练时指定大
 
 1D-ALVINN 不是真实领域；数据是用模拟器生成的。为了在更现实的问题上测试 MTL，我们创建了一个在某些方面类似于 1D-ALVINN 的对象识别领域。在 1D-DOORS 中，主要任务是在使用机器人安装的彩色摄像头收集的门图像中定位门把手和识别门类型（单门或双门）。图 3 显示了数据库中的几个门图像。与 1D-ALVINN 类似，通过使用图像的水平条带简化了问题，一个用于绿色通道，一个用于蓝色通道。每个条带宽 30 像素（通过对原始 150 像素宽的图像应用高斯平滑实现），出现在图像中门把手所在的垂直高度。使用了十个任务。它们是：
 
-![image-20260810133444700](/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810133444700.png)
+![image-20260810133444700](.picture/image-20260810133444700.png)
 
 图 3：1D-DOORS 领域中的单门和双门示例
 
@@ -137,7 +137,7 @@ STL 和 MTL 标题下的条目是 使用 提前停止来停止训练时指定大
 
 1D-DOORS 的难度使得无法进行与 1D-ALVINN 一样彻底的实验集；只能对我们认为最重要的两个任务进行比较：门把手位置和门类型。STL 在使用 6、24 和 96 个隐藏单元的网络上进行了测试。MTL 在具有 120 个隐藏单元的网络上进行了测试。十次试验的 STL 和 MTL 结果在表 2 中。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810220201780.png" alt="image-20260810220201780" style="zoom:50%;" />
+<img src=".picture/image-20260810220201780.png" alt="image-20260810220201780" style="zoom:50%;" />
 
 表 2：1D-DOORS 中两个主要任务上 STL 和 MTL 的性能
 
@@ -147,13 +147,13 @@ MTL 在这些任务上的泛化比 STL 好 20-30%，即使与三次不同 STL �
 
 我们在这里展示的第三个领域应用 MTL 于一个真实世界的问题，该问题由其他研究人员收集数据，他们在收集数据时没有考虑使用 MTL。目标是预测肺炎患者的死亡率。这是一个**困难的二元分类问题**，训练数据有 95 个样本，测试数据有 42 个样本，总共 137 个样本。每个样本有 57 个特征。这是一个医疗领域的数据集，来自 Cooper 等人 [16]。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810220231972.png" alt="image-20260810220231972" style="zoom:33%;" />
+<img src=".picture/image-20260810220231972.png" alt="image-20260810220231972" style="zoom:33%;" />
 
 表 3：肺炎死亡率预测的 STL 和 MTL 性能
 
 我们在这个领域测试了许多不同的网络架构和训练条件。表 3 显示了使用具有 50 个隐藏单元和一个输出单元的网络的结果。这个网络对于只有 95 个训练样本的问题来说相对较大。尽管如此，MTL 仍然显著优于 STL。在这个领域中，我们使用了**八个额外任务**。主要任务是预测肺炎患者的死亡率。八个额外任务是预测住院时间、是否需要机械通气、是否进行了有创检查、年龄、是否为急诊入院、动脉血氧分压、是否需要插管、以及白细胞计数。所有这些额外任务都可以从相同的数据集中计算得出。如图 4 所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810220334130.png" alt="image-20260810220334130" style="zoom:50%;" />
+<img src=".picture/image-20260810220334130.png" alt="image-20260810220334130" style="zoom:50%;" />
 
 图 4：使用未来实验室结果作为额外输出来偏向主要 rankprop 风险预测任务的学习
 
@@ -199,7 +199,7 @@ MTL 允许网络学习一些**专门用于单个任务的特征**，同时也学
 
 我们通过分析 MTL 网络的隐藏层来证明这一点。我们发现，**相关任务的隐藏单元往往会聚集在一起，而不相关任务的隐藏单元往往会分离。**这表明 MTL 网络**正在学习任务之间的底层结构**，并利用这种结构来提高泛化性能。如图 5 所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810221548880.png" alt="image-20260810221548880" style="zoom:50%;" />
+<img src=".picture/image-20260810221548880.png" alt="image-20260810221548880" style="zoom:50%;" />
 
 图 5：隐藏层中的共享作为任务之间相似性的函数
 
@@ -236,7 +236,7 @@ MTL 允许网络学习一些**专门用于单个任务的特征**，同时也学
 
 表 4：向使用 rankprop 的 MTL 添加额外的 SSE 任务可改善 SSE 表现良好（FOP 接近 0.0 或 1.0）的区域的 MTL 性能，但会损害 SSE 表现不佳（FOP 接近 0.5）的区域的 MTL 性能。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810222655808.png" alt="image-20260810222655808" style="zoom: 33%;" />
+<img src=".picture/image-20260810222655808.png" alt="image-20260810222655808" style="zoom: 33%;" />
 
 类似地，最佳输出编码并不总是显而易见的。主任务的替代编码可以用作额外输出，就像上面使用替代误差度量一样。例如，分布式输出表示通常有助于问题的某些部分学得更好，因为这些部分具有单独的误差梯度。但如果预测要求分布式表示中的所有输出同时正确，非分布式表示可能更准确。MTL 是合并这些冲突需求并同时使用两种输出表示来获得两者好处的一种方法。
 
@@ -252,7 +252,7 @@ MTL 允许网络学习一些**专门用于单个任务的特征**，同时也学
 
 表 5：机器人感知预测任务上的 STL 和 MTL。任务是预测机器人在 1、2、4 和 8 米后将感知到的内容。**更困难的 4 米和 8 米预测任务从 MTL 中获益最多，而较容易的 1 米任务可能受到 MTL 的损害。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810222732967.png" alt="image-20260810222732967" style="zoom: 33%;" />
+<img src=".picture/image-20260810222732967.png" alt="image-20260810222732967" style="zoom: 33%;" />
 
 在 1 米处的精度损失不具有统计显著性，但 MTL 改进作为距离的函数存在一个有趣的趋势：MTL 似乎对更困难的长期预测任务帮助更大。我们推测这可能并不罕见。也就是说，**MTL 可能对更困难的任务帮助最大，可能以牺牲较容易的任务为代价，因为更困难的任务有更大的改进空间，而较容易的任务有更多可失去的**。如果可能，应该对 STL 效果最好的任务使用 STL，对 MTL 效果最好的任务使用 MTL。**但将最适合 STL 训练的任务包含在 MTL 网络中以帮助 MTL 任务是很重要的**。
 
@@ -314,11 +314,11 @@ $F_2(A,B) = \text{SIGMOID}(A-B)$
 
 图 6c 显示了一个具有 20 个输入（用于 A 和 B）和 2 个输出的网络，一个用于 $F_1(A,B)$，一个用于 $F_2(A,B)$。该网络的性能仅在 $F_1(A,B)$ 的输出上进行评估，但对两个输出都进行反向传播。表 6 第 3 行显示了 MTL 网络在 $F_1(A,B)$ 上的平均性能。将 $F_2(A,B)$ 用作额外输出改善了 $F_1(A,B)$ 的性能。将额外特征用作额外输出比用作额外输入更好。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810222801437.png" alt="image-20260810222801437" style="zoom: 33%;" />
+<img src=".picture/image-20260810222801437.png" alt="image-20260810222801437" style="zoom: 33%;" />
 
 图 6：用于学习 $F_1$ 的三种网络架构。A:STD 是不使用额外特征的标准网络。B:STD+IN 是将额外特征用作额外输入的网络。C:STD+OUT 是 MTL，额外特征用作额外输出，而不是输入。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810222815168.png" alt="image-20260810222815168" style="zoom: 33%;" />
+<img src=".picture/image-20260810222815168.png" alt="image-20260810222815168" style="zoom: 33%;" />
 
 表 6：STL、具有额外输入的 STL 和 MTL（具有额外输出的 STL）在 $F_1$ 上的性能。将额外特征用作 MTL 输出比用作额外输入效果更好。
 
@@ -354,19 +354,19 @@ $\lambda_i = 0$ 导致学习忽略额外任务，$\lambda_i \approx 1$ 导致学
 
 图 7 显示了 FOP 0.3 处的错误率作为 λ 的函数（为简单起见，我们在此处给出每个 $\lambda_i$ 取相同值的结果）。$\lambda = 0$ 是 STL；所有额外任务都被忽略。$\lambda = 1.0$ 是 MTL，给予每个额外任务和主任务相同的权重；特征权重试图在所有任务上都表现良好。请注意，当学习对主任务和额外任务给予相当的注意力时，错误率最低。其他 FOP 也获得了类似的图表。表 7 总结了使用 STL（$\lambda = 0$）和 MTL（$\lambda = 1.0$）的 LCWA 在五个 FOP 上的性能。与反向传播一样，MTL 在风险预测上比 STL 好 5-10%。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810222926165.png" alt="image-20260810222926165" style="zoom: 33%;" />
+<img src=".picture/image-20260810222926165.png" alt="image-20260810222926165" style="zoom: 33%;" />
 
 图 7：FOP 0.3 处的错误率作为 λ 的函数。λ = 0 是 STL；λ = 1 是 MTL，主任务和每个额外任务给予相同的权重；λ = 2 是 MTL，大多数权重给予额外任务而不是主任务
 
 图 8 显示了 STL（$\lambda = 0$）和 MTL（$\lambda = 1.0$）的性能作为训练集大小的函数。误差棒是估计的标准误差。对于所有训练集大小，MTL 的错误率都低于 STL。对于较小的训练集大小，MTL 产生的性能与 STL 在多 25% 到 75% 数据时相当。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810222959720.png" alt="image-20260810222959720" style="zoom: 33%;" />
+<img src=".picture/image-20260810222959720.png" alt="image-20260810222959720" style="zoom: 33%;" />
 
 图 8：STL（λ = 0）和 MTL（λ = 1）的性能作为训练集大小的函数。对于所有训练集大小，MTL 的错误率都低于 STL。对于较小的训练集大小，MTL 产生的性能与 STL 在多 25% 到 75% 数据时相当
 
 表 7：使用 1000 个案例的训练集在肺炎问题上 STL LCWA 和 MTL LCWA（$\lambda = 1$）的错误率。
 
-<img src="/Users/dazhang/PycharmProject/Papers/0-NN/.picture/image-20260810222940379.png" alt="image-20260810222940379" style="zoom: 33%;" />
+<img src=".picture/image-20260810222940379.png" alt="image-20260810222940379" style="zoom: 33%;" />
 
 ### 5.2 MTL 决策树归纳
 

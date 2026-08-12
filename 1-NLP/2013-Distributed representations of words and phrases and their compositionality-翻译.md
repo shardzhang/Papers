@@ -44,7 +44,7 @@ Word2vec, Skip-gram, Negative Sampling, **Subsampling**, Phrase Learning, **Dist
 
 使用神经网络计算的词表示非常有趣，因为**学习到的向量显式编码了许多语言规律和模式**。有些令人惊讶的是，许多这些模式可以表示为**线性平移**。例如，向量计算 $\text{vec}(\text{Madrid}) - \text{vec}(\text{Spain}) + \text{vec}(\text{France})$ 的结果比任何其他词向量都更接近 $\text{vec}(\text{Paris})$ [9, 8]。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810143429694.png" alt="image-20260810143429694" style="zoom:33%;" />
+<img src=".picture/image-20260810143429694.png" alt="image-20260810143429694" style="zoom:33%;" />
 
 **图1: Skip-gram模型架构。** 训练目标是学习能够**很好预测附近词的词向量表示**。
 
@@ -56,7 +56,7 @@ Word2vec, Skip-gram, Negative Sampling, **Subsampling**, Phrase Learning, **Dist
 
 最后，我们描述了Skip-gram模型的另一个有趣性质。我们发现**简单的向量加法通常能产生有意义的结果**。例如， $\text{vec}(\text{Russia}) + \text{vec}(\text{river})$ 接近 $\text{vec}(\text{Volga River})$ ， $\text{vec}(\text{Germany}) + \text{vec}(\text{capital})$ 接近 $\text{vec}(\text{Berlin})$ 。这种组合性表明，通过对词向量表示使用基本数学运算，可以获得**一定程度的非显而易见的语言理解**。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810143510052.png" alt="image-20260810143510052" style="zoom:33%;" />
+<img src=".picture/image-20260810143510052.png" alt="image-20260810143510052" style="zoom:33%;" />
 
 
 
@@ -131,7 +131,7 @@ $$
 
 **表1: 各种Skip-gram 300维模型在类比推理任务上的准确性（如[8]定义）。** **NEG-k表示每个正样本使用k个负样本的负采样**；NCE表示噪声对比估计；HS-Huffman表示使用基于频率的Huffman编码的分层Softmax。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810143545128.png" alt="image-20260810143545128" style="zoom:33%;" />
+<img src=".picture/image-20260810143545128.png" alt="image-20260810143545128" style="zoom:33%;" />
 
 
 
@@ -149,7 +149,7 @@ $$
 
 **表2: 短语类比推理任务示例（完整测试集有3218个示例）。** 目标是使用前三个短语计算第四个短语。我们最好的模型在该数据集上达到了72%的准确率。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810143602769.png" alt="image-20260810143602769" style="zoom:33%;" />
+<img src=".picture/image-20260810143602769.png" alt="image-20260810143602769" style="zoom:33%;" />
 
 ### 4.1 短语Skip-Gram结果
 
@@ -159,7 +159,7 @@ $$
 
 **表3: Skip-gram模型在短语类比数据集上的准确率。** 模型在约10亿词的新闻数据集上训练。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810143622355.png" alt="image-20260810143622355" style="zoom:33%;" />
+<img src=".picture/image-20260810143622355.png" alt="image-20260810143622355" style="zoom:33%;" />
 
 为了最大化短语类比任务的准确率，我们使用约330亿词的数据集增加了训练数据量。我们使用了分层softmax、1000维度和整句作为上下文。这使模型达到了72%的准确率。当我们将训练数据集大小减少到60亿词时，准确率降至66%，**这表明大量训练数据至关重要**。
 
@@ -167,7 +167,7 @@ $$
 
 **表4: 使用两种不同模型，给定短短语的最近实体示例。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810143638115.png" alt="image-20260810143638115" style="zoom:33%;" />
+<img src=".picture/image-20260810143638115.png" alt="image-20260810143638115" style="zoom:33%;" />
 
 
 
@@ -177,7 +177,7 @@ $$
 
 **表5: 使用逐元素加法的向量组合性。** 显示了使用最佳Skip-gram模型时，两个向量之和的四个最接近token。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810143651679.png" alt="image-20260810143651679" style="zoom:33%;" />
+<img src=".picture/image-20260810143651679.png" alt="image-20260810143651679" style="zoom:33%;" />
 
 向量的加性性质可以通过检查训练目标来解释。词向量与softmax非线性函数的输入呈线性关系。由于词向量被训练用于预测句子中的周围词，这些向量可以视为表示词出现上下文的分布。这些值与输出层计算的概率呈对数关系，因此两个词向量的和与两个上下文分布的乘积相关。这里乘积起到AND函数的作用：被两个词向量赋予高概率的词将获得高概率，其他词将获得低概率。因此，如果"Volga River"与"Russian"和"river"频繁出现在同一句子中，这两个词向量的和将产生一个接近"Volga River"向量的特征向量。
 
@@ -189,7 +189,7 @@ $$
 
 **表6: 各种知名模型和Skip-gram模型（在超过300亿训练词上训练短语）的最近token示例。** 空单元格表示该词不在词汇表中。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810143713198.png" alt="image-20260810143713198" style="zoom:33%;" />
+<img src=".picture/image-20260810143713198.png" alt="image-20260810143713198" style="zoom:33%;" />
 
 为了更深入了解学习向量质量的差异，我们通过在表6中展示不频繁词的最近邻来提供实证比较。这些示例表明，在大型语料库上训练的大规模Skip-gram模型在学习表示的质量上明显优于所有其他模型。这可以部分归因于该模型在约300亿词上进行了训练，这比先前工作中使用的典型规模大两到三个数量级。有趣的是，尽管训练集大得多，Skip-gram模型的训练时间仅是先前模型架构所需时间的一小部分。
 

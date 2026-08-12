@@ -70,7 +70,7 @@ Wide-and-Deep [4] 是一个符合这一精神的模型。它将交叉特征作�
 
 在本节中，我们描述 Deep & Cross Network（DCN）模型的架构。DCN 模型从一个嵌入和堆叠层开始，然后是一个交叉网络和一个深度网络并行。这些之后是一个最终组合层，用于组合两个网络的输出。完整的 DCN 模型如图 1 所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801102240071.png" alt="image-20260801102240071" style="zoom:33%;" />
+<img src=".picture/image-20260801102240071.png" alt="image-20260801102240071" style="zoom:33%;" />
 
 ### 2.1 嵌入和堆叠层
 

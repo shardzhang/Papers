@@ -18,7 +18,7 @@
 2. **高风险职业暂时没出现大规模失业** —— 但这些职业未来的增长会变慢
 3. **年轻人进入高风险职业变难了** —— 这是一个值得关注的早期信号
 
-![image-20260812105639887](/Users/dazhang/PycharmProject/Papers/8-AI/.picture/image-20260812105639887.png)
+![image-20260812105639887](.picture/image-20260812105639887.png)
 
 ---
 
@@ -66,7 +66,7 @@ COVID-19来了，失业率飙升，大家一眼就能看出来是疫情导致的
 
 **图1：按AI理论可行性分类的Claude使用份额**
 
-<img src="/Users/dazhang/PycharmProject/Papers/8-AI/.picture/image-20260812105718934.png" alt="image-20260812105718934" style="zoom: 33%;" />
+<img src=".picture/image-20260812105718934.png" alt="image-20260812105718934" style="zoom: 33%;" />
 
 这张图展示的是：**人们实际在用的AI任务，按"理论可行性"分，各占多少比例。**
 
@@ -79,7 +79,7 @@ COVID-19来了，失业率飙升，大家一眼就能看出来是疫情导致的
 
 **图2：理论能力 vs 实际使用（按职业类别）**
 
-<img src="/Users/dazhang/PycharmProject/Papers/8-AI/.picture/image-20260812105823068.png" alt="image-20260812105823068" style="zoom:33%;" />
+<img src=".picture/image-20260812105823068.png" alt="image-20260812105823068" style="zoom:33%;" />
 
 这张图是按**职业类别**来比较的：
 
@@ -128,7 +128,7 @@ COVID-19来了，失业率飙升，大家一眼就能看出来是疫情导致的
 
 **图3：AI影响最大的职业排名**
 
-<img src="/Users/dazhang/PycharmProject/Papers/8-AI/.picture/image-20260812105848930.png" alt="image-20260812105848930" style="zoom: 33%;" />
+<img src=".picture/image-20260812105848930.png" alt="image-20260812105848930" style="zoom: 33%;" />
 
 这张图按"实际受影响程度"从高到低排列了10个职业：
 
@@ -159,7 +159,7 @@ COVID-19来了，失业率飙升，大家一眼就能看出来是疫情导致的
 
 **图4：受影响程度 vs 就业增长预测**
 
-<img src="/Users/dazhang/PycharmProject/Papers/8-AI/.picture/image-20260812105916336.png" alt="image-20260812105916336" style="zoom: 33%;" />
+<img src=".picture/image-20260812105916336.png" alt="image-20260812105916336" style="zoom: 33%;" />
 
 这张图是一个**分箱散点图**（把所有职业按受影响程度分成25组，每组算一个平均值）：
 
@@ -183,7 +183,7 @@ COVID-19来了，失业率飙升，大家一眼就能看出来是疫情导致的
 
 **图5：高风险人群 vs 低风险人群的特征对比**
 
-![image-20260812105932950](/Users/dazhang/PycharmProject/Papers/8-AI/.picture/image-20260812105932950.png)
+![image-20260812105932950](.picture/image-20260812105932950.png)
 
 这张图是一个**表格**，对比了两组人群的特征：
 
@@ -212,7 +212,7 @@ COVID-19来了，失业率飙升，大家一眼就能看出来是疫情导致的
 
 **图6：失业率趋势对比（2016年至今）**
 
-![image-20260812105953997](/Users/dazhang/PycharmProject/Papers/8-AI/.picture/image-20260812105953997.png)
+![image-20260812105953997](.picture/image-20260812105953997.png)
 
 这张图包含**上下两个部分**：
 
@@ -233,7 +233,7 @@ COVID-19来了，失业率飙升，大家一眼就能看出来是疫情导致的
 
 **图7：22-25岁年轻人新工作开始率**
 
-<img src="/Users/dazhang/PycharmProject/Papers/8-AI/.picture/image-20260812110021185.png" alt="image-20260812110021185" style="zoom:33%;" />
+<img src=".picture/image-20260812110021185.png" alt="image-20260812110021185" style="zoom:33%;" />
 
 这张图包含**上下两个部分**：
 

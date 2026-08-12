@@ -146,7 +146,7 @@ $$
 
 ### 4.1 双塔模型架构
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260809003332354.png" alt="image-20260809003332354" style="zoom:50%;" />
+<img src=".picture/image-20260809003332354.png" alt="image-20260809003332354" style="zoom:50%;" />
 
 图 1 提供了双塔 DNN 模型架构的高级图示。给定一对由特征向量 $x \in X$、$y \in Y$ 表示的查询和 item，左侧和右侧塔分别提供两个基于 DNN 的参数化嵌入函数 $u : X \times \mathbb{R}^{d} \rightarrow \mathbb{R}^{k}$、$v : Y \times \mathbb{R}^{d} \rightarrow \mathbb{R}^{k}$，它们**将查询和 item 的特征编码到 $k$ 维嵌入空间**。评分函数然后计算为查询嵌入和 item 嵌入**在顶层的点积**，即：
 
@@ -158,7 +158,7 @@ $$
 
 为了实现多任务学习，我们通过采用共享底层架构来扩展双塔模型。具体来说，我们在底层隐藏层之上**引入了两个子塔**，一个用于显式反馈任务，另一个用于隐式反馈任务。底层隐藏层的输出被并行输入到两个子塔。底层隐藏层在两个子塔之间共享[5]，并称为**共享底层**。最终的模型架构如图 2 所示。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260809003359913.png" alt="image-20260809003359913" style="zoom:50%;" />
+<img src=".picture/image-20260809003359913.png" alt="image-20260809003359913" style="zoom:50%;" />
 
 ### 4.3 训练和服务方案
 
@@ -184,13 +184,13 @@ $$
 
 表 1 报告了不同训练目标和特征类型组合的相关性 RMSE（数值越低越好）。我们可以看到，与仅使用显式反馈相比，使用隐式反馈带来了显著的改进。此外，**协同信息 与 内容信息 结合使用的模型优于仅使用协同信息的模型**。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260809014944240.png" alt="image-20260809014944240" style="zoom:50%;" />
+<img src=".picture/image-20260809014944240.png" alt="image-20260809014944240" style="zoom:50%;" />
 
 **表 1：不同训练目标和特征信息集上的相关性评估 RMSE。**
 
 表 2 报告了两种训练目标集下**不同模型大小**的相关性 RMSE。**作为模型大小的近似，我们报告了乘法运算次数**。对于仅使用稀疏显式反馈训练的模型，增加模型大小会导致过拟合，从而降低模型性能。相比之下，对于使用隐式反馈训练的模型，增加模型大小会提高模型性能。这表明**隐式反馈对模型起到了正则化作用，并防止了过拟合**。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260809015019160.png" alt="image-20260809015019160" style="zoom: 50%;" />
+<img src=".picture/image-20260809015019160.png" alt="image-20260809015019160" style="zoom: 50%;" />
 
 **表 2：不同模型大小上的相关性评估 RMSE。**
 

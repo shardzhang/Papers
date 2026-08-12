@@ -43,7 +43,7 @@ $$
 
 **表 1：一个人工 CTR 数据集，其中 $+$ （ $-$ ）表示点击（未点击）展示次数。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728180711799.png" alt="image-20260728180711799" style="zoom: 50%;" />
+<img src=".picture/image-20260728180711799.png" alt="image-20260728180711799" style="zoom: 50%;" />
 
 FM 的一种变体——成对交互张量分解（PITF，Pairwise Interaction Tensor Factorization）[7]——被提出用于个性化标签推荐。在 KDD Cup 2012 中，"Team Opera Solutions" [8] 提出了 PITF 的一种泛化形式，称为"因子模型"。由于该术语过于宽泛且容易与因子分解机混淆，本文中我们将其称为"域感知因子分解机"（FFMs）。PITF 和 FFM 的区别在于，PITF 考虑了三个特殊域，包括"用户"、"item"和"标签"，而 FFM 更具通用性。由于 [8] 是关于竞赛的整体解决方案，其对 FFM 的讨论有限。我们可以从 [8] 中得出以下结果：
 
@@ -145,7 +145,7 @@ $$
 
 **表 2：LM、Poly2、FM 和 FFM 的变量数量和预测复杂度比较。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728180729707.png" alt="image-20260728180729707" style="zoom:50%;" />
+<img src=".picture/image-20260728180729707.png" alt="image-20260728180729707" style="zoom:50%;" />
 
 ### 3.1 求解优化问题
 
@@ -167,7 +167,7 @@ $$
 \kappa = \frac{\partial \log(1 + \exp(-y \phi_{\text{FFM}}(\mathbf{w}, \mathbf{x})))}{\partial \phi_{\text{FFM}}(\mathbf{w}, \mathbf{x})} = \frac{-y}{1 + \exp(y \phi_{\text{FFM}}(\mathbf{w}, \mathbf{x}))}.
 $$
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728180742914.png" alt="image-20260728180742914" style="zoom:50%;" />
+<img src=".picture/image-20260728180742914.png" alt="image-20260728180742914" style="zoom:50%;" />
 
 **算法 1：使用 SG 训练 FFM**
 
@@ -337,7 +337,7 @@ $$
 
 我们进行了实验来研究 $k$ 、 $\lambda$ 和 $\eta$ 的影响。结果可在图 1 中找到。关于参数 $k$ ，图 1a 中的结果表明它对 logloss 影响不大。在图 1b 中，我们展示了 $\lambda$ 与 logloss 之间的关系。如果 $\lambda$ 太大，模型无法达到良好的性能。相反，当 $\lambda$ 较小时，模型获得更好的结果，但容易过拟合数据。我们观察到训练 logloss 持续下降。对于参数 $\eta$ ，图 1c 表明如果我们使用较小的 $\eta$ ，FFMs 将缓慢达到其最佳性能。然而，使用较大的 $\eta$ ，FFMs 能够快速降低 logloss，但随后会发生过拟合。从图 1b 和 1c 的结果来看，需要 early-stopping，这将在第 4.3 节讨论。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728180807728.png" alt="image-20260728180807728" style="zoom:50%;" />
+<img src=".picture/image-20260728180807728.png" alt="image-20260728180807728" style="zoom:50%;" />
 
 > **图 1： $\lambda$ 、 $\eta$ 和 $k$ 对 FFMs 的影响。为了加快实验速度，我们从 CriteoTr 和 CriteoVa 中随机选择 10% 的实例分别作为训练集和测试集。**（a）不同 $k$ 值下的平均运行时间（秒）和最佳 logloss。由于我们使用 SSE 指令， $k=1,2,4$ 的运行时间大致相同。（b） $\lambda$ 的影响。（c） $\eta$ 的影响。
 
@@ -362,11 +362,11 @@ $$
 
 图 3 中的结果表明，当线程数量较小时，加速效果良好。然而，如果使用许多线程，加速效果不会改善太多。一个解释是，如果两个或更多线程尝试访问相同的内存地址，其中一个必须等待其轮次。当使用更多线程时，这种冲突会更频繁地发生。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728180828907.png" alt="image-20260728180828907" style="zoom:50%;" />
+<img src=".picture/image-20260728180828907.png" alt="image-20260728180828907" style="zoom:50%;" />
 
 > **图 2：使用不同数量线程的收敛情况。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728180837143.png" alt="image-20260728180837143" style="zoom:50%;" />
+<img src=".picture/image-20260728180837143.png" alt="image-20260728180837143" style="zoom:50%;" />
 
 > **图 3：使用多线程的加速效果。我们分别使用 CriteoTr 和 CriteoVa 作为训练集和测试集。**
 
@@ -389,7 +389,7 @@ $$
 
 **表 3：Criteo 和 Avazu 数据集上模型和实现的比较。此处使用的训练集是 CriteoTrVa 和 AvazuTrVa，测试集是 CriteoTe 和 AvazuTe。对于所有实验，使用单线程。public set 大约占测试数据的 20%，而 private set 包含其余部分。对于 Criteo，我们没有列出 Poly2-LIBLINEAR-Hash-Newton 的结果，因为该实验在 10 多天后仍未完成。注意，我们对不同的算法使用不同的停止条件，因此训练时间仅供参考。**
 
-![image-20260728180854383](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728180854383.png)
+![image-20260728180854383](.picture/image-20260728180854383.png)
 
 **(a) Criteo**
 
@@ -419,7 +419,7 @@ $$
 
 **表 4：LM、Poly2、FM 和 FFMs 的比较。最佳 logloss 带下划线。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728180907465.png" alt="image-20260728180907465" style="zoom:50%;" />
+<img src=".picture/image-20260728180907465.png" alt="image-20260728180907465" style="zoom:50%;" />
 
 当数据集仅包含数值型特征时，FFMs 可能没有明显优势。如果我们使用虚拟域，则 FFMs 不会优于 FMs，这一结果表明域信息没有帮助。另一方面，如果我们离散化数值型特征，虽然 FFMs 是所有模型中最好的，但性能比使用虚拟域差得多。我们总结了在不同类型数据集上应用 FFMs 的指南：
 

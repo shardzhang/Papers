@@ -54,7 +54,7 @@
 
 由于数据库中有超过 100 万个应用，要在服务延迟要求（通常为 O(10) 毫秒）内为每个查询穷举地评分每个应用是不可行的。因此，接收到查询后的第一步是**检索**。检索系统使用各种信号（通常是机器学习模型和人工定义规则的组合）返回与查询最匹配的短列表item。缩小候选池后，**排序系统**根据分数对所有item进行排序。分数通常是 $P(y|x)$ ，即在给定特征 $x$ 的条件下用户操作标签 $y$ 的概率，特征包括用户特征（如国家、语言、人口统计信息）、上下文特征（如设备、一天中的小时、一周中的第几天）和曝光特征（如应用年龄、应用的历史统计信息）。在本文中，我们聚焦于使用 Wide & Deep 学习框架的排序模型。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260714095626948.png" alt="image-20260714095626948" style="zoom: 33%;" />
+<img src=".picture/image-20260714095626948.png" alt="image-20260714095626948" style="zoom: 33%;" />
 
 **图 2：推荐系统概览。**
 
@@ -90,13 +90,13 @@ Wide 组件和 Deep 组件通过其输出对数几率的加权和作为预测值
 
 Wide & Deep 模型的联合训练通过使用小批量随机优化，将梯度从输出同时反向传播到模型的 Wide 和 Deep 部分。在实验中，我们对 Wide 部分使用带 L1 正则化的 FTRL 算法 [3] 作为优化器，对 Deep 部分使用 AdaGrad [1]。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260714093423143.png" alt="image-20260714093423143" style="zoom:33%;" />
+<img src=".picture/image-20260714093423143.png" alt="image-20260714093423143" style="zoom:33%;" />
 
 
 
 ## 4 系统实现
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260714095853485.png" alt="image-20260714095853485" style="zoom: 33%;" />
+<img src=".picture/image-20260714095853485.png" alt="image-20260714095853485" style="zoom: 33%;" />
 
 **图 3：应用推荐流程概览。**
 
@@ -112,7 +112,7 @@ Wide & Deep 模型的联合训练通过使用小批量随机优化，将梯度�
 
 ### 4.2 模型训练
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260714101906614.png" alt="image-20260714101906614" style="zoom: 33%;" />
+<img src=".picture/image-20260714101906614.png" alt="image-20260714101906614" style="zoom: 33%;" />
 
 **图 4：用于应用推荐的 Wide & Deep 模型结构。**
 

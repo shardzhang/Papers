@@ -103,7 +103,7 @@ User Modeling; Recommendation System; Multi-View Learning; Deep Learning
 
 在我们的网络框架中，用户特征被映射到用户视图（user view），其余特征被映射到不同的item视图（item view）。出于训练目的，每个用户视图与一个包含完全相同用户集的item视图匹配。为实现这一点，我们从每个用户-item视图对中二次抽样了登录用户（即具有唯一匿名化和哈希处理的Microsoft用户ID的用户），并基于其ID执行内连接。这导致每个用户-item视图对的用户数量不同。表1描述了本文中使用数据的一些基本统计信息。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173758591.png" alt="image-20260717173758591" style="zoom:50%;" />
+<img src=".picture/image-20260717173758591.png" alt="image-20260717173758591" style="zoom:50%;" />
 
 $$
  \text{Table 1: Statistics of the four data sets used in this paper.}
@@ -116,7 +116,7 @@ $$
 
 深度结构化语义模型（DSSM）在[9]中被引入，用于增强Web搜索上下文中的查询文档匹配。鉴于其与我们提出的多视图深度神经网络的密切关系，我们在此简要回顾DSSM。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173321175.png" alt="image-20260717173321175" style="zoom:50%;" />
+<img src=".picture/image-20260717173321175.png" alt="image-20260717173321175" style="zoom:50%;" />
 
 DSSM的典型架构如图1所示。DNN的输入（原始文本特征）是一个高维的词项向量，例如查询或文档中词项的原始计数（未经标准化）。然后DSSM将其输入通过两个神经网络（分别针对两个不同的输入）传递，并将它们映射到共享语义空间中的语义向量。对于Web文档排序，DSSM计算查询和文档之间的相关性分数为它们相应语义向量的余弦相似度，并根据它们与查询的相似度分数对文档进行排序。
 
@@ -183,7 +183,7 @@ MV-DNN的架构如图2所示。在我们的推荐系统设置中，我们将主�
 
 采用此目标函数的直觉是尝试找到用户特征的单一映射，即 $W_u$ ，可以将用户特征转换到一个空间，该空间匹配用户在的不同视图/领域中喜欢的所有不同item。这种参数共享方式允许那些没有足够信息学习良好映射的领域，通过其他拥有更多数据的领域来学习。如果假设在新闻文章方面品味相似的用户在其他领域也有相似的品味，那么这些领域可以从新闻领域学习到的用户映射中受益，这个假设成立时，该方法应该效果良好。如果这个假设成立，那么来自任何领域的样本都将有助于在所有领域中更准确地对相似用户进行分组。实验结果表明，在我们实验的领域中，这个假设是合理的，我们将在实验部分详细阐述。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173400035.png" alt="image-20260717173400035" style="zoom: 33%;" />
+<img src=".picture/image-20260717173400035.png" alt="image-20260717173400035" style="zoom: 33%;" />
 
 Figure 2: Multi-view DNN for multiple domain recommendation
 
@@ -193,7 +193,7 @@ Figure 2: Multi-view DNN for multiple domain recommendation
 
 MV-DNN可以使用随机梯度下降 SGD（Stochastic Gradient Descent）进行训练。在实践中，每个训练示例包含一对输入，一个用于用户视图，一个用于数据视图。因此，尽管在我们的模型中只存在一个用户视图，但通常更方便的做法是拥有 $N$ 个用户特征文件，每个文件对应一个item特征文件，其中 $N$ 是用户-item视图对的总数。在算法1中，我们概述了训练MV-DNN的高级过程。当对 $W_i \in \{W_u, W_1, \dots, W_v\}$ 求导数时，我们最终得到只有两个非零导数 $\frac{\partial p}{\partial W_u}$ 和 $\frac{\partial p}{\partial W_a}$ ，这使我们能够应用与DSSM[9]相同的更新规则，只需将 $q$ 替换为 $X_u$ ，将 $d$ 替换为 $X_a$ 。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173737756.png" alt="image-20260717173737756" style="zoom: 33%;" />
+<img src=".picture/image-20260717173737756.png" alt="image-20260717173737756" style="zoom: 33%;" />
 
 **Algorithm 1** Training Multi-View DNN
 
@@ -274,7 +274,7 @@ $$
 
 首先，每个用户以0.9:0.1的概率比被随机分配"训练"或"测试"标签。然后，对于每个带有"测试"标签的用户，我们以0.8:0.2的概率比进一步将其标记为"老"或"新"用户。对于标记为"老"的用户，其50%的item用于训练，其余用于测试。另一方面，对于"新"用户，他们的item仅用于测试，因为用户-item对保证永远不会出现在训练过程中。这样，这些用户确实是系统完全的新用户。数据集划分的详细信息见表2。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173710490.png" alt="image-20260717173710490" style="zoom: 33%;" />
+<img src=".picture/image-20260717173710490.png" alt="image-20260717173710490" style="zoom: 33%;" />
 
 在性能评估方面，对于训练数据中的每个 $(user_i, item_j)$ 对，我们选择9个其他随机item $item_{r1}, \dots, item_{r9}$ ，其中 $r1$ 到 $r9$ 是随机索引，并创建9个测试对 $(user_i, item_{rk}), 1 \leq k \leq 9$ ，添加到测试数据集中。评估标准是衡量系统对同一用户的正确对 $(user_i, item_j)$ 相对于其他随机item $(user_i, item_{rk})$ 的排名效果。因此，我们采用了两个指标：（1）平均倒数排名（MRR），计算正确item在其他item中的排名的倒数，并对整个测试数据求平均；（2）Precision@1（P@1），计算系统将正确item排在第一位的次数百分比。
 
@@ -293,9 +293,9 @@ $$
 
 ## 8. 结果与讨论
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173543419.png" alt="image-20260717173543419" style="zoom:33%;" />
+<img src=".picture/image-20260717173543419.png" alt="image-20260717173543419" style="zoom:33%;" />
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173558306.png" alt="image-20260717173558306" style="zoom:33%;" />
+<img src=".picture/image-20260717173558306.png" alt="image-20260717173558306" style="zoom:33%;" />
 
 表3和表4分别显示了在Apps和News数据上不同方法获得的结果。我们将算法分为三种类型以便说明：类型I是基线算法；类型II是我们的单视图模型；类型III是多视图DNN模型。我们看到，朴素的最频繁item基线表现非常差，这证实了针对新用户的简单解决方案在我们的案例中不会效果良好。它还表明，标准SVD矩阵分解在此任务中即使对于在协同过滤矩阵中有条目的现有用户也不够好。令人惊讶的是，CCA模型在Apps数据上的表现不比随机猜测好，这表明在DSSM中使用非线性映射加上基于排序的目标对系统很重要。CTR模型[32]对现有用户表现尚可，但对新用户不够好。
 
@@ -307,7 +307,7 @@ $$
 
 为了探索从系统学习到的模式的有效性，我们执行了以下实验来测试单特征输入下的推荐性能。具体来说，我们采用了性能最好的系统（带有top-k特征的MV-DNN），并仅开启一个领域特征来构建用户特征。因此，生成的用户特征只有一个值，即该领域的ID。然后我们运行我们的模型对其他视图进行预测，以在所有现有item中找到top匹配的新闻和App。表5显示了一些结果。可以看出，学习到的推荐系统确实非常有效。在第一个例子中，我们假设一个用户只访问了barackobama.com。top匹配的新闻显示了所有关于奥巴马总统和奥巴马医改的相关信息，所有这些都与该网站相关。另一方面，top匹配的Apps在这种情况下也与健康相关。在第二个例子中，我们有一个访问了www.spiegel.de的用户，这是一个主要的德国新闻网站，除了说明用户可以阅读德语之外，并没有透露太多关于用户的信息。系统为他们匹配了关于2014年FIFA世界杯的文章，这似乎是德国人在此时间段内的共同兴趣。在最后一个例子中，用户似乎对婴儿相关信息感兴趣，top匹配的新闻和Apps都与婴儿、怀孕等相关。
 
-![image-20260717173516179](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173516179.png)
+![image-20260717173516179](.picture/image-20260717173516179.png)
 
 ![Table 5: Examples of learned mapping between URL domains, News articles and Apps]()
 
@@ -318,9 +318,9 @@ $$
 
 为了进一步展示我们的方法在跨领域用户建模方面的优势，我们在由文献[28]作者提供的公开数据上执行了一组实验。数据集包含来自不同研究领域的作者，目标是推荐来自另一个领域的作者进行跨领域合作。该数据包含来自五个领域（数据挖掘、理论等）的33,739名作者，其中每个数据条目指定了研究领域的名称、论文的标题和摘要、作者列表以及论文发表的年份。我们使用单视图DNN来建模这种跨领域合作（例如，数据挖掘和理论研究人员之间的合作）。在这种情况下，用户视图和item视图共享相同的特征表示。具体来说，我们使用作者在训练期间（1990年至2001年）发表的论文标题和摘要中的unigram单词作为特征，得到特征维度为31,932。类似于原始作者的评估方法，我们随机选择了一组在训练期间已有跨领域合作且在测试期间至少有五次跨领域合作的作者作为我们的评估集。对于每对不同领域之间的合作，我们训练一个单独的单视图DNN模型，迭代100次。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173615508.png" alt="image-20260717173615508" style="zoom:50%;" />
+<img src=".picture/image-20260717173615508.png" alt="image-20260717173615508" style="zoom:50%;" />
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173626059.png" alt="image-20260717173626059" style="zoom:50%;" />
+<img src=".picture/image-20260717173626059.png" alt="image-20260717173626059" style="zoom:50%;" />
 
 表6显示了结果。总体而言，我们的方法在所有四个跨领域数据集上始终优于CTL方法，除了P@20指标。特别地，我们在recall@100上获得了更高的值，在DM到理论推荐中最佳提升达到96%。结果表明，使用带有非线性深度神经模型的丰富用户特征确实可以捕获大量使用传统的基于单词的共现模型（如生成式主题模型）无法准确建模的语义。我们相信使用多视图DNN模型可以进一步提高性能，但将其留给未来的研究。
 
@@ -335,7 +335,7 @@ $$
 
 本节我们比较各种算法在训练时间方面的性能。回顾前一节，我们提到（在表4中）对于新闻数据，SVD（CF）和CCA无法处理包含10亿条目的用户-item矩阵。这显示了我们的深度学习框架的优势之一，它使用SGD进行训练，因此能够通过分布式训练处理海量数据。性能的细节见表7。我们可以观察到，对于相对较小的Apps数据集，SVD和CCA完成得相对较快（约4小时，但产生了相当差的推荐性能）。单视图DNN模型（SV-TopK）在33小时内完成了100次训练迭代。然而，基于内容的CTR模型需要很长时间来训练。原因是CTR需要一个使用LDA模型训练的主题比例( $\theta$ )和主题分布( $\beta$ )的初始种子。CTR然后使用这些文件来优化用户和item特征之间的相关性。因此，在两个数据集上，训练CTR比我们的深度学习模型更昂贵。另一方面，我们看到SV-TopK和MV-TopK表现出与数据规模（次）线性关系的训练时间，因为通常SGD在更多数据可用时运行更少的epoch来收敛。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717173646567.png" alt="image-20260717173646567" style="zoom:50%;" />
+<img src=".picture/image-20260717173646567.png" alt="image-20260717173646567" style="zoom:50%;" />
 
 **图3：** MV-TopK模型中两个视图的训练误差。
 

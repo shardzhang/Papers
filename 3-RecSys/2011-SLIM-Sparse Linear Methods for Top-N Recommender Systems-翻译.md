@@ -229,14 +229,14 @@ $$
 
 表II中一个令人惊讶的结果是，基于MF的方法有时在HR方面甚至不如简单的itemkNN、itemprob和userkNN。例如，BPRMF在BX、ML10M、Netflix和Yahoo上的表现更差。这可能是因为在BPRMF中，作者评估了完整的AUC曲线来衡量感兴趣的item是否排在其余item之前。然而，良好的AUC值不一定导致在排序列表的Top-N上有良好表现。此外，对于PureSVD，最佳性能是在使用相当多的奇异值时实现的（例如，ccard、ctlg3、BX和Netflix）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728163815300.png" alt="image-20260728163815300" style="zoom:33%;" />
+<img src=".picture/image-20260728163815300.png" alt="image-20260728163815300" style="zoom:33%;" />
 
 > 表1：评估中使用的数据集
 
 对应#用户、#item和#交易的列分别显示每个数据集中的用户数、item数和交易数。对应rsize和csize的列分别显示每个数据集中每个用户的平均交易数和每个item上的平均交易数（即用户-item矩阵的行密度和列密度）。对应密度的列显示每个数据集的密度（即密度 = #交易/(#用户 $\times$ #item)）。对应评分的列显示每个数据集的评分范围，粒度为1。
 
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728163859485.png" alt="image-20260728163859485" style="zoom: 33%;" />
+<img src=".picture/image-20260728163859485.png" alt="image-20260728163859485" style="zoom: 33%;" />
 
 > **表II：Top-N推荐算法比较**
 
@@ -248,7 +248,7 @@ $$
 
 **4) SLIM中的正则化效果**：图1显示了 $\ell_1$ -范数和 $\ell_2$ -范数正则化在**推荐时间**（直接取决于 $\mathbf{W}$ 的稀疏程度）和HR方面对BX数据集的影响（所有其他数据集都观察到类似结果）。图1表明，随着更大的 ** $\ell_1$ -范数正则化**（即式(3)中更大的 $\lambda$ ）被施加，**推荐时间降低**，表明学习到的 $\mathbf{W}$ 更稀疏。图1还显示了 $\ell_1$ -范数和 $\ell_2$ -范数正则化共同对推荐质量的影响。当两个正则化参数 $\beta$ 和 $\lambda$ 都非零时，达到了最佳推荐质量。此外，推荐质量随着正则化参数 $\beta$ 和 $\lambda$ 的变化而平滑变化。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728163926640.png" alt="image-20260728163926640" style="zoom:33%;" />
+<img src=".picture/image-20260728163926640.png" alt="image-20260728163926640" style="zoom:33%;" />
 
 > **图1：BX上 $\ell_1$ -范数和 $\ell_2$ -范数正则化效果**（a）推荐时间 （b）HR
 
@@ -262,19 +262,19 @@ $$
 
 图2中的图表展示了ML10M数据集中item的长尾分布，**其中仅1%的item贡献了20%的评分**。我们剔除这1%最热门的item，并在学习时将剩余的评分用于所有Top-N方法。结果如表III所示。这些结果表明，所有方法的性能都明显差于表II中对应的性能（其中有"短头"即对应最热门item存在）。然而，SLIM优于其余方法。特别是，SLIM优于BPRkNN，尽管在ML10M中存在热门item时BPRkNN比SLIM做得更好（如表II所示）。这与基于BX、Netflix和Yahoo结果得出的观察一致，**即SLIM对长尾效应具有抵抗性。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728163952507.png" alt="image-20260728163952507" style="zoom: 33%;" />
+<img src=".picture/image-20260728163952507.png" alt="image-20260728163952507" style="zoom: 33%;" />
 
 > **图2：ML10M中购买/评分分布**（短头（热门）、长尾（非热门））
 
 **表III：ML10M长尾上的性能**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728164002056.png" alt="image-20260728164002056" style="zoom:33%;" />
+<img src=".picture/image-20260728164002056.png" alt="image-20260728164002056" style="zoom:33%;" />
 
 从ML10M中剔除了前1%最热门的item。参数含义与表II中相同。
 
 **6) 不同Top-N的推荐**：图3显示了BX、ML10M、Netflix和Yahoo数据集上不同N值（即5、10、15、20和25）下各方法的性能。表IV显示了SLIM与其余方法中最佳者在四个数据集上HR方面的性能差异。例如，表IV中BX在N=5时的0.012是SLIM的HR与BX上所有其他方法在推荐前5个item时的最佳HR之差。在BX、ML10M和Netflix数据集上，SLIM与其余方法中最佳者的性能差异在N较小时更大。图3和表IV表明，当推荐较少数量的item时，SLIM比其他方法产生更好的结果。这表明SLIM倾向于将最相关的item排在比其他方法更高的位置。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728164046484.png" alt="image-20260728164046484" style="zoom:33%;" />
+<img src=".picture/image-20260728164046484.png" alt="image-20260728164046484" style="zoom:33%;" />
 
 > **图3：不同N值下的推荐**（a）BX （b）ML10M （c）Netflix （d）Yahoo
 
@@ -291,7 +291,7 @@ $$
 
 **7) $\mathbf{W}$ 的稀疏模式**：我们以ML10M为例说明SLIM学到的是什么。由itemkNN构建的item-item相似度矩阵 $\mathbf{S}$ 和来自SLIM的 $\mathbf{W}$ 如图4所示。注意，在图4中， $\mathbf{S}$ 矩阵是使用100个最近邻获得的。itemkNN和SLIM产生的矩阵密度分别为0.936%和0.935%，然而它们的稀疏模式不同。首先， $\mathbf{S}$ 矩阵有集中在对角线附近的item-item相似度非零值，而 $\mathbf{W}$ 的非零值分布更均匀。其次，在推荐过程中，平均有53.60个 $\mathbf{S}$ 中的非零值参与计算一个用户对一个item的推荐分数，而在 $\mathbf{W}$ 的情况下，平均有14.79个非零值做出贡献，是 $\mathbf{S}$ 中的1/3。 $\mathbf{W}$ 恢复了 $\mathbf{S}$ 中31.8%的非零条目（这些条目的值大于平均值），并且还发现了不在 $\mathbf{S}$ 中的新非零条目。新发现的项-项相似度贡献了 $\mathbf{W}$ 命中中的37.1%。这**表明， $\mathbf{W}$ 尽管也非常稀疏，但恢复了一些未被item-item余弦相似度度量捕捉到的微妙关系**，从而带来了性能提升。在SLIM中，与item $t_j$ 共同购买的item $t_k$ 也有助于item $t_j$ 与另一个item $t_i$ 之间的相似度，即使 $t_k$ 从未与 $t_i$ 共同购买过。此外，将缺失值视为0有助于泛化。在式(4)的 $\mathbf{w}_j$ 向量中包括所有缺失值为0有助于平滑item相似度，并帮助融入来自不相似/未共同购买item的影响。以上可通过坐标下降更新在理论上证明（此处省略证明）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728164100535.png" alt="image-20260728164100535" style="zoom:33%;" />
+<img src=".picture/image-20260728164100535.png" alt="image-20260728164100535" style="zoom:33%;" />
 
 > **图4：ML10M的稀疏模式**（黑色为非零）（a）来自itemkNN的 $\mathbf{S}$ （b）来自SLIM的 $\mathbf{W}$
 
@@ -312,7 +312,7 @@ $$
 
 **2) 评分上的Top-N推荐性能**：我们在具有评分信息的BX、ML10M、Netflix和Yahoo数据集上比较SLIM-r与PureSVD-r、WRMF-r和BPRkNN-r。此外，我们还在这四个数据集上评估了SLIM-b、PureSVD-b、WRMF-b和BPRkNN-b，这些模型的模型仍然是从二元用户-item购买矩阵学习的，但**推荐是基于评分进行评估的**。
 
-![image-20260728164126762](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260728164126762.png)
+![image-20260728164126762](.picture/image-20260728164126762.png)
 
 > **图5：评分上的Top-N推荐性能**（a）BX分布 （b）BX rHR （c）BX cHR （d）ML10M分布 （e）ML10M rHR （f）ML10M cHR （g）Netflix分布 （h）Netflix rHR （i）Netflix cHR （j）Yahoo分布 （k）Yahoo rHR （l）Yahoo cHR
 

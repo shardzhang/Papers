@@ -89,13 +89,13 @@ $$
 
 Amazon.com在许多电子邮件营销活动和大多数网站页面（包括高流量的Amazon.com首页）上使用推荐作为定向营销工具。点击"您的推荐"链接可引导顾客进入一个区域，在这里他们可以按产品线和主题领域筛选推荐，对推荐产品进行评分，对以前的购买进行评分，并查看推荐item的原因（见图1）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805171546535.png" alt="image-20260805171546535" style="zoom:33%;" />
+<img src=".picture/image-20260805171546535.png" alt="image-20260805171546535" style="zoom:33%;" />
 
 > 图1：Amazon.com首页上的"您的推荐"功能。使用该功能，顾客可以对推荐进行排序并添加自己的产品评分。
 
 如图2所示，我们的购物车推荐功能根据顾客购物车中的item提供产品建议。该功能类似于超市结账通道中的冲动性购买item，但我们的冲动性购买item是针对每位顾客定向的。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805171613255.png" alt="image-20260805171613255" style="zoom:33%;" />
+<img src=".picture/image-20260805171613255.png" alt="image-20260805171613255" style="zoom:33%;" />
 
 > 图2：Amazon.com购物车推荐。推荐基于顾客购物车中的item：《程序员修炼之道》和《游戏开发物理学》。
 

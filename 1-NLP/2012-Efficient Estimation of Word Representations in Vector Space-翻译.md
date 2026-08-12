@@ -131,7 +131,7 @@ Q = C \times (D + D \times \log_2(V))
 $$
 **其中 $C$ 是词语的最大距离**。因此，如果我们选择 $C = 5$，对于每个训练词语，我们将随机选择一个范围 $<1; C>$ 中的数字 $R$，然后使用来自**历史的 $R$ 个词语 和 来自当前词语未来的 $R$ 个词语作为正确标签**。这将要求我们**进行 $R \times 2$ 次词语分**类，以当前词语作为输入，$R + R$ 个词语中的每一个作为输出。在以下实验中，我们使用 $C = 10$。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151559048.png" alt="image-20260810151559048" style="zoom: 33%;" />
+<img src=".picture/image-20260810151559048.png" alt="image-20260810151559048" style="zoom: 33%;" />
 
 图 1：新模型架构。CBOW 架构基于上下文预测当前词语，Skip-gram 给定当前词语预测周围词语。
 
@@ -157,7 +157,7 @@ $$
 
 表 1：语义-句法词语关系测试集中五种语义和九种句法问题的示例。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151625178.png" alt="image-20260810151625178" style="zoom:50%;" />
+<img src=".picture/image-20260810151625178.png" alt="image-20260810151625178" style="zoom:50%;" />
 
 ### 4.2 准确性最大化
 
@@ -167,7 +167,7 @@ $$
 
 表 2：使用有限词汇表的 CBOW 架构词向量在语义-句法词语关系**测试集子集上**的准确性。仅使用包含最频繁 30k 词语的问题。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151646460.png" alt="image-20260810151646460" style="zoom:33%;" />
+<img src=".picture/image-20260810151646460.png" alt="image-20260810151646460" style="zoom:33%;" />
 
 对于表 2 和表 4 中报告的实验，我们使用随机梯度下降和反向传播进行三个训练轮次。我们选择**起始学习率 0.025 并线性递减**，使其在最后一个训练轮次结束时趋近于零。
 
@@ -181,19 +181,19 @@ $$
 
 表 3：使用相同数据训练的模型比较，词向量维度为 640。准确性在我们的语义-句法词语关系测试集和 [20] 的句法关系测试集上报告。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151707422.png" alt="image-20260810151707422" style="zoom: 33%;" />
+<img src=".picture/image-20260810151707422.png" alt="image-20260810151707422" style="zoom: 33%;" />
 
 接下来，我们评估**仅使用一个 CPU** 训练的模型，并将结果与公开可用的词向量进行比较。比较如表 4 所示。**CBOW 模型在大约一天内训练了 Google 新闻数据的子集，而 Skip-gram 模型的训练时间大约为三天。**
 
 表 4：公开可用词向量与我们模型的词向量在语义-句法词语关系测试集上的比较。使用完整词汇表。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151727960.png" alt="image-20260810151727960" style="zoom: 33%;" />
+<img src=".picture/image-20260810151727960.png" alt="image-20260810151727960" style="zoom: 33%;" />
 
 对于进一步报告的实验，我们仅使用一个训练轮次（同样，我们**线性递减学习率**，使其**在训练结束时趋近于零**）。**在两倍多数据上使用一个轮次训练模型 与 在相同数据上迭代三个轮次相比，提供相当或更好的结果**，如表 5 所示，并提供额外的小幅加速。
 
 表 5：在相同数据上训练三个轮次的模型 与 训练一个轮次的模型的比较。准确性在完整的语义-句法数据集上报告。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151745019.png" alt="image-20260810151745019" style="zoom:33%;" />
+<img src=".picture/image-20260810151745019.png" alt="image-20260810151745019" style="zoom:33%;" />
 
 ### 4.4 模型的大规模并行训练
 
@@ -201,7 +201,7 @@ $$
 
 表 6：使用 DistBelief 分布式框架训练的模型比较。请注意，使用 1000 维向量训练 NNLM 将耗时过长无法完成。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151809320.png" alt="image-20260810151809320" style="zoom:33%;" />
+<img src=".picture/image-20260810151809320.png" alt="image-20260810151809320" style="zoom:33%;" />
 
 ### 4.5 微软研究院句子完成挑战
 
@@ -213,7 +213,7 @@ $$
 
 表 7：微软句子完成挑战上模型的比较和组合。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151826395.png" alt="image-20260810151826395" style="zoom:50%;" />
+<img src=".picture/image-20260810151826395.png" alt="image-20260810151826395" style="zoom:50%;" />
 
 
 
@@ -225,7 +225,7 @@ $$
 
 表 8：词语对关系示例，使用表 4 中的最佳词向量（在 783M 词语上训练的 Skip-gram 模型，维度为 300）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260810151842795.png" alt="image-20260810151842795" style="zoom:33%;" />
+<img src=".picture/image-20260810151842795.png" alt="image-20260810151842795" style="zoom:33%;" />
 
 
 

@@ -41,7 +41,7 @@ recommender system; deep learning; scalability
 
 YouTube 是世界上最大的视频内容创建、分享和发现平台。YouTube 推荐系统负责帮助超过十亿用户从不断增长的视频库中发现个性化内容。本文聚焦于深度学习最近对 YouTube 视频推荐系统产生的巨大影响。图 1 展示了 YouTube 移动应用首页上的推荐内容。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801100614557.png" alt="image-20260801100614557" style="zoom:33%;" />
+<img src=".picture/image-20260801100614557.png" alt="image-20260801100614557" style="zoom:33%;" />
 
 从三个主要角度来看，推荐 YouTube 视频极具挑战性：
 
@@ -63,7 +63,7 @@ YouTube 是世界上最大的视频内容创建、分享和发现平台。YouTub
 
 ## 2. 系统概览
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801101126671.png" alt="image-20260801101126671" style="zoom:50%;" />
+<img src=".picture/image-20260801101126671.png" alt="image-20260801101126671" style="zoom:50%;" />
 
 我们推荐系统的整体结构如图 2 所示。该系统由两个神经网络组成：一个用于候选生成，另一个用于排序。候选生成网络以用户 YouTube 活动历史中的事件作为输入，从大型语料库中检索出一个小子集（数百个）视频。这些候选视频旨在具有高精度的普遍相关性。候选生成网络仅通过协同过滤提供广泛的个性化。用户之间的相似性通过粗粒度特征来表示，例如视频观看的 ID、搜索查询的 token 和人口统计特征。
 
@@ -118,7 +118,7 @@ $$
 机器学习系统通常表现出对过去的固有偏见，因为它们被训练来根据历史样本预测未来行为。视频流行度的分布是高度非平稳的，但我们的推荐器在语料库上产生的多项分布将反映训练窗口内平均的观看可能性。为了纠正这一点，我们在训练时将训练样本的年龄作为一个特征输入。在服务时，此特征被设置为零（或略负），以反映模型在训练窗口的最末端进行预测。
 
 图 4 以任意选择的视频 [26] 为例展示了该方法的有效性。
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801101155721.png" alt="image-20260801101155721" style="zoom:33%;" />
+<img src=".picture/image-20260801101155721.png" alt="image-20260801101155721" style="zoom:33%;" />
 
 ### 3.4 标签与上下文选择
 
@@ -130,15 +130,15 @@ $$
 
 视频的自然消费模式通常会导致非常不对称的共同观看概率。连续剧通常是按顺序观看的，用户通常从某一类型中最广泛流行的内容开始发现艺人，然后逐渐聚焦于更小众的作品。因此，我们发现预测用户的**下一个**观看（而非随机保留的观看）效果更好（图 5）。许多协同过滤系统隐式地通过保留一个随机 item 并从用户历史中的其他 item 来预测它，从而选择标签和上下文（5a）。这会泄露未来信息并忽略不对称的消费模式。相比之下，我们通过选择一个随机观看并仅输入该保留标签观看之前用户采取的行为来回退用户的"历史"（5b）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801101250749.png" alt="image-20260801101250749" style="zoom:33%;" />
+<img src=".picture/image-20260801101250749.png" alt="image-20260801101250749" style="zoom:33%;" />
 
 ### 3.5 特征与深度实验
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801101309952.png" alt="image-20260801101309952" style="zoom:33%;" />
+<img src=".picture/image-20260801101309952.png" alt="image-20260801101309952" style="zoom:33%;" />
 
 添加特征和深度显著提高了留出数据的精确率，如图 6 所示。在这些实验中，100 万个视频和 100 万个搜索 token 的词汇表各嵌入 $256$ 维浮点数，最大词袋大小为最近 $50$ 次观看和最近 $50$ 次搜索。Softmax 层在相同的 100 万个视频类别上输出多项分布，维度为 $256$（可以认为是独立的输出视频嵌入）。这些模型在所有 YouTube 用户上训练直至收敛，对应于数据上的数个 epoch。网络结构遵循常见的"塔"模式，即网络底部最宽，每个连续的隐藏层将单元数减半（类似于图 3）。深度为零的网络实际上是线性分解方案，其表现与前身系统非常相似。不断增加宽度和深度，直到增量收益减少且收敛变得困难：
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801101226070.png" alt="image-20260801101226070" style="zoom: 33%;" />
+<img src=".picture/image-20260801101226070.png" alt="image-20260801101226070" style="zoom: 33%;" />
 
 - **深度 0**：线性层简单地将拼接层转换为匹配 softmax 的 $256$ 维度
 - **深度 1**：$256$ ReLU
@@ -190,7 +190,7 @@ $$
 
 我们的目标是预测预期观看时间，其中训练样本要么是正样本（视频展现被点击），要么是负样本（展现未被点击）。正样本标注了用户观看视频的时间量。为了预测预期观看时间，我们使用了为此目的而开发的加权逻辑回归技术。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801101327367.png" alt="image-20260801101327367" style="zoom: 33%;" />
+<img src=".picture/image-20260801101327367.png" alt="image-20260801101327367" style="zoom: 33%;" />
 
 该模型在交叉熵损失下使用逻辑回归进行训练（图 7）。然而，正（被点击）展现按观察到的视频观看时间进行加权。负（未被点击）展现都赋予单位权重。这样，逻辑回归学习到的几率是：
 
@@ -210,7 +210,7 @@ $$
 
 **表 1：更宽和更深的隐藏 ReLU 层对计算次日留出数据上的观看时间加权逐对损失的影响**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260801101355582.png" alt="image-20260801101355582" style="zoom:33%;" />
+<img src=".picture/image-20260801101355582.png" alt="image-20260801101355582" style="zoom:33%;" />
 
 ---
 

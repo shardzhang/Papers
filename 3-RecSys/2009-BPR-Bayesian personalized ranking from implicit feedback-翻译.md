@@ -61,7 +61,7 @@ item推荐是一项预测item集（例如网站、电影、产品）上个性化
 
 ### 3.1 形式化
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717155759043.png" alt="image-20260717155759043" style="zoom:33%;" />
+<img src=".picture/image-20260717155759043.png" alt="image-20260717155759043" style="zoom:33%;" />
 
 设 $U$ 为所有用户的集合， $I$ 为所有item的集合。在我们的场景中，隐式反馈 $S \subseteq U \times I$ 是可用的（见图1左侧）。这种反馈的例子包括在线商店中的购买、视频门户中的观看或网站上的点击。推荐系统的任务现在是为用户提供所有item的个性化全序 $>_u \subset I^2$ ，其中 $>_u$ 必须满足全序的性质：
 
@@ -79,7 +79,7 @@ item推荐是一项预测item集（例如网站、电影、产品）上个性化
 
 item推荐器的通常方法是为item预测一个个性化分数 $\hat{x}_{ui}$ ，该**分数反映用户对该item的偏好**。然后通过根据该分数对item进行排序来生成排序。用于item推荐器的机器学习方法[5, 10]通常从 $S$ 创建训练数据，给 **pairs $(u, i) \in S$ 正类标签**，给 $(U \times I) \setminus S$ 中的所有其他组合负类标签（见图1），然后模型被拟合到这个数据。这意味着模型被优化为对 $S$ 中的元素预测值1，对其余元素预测值0。**这种方法的问题在于，模型未来需要排序的所有元素 $((U \times I) \setminus S)$ 在训练期间都被呈现给学习算法作为负反馈。这意味着一个具有足够表达能力（可以精确拟合训练数据）的模型根本无法排序，因为它只预测0。这类机器学习方法能够预测排序的唯一原因是防止过拟合的策略，比如正则化。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717155822050.png" alt="image-20260717155822050" style="zoom:33%;" />
+<img src=".picture/image-20260717155822050.png" alt="image-20260717155822050" style="zoom:33%;" />
 
 我们使用了一种不同的方法，**将item对 作为训练数据，并优化以正确排序item对，而不是对单个item评分，因为这比仅用负值替换缺失值更好地代表了问题。**我们从 $S$ 出发，尝试为每个用户重构 $>_u$ 的部分信息。如果一个item $i$ 被用户 $u$ 浏览过——即 $(u, i) \in S$ ——那么我们假设该用户偏好这个item胜过所有其他未观测的item。例如，在图2中，用户 $u_1$ 浏览了item $i_2$ 但没有浏览item $i_1$ ，因此我们假设该用户偏好 $i_2$ 胜过 $i_1$ ： $i_2 >_u i_1$ 。**对于用户已经看过的两个item，我们无法推断任何偏好。同样的情况也适用于用户尚未看过的两个item**（例如用户 $u_1$ 的item $i_1$ 和 $i_4$ ）。为了形式化这一点，我们通过以下方式创建训练数据 $D_S : U \times I \times I$ ：
 
@@ -191,13 +191,13 @@ $$
 
 取而代之，我们使用可微的损失 $\ln \sigma(x)$ 。**在优化AUC时，用可微函数替代不可微的Heaviside函数是常见的做法**[3]。替代函数的选择通常是启发式的，使用类似 $\sigma$ 形状的函数（见图3）。在本文中，我们推导了替代函数 $\ln \sigma(x)$ ，这是由MLE（最大似然估计）驱动的。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717155847901.png" alt="image-20260717155847901" style="zoom:33%;" />
+<img src=".picture/image-20260717155847901.png" alt="image-20260717155847901" style="zoom:33%;" />
 
 ### 4.2 BPR学习算法
 
 在上一节中，我们推导了一个用于个性化排序的优化准则。由于该准则是可微的，基于梯度下降的算法是最大化的明显选择。但正如我们将看到的，**标准梯度下降不是我们问题的正确选择**。为了解决这个问题，我们提出了LearnBPR，一种基于训练三元组自助采样的随机梯度下降算法（见图4）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717155906334.png" alt="image-20260717155906334" style="zoom:33%;" />
+<img src=".picture/image-20260717155906334.png" alt="image-20260717155906334" style="zoom:33%;" />
 
 首先，BPR-Opt相对于模型参数的梯度为：
 
@@ -241,7 +241,7 @@ $$
 
 图5显示了典型的按用户随机梯度下降与我们带自助采样的LearnBPR方法的比较¹。模型是16维的BPR-MF。正如您所见，LearnBPR比按用户梯度下降收敛得快得多。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717155944245.png" alt="image-20260717155944245" style="zoom:33%;" />
+<img src=".picture/image-20260717155944245.png" alt="image-20260717155944245" style="zoom:33%;" />
 
 ### 4.3 使用BPR学习模型
 
@@ -431,7 +431,7 @@ $$
 
 ### 6.3 结果与讨论
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260717233710418.png" alt="image-20260717233710418" style="zoom: 33%;" />
+<img src=".picture/image-20260717233710418.png" alt="image-20260717233710418" style="zoom: 33%;" />
 
 图6显示了所有模型在两个数据集上的AUC质量。首先，可以看到两个BPR优化的方法在预测质量上优于所有其他方法。比较相同模型之间的差异，可以看到优化方法的重要性。例如，所有MF方法（SVD-MF、WR-MF和BPR-MF）**共享完全相同的模型**，但它们的预测质量差异很大。尽管SVD-MF已知能在训练数据上产生**关于逐元素最小二乘的最佳拟合**，但它是机器学习任务的糟糕预测方法，因为它会导致过拟合。**这可以从SVD-MF的质量随着维度数量的增加而下降看出**。WR-MF是一种更成功的排序任务学习方法。**由于正则化，它的性能不会下降，而是随着维度数量的增加稳步上升**。但在两个数据集上，BPR-MF在排序任务上明显优于WR-MF。例如，在Netflix上，使用BPR-MF优化的8维MF模型达到了与使用WR-MF优化的128维MF模型相当的质量。
 

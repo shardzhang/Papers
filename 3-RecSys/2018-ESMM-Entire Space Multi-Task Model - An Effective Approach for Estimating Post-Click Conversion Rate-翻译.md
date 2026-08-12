@@ -44,7 +44,7 @@
 
 在这项工作中，我们从淘宝推荐系统收集流量日志。完整数据集包含89亿个样本，具有点击和转化的序列标签。进行了仔细的实验。ESMM始终优于竞争模型，证明了所提出方法的有效性。我们还发布了我们的数据集¹用于该领域的未来研究。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260807224315078.png" alt="image-20260807224315078" style="zoom: 50%;" />
+<img src=".picture/image-20260807224315078.png" alt="image-20260807224315078" style="zoom: 50%;" />
 
 > 图1：传统CVR建模中样本选择偏差问题的示意图。训练空间由点击曝光样本组成。它只是推断空间的一部分，推断空间由所有曝光组成。
 
@@ -66,7 +66,7 @@ $$
 
 最近，基于深度学习的方法已被提出用于CVR建模，取得了最先进的性能。它们大多遵循类似的Embedding&MLP（Multi-Layer Perceptron，多层感知机）网络架构，如[3]中介绍的。图2的左侧部分说明了这种架构，为简单起见，我们将其称为BASE模型。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260807230839830.png" alt="image-20260807230839830" style="zoom:50%;" />
+<img src=".picture/image-20260807230839830.png" alt="image-20260807230839830" style="zoom:50%;" />
 
 > 图2：用于CVR建模的ESMM架构概览。在ESMM中，引入了CTR和CTCVR两个辅助任务：i）帮助在整个输入空间上建模CVR，ii）提供特征表示迁移学习。ESMM主要由两个子网络组成：图左侧部分曝光的CVR网络和右侧部分的CTR网络。CTR和CVR网络的嵌入参数是共享的。CTCVR将CTR和CVR网络的输出相乘作为输出。
 
@@ -80,7 +80,7 @@ $$
 
 数据稀疏（DS）。传统方法使用 $S_c$ 的点击样本训练CVR模型。点击事件的罕见发生导致CVR建模的训练数据极其稀疏。直观上，它通常比相关的CTR任务少1-3个数量级，后者是在包含所有曝光的数据集 $S$ 上训练的。表1显示了我们的实验数据集的统计数据，其中CVR任务的样本数仅为CTR任务的4%。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260807231659940.png" alt="image-20260807231659940" style="zoom: 50%;" />
+<img src=".picture/image-20260807231659940.png" alt="image-20260807231659940" style="zoom: 50%;" />
 
 > [!NOTE]
 >
@@ -126,7 +126,7 @@ $$
 
 ¹https://tianchi.aliyun.com/datalab/dataSet.html?dataId=408
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260807231659940.png" alt="image-20260807231659940" style="zoom: 50%;" />
+<img src=".picture/image-20260807231659940.png" alt="image-20260807231659940" style="zoom: 50%;" />
 
 >  表1：实验数据集的统计数据。
 
@@ -138,7 +138,7 @@ $$
 
 ### 3.2 公共数据集上的结果
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260807233158499.png" alt="image-20260807233158499" style="zoom: 50%;" />
+<img src=".picture/image-20260807233158499.png" alt="image-20260807233158499" style="zoom: 50%;" />
 
 > 表2：不同模型在公共数据集上的比较。
 
@@ -148,7 +148,7 @@ $$
 
 我们进一步在产品数据集上评估ESMM，该数据集包含89亿个样本，比公共数据集大两个数量级。为验证训练集规模的影响，我们在这个大规模数据集上针对不同采样率进行了仔细的比较，如图3所示。首先，所有方法都**随着训练样本数量的增长而表现出改进。这表明了数据稀疏性的影响**。在所有情况下，除了AMAN在1%采样CVR任务上，BASE模型都被击败了。其次，ESMM-NS和ESMM在不同的采样率下始终优于所有竞争对手。特别是，ESMM在CVR和CTCVR任务上对所有竞争对手都保持了较大的AUC提升幅度。BASE模型是在我们实际系统中承载主要流量的最新版本。使用整个数据集训练，ESMM在CVR任务上取得了比BASE模型2.18%的绝对AUC提升，在CTCVR任务上取得了2.32%的提升。这对于工业应用来说是一个显著的改进，因为**在工业应用中0.1%的AUC提升就已经很显著**了。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260807233517929.png" alt="image-20260807233517929" style="zoom:50%;" />
+<img src=".picture/image-20260807233517929.png" alt="image-20260807233517929" style="zoom:50%;" />
 
 > 图3：产品数据集上不同模型在不同采样率下的比较。
 

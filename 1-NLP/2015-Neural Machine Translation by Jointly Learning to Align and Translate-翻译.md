@@ -152,7 +152,7 @@ BiRNN 由正向和反向 RNN 组成。正向 RNN $\overrightarrow{f}$ 按顺序�
 
 所提出模型的图示见图 1。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260811161819194.png" alt="image-20260811161819194" style="zoom:33%;" />
+<img src=".picture/image-20260811161819194.png" alt="image-20260811161819194" style="zoom:33%;" />
 
 
 
@@ -197,13 +197,13 @@ RNNencdec 的编码器和解码器各有 1000 个隐藏单元[†7]。RNNsearch 
 
 在表 1 中，我们列出了以 BLEU 分数衡量的翻译性能。从表中可以清楚地看出，在所有情况下，提出的 RNNsearch 都优于传统的 RNNencdec。更重要的是，当仅考虑由已知词组成的句子时，RNNsearch 的性能与传统的基于短语的翻译系统（Moses）一样高。这是一个显著的成就，考虑到 Moses 除了我们用于训练 RNNsearch 和 RNNencdec 的并行语料库外，还使用了单独的单语语料库（4.18 亿词）。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260811161858561.png" alt="image-20260811161858561" style="zoom:50%;" />
+<img src=".picture/image-20260811161858561.png" alt="image-20260811161858561" style="zoom:50%;" />
 
 图 2 展示了测试集上生成翻译的 BLEU 分数与句子长度的关系。RNNsearch-50、RNNsearch-30、RNNenc-50、RNNenc-30 的曲线分别用不同标记表示。结果是在包含模型未知词的完整测试集上计算的。
 
 **表 1：训练模型在测试集上的 BLEU 分数。** 第二列和第三列分别显示在所有句子上的分数和在自身及参考翻译中都没有未知词的句子上的分数。注意 RNNsearch-50(★) 被训练得更久，直到开发集性能停止提升。（◊）当仅评估没有未知词的句子时（最后一列），我们禁止模型生成 [UNK] 标记。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260811162040616.png" alt="image-20260811162040616" style="zoom:50%;" />
+<img src=".picture/image-20260811162040616.png" alt="image-20260811162040616" style="zoom:50%;" />
 
 ### 5.2 定性分析
 
@@ -211,7 +211,7 @@ RNNencdec 的编码器和解码器各有 1000 个隐藏单元[†7]。RNNsearch 
 
 提出的方法提供了一种直观的方式来检查生成翻译中的词与源句子中的词之间的（软）对齐。这通过可视化公式（6）中的注释权重 $\alpha_{ij}$ 来实现，如图 3 所示。每个图中矩阵的每一行指示与注释相关联的权重。从中我们可以看到，在生成目标词时，源句子中的哪些位置被认为更重要。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260811162011242.png" alt="image-20260811162011242" style="zoom:33%;" />
+<img src=".picture/image-20260811162011242.png" alt="image-20260811162011242" style="zoom:33%;" />
 
 从图 3 中的对齐可以看出，**英语和法语之间的词对齐在很大程度上是单调的**。每个矩阵的对角线上我们看到很强的权重。然而，我们也观察到一些**非平凡的、非单调的对齐**。**形容词和名词在法语和英语中的顺序通常是不同的**，我们在图 3(a) 中看到了一个例子。从该图中，我们看到模型正确地将短语 [European Economic Area] 翻译为 [zone économique européen]。RNNsearch 能够正确地将 [zone] 与 [Area] 对齐，跳过了两个词（[European] 和 [Economic]），然后一次回看一个词来完成整个短语 [zone économique européenne]。
 
@@ -221,7 +221,7 @@ RNNencdec 的编码器和解码器各有 1000 个隐藏单元[†7]。RNNsearch 
 
 从图 2 中可以清晰地看出，提出的模型（RNNsearch）比传统模型（RNNencdec）在**翻译长句子方面**好得多。这很**可能是因为 RNNsearch 不需要将长句子完美地编码为固定长度向量，而只需要准确地编码输入句子中围绕某个特定词的部分。**
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260811161858561.png" alt="image-20260811161858561" style="zoom:50%;" />
+<img src=".picture/image-20260811161858561.png" alt="image-20260811161858561" style="zoom:50%;" />
 
 例如，考虑测试集中的这个源句子：
 
@@ -545,7 +545,7 @@ $$
 
 **表 2：学习统计和相关数据。** 每次更新对应于使用单次小批量更新一次参数。一个 epoch 是一次遍历训练集。NLL 是训练集或开发集中句子的平均条件对数概率。注意句子的长度不同。
 
-<img src="/Users/dazhang/PycharmProject/Papers/1-NLP/.picture/image-20260811162116670.png" alt="image-20260811162116670" style="zoom:33%;" />
+<img src=".picture/image-20260811162116670.png" alt="image-20260811162116670" style="zoom:33%;" />
 
 
 

@@ -48,7 +48,7 @@
 
 本文的结构如下。在第2节中，我们详细介绍LS-PLM模型，包括公式化、正则化和优化问题。在第3节中，我们介绍并行实现结构。在第4节中，我们仔细评估模型并展示LS-PLM相比LR的优势。最后在第5节中，我们给出结论。
 
-![image-20260720221411642](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720221411642.png)
+![image-20260720221411642](.picture/image-20260720221411642.png)
 
 > **图1：** LS-PLM模型的演示说明。图A是演示数据集。这是一个二分类问题，红点属于正类，蓝点属于负类。图B显示了使用LR模型的分类结果。图C显示了使用LS-PLM模型的分类结果。很明显，LS-PLM可以捕获数据的非线性分布。
 
@@ -201,7 +201,7 @@ $$
 
 在本节中，我们首先提供LS-PLM模型面向大规模数据的并行实现，然后介绍一个有助于大幅加速训练过程的重要技巧。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720221435772.png" alt="image-20260720221435772" style="zoom:50%;" />
+<img src=".picture/image-20260720221435772.png" alt="image-20260720221435772" style="zoom:50%;" />
 
 > **图2：** 并行实现的架构。图A展示了物理分布式拓扑。它是参数服务器的一个变体，其中每个计算节点同时运行服务器和工作者，旨在最大化计算能力和内存使用的效用。图B展示了以模型并行和数据并行方式的参数服务器结构。
 
@@ -216,7 +216,7 @@ $$
 
 ### 3.2 公共特征技巧
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720221449080.png" alt="image-20260720221449080" style="zoom:50%;" />
+<img src=".picture/image-20260720221449080.png" alt="image-20260720221449080" style="zoom:50%;" />
 
 > **图3：** 展示广告中的公共特征模式。通常在每次页面浏览中，用户会同时看到几个不同的广告。在这种情况下，用户特征可以在这些样本之间共享。
 
@@ -266,7 +266,7 @@ LS-PLM是一个分段线性模型，划分数量 $m$ 控制模型容量。我们
 
 一般来说， $m$ 越大意味着参数越多，从而带来更大的模型容量。但训练成本也会增加，包括时间和内存。因此，在实际应用中，我们必须在模型性能和训练成本之间取得平衡。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720221503232.png" alt="image-20260720221503232" style="zoom:50%;" />
+<img src=".picture/image-20260720221503232.png" alt="image-20260720221503232" style="zoom:50%;" />
 
 > **图4：** 不同划分下的模型性能。
 
@@ -280,7 +280,7 @@ LS-PLM是一个分段线性模型，划分数量 $m$ 控制模型容量。我们
 
 > **表2：** 正则化对模型稀疏性和性能的影响
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720221513454.png" alt="image-20260720221513454" style="zoom:50%;" />
+<img src=".picture/image-20260720221513454.png" alt="image-20260720221513454" style="zoom:50%;" />
 
 在这个实验中，超参数 $m$ 设置为12。参数 $\beta$ 和 $\lambda$ 通过网格搜索选择。对两个范数在所有情况下都尝试了 $\{0.01, 0.1, 1, 10\}$ 。 $\beta = 1$ 和 $\lambda = 1$ 的模型表现最好。
 
@@ -290,9 +290,9 @@ LS-PLM是一个分段线性模型，划分数量 $m$ 控制模型容量。我们
 
 > **表3：** 有无公共特征技巧的训练成本对比
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720221522397.png" alt="image-20260720221522397" style="zoom:50%;" />
+<img src=".picture/image-20260720221522397.png" alt="image-20260720221522397" style="zoom:50%;" />
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260720221538261.png" alt="image-20260720221538261" style="zoom: 50%;" />
+<img src=".picture/image-20260720221538261.png" alt="image-20260720221538261" style="zoom: 50%;" />
 
 > **图5：** 在7个不同测试数据集上的模型性能对比。LS-PLM相比LR具有一致且显著的提升。
 
