@@ -4,23 +4,34 @@
 
 
 
+重要意义：
+
 业务场景：谷歌play，应用商店
 
-业务指标：离线AUC、线上app acquisition rate and serving performance.
+业务指标：线上app acquisition rate、 serving performance.
+
+离线指标：离线AUC
 
 数据集：自有的封闭数据集
 
 模型类型：rank，点击率预估
 
-创新点：Wide+Deep > only Deep or Only wide
+创新点：
 
-个人收获：词表构建、低频特征过滤。这些都是川江代码中的实现思路来源。
+- Wide+Deep > only Deep or Only wide
+
+个人收获：
+
+- 词表构建
+- 低频特征过滤
 
 
 
 
 
-app acquisition rate 精准释义（Google Play 广告推荐业务专属术语）
+## FQA
+
+#### Q：app acquisition rate 精准释义（Google Play 广告推荐业务专属术语）
 
 用户曝光推荐 App图标后，从点击安装按钮到最终完成安装的**转化指标**，衡量推荐系统带来的新增分发规模。
 
@@ -31,6 +42,8 @@ Google Play 靠应用分发、APP内部付费分成盈利，**用户安装 App =
 
 
 
+
+#### Q：交叉乘积变换
 
 在各类特征变换中，**交叉乘积变换（cross-product transformation）** 是最重要的变换方式之一，其定义如下：
 
@@ -108,7 +121,8 @@ Google Play 靠应用分发、APP内部付费分成盈利，**用户安装 App =
 
 
 
-# Wide&Deep要比DNN好？那后来为什么都是DNN结构了，比如DIN?
+Q：Wide&Deep要比DNN好？那后来为什么都是DNN结构了，比如DIN?
+
 ## 一、先纠正核心误区：Wide&Deep ≠ 纯DNN，二者没有“谁绝对更好”
 1. **纯DNN（仅Deep分支）天生有短板**
 论文原文明确写过：只有深度网络时，面对稀疏高秩的用户-物品交互数据，会**过度泛化**，给冷门、不相关的物品也打出非低分，推荐结果杂乱、丢失高频历史匹配规则；Wide分支就是用来兜底记忆高频特征组合，稳住线上基础指标。

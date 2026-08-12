@@ -12,7 +12,7 @@
 
 2. **结构完整**：保留原文所有模块——摘要、引言、方法、实验、结论、参考文献、附录。每一节、每一小节、每一段落都不能少。
 
-3. **术语准确**：专业术语使用领域通用译名。以下术语**保留英文不翻译**：`item`、`token`、`ID`、`latent`。其余术语使用标准译名（如 attention→注意力、embedding→嵌入、recommendation→推荐、user→用户、beam search→束搜索、cold-start→冷启动、feature interaction→特征交互、click-through rate→点击率）。
+3. **术语准确**：专业术语使用领域通用译名。以下术语**保留英文不翻译**：`item`、`token`、`ID`、`latent`。其余术语使用标准译名（如 attention→注意力、embedding→嵌入、recommendation→推荐、user→用户、beam search→束搜索、cold-start→冷启动、feature interaction→特征交互、click-through rate→点击率）。**learner 统一译为"学习器"，不得译为"学习者"。**
 
    所有英文缩写（如 FISM、SLIM、BPR、SGD 等），在正文中**第一次出现**时，必须在紧跟的括号中给出其英文完整名称。例如：FISM（Factored Item Similarity Models，分解item相似度模型）、SLIM（Sparse Linear Methods，稀疏线性方法）。
 
@@ -95,7 +95,12 @@
 
 12. **个人注释保留**：文件中以 `> [!NOTE]` 或 `> [!CAUTION]` 开头的引用块均为用户手动添加的个人注释，**任何时候都不得删除或修改**。批量修复脚本必须跳过这些块。
 
-
+13. **anthropic 速读报告**：以 `anthropic` 开头的 PDF 属于速读报告，翻译目标是以最快的速度让读者理解内容，**不采用逐句逐字翻译**，而是：
+    - 用最通俗的中文表达，避免专业术语堆砌；必须保留的英文术语（如 `item`、`token`、`ID`、`latent`）除外
+    - 每部分先给结论或要点，再用大白话解释
+    - 图表必须配图文解释：说明纵轴/横轴含义、各类别颜色/标记含义、数据本身说明了什么、对结论的意义
+    - 长段落拆分成短句和要点列表，善用表格、加粗、要点符号降低阅读负担
+    - 保留标题、每张图片引用、参考文献（原文不翻译），其余内容以"读者能最快看懂"为第一优先
 
 ## 质量自检流程（每篇必做）
 

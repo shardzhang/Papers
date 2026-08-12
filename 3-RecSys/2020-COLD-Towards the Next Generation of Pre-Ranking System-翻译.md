@@ -2,51 +2,61 @@
 
 > Zhe Wang, Liqin Zhao, Biye Jiang, Guorui Zhou, Xiaoqiang Zhu, Kun Gai | Alibaba Group
 
+
+
 本文介绍了 COLD：迈向下一代预排序系统。核心内容：
 
 - 从算法-系统协同设计的角度重新思考预排序系统的挑战，将计算能力成本视为可与模型性能联合优化的变量
 - 提出COLD（Computing power cost-aware Online and Lightweight Deep pre-ranking system，计算能力成本感知的在线轻量级深度预排序系统），任意带交叉特征的深度模型都可在可控计算能力成本约束下应用
 - 通过全层级并行化、基于列的计算、低精度GPU计算（Float16 + MPS）等工程优化技巧显式降低计算能力成本
-- COLD以在线学习和在线服务方式运行，具备出色的处理数据分布漂移的能力，支持高效的新模型开发和在线A/B测试
+- COLD以 **在线学习和在线服务** 方式运行，具备出色的处理数据分布漂移的能力，支持高效的新模型开发和在线A/B测试
 
 关键发现：
 
-- 相比基于向量积的DNN模型，COLD在常规天数实现6.1%的CTR提升和6.5%的RPM提升，在双十一活动期间提升达9.1%的CTR和10.8%的RPM
+- 相比**基于向量积的DNN模型**，COLD在常规天数实现6.1%的CTR提升和6.5%的RPM提升，在双十一活动期间提升达9.1%的CTR和10.8%的RPM
 - COLD与排序模型DIEN的GAUC相当，在GAUC和召回率上均显著优于基于向量积的模型
 - 结合Float16与CUDA MPS可将可用QPS相比Float32翻倍（2800提升至6700）
-- 自2019年以来，COLD已部署在阿里巴巴展示广告系统中几乎所有涉及预排序模块的产品中
+- 自2019年以来，COLD已部署在阿里巴巴**展示广告系统**中几乎所有涉及预排序模块的产品中
 
 ---
 
+
+
 ## 摘要
 
-多级级联架构广泛存在于许多工业系统中，如推荐系统和在线广告，这些系统通常由包括匹配、预排序、排序等在内的顺序模块组成。长期以来，人们认为预排序只是排序模块的一个简化版本，因为需要排序的候选集规模更大。因此，大部分工作集中在简化排序模型，以应对在线推理的计算能力爆炸问题。例如，展示广告系统中最先进的预排序方案是将预排序模型限制为基于向量积的深度学习架构：用户侧和广告侧向量以离线方式预先计算，不涉及用户-广告交叉特征，然后在线计算两个向量的内积以获取预排序分数。显然，这种模型限制导致了次优的性能。
+多级级联架构广泛存在于许多工业系统中，如推荐系统和在线广告，这些系统通常由包括匹配、预排序、排序等在内的顺序模块组成。长期以来，人们认为预排序只是排序模块的一个简化版本，因为需要排序的候选集规模更大。因此，大部分工作集中在简化排序模型，以应对在线推理的计算能力爆炸问题。例如，展示广告系统中最先进的预排序方案是将预排序模型限制为基于向量积的深度学习架构：用户侧和广告侧向量以离线方式预先计算，**不涉及用户-广告交叉特征**，然后在线计算两个向量的内积以获取预排序分数。显然，这种模型限制导致了次优的性能。
 
-在本文中，我们从算法-系统协同设计的角度重新思考预排序系统的挑战。我们不再通过对模型架构施加限制来节省计算能力（这会导致模型性能损失），而是通过联合优化预排序模型及其计算成本来设计一种新的预排序系统。我们将其命名为COLD（计算能力成本感知的在线轻量级深度预排序系统）。COLD在以下三个方面超越了现有最先进技术：（i）在可控计算能力成本的约束下，任意带有交叉特征的深度模型都可以应用于COLD；（ii）通过应用推理加速的优化技巧显式降低计算能力成本，这为进一步应用更复杂的深度模型以获得更好性能创造了空间；（iii）COLD模型以在线学习和在线服务方式运行，使其具备出色的处理数据分布漂移挑战的能力。同时，COLD的完全在线预排序系统为我们提供了灵活的基础设施，支持高效的新模型开发和在线A/B测试。自2019年以来，COLD已部署在阿里巴巴展示广告系统中几乎所有涉及预排序模块的产品中，带来了显著的改进。
+在本文中，我们从**算法-系统协同设计**的角度重新思考预排序系统的挑战。我们**不再通过对模型架构施加限制来节省计算能力**（这会导致模型性能损失），而是通过 **联合优化预排序模型及其计算成本** 来设计一种新的预排序系统。我们将其命名为COLD（计算能力成本感知的在线轻量级深度预排序系统）。COLD在以下三个方面超越了现有最先进技术：（i）在可控计算能力成本的约束下，任意带有交叉特征的深度模型都可以应用于COLD；（ii）通过应用推理加速的优化技巧显式降低计算能力成本，这为进一步应用更复杂的深度模型以获得更好性能创造了空间；（iii）COLD模型以在线学习和在线服务方式运行，使其具备出色的处理数据分布漂移挑战的能力。同时，COLD的完全在线预排序系统为我们提供了灵活的基础设施，支持高效的新模型开发和在线A/B测试。自2019年以来，COLD已部署在阿里巴巴展示广告系统中几乎所有涉及预排序模块的产品中，带来了显著的改进。
 
-**关键词**：Pre-ranking system, algorithm-system co-design, computing power
+**关键词**：Pre-ranking system, **algorithm-system co-design**, computing power
+
+
 
 ## 1 引言
 
 近年来，由于互联网服务的快速增长，用户一直遭受信息过载的困扰。搜索引擎、推荐系统和在线广告已成为基础的信息检索应用，每天服务数十亿用户。这些系统大多 [1-3, 9, 13-16] 采用多级级联架构，即通过匹配、预排序、排序、重排序等顺序模块来提取候选。图1给出了简要说明。
 
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805213827925.png" alt="image-20260805213827925" style="zoom:33%;" />
+
 **图1：工业信息检索系统级联架构的示意图。**
 
 已有大量论文讨论如何构建有效且高效的排序系统 [1-5, 10, 13-16]。然而，很少有工作关注预排序系统 [9, 14]。为简单起见，在本文的其余部分，我们将仅限于讨论展示广告系统中的预排序系统设计。此处讨论的技术可以轻松应用于推荐系统、搜索引擎等。
 
-长期以来，人们认为预排序只是排序系统的简化版本，因为在线服务中需要排序的候选集规模更大，带来了计算能力成本的挑战。以阿里巴巴的展示广告系统为例，传统上，预排序系统需要评分的候选集规模可达数万，而后续排序系统则降为数百。另一方面，排序和预排序系统都有严格的延迟限制，例如10~20毫秒。在这种情况下，预排序系统通常被设计为轻量级排序系统，通过简化排序模型来处理在线推理的计算能力爆炸问题。
+**长期以来，人们认为预排序只是排序系统的简化版本**，因为在线服务中需要排序的候选集规模更大，带来了计算能力成本的挑战。以阿里巴巴的展示广告系统为例，传统上，预排序系统需要评分的候选集规模可达数万，而后续排序系统则降为数百。另一方面，排序和预排序系统都有严格的延迟限制，例如**10~20毫秒**。在这种情况下，预排序系统通常被设计为轻量级排序系统，通过简化排序模型来处理在线推理的计算能力爆炸问题。
 
 ### 1.1 预排序系统发展简史
 
-回顾工业界预排序系统的发展历史，我们可以从模型角度将其大致分为四代，如图2所示。第一代是非个性化的广告侧统计分数，它通过计算每个广告近期的点击率（CTR，Click-Through Rate）平均值来得到预排序分数，该分数可以高频更新。逻辑回归（LR，Logistic Regression）模型是第二代，它是浅层机器学习时代大规模排序模型的轻量级版本，可以以在线学习和在线服务的方式部署 [11]。基于向量积的深度学习模型 [2] 是第三代，也是当前最先进的预排序模型。在这种方法中，用户侧和广告侧的嵌入向量以离线方式分别预计算，不涉及用户-广告交叉特征，然后在线计算两个向量的内积以获得预排序分数。尽管基于向量积的DNN显著提升了前两代的模型性能，但它仍面临两个挑战，留有进一步改进的空间：（i）模型表达能力。如文献 [17] 所示，将深度模型限制为向量积形式会限制其表达能力；（ii）模型更新频率。基于向量积的DNN的嵌入向量需要离线预计算，然后加载到服务器内存中进行在线计算。这意味着基于向量积的DNN模型只能以低频方式更新，难以适应最新的数据分布漂移，尤其是在数据剧烈变化时（例如中国的双十一活动）。
+回顾工业界预排序系统的发展历史，我们可以从模型角度将其**大致分为四代**，如图2所示。第一代是非个性化的广告侧统计分数，它通过计算每个广告近期的点击率（CTR，Click-Through Rate）平均值来得到预排序分数，该分数可以高频更新。逻辑回归（LR，Logistic Regression）模型是第二代，它是浅层机器学习时代大规模排序模型的轻量级版本，可以以在线学习和在线服务的方式部署 [11]。基于向量积的深度学习模型 [2] 是第三代，也是当前最先进的预排序模型。在这种方法中，用户侧和广告侧的嵌入向量以离线方式分别预计算，不涉及用户-广告交叉特征，然后在线计算两个向量的内积以获得预排序分数。尽管基于向量积的DNN显著提升了前两代的模型性能，但它仍面临两个挑战，留有进一步改进的空间：（i）模型表达能力。如文献 [17] 所示，将深度模型限制为向量积形式会限制其表达能力；（ii）模型更新频率。基于向量积的DNN的嵌入向量需要离线预计算，然后加载到服务器内存中进行在线计算。这意味着**基于向量积的DNN模型只能以低频方式更新，难以适应最新的数据分布漂移**，尤其是在数据剧烈变化时（例如中国的双十一活动）。
+
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805214427654.png" alt="image-20260805214427654" style="zoom:50%;" />
 
 **图2：图2从模型视角展示了预排序系统的发展历史。$x_u$、$x_a$、$x_{ua}$ 是用户、广告和交叉特征的原始特征。$e_u$、$e_a$、$e_{ua}$ 是用户、广告和交叉特征的嵌入。第一代是非个性化的广告侧统计模型。逻辑回归（LR）模型是第二代，它是浅层机器学习时代大规模排序模型的轻量级版本 [9]，可以以在线学习和在线服务的方式部署。基于向量积的深度学习架构是第三代，也是当前最先进的预排序模型，它显著提升了相比前一代的模型性能。COLD是我们提出的新一代预排序模型。**
 
-总之，上述三代预排序系统都遵循相同的范式：将计算能力视为恒定约束，在此约束下开发与之对应的预排序模型以及训练和服务系统。也就是说，模型的设计和计算能力的优化是解耦的，这通常导致模型被简化以适应计算能力的要求，从而产生次优的性能。
+总之，上述三代预排序系统都遵循相同的范式：**将计算能力视为恒定约束，在此约束下开发与之对应的预排序模型以及训练和服务系统。也就是说，模型的设计和计算能力的优化是解耦的，这通常导致模型被简化以适应计算能力的要求，从而产生次优的性能。**
 
 ### 1.2 COLD：新一代预排序系统
 
-在本文中，我们从算法-系统协同设计的角度重新思考预排序系统的挑战。我们不再通过对模型架构施加限制（这限制了性能）来节省计算能力，而是通过联合优化预排序模型及其计算成本来设计一种新的预排序系统。我们将其命名为COLD（计算能力成本感知的在线轻量级深度预排序系统），如图2所示。我们将COLD视为第四代预排序系统。COLD同时考虑了模型设计和系统设计。在COLD中，计算能力成本也是一个可以与模型性能联合优化的变量。换句话说，COLD是一个灵活的预排序系统，模型性能和计算能力成本之间的权衡是可控制的。
+在本文中，我们从算法-系统协同设计的角度重新思考预排序系统的挑战。我们不再通过对模型架构施加限制（这限制了性能）来节省计算能力，而是通过联合优化预排序模型及其计算成本来设计一种新的预排序系统。我们将其命名为COLD（计算能力成本感知的在线轻量级深度预排序系统），如图2所示。我们将COLD视为第四代预排序系统。**COLD同时考虑了模型设计和系统设计**。**在COLD中，计算能力成本也是一个可以与模型性能联合优化的变量。换句话说，COLD是一个灵活的预排序系统，模型性能和计算能力成本之间的权衡是可控制的。**
 
 COLD的主要特点总结如下：
 
@@ -56,9 +66,13 @@ COLD的主要特点总结如下：
 
 图3从模型表达能力和更新频率两方面对所有四代排序系统进行了比较。COLD实现了最佳的权衡。自2019年以来，COLD已部署在阿里巴巴展示广告系统中几乎所有涉及预排序模块的产品中，每天服务数亿用户的高并发请求。与基于向量积的DNN（我们上一版本的在线预排序模型）相比，COLD为我们带来了超过6%的RPM提升，这对业务而言是一个显著的改进。
 
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805220032301.png" alt="image-20260805220032301" style="zoom:50%;" />
+
 **图3：四代排序系统在模型表达能力与更新频率上的对比。**
 
-本文其余部分组织如下：第2节将概述工业预排序系统，第3节将详细介绍COLD，包括模型设计、计算能力成本优化和整体基础设施等问题，第4节和第5节将给出实验比较和结论。
+本文其余部分组织如下：第2节将概述工业预排序系统，第3节将详细介绍COLD，包括模型设计、计算能力成本优化 和 **整体基础设施**等问题，第4节和第5节将给出实验比较和结论。
+
+
 
 ## 2 预排序系统概述
 
@@ -80,6 +94,8 @@ $$
 
 基于向量积的DNN模型在延迟和计算资源方面是高效的。$v_u$ 和 $v_a$ 的向量可以离线分别预计算，分数 $p$ 可以在线计算。这使得它足够友好地应对计算能力成本的挑战。图4说明了经典的基础设施实现。与之前的预排序模型相比，基于向量积的DNN模型实现了显著的性能提升。
 
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805222509813.png" alt="image-20260805222509813" style="zoom:33%;" />
+
 **图4：基于向量积的DNN模型的预排序系统的基础设施。**
 
 然而，基于向量积的DNN模型过于关注降低计算能力成本，将模型限制为向量积形式，这导致了次优的性能。我们将其不足总结如下：
@@ -89,6 +105,8 @@ $$
 - 模型更新频率也受到系统实现的影响。对于基于向量积的DNN模型，用户/广告向量索引版本的日常切换需要同时执行，而两个索引存储在不同的在线系统中时很难满足这一要求。根据我们的经验，延迟切换也会损害模型性能。
 
 基于向量积的DNN模型的预排序系统的这些不足源于对降低计算能力的过度追求，且难以完全解决。在接下来的章节中，我们将介绍我们的新解决方案，它打破了预排序系统的经典设计方法。
+
+
 
 ## 3 COLD：计算能力成本感知的在线轻量级深度预排序系统
 
@@ -152,6 +170,8 @@ linear_log()函数的图形如图6所示。它将Float32数转换到合理范围
 - COLD的完全在线预排序系统为我们提供了灵活的基础设施，支持高效的新模型开发和在线A/B测试。回想一下，对于基于向量积的DNN模型，用户侧和广告侧的向量需要离线预计算并通过索引加载到推理引擎中。因此，对两个版本的基于向量积的DNN模型进行A/B测试需要涉及多个系统的开发。根据我们的经验，获得可靠的A/B测试结果通常需要几天时间，而COLD只需几个小时。此外，完全在线服务还有助于COLD避免基于向量积的DNN模型所遭受的延迟切换问题。
 
 **图7：COLD预排序系统的完全在线基础设施。**
+
+
 
 ## 4 实验
 
@@ -230,6 +250,8 @@ $$
 | COLD (Float16) | 3400 |
 | COLD (Float16+MPS) | 6700 |
 
+
+
 ## 5 结论
 
 在本文中，我们详细介绍了新一代预排序系统COLD。它从一个全新的视角设计。COLD不是通过对模型架构施加严格限制（导致模型性能损失）来节省计算能力，而是同时考虑模型设计和系统设计。在COLD中，计算能力成本也是一个可以与模型性能联合优化的变量。通过模型架构和计算能力成本的协同设计，COLD成为一个灵活的预排序系统，模型性能和计算能力成本之间的权衡是可控的。这种新的预排序系统能够更好地追求模型性能。实验表明，COLD模型相比基于向量积的DNN模型（我们上一版本的在线预排序模型）实现了超过6%的RPM提升，这对业务意义重大。此外，COLD可以以完全在线的基础设施实现训练和服务，达到了当前排序系统拥有的最佳系统实践。自2019年以来，COLD已部署在阿里巴巴的展示广告系统中，服务几乎所有产品的主要流量，为业务收入增长做出了显著贡献。
@@ -238,11 +260,11 @@ $$
 
 ## 参考文献
 
-[1] Qiwei Chen, Huan Zhao, Wei Li, Pipei Huang, and Wenwu Ou. 2019. Behavior Sequence Transformer for E-commerce Recommendation in Alibaba. (May 2019). arXiv:1905.06874
+[1] Qiwei Chen, Huan Zhao, Wei Li, Pipei Huang, and Wenwu Ou. 2019. **Behavior Sequence Transformer for E-commerce Recommendation in Alibaba**. (May 2019). arXiv:1905.06874
 
 [2] Paul Covington, Jay Adams, and Emre Sargin. 2016. Deep neural networks for youtube recommendations. In Proceedings of the 10th ACM Conference on Recommender Systems. ACM, 191–198.
 
-[3] Miao Fan, Jiacheng Guo, Shuai Zhu, Shuo Miao, Mingming Sun, and Ping Li. 2019. MOBIUS. In KDD '19: The 25th ACM SIGKDD Conference on Knowledge Discovery and Data Mining. ACM, New York, NY, USA, 2509–2517.
+[3] Miao Fan, Jiacheng Guo, Shuai Zhu, Shuo Miao, Mingming Sun, and Ping Li. 2019. **MOBIUS**. In KDD '19: The 25th ACM SIGKDD Conference on Knowledge Discovery and Data Mining. ACM, New York, NY, USA, 2509–2517.
 
 [4] Kun Gai, Xiaoqiang Zhu, Han Li, Kai Liu, and Zhe Wang. 2017. Learning Piece-wise Linear Models from Large Scale Data for Ad Click Prediction. arXiv preprint arXiv:1704.05194 (2017).
 
@@ -252,13 +274,13 @@ $$
 
 [7] Tongwen Huang, Zhiqi Zhang, and Junlin Zhang. 2019. **FiBiNET: Combining Feature Importance and Bilinear feature Interaction for Click-Through Rate Prediction**. arXiv.org (May 2019), 169–177. arXiv:1905.09433v1 [cs.LG]
 
-[8] Bin Liu, Chenxu Zhu, Guilin Li, Weinan Zhang, Jincai Lai, Ruiming Tang, Xiuqiang He, Zhenguo Li, and Yong Yu. 2020. AutoFIS: Automatic Feature Interaction Selection in Factorization Models for Click-Through Rate Prediction. (March 2020). arXiv:2003.11235
+[8] Bin Liu, Chenxu Zhu, Guilin Li, Weinan Zhang, Jincai Lai, Ruiming Tang, Xiuqiang He, Zhenguo Li, and Yong Yu. **2020. AutoFIS: Automatic Feature Interaction Selection in Factorization Models for Click-Through Rate Prediction**. (March 2020). arXiv:2003.11235
 
-[9] Shichen Liu, Fei Xiao, Wenwu Ou, and Luo Si. 2017. Cascade ranking for operational e-commerce search. In Proceedings of the 23rd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining.
+[9] Shichen Liu, Fei Xiao, Wenwu Ou, and Luo Si. 2017. **Cascade ranking for operational e-commerce search**. In Proceedings of the 23rd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining.
 
 [10] Zequn Lyu, Yu Dong, Chengfu Huo, and Weijun Ren. 2020. Deep Match to Rank Model for Personalized Click-Through Rate Prediction. AAAI (2020).
 
-[11] H Brendan McMahan, Gary Holt, David Sculley, Michael Young, Dietmar Ebner, Julian Grady, Lan Nie, Todd Phillips, Eugene Davydov, Daniel Golovin, Sharat Chikkerur, Dan Liu, Martin Wattenberg, Arnar Mar Hrafnkelsson, Tom Boulos, and Jeremy Kubica. 2013. Ad click prediction - a view from the trenches. KDD (2013), 1222.
+[11] H Brendan McMahan, Gary Holt, David Sculley, Michael Young, Dietmar Ebner, Julian Grady, Lan Nie, Todd Phillips, Eugene Davydov, Daniel Golovin, Sharat Chikkerur, Dan Liu, Martin Wattenberg, Arnar Mar Hrafnkelsson, Tom Boulos, and Jeremy Kubica. 2013. **Ad click prediction - a view from the trenches**. KDD (2013), 1222.
 
 [12] Paulius Micikevicius, Sharan Narang, Jonah Alben, Gregory Diamos, Erich Elsen, David García, Boris Ginsburg, Michael Houston, Oleksii Kuchaiev, Ganesh Venkatesh, and Hao Wu. 2017. Mixed Precision Training. arXiv.org (Oct. 2017). arXiv:1710.03740v3 [cs.AI]
 
@@ -270,6 +292,6 @@ $$
 
 [16] Guorui Zhou, Xiaoqiang Zhu, Chenru Song, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, and Kun Gai. 2018. Deep interest network for click-through rate prediction. In Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining. ACM, 1059–1068.
 
-[17] Han Zhu, Xiang Li, Pengye Zhang, Guozheng Li, Jie He, Han Li, and Kun Gai. 2018. Learning Tree-based Deep Model for Recommender Systems. COLING stat.ML (2018), 1079–1088.
+[17] Han Zhu, Xiang Li, Pengye Zhang, Guozheng Li, Jie He, Han Li, and Kun Gai. 2018. **Learning Tree-based Deep Model for Recommender Systems**. COLING stat.ML (2018), 1079–1088.
 
 [^1]: eCPM = pCTR * bid，适用于基于CPC（Cost Per Click，按点击付费）竞价的广告系统。

@@ -84,7 +84,7 @@ NE本质上是计算相对信息增益（Relative Information Gain，RIG）的�
 
 在本节中，我们提出一种**混合模型结构**：提升决策树与概率稀疏线性分类器的串联，如图1所示。在第3.1节中，我们展示了决策树是非常强大的**输入特征变换方法**，能显著提高概率线性分类器的精度。在第3.2节中，我们展示了更新的训练数据如何产生更准确的预测。这启发了使用在线学习方法训练线性分类器的想法。在第3.3节中，我们比较了两类概率线性分类器的多种在线学习变体。
 
-<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805193202669.png" alt="image-20260805193202669" style="zoom:50%;" />
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260805193202669.png" alt="image-20260805193202669" style="zoom: 33%;" />
 
 我们评估的在线学习方案基于应用于稀疏线性分类器的随机梯度下降（SGD，Stochastic Gradient Descent）算法[2]。经过特征变换后，一次广告展示以结构化向量 $\mathbf{x} = (e_{i_1}, \ldots, e_{i_n})$ 的形式给出，其中 $e_i$ 是第 $i$ 个单位向量，$i_1, \ldots, i_n$ 是 $n$ 个分类输入特征的值。在训练阶段，我们还假设给定一个二元标签 $y \in \{+1, -1\}$，表示点击或不点击。
 

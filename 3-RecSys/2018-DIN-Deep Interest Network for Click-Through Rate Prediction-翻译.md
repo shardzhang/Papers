@@ -1,6 +1,8 @@
 # Deep Interest Network for Click-Through Rate Prediction
 
-> Guorui Zhou, Chengru Song, Xiaoqiang Zhu, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, Kun Gai | 阿里巴巴集团
+> Guorui Zhou, Chengru Song, Xiaoqiang Zhu, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, Kun Gai 
+>
+> 阿里巴巴集团
 
 
 

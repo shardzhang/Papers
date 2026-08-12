@@ -150,13 +150,19 @@ YouTube推荐系统的实际实现可分为三个主要部分：(1) 数据收集
 
 **图2：3周内不同浏览页面类型的每日平均CTR。**
 
+
+
 ## 5 致谢
 
 我们要感谢John Harding、Louis Perrochon和Hunter Walk的支持和评论。
 
+
+
 ## 6 其他作者
 
 其他作者：Ullas Gargi、Sujoy Gupta、Yu He、Mike Lambert、Blake Livingston、Dasarathi Sampath（均为Google Inc，邮箱 {ullas, sujoy, yuhe, lambert, blivingston, dasarathi}@google.com）。
+
+
 
 ## 参考文献
 
