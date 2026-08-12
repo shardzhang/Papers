@@ -39,6 +39,8 @@
 
 ---
 
+![图1](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/2019-SNR-Sub-network routing for flexible parameter sharing in multi-task learning-fig1.png)
+
 **图1：多任务模型**
 
 (a) Shared-Bottom (SB) 模型：传统的多任务神经网络模型。
@@ -270,6 +272,8 @@ $$
 
 ---
 
+![图2](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/2019-SNR-Sub-network routing for flexible parameter sharing in multi-task learning-fig2.png)
+
 **图2：最优调优模型的精度**
 柱状图显示了按验证性能选择的前10个模型的平均测试性能。误差线表示平均测试性能的标准误差。
 
@@ -284,6 +288,8 @@ $$
 这一结果表明，SNR方法能够比基线方法更好地训练更大的模型。这一现象与我们的假设一致，即多任务学习中的模块化可以提升模型的可训练性。
 
 ---
+
+![图3](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/2019-SNR-Sub-network routing for flexible parameter sharing in multi-task learning-fig3.png)
 
 **图3：Macro Average-MAP@10 vs 模型大小**
 y轴是Macro Average-MAP@10上的测试性能。x轴是训练时的总模型参数数量。每个模型中第一个共享层的总隐藏大小固定为2048，第二个共享层的总隐藏大小变化以得到不同的模型大小。
@@ -300,10 +306,14 @@ y轴是Macro Average-MAP@10上的测试性能。x轴是训练时的总模型参�
 
 ---
 
+![图4](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/2019-SNR-Sub-network routing for flexible parameter sharing in multi-task learning-fig4.png)
+
 **图4：不同模型大小和L0正则化参数下SNR-Trans模型的Macro Average-MAP@10**
 "SNR-Trans-Dense"表示使用较小L0正则化参数的模型，得到的模型是密集的；"SNR-Trans-Sparse"表示使用较大L0正则化参数的模型，得到的模型是稀疏的。稀疏模型可以在特定服务约束下将服务模型大小减少最多11%。
 
 ---
+
+![图5](/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/2019-SNR-Sub-network routing for flexible parameter sharing in multi-task learning-fig5.png)
 
 **图5：表现最好的SNR-Trans模型中各任务的平均子网络利用率**
 x轴上的任务按样本量从大到小从左到右排序。y轴是相应任务使用的子网络的平均相对比例。

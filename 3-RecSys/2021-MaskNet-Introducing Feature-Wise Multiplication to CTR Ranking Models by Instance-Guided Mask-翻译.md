@@ -107,6 +107,7 @@ $$
 
 如图1所示，实例引导掩码中使用两个具有恒等函数的全连接（FC）层。注意，实例引导掩码的输入始终来自输入实例，即特征嵌入层。
 
+![图1](.picture/2021-MaskNet-Introducing Feature-Wise Multiplication to CTR Ranking Models by Instance-Guided Mask-fig1.png)
 **图1：实例引导掩码的神经网络结构。** 实例引导掩码包含两个具有恒等函数的全连接（FC）层：相对较宽的聚合层和维度匹配特征嵌入层或隐藏层的投影层，其输入始终来自当前输入实例的特征嵌入层。
 
 第一个FC层称为"聚合层"（aggregation layer），与第二个FC层相比，它是一个相对较宽的层，以便更好地收集输入实例中的全局上下文信息。聚合层具有参数 $W_{d1}$，其中 $d$ 表示第 $d$ 个掩码。对于特征嵌入和不同的MLP层，我们采用不同的实例引导掩码，拥有各自的参数，以从输入实例中为每一层学习捕捉各种信息。
@@ -145,8 +146,10 @@ $$
 
 为了克服DNN模型中前馈层捕捉复杂特征交互的低效问题，本文提出了一个名为MaskBlock的基本构建块，用于DNN排序系统，如图2和图3所示。提出的MaskBlock包含三个关键组件：层归一化模块、实例引导掩码和一个前馈隐藏层。层归一化可以简化网络的优化。实例引导掩码为标准DNN模型的前馈层引入了乘法交互，前馈隐藏层聚合被掩码的信息以更好地捕捉重要的特征交互。通过这种方式，我们将标准DNN模型中广泛使用的前馈层转变为加性和乘性特征交互的混合体。
 
+![图2](.picture/2021-MaskNet-Introducing Feature-Wise Multiplication to CTR Ranking Models by Instance-Guided Mask-fig2.png)
 **图2：特征嵌入上的MaskBlock。** 特征嵌入 $V_{emb}$ 首先经过层归一化，然后实例引导掩码通过逐元素乘积突出其中的信息元素，最后经前馈隐藏层和后续归一化变换输出，将前馈层转变为加性和乘性特征交互的混合体。
 
+![图3](.picture/2021-MaskNet-Introducing Feature-Wise Multiplication to CTR Ranking Models by Instance-Guided Mask-fig3.png)
 **图3：MaskBlock上的MaskBlock。** 该MaskBlock的输入包括特征嵌入 $V_{emb}$ 和上一个MaskBlock的输出 $V_{output}^p$，实例引导掩码的输入始终是特征嵌入 $V_{emb}$，并通过逐元素乘积突出上一个MaskBlock输出中的重要特征交互。
 
 首先，我们简要回顾一下LayerNorm的公式。
@@ -228,6 +231,7 @@ $$
 
 我们提出了另一种MaskNet，通过在共享特征嵌入层上并行放置多个特征嵌入上的MaskBlock，如图4右侧模型所示。每个块的输入都是相同的特征嵌入 $V_{emb}$。并行MaskBlock可以被视为不同的专家，每个专家关注不同的特征方面，类似于MMoE[15]的做法。每个MaskBlock关注特定类型的重要特征或特征交互。我们通过拼接每个MaskBlock的输出来收集每个专家的信息，如下所示：
 
+![图4](.picture/2021-MaskNet-Introducing Feature-Wise Multiplication to CTR Ranking Models by Instance-Guided Mask-fig4.png)
 **图4：串行模型与并行模型的结构。** 左侧为串行模型（SerMaskNet），逐块堆叠MaskBlock，第一个块是特征嵌入上的MaskBlock，其余为MaskBlock上的MaskBlock，每个MaskBlock中实例引导掩码的输入都来自特征嵌入层 $V_{emb}$；右侧为并行模型（ParaMaskNet），在共享特征嵌入层上并行放置多个特征嵌入上的MaskBlock。
 
 $$
@@ -404,10 +408,12 @@ $$
 
 首先，我们从Criteo数据集中随机抽取100000个不同实例，并观察不同块的实例引导掩码产生的值的分布。图5显示了结果。我们可以看到掩码值的分布遵循正态分布。超过50%的掩码值是小数值，接近零，只有一小部分掩码值是相对较大的数。这意味着特征嵌入和前馈层中的大部分信号是非信息的甚至是噪声，被小的掩码值抑制了。然而，也有一些信息通过较大的掩码值被实例引导掩码增强了。
 
+![图5](.picture/2021-MaskNet-Introducing Feature-Wise Multiplication to CTR Ranking Models by Instance-Guided Mask-fig5.png)
 **图5：不同块中实例引导掩码产生的值的分布。**
 
 其次，我们随机抽取两个实例，并比较实例引导掩码产生的值的差异。结果显示在图6中。我们可以看到：对于特征嵌入的掩码值，不同的输入实例导致掩码关注不同的区域。实例A的掩码输出更关注前几个特征，而实例B的掩码值聚焦于其他特征的某些位上。我们可以在前馈层的掩码值中观察到类似的趋势。这表明输入实例确实引导掩码关注特征嵌入和前馈层的不同部分。
 
+![图6](.picture/2021-MaskNet-Introducing Feature-Wise Multiplication to CTR Ranking Models by Instance-Guided Mask-fig6.png)
 **图6：两个不同实例的实例引导掩码产生的值的比较。** 对于特征嵌入的掩码值，不同的输入实例导致掩码关注不同的区域；前馈层的掩码值中也观察到类似趋势。
 
 ## 5 结论

@@ -32,6 +32,7 @@
 
 在排序阶段，我们将推荐任务建模为点击率（CTR，Click-Through Rate）预测问题，其可以定义如下：给定用户 $u$ 点击的行为序列 $S(u) = \{v_1, v_2, \ldots, v_n\}$ ，我们需要学习一个函数 $F$ 来预测 $u$ 点击目标item $v_t$ （即候选item）的概率。其他特征包括用户画像、上下文、item和交叉特征。
 
+![图1](.picture/2019-BST-Behavior Sequence Transformer for E-commerce Recommendation in Alibaba-fig1.png)
 **图1：所提出的BST的总体架构。** BST将用户行为序列（包括目标item）和"其他特征"作为输入。它首先将这些输入特征嵌入为低维向量。为了更好地捕获行为序列中item之间的关系，使用Transformer层来学习序列中每个item的更深层表示。然后，通过拼接其他特征的嵌入和Transformer层的输出，使用三层MLP来学习隐藏特征的交互，并使用sigmoid函数生成最终输出。注意，"位置特征"被纳入"序列item特征"中。
 
 我们在WDL[2]的基础上构建BST，总体架构如图1所示。从图1可以看出，它遵循流行的Embedding&MLP范式，其中先前点击的item和相关特征首先被嵌入到低维向量中，然后输入到MLP。BST和WDL之间的关键区别在于，我们添加了Transformer层，通过捕获底层的序列信号来学习用户点击item的更好表示。在以下部分中，我们以自底向上的方式介绍BST的关键组件：嵌入层、Transformer层和MLP。

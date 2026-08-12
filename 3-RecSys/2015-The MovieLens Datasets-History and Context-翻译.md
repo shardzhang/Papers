@@ -47,10 +47,15 @@ MovieLens 数据集是用户多年来与 MovieLens 在线推荐系统交互的�
 明尼苏达大学的研究人员于1997年夏天开始开发 MovieLens，起因是数字设备公司（DEC）决定关闭他们自己的电影推荐系统 EachMovie。当时，DEC 联系了推荐系统社区，寻找一个组织来开发替代站点，以延续同样的使命，并可能服务于同一批用户（但不使用 DEC 的专有代码）；GroupLens 主动承担了这一任务。法律问题阻止了直接转移用户账户，但 DEC 确实向 GroupLens 转移了一个匿名数据集，GroupLens 使用该数据集训练了第一个版本的 MovieLens 推荐器。
 
 MovieLens 于1997年秋季上线。第一个版本尽可能开发得与它所替代的 EachMovie 界面相似（见图5截图）。EachMovie 使用了专有推荐算法；MovieLens 则采用了 GroupLens Usenet 新闻推荐系统中实现的用户-用户协同过滤 CF（Collaborative Filtering）[Konstan et al. 1997]。
+![图5](.picture/2015-The MovieLens Datasets-History and Context-fig5.png)
 
 1999年末，MovieLens 的使用量显著增加，当时它受到了大众媒体的关注。这些事件——Malcolm Gladwell 在《纽约客》杂志上发表的一篇文章 [Gladwell 1999]、美国广播公司《夜线》节目的一期报道，以及著名影评人 Roger Ebert 的好评——都突出地将 MovieLens 作为在线计算和个性化未来的一个例子。
 
 自那以后，MovieLens 系统的增长一直非常稳定，尤其是考虑到几乎完全没有营销投入。MovieLens 长期以来平均每天有20到30个新用户注册，这主要归功于口碑传播或主动报道。图1展示了 MovieLens 自上线以来的增长情况，图2展示了月度活跃用户数量，图3展示了每个日历年中登录超过 n 次的用户数量，图4展示了评分数据随时间分布的情况。
+![图1](.picture/2015-The MovieLens Datasets-History and Context-fig1.png)
+![图2](.picture/2015-The MovieLens Datasets-History and Context-fig2.png)
+![图3](.picture/2015-The MovieLens Datasets-History and Context-fig3.png)
+![图4](.picture/2015-The MovieLens Datasets-History and Context-fig4.png)
 
 ACM 交互式智能系统交易，第5卷，第4期，文章19，出版日期：2015年12月。
 
@@ -61,6 +66,8 @@ ACM 交互式智能系统交易，第5卷，第4期，文章19，出版日期：
 **图2. 每月登录 MovieLens 的用户数量。** 虚线（1998年7月）之前的数据缺失。
 
 稳定增长并不意味着 MovieLens 自90年代末以来没有变化。事实上，自最初发布以来，MovieLens 经历了五次重大版本（v0–v4），每个版本都代表了服务器端和客户端代码的完整重实现。我们在表 I 中总结了最重要的变化，包括日期和 MovieLens 一些最重要变更的简要总结。此外，为了提供视觉参考，我们在图5至图8中提供了历史截图，并在图9中提供了当前界面的截图。
+![图8](.picture/2015-The MovieLens Datasets-History and Context-fig8.png)
+![图9](.picture/2015-The MovieLens Datasets-History and Context-fig9.png)
 
 在本节的剩余部分，我们讨论 MovieLens 功能的关键变化，这些变化最能影响 MovieLens 数据集的形态和研究用途。
 
@@ -130,6 +137,7 @@ MovieLens 用户在网站上通常只能访问有限的电影元数据集。直�
 v0 到 v3 版本在评分小部件上采用了两个独立的视觉元素。视图元素是一张显示一定数量星星的图片，颜色代表预测值或实际评分。输入元素是一个 HTML `<select>` 元素，允许用户选择星值。随着 v4 的发布，用户界面将这两个元素组合成一个接受触摸/点击事件的五星表示形式。
 
 在 v1 到 v3 的整个生命周期中，每个屏幕顶部都有一个描述不同星值的小图例（见图6至图8）。v3 中描述星值的标签发生了变化。考虑到大量文献指出的锚定效应（例如，Lynch et al. [1991]），这些标签可能对评分行为产生了实质性影响，但尚无关于 MovieLens 中该效应的实证研究。在粗略的分析层面上，图4显示这些界面变化并未导致评分分布出现明显的全局性变化。
+![图6](.picture/2015-The MovieLens Datasets-History and Context-fig6.png)
 
 #### 2.2.3 引导机制
 
@@ -202,6 +210,7 @@ MovieLens 数据集的汇总统计信息见表 II。
 所有当前发布的 MovieLens 数据集共享几个特征。每个数据集都表示形式为 `<user, item, rating, timestamp>` 的评分元组。评分和其他数据归属于匿名用户 ID（这些 ID 不跨数据集映射）。电影以其在 MovieLens 中的标题以及零个或多个类型列出（电影 ID 跨数据集映射）。仅包含至少20个评分的用户。
 
 这四种数据集的采样方法不同。尽管所有四个数据集都要求用户至少要有20个评分，但 100k 还需要完整的用户人口统计数据。1M 采样了2000年加入系统的用户，但样本收集于2003年初，导致2001年和2002年的评分稀疏。10M 和 20M 在整个系统历史中随机选择用户。这些收集方法创建的数据集反映了 MovieLens 中发生的评分活动爆发。图10展示了四个数据集中评分密度随时间的变化。
+![图10](.picture/2015-The MovieLens Datasets-History and Context-fig10.png)
 
 几个显著的变化影响了不同版本数据集的结构。100k 和 1M 数据集包含用户的人口统计数据（年龄、性别、职业、邮政编码），而 10M 和 20M 数据集不包含任何人口统计信息（网站已停止收集）。只有 10M 和 20M 数据集包含标签应用（较早的数据集在标签功能存在之前就已发布）。20M 包含一个表格，将 MovieLens 电影 ID 映射到两个外部站点的电影 ID，以允许数据集用户构建更完整的基于内容的item表示。
 
@@ -312,6 +321,7 @@ MovieLens 数据集仅包含至少20个评分的用户数据，因此天生偏�
 许多人致力于构建和改进 MovieLens 及 MovieLens 数据集。我们特别感谢 John Riedl 的重要贡献和领导。其他关键贡献者包括 Istvan Albert、Al Borchers、Dan Cosley、Brent J. Dahlen、Rich Davies、Michael Ekstrand、Dan Frankowski、Nathaniel Good、Jon Herlocker、Daniel Kluver、Shyong (Tony) Lam、Michael Ludwig、Sean McNee、Chad Salvatore、Shilad Sen 和 Loren Terveen。我们还衷心感谢 MovieLens 会员，是他们使这个item成为可能。
 
 
+![图7](.picture/2015-The MovieLens Datasets-History and Context-fig7.png)
 ## 参考文献
 
 Shuo Chang, F. Maxwell Harper, and Loren Terveen. 2015. Using groups of items for preference elicitation in recommender systems. In *Proceedings of the 18th ACM Conference on Computer Supported Cooperative Work & Social Computing (CSCW'15)*. ACM, New York, NY, 1258–1269. DOI:http://dx.doi.org/10.1145/2675133.2675210

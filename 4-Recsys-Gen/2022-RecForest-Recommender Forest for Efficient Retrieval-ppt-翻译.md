@@ -163,4 +163,16 @@ item
 算法流程
 更多实验
 12
-致谢
+致谢![示意图（第1页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page001.png)
+![示意图（第2页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page002.png)
+![示意图（第3页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page003.png)
+![示意图（第4页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page004.png)
+![示意图（第5页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page005.png)
+![示意图（第6页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page006.png)
+![示意图（第7页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page007.png)
+![示意图（第8页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page008.png)
+![示意图（第9页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page009.png)
+![示意图（第10页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page010.png)
+![示意图（第11页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page011.png)
+![示意图（第12页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page012.png)
+![示意图（第13页）](.picture/2022-RecForest-Recommender Forest for Efficient Retrieval-ppt-page013.png)

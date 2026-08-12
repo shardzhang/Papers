@@ -109,6 +109,7 @@ $$
 我们将按照FM（4）中处理稀疏数据的直觉，显式地计算不同特征的二阶交互，并可选择将其通过MLP。这通过计算所有嵌入向量对和处理后的稠密特征之间的点积来实现。这些点积与原始处理后的稠密特征拼接，然后经由另一个MLP（顶层或输出MLP）（5）进行后处理，并输入sigmoid函数以给出概率。
 
 我们将得到的模型称为DLRM，如图1所示。我们在表1中展示了DLRM在PyTorch[23]和Caffe2[8]框架中使用的一些算子。
+![图1](.picture/2019-DLRM-Deep Learning Recommendation Model for Personalization and Recommendation Systems-fig1.png)
 
 | | 嵌入（Embedding） | MLP | 交互（Interactions） | 损失（Loss） |
 |---|---|---|---|---|
@@ -134,6 +135,7 @@ DLRM与其他网络之间的一个关键区别在于这些网络如何处理嵌�
 我们的并行化DLRM将在嵌入上使用模型并行和在MLP上使用数据并行相结合，以缓解嵌入产生的内存瓶颈，同时对MLP进行前向和反向传播的并行化。模型并行和数据并行的结合是DLRM因其架构和大模型规模而独有的需求。Caffe2和PyTorch（以及其他流行的深度学习框架）都不支持这种组合并行，因此我们设计了一个自定义实现。我们计划在未来的工作中提供其详细的性能研究。
 
 在我们的设置中，顶层MLP和交互算子需要访问来自底层MLP的部分mini-batch以及所有嵌入。由于模型并行已被用于将嵌入分布到不同设备上，这需要一种个性化的all-to-all通信[12]。在嵌入查找结束时，每个设备拥有该设备上驻留的嵌入表对应mini-batch中所有样本的向量，这些向量需要沿mini-batch维度分割并传输到适当的设备，如图2所示。PyTorch和Caffe2都不原生支持模型并行；因此，我们通过将嵌入算子（PyTorch的nn.EmbeddingBag，Caffe2的SparseLengthSum）显式映射到不同设备来实现。然后，个性化的all-to-all通信使用蝴蝶混洗算子实现，该算子适当切分生成的嵌入向量并将其传输到目标设备。在当前版本中，这些传输是显式拷贝，但我们打算利用可用的通信原语（如all-gather和send-recv）进一步优化。
+![图2](.picture/2019-DLRM-Deep Learning Recommendation Model for Personalization and Recommendation Systems-fig2.png)
 
 我们注意到，对于数据并行的MLP，反向传播中的参数更新以同步方式通过allreduce³累积并应用到每个设备上的复制参数[12]，确保每次迭代前每个设备上的参数是一致的。在PyTorch中，数据并行通过nn.DistributedDataParallel和nn.DataParallel模块实现，这些模块在每个设备上复制模型并插入具有必要依赖关系的allreduce。在Caffe2中，我们在梯度更新前手动插入allreduce。
 
@@ -189,6 +191,7 @@ DLRM与其他网络之间的一个关键区别在于这些网络如何处理嵌�
 12: end for
 
 注意，我们只能生成最多到目前为止已看到的唯一访问数 $s$ 的栈距离，因此在算法2中使用 $s$ 来控制分布 $p$ 的支撑集。给定固定数量的唯一访问，较长的输入轨迹将导致算法1中分配给唯一访问的概率较低，这将导致算法2中达到完整分布支撑集的时间更长。为了解决这个问题，我们将唯一访问的概率增加到最小阈值，并在所有唯一访问都被看到后调整支撑集以将其移除。基于原始轨迹和合成轨迹的概率分布 $p$ 的视觉比较如图3所示。在我们的实验中，原始轨迹和调整后的合成轨迹产生了相似的缓存命中/未命中率。
+![图3](.picture/2019-DLRM-Deep Learning Recommendation Model for Personalization and Recommendation Systems-fig3.png)
 
 算法1和2是为更精确的缓存模拟而设计的，但它们说明了一个通用思路，即如何使用概率分布来生成具有所需属性的合成轨迹。
 
@@ -212,6 +215,7 @@ Criteo Ad Kaggle 数据集包含约4500万个样本，覆盖7天。在实验中�
 
 现在让我们展示DLRM的性能和准确性。该模型在PyTorch和Caffe2框架中实现，并在GitHub上可用⁸。它分别使用fp32浮点类型和int32（Caffe2）/int64（PyTorch）类型用于模型参数和索引。实验在Big Basin平台上进行，配备双路Intel Xeon 6138 CPU @ 2.00GHz和八块Nvidia Tesla V100 16GB GPU，可通过开放计算item⁹公开获得，如图4所示。
 
+![图4](.picture/2019-DLRM-Deep Learning Recommendation Model for Personalization and Recommendation Systems-fig4.png)
 图4：Big Basin AI平台
 
 ### 5.1 在公开数据集上的模型准确性
@@ -220,12 +224,14 @@ Criteo Ad Kaggle 数据集包含约4500万个样本，覆盖7天。在实验中�
 
 我们绘制了两种模型在使用SGD和Adagrad优化器[6]时，一个完整训练epoch中的训练（实线）和验证（虚线）准确率。未使用正则化。在此实验中，DLRM获得了略高的训练和验证准确率，如图5所示。我们强调这是在未对模型超参数进行大量调优的情况下取得的。
 
+![图5](.picture/2019-DLRM-Deep Learning Recommendation Model for Personalization and Recommendation Systems-fig5.png)
 图5：DLRM和DCN的训练（实线）和验证（虚线）准确率比较
 
 ### 5.2 在单个Socket/设备上的模型性能
 
 为了分析模型在单个socket设备上的性能，我们考虑一个具有8个类别特征和512个连续特征的示例模型。每个类别特征通过一个包含100万个向量、向量维度为64的嵌入表进行处理，而连续特征被组合成一个维度为512的向量。设底层MLP有两层，顶层MLP有四层。我们在一个包含204.8万个随机生成样本（组织成1000个mini-batch¹⁰）的数据集上分析此模型。
 
+![图6](.picture/2019-DLRM-Deep Learning Recommendation Model for Personalization and Recommendation Systems-fig6.png)
 图6：在单个socket/设备上的示例DLRM分析
 
 此模型在Caffe2中的实现在CPU上运行约256秒，在GPU上运行约62秒，各算子的分析如图6所示。正如预期，大部分时间花在嵌入查找和全连接层上。在CPU上，全连接层占据了计算的显著部分，而在GPU上它们几乎可忽略。

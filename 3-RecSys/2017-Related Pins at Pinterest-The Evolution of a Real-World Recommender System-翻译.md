@@ -166,3 +166,10 @@ Pinterest 的 Related Pins 系统已从简单的离线流水线发展为复杂�
 [24] E. Sharp. Search outside the box with new Pinterest visual discovery tools. Pinterest Blog, 2017.
 [25] A. Zhai, D. Kislyuk, Y. Jing, et al. Visual discovery at Pinterest. WWW, 2017.
 [26] W. V. Zhang, R. Jones. Comparing click logs and editorial labels for training query rewriting. WWW Workshop, 2007.
+![图1](.picture/2017-Related Pins at Pinterest-The Evolution of a Real-World Recommender System-fig1.png)
+![图2](.picture/2017-Related Pins at Pinterest-The Evolution of a Real-World Recommender System-fig2.png)
+![图3](.picture/2017-Related Pins at Pinterest-The Evolution of a Real-World Recommender System-fig3.png)
+![图4](.picture/2017-Related Pins at Pinterest-The Evolution of a Real-World Recommender System-fig4.png)
+![图5](.picture/2017-Related Pins at Pinterest-The Evolution of a Real-World Recommender System-fig5.png)
+![图6](.picture/2017-Related Pins at Pinterest-The Evolution of a Real-World Recommender System-fig6.png)
+![图7](.picture/2017-Related Pins at Pinterest-The Evolution of a Real-World Recommender System-fig7.png)

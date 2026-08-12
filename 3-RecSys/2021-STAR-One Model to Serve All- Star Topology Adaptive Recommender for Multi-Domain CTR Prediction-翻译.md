@@ -26,6 +26,7 @@
 ## 1 引言
 
 传统的CTR预测模型[6, 13, 32, 43, 44]关注单一领域预测，即CTR模型在使用从该领域收集的样本进行训练后，为单个业务领域提供服务。每个业务领域是item在移动应用或PC网站上呈现给用户的具体位置。在像阿里巴巴和亚马逊这样的大型商业公司中，通常有许多需要CTR预测的业务领域，以提升用户满意度和提高业务收入。例如，在阿里巴巴中，业务领域范围从淘宝App首页的"猜你喜欢"、淘宝App首页的Banner到其他领域[46]。图1展示了阿里巴巴中两个代表性的业务领域。
+![图1](.picture/2021-STAR-One Model to Serve All- Star Topology Adaptive Recommender for Multi-Domain CTR Prediction-fig1.png)
 
 * **Banner（横幅广告）：** 在Banner中，推荐item出现在淘宝首页的顶部横幅中。item可以是单个商品、店铺或品牌。
 * **猜你喜欢：** 在猜你喜欢中，item均为单个商品，并在左侧或右侧栏中展示给用户。
@@ -35,8 +36,10 @@
 除了混合数据并训练共享模型，另一个简单的解决方案是为每个业务领域构建一个单独的模型。这种策略也有一些缺点：（1）某些业务领域的数据远少于其他领域。拆分数据忽略了领域的共性，导致训练数据大大减少，使模型难以学习。（2）维护多个模型会导致巨大的资源消耗，并需要更多的人力成本。当业务领域数量达到数百个时，这将变得异常繁重。本文旨在学习一个有效且高效的CTR模型来同时处理多个领域。我们将多领域CTR预测形式化为推荐器需要同时为 $M$ 个业务领域 $D_1, D_2, \ldots, D_M$ 进行CTR预测的问题。模型输入为 $(x, y, p)$ ，其中 $x$ 是多个业务领域使用的共同特征，如用户历史行为、用户画像特征、item特征和上下文特征。 $y \in \{0, 1\}$ 是点击标签， $p$ 是领域指示器，表示该样本来自哪个领域。注意 $(x, y)$ 从领域特定分布 $D_p$ 中抽取，且不同领域的分布不同。多领域CTR预测旨在构建一个有效且高效的模型，为每个领域提供准确的CTR预测，同时资源消耗成本极低。为实现这一目标，模型应充分利用领域共性并捕捉领域差异。
 
 改进多领域学习的一个可能策略是多任务学习[5, 25, 33]。如图3所示，多领域CTR预测与多任务学习的区别在于，多领域CTR预测是在不同领域上解决相同的任务，即CTR预测，其中不同领域的标签空间相同而数据分布不同。相比之下，大多数多任务学习方法[24–27, 36]解决同一领域中的不同任务，其中标签空间可能不同，例如联合估计CTR和转化率（CVR，Conversion Rate）[26, 39]。由于任务的异质性，现有的多任务学习方法侧重于在底层共享信息，但保持独立的特定任务输出层[33]。直接将多任务方法应用于多领域CTR预测不能充分利用标签空间中的领域关系，并且忽略了不同领域的不同数据分布。
+![图3](.picture/2021-STAR-One Model to Serve All- Star Topology Adaptive Recommender for Multi-Domain CTR Prediction-fig3.png)
 
 为了充分利用领域关系，我们提出了用于多领域CTR预测的**星型拓扑自适应推荐器（STAR）**。所提出的STAR模型具有星型拓扑结构，如图4所示。STAR由共享的中心参数和多组领域特定参数组成。每个领域的最终模型通过组合共享的中心参数和领域特定参数得到。中心参数用于学习所有领域中的通用行为，其中的通用知识可以在所有领域之间学习和迁移。领域特定参数捕捉不同领域中的特定行为，以促进更精细的CTR预测。星型拓扑结构促进了跨多个领域的有效信息转换，以学习领域共性和差异。
+![图4](.picture/2021-STAR-One Model to Serve All- Star Topology Adaptive Recommender for Multi-Domain CTR Prediction-fig4.png)
 
 本文通过逐元素权重乘积作为组合策略实现了STAR模型。由于嵌入层贡献了工业推荐器中大部分参数，新增的领域特定参数相对于总参数量可以忽略不计。因此，使用STAR模型服务多个领域仅增加很少的计算和内存成本，同时产生更好的性能。
 
@@ -140,6 +143,7 @@ $$
 ### 3.4 星型拓扑FCN
 
 经过PN层后，表示 $z^{\prime}$ 被输入到后续的星型拓扑多层全连接神经网络（星型拓扑FCN）中。如图5所示，所提出的星型拓扑FCN由一个共享的中心FCN和每个领域独立的FCN组成，因此FCN总数为 $M + 1$ 。第 $p$ 个领域的最终模型通过组合共享的中心FCN和领域特定FCN得到，其中中心参数学习所有领域的通用行为，领域特定参数捕捉不同领域的特定行为以促进更精细的CTR预测。
+![图5](.picture/2021-STAR-One Model to Serve All- Star Topology Adaptive Recommender for Multi-Domain CTR Prediction-fig5.png)
 
 具体来说，对于共享FCN，记 $W$ 为权重， $b$ 为神经网络层中的偏置。对于第 $p$ 个领域的特定FCN，记 $W_p$ 为权重， $b_p$ 为相应层中的偏置。设输入维度为 $c$ ，输出维度为 $d$ ，即 $W, W_p \in \mathbb{R}^{c \times d}$ ， $b, b_p \in \mathbb{R}^d$ 。第 $p$ 个领域的最终权重 $W_p^{\star}$ 和偏置 $b_p^{\star}$ 通过以下方式得到：
 
@@ -273,12 +277,14 @@ $$
 #### 4.3.3 辅助网络
 
 我们进行了实验来评估辅助网络对不同模型的效果。所有方法分别在有和没有提出的辅助网络的条件下进行训练。结果如图6所示。我们观察到辅助网络一致地提升了所有方法。结果验证了充分利用领域特征并使用它来捕捉领域差异的重要性。我们还观察到MulANN的辅助网络改进略弱于其他方法。原因可能在于模糊领域差异的对抗性损失与捕捉领域差异的领域特征相矛盾。
+![图6](.picture/2021-STAR-One Model to Serve All- Star Topology Adaptive Recommender for Multi-Domain CTR Prediction-fig6.png)
 
 #### 4.3.4 捕捉领域差异的能力
 
 按点击付费（CPC，Cost Per Click）是展示广告中广泛使用的基于性能的付费模式，广告主对点击进行竞价。在CPC中，展示系统将有效千次展示成本（eCPM，effective Cost Per Mille）计算为出价乘以CTR。系统按照eCPM的降序分配展示。在CPC中，CTR模型需要良好校准[12]以实现具有竞争力的广告系统，即预测CTR应尽可能接近实际CTR。
 
 我们展示了STAR更好地校准且能够捕捉领域差异。我们计算了每个领域的预测CTR与实际CTR之比（PCOC，Predicted CTR over CTR）。注意，PCOC越接近1.0，CTR预测越准确。为简化说明，我们在图7中展示了Base模型和STAR的PCOC。可以看出，与Base模型相比，STAR在不同领域的PCOC更紧凑且集中在1.0附近。结果验证了STAR捕捉领域差异的能力。
+![图7](.picture/2021-STAR-One Model to Serve All- Star Topology Adaptive Recommender for Multi-Domain CTR Prediction-fig7.png)
 
 ### 4.4 生产环境
 
@@ -299,6 +305,7 @@ $$
 
 ---
 
+![图2](.picture/2021-STAR-One Model to Serve All- Star Topology Adaptive Recommender for Multi-Domain CTR Prediction-fig2.png)
 ## 参考文献
 
 [1] Andreas Argyriou, Theodoros Evgeniou, and Massimiliano Pontil. 2008. Convex multi-task feature learning. Machine Learning 73, 3 (2008), 243–272.

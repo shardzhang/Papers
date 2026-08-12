@@ -79,6 +79,7 @@ $$
 **实验设置。** 我们使用 Criteo 的内部数据进行实验。然而，如第 1 节所讨论，FFM 已在许多公共数据集上被证明优于现有方法 [14]。此外，本节的目标是展示我们可以在使用自有数据的真实在线广告系统中使用 FFM 来改进基线。我们需要离线实验来确保 FFM 在我们的系统中（在预测性能和可扩展性方面）表现良好并进行参数调优，然后才能进行线上实验（A/B 测试）。
 
 我们使用渐进式验证（progressive validation）的变体进行实验，类似于 [20]。训练期之后的第二天作为验证集。如图 1 所示，该过程重复 $N$ 次，每次将学习期（标记为"tr"）向前移动 1 天。最终结果是所有测试集（标记为"te"）上的平均指标。
+![图1](.picture/2017-FFM-Field-aware Factorization Machines in a Real-world Online Advertising System-fig1.png)
 
 参数调优在与最终实验所用数据不同的时间切片上进行。遵循 [14]，调优以下参数：正则化参数、学习率和 latent 因子数量。我们使用早停法来避免过拟合。
 
@@ -239,6 +240,7 @@ $$
 如第 2 节所述，我们定期重新训练模型。在图 1 中，假设每个训练集包含若干天的数据，我们在每一步向前移动几个小时，则训练集 #1 和 #2 之间会有大量重叠。这意味着从 #1 获得的模型可能与从 #2 获得的模型非常相似。对于逻辑回归，通过使用模型 #1 初始化模型 #2，获得模型 #2 的训练时间可以显著减少。该技术被称为热启动（warm-start）[6, 25, 8]。
 
 对于逻辑回归——一个凸优化问题——无论是否使用热启动，模型最终都会收敛到全局最优。热启动仅影响收敛速度。然而，FFM 并非如此。为了解释原因，我们首先回顾 [14] 中已经研究过的 FFM 的一个不理想性质——我们没有一个好的 FFM 正则化方法，因此需要依赖早停法来防止过拟合。我们在图 2 中可视化了这一性质。为了获得最佳测试精度，必须仔细选择 epoch 数量——epoch 不足时模型可能欠拟合；epoch 过多时模型可能过拟合。为了确定最佳 epoch 数量，我们通常使用验证集来监控模型在每个 epoch 的性能。一旦验证损失上升，我们就停止训练过程。我们定义三个阶段来表示模型的"成熟度"：
+![图2](.picture/2017-FFM-Field-aware Factorization Machines in a Real-world Online Advertising System-fig2.png)
 
 - **未成熟（pre-mature）**：模型训练的 epoch 太少
 - **成熟（mature）**：模型训练了足够的 epoch
@@ -249,6 +251,7 @@ $$
 我们再次使用 Criteo 的 CTR 预测挑战赛数据集以确保可重复性。我们将数据集分成 90 个块，每步使用 44 个块进行训练，1 个块进行验证，1 个块进行测试。因此，整个实验从第 46 个块（作为测试集）开始，每步向前移动一个块，到第 90 个块（作为测试集）结束。验证集用于确定 epoch 数量。我们首先比较了不使用任何热启动方法的基线设置与算法 3 中描述的朴素热启动——它简单地将每步结束时获得的模型种子化到下一步。
 
 实验结果如图 3 所示，表明过成熟问题确实严重发生——随着实验向前推进，测试精度越来越差。同样注意，热启动技术的目标是在保持模型相同预测能力的同时减少训练时间。显然，通过使用 FFM 的朴素热启动，这一目标并未实现。
+![图3](.picture/2017-FFM-Field-aware Factorization Machines in a Real-world Online Advertising System-fig3.png)
 
 **算法 3：朴素热启动**
 
@@ -293,6 +296,7 @@ $$
 图 3 和 4 的实验结果表明，使用未成熟热启动后，测试性能不再差于基线，所需的 epoch 数量显著减少。
 
 值得注意的是，使用热启动的 FFM 的对数损失随着实验的推进而降低。这表明 FFM 可能具有记忆过去所学信息的某种能力。受此观察的启发，我们尝试减小训练集的大小。图 5 展示了使用未成熟热启动的不同训练集大小的比较。我们看到，在足够多的步骤之后，仅使用 4 个块训练集的未成熟方法仍然优于使用 44 个块的基线。通过使用更小的训练集，训练变得更快。训练时间的比较如表 6 所示。如果我们使用 4 个块进行训练，则比基线快 20 倍。
+![图5](.picture/2017-FFM-Field-aware Factorization Machines in a Real-world Online Advertising System-fig5.png)
 
 **表 6：整个实验的总 epoch 数、平均每个 epoch 的时间和总训练时间。** 基线和未成熟都使用 44 个块作为训练数据。
 
@@ -377,3 +381,4 @@ $$
 [28] W. Zhang, T. Du, and J. Wang. Deep learning over multi-field categorical data. In European Conference on Information Retrieval, pages 45–57. Springer, 2016.
 
 [29] M. Zinkevich, M. Weimer, L. Li, and A. J. Smola. Parallelized stochastic gradient descent. In J. D. Lafferty, C. K. I. Williams, J. Shawe-Taylor, R. S. Zemel, and A. Culotta, editors, Advances in Neural Information Processing Systems 23, pages 2595–2603. Curran Associates, Inc., 2010.
+![图4](.picture/2017-FFM-Field-aware Factorization Machines in a Real-world Online Advertising System-fig4.png)

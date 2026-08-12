@@ -49,6 +49,7 @@
 | 索引 | 构建倒排索引，每个词项 $t \to \{d_{j1}, \ldots, d_{jk}\}$ | 构建表格映射每个文档向量 $v_{dj} \to j$ | 训练模型（见第3.1.1节）映射 $d_j \to j$ |
 | 检索 | 近似稀疏矩阵乘法，寻找 $\arg\max_j v_q^T v_{dj}$ | 近似MIPS，寻找 $\arg\max_j v_q^T v_{dj}$ | 运行训练好的模型（top-1），寻找 $\arg\max_j \Pr(j|q)$ |
 
+![图1](.picture/2022-Transformer Memory as a Differentiable Search Index-fig1.png)
 图1：双编码器（上）与可微搜索索引（下）的对比。
 
 ## 2 相关工作
@@ -132,6 +133,7 @@ $$
 
 对于包含 $c$ 个或更少文档的簇，每个元素被分配一个从0到至多 $c-1$ 的任意数字，其数字位同样附加到现有标识符上。虽然这一特定过程生成的是一个十进制树，但通过其他多种合理的策略也可以生成类似类型的trie。在实践中，我们简单地对由小型8层BERT模型生成的嵌入应用k-means，设置 $c = 100$ 。我们在算法1中包含此过程的伪代码。
 
+![图2](.picture/2022-Transformer Memory as a Differentiable Search Index-fig2.png)
 图2：用于分配语义结构化标识符的层次聚类过程的可视化示例。在推理时，束搜索导航此trie以解码正确的docid。
 
 算法1：生成语义结构化标识符。（参见第3.2节。）
@@ -229,10 +231,13 @@ end function
 
 **索引与检索之间的相互作用。** 我们的早期实验表明，先学习索引任务，然后按顺序学习检索任务会导致平庸的性能。因此，我们专注于使用多任务学习共同训练索引和检索任务时探索好的比例 $r$ 。图4展示了修改索引与检索样本比例的效果。我们发现优化过程受到索引和检索任务之间相互作用的显著影响。将 $r$ 设置得过高或过低通常会导致性能不佳。我们发现比例为32通常效果良好。
 
+![图3](.picture/2022-Transformer Memory as a Differentiable Search Index-fig3.png)
 图3：DSI与DE在不同模型规模下的缩放图。性能指标为Hits@1。
 
+![图4](.picture/2022-Transformer Memory as a Differentiable Search Index-fig4.png)
 图4：索引与检索示例的多任务比例的影响。
 
+![图5](.picture/2022-Transformer Memory as a Differentiable Search Index-fig5.png)
 图5：不同文档表示的性能。（参见第4.2节。）
 
 ## 5 结论

@@ -280,12 +280,14 @@ User&ItemBias | 6e-4 | 0.1 | 1e-4 | 0.1090 | 4e-5 | 0.1 | 1e-4 | 0.0977
 
 在本研究中，我们比较邻域一致性对推荐性能的影响。保持其余参数不变，我们对归一化常数（ $\alpha$ ）的不同取值进行了完整的参数研究。FISMrmse和FISMauc方法的结果均展示在图1中。从结果中可以看出，当 $\alpha$ 的值在0.4到0.5范围内时获得最佳性能，这表明平均而言，对于item要获得高评分从而被推荐，需要相当数量的邻域item具有较高的相似度值。另一个值得注意的有趣结果是，FISMauc的性能在不同 $\alpha$ 值下比相应的FISMrmse性能更稳定。这可以归因于FISMauc最小化的是排序损失，其中与用户相关的偏置（评分的item数量）在很大程度上被抵消了。
 
+![图1](.picture/2013-FISM-factored item similarity models for top-N recommender systems-fig1.png)
 图1：邻域一致性对性能的影响。
 
 ### 7.3 S上诱导稀疏性的性能
 
 图2展示了FISM在稀疏化后的S矩阵上的性能。x轴表示按照第5.3节所述对矩阵进行稀疏化后S的密度。我们可以看到，在密度达到0.1到0.15的范围内时，推荐性能仅有极小的降低。同时，为每个用户计算推荐所需的平均时间急剧减少。这种推荐效率的提升是以非常小的推荐性能成本为代价的，这可能证明其在高吞吐量推荐率要求的应用中是合理的。
 
+![图2](.picture/2013-FISM-factored item similarity models for top-N recommender systems-fig2.png)
 图2：S上诱导稀疏性的性能。
 
 ### 7.4 估计方法的影响
@@ -304,8 +306,10 @@ SLIM强制施加非负约束，以确保学习到的item相似度对应正相关
 (b) Netflix数据集。
 (c) Yahoo数据集。
 
+![图3](.picture/2013-FISM-factored item similarity models for top-N recommender systems-fig3.png)
 图3：估计方法对性能的影响。
 
+![图4](.picture/2013-FISM-factored item similarity models for top-N recommender systems-fig4.png)
 图4：S中的非负和负条目。
 
 为了深入了解这个问题，我们观察了学习过程中 $\mathbf{S} = \mathbf{P}\mathbf{Q}^T$ 的性质。具体来说，我们观察了学习过程的每次迭代中S的负条目和非负条目的数量。观察结果绘制在图4中。我们可以看到，最初负条目和非负条目的数量相似，但随着模型开始学习，负条目的数量急剧减少。当负条目的数量显著小于非负条目的数量时（比例约为1:3），获得最佳性能。这表明，即使FISM中没有显式强制非负约束，模型仍然学习到大多数相似度值为非负条目。
@@ -362,6 +366,7 @@ FISMauc | 160, 8e-5, 1e-4 | 0.1426 | 0.0488 | 160, 2e-5, 5e-4 | 0.0974 | 0.0315 
 
 对应于"params"的列表示相应方法的模型参数。对于ItemKNN (cos)和ItemKNN (log)方法，参数是邻居数量。对于ItemKNN (cprob)，参数是邻居数量和 $\alpha$ 。对于PureSVD方法，参数是使用的奇异值数量。对于BPRkNN方法，参数是学习率和 $\lambda$ 。对于BPRMF方法，参数是隐因子数量和学习率。对于SLIM，参数是 $\beta$ 和 $\lambda$ ，对于FISM，参数是隐因子数量（ $k$ ）、正则化权重（ $\beta$ ）和学习率（ $\eta$ ）。对应于HR和ARHR的列分别代表命中率和平均倒数命中排名指标。下划线数字表示每个数据集的HR指标下表现最佳的模型。
 
+![图5](.picture/2013-FISM-factored item similarity models for top-N recommender systems-fig5.png)
 图5：不同N值下的性能。
 
 (a) ML100K数据集。
@@ -401,4 +406,5 @@ FISMauc | 160, 8e-5, 1e-4 | 0.1426 | 0.0488 | 160, 2e-5, 5e-4 | 0.0974 | 0.0315 
 
 [13] R. Tibshirani. Regression shrinkage and selection via the lasso. Journal of the Royal Statistical Society. Series B (Methodological), pages 267–288, 1996.
 
+![图6](.picture/2013-FISM-factored item similarity models for top-N recommender systems-fig6.png)
 图6：稀疏性对不同数据集性能的影响。

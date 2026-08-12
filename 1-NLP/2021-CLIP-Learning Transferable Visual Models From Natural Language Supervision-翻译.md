@@ -56,10 +56,12 @@
 最先进的计算机视觉系统使用大量的计算资源。Mahajan et al. (2018) 需要 19 个 GPU 年来训练其 ResNeXt101-32x48d，Xie et al. (2020) 需要 33 个 TPUv3 核心年来训练其 Noisy Student EfficientNet-L2。考虑到这两个系统都仅用于预测 1000 个 ImageNet 类别，从自然语言中学习一组开放视觉概念的任务似乎令人望而生畏。在我们的努力过程中，我们发现训练效率是成功扩展自然语言监督的关键，我们基于此指标选择了最终的预训练方法。
 
 我们的初始方法与 VirTex 类似，从零开始联合训练一个图像 CNN 和文本 Transformer 来预测图像的标题。然而，我们遇到了有效扩展这种方法的困难。在图 2 中，我们展示了一个 6300 万参数的 Transformer 语言模型（已经使用了其 ResNet-50 图像编码器两倍的计算量）学习识别 ImageNet 类别的速度比预测相同文本词袋编码的更简单基线慢三倍。
+![图2](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig2.png)
 
 这两种方法有一个关键的相似之处。它们都试图预测伴随每张图像的文本的确切词语。由于与图像共同出现的描述、评论和相关文本的多样性，这是一项困难的任务。最近在图像对比表示学习方面的工作发现，对比目标可以学习比等效预测目标更好的表示（Tian et al., 2019）。其他工作发现，虽然图像的生成模型可以学习高质量的图像表示，但它们需要比具有相同性能的对比模型多一个数量级以上的计算量（Chen et al., 2020a）。注意到这些发现，我们探索训练一个系统来解决可能更容易的代理任务：预测哪个文本整体与哪个图像配对，而不是预测该文本的确切词语。从相同的词袋编码基线开始，我们在图 2 中将预测目标替换为对比目标，并观察到零样本迁移到 ImageNet 的效率进一步提高了 4 倍。
 
 给定一批 N 个（图像，文本）对，CLIP 被训练来预测一批中实际发生的 N × N 个可能的（图像，文本）配对中的哪一个。为此，CLIP 通过联合训练一个图像编码器和文本编码器来学习一个多模态嵌入空间，最大化批次中 N 个真实配对的图像和文本嵌入之间的余弦相似度，同时最小化 N² − N 个错误配对嵌入之间的余弦相似度。我们对这些相似度分数优化对称交叉熵损失。在图 3 中，我们包含了 CLIP 实现核心的伪代码。据我们所知，这种批次构建技术和目标首次在深度度量学习领域作为多类 N-pair 损失被引入（Sohn, 2016），由 Oord et al. (2018) 作为 InfoNCE 损失推广用于对比表示学习，并最近由 Zhang et al. (2020) 在医学影像领域改编用于对比（文本，图像）表示学习。
+![图3](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig3.png)
 
 由于预训练数据集规模很大，过拟合不是主要问题，CLIP 的训练细节相比 Zhang et al. (2020) 的实现被简化了。我们从零开始训练 CLIP，不使用 ImageNet 权重初始化图像编码器，也不使用预训练权重初始化文本编码器。我们不使用表示和对比嵌入空间之间的非线性投影——这一变化由 Bachman et al. (2019) 引入并由 Chen et al. (2020b) 推广。我们仅使用线性投影将每个编码器的表示映射到多模态嵌入空间。我们没有注意到两个版本在训练效率上的差异，并推测非线性投影可能与当前仅图像自监督表示学习方法的细节共同适应。我们还移除了 Zhang et al. (2020) 中的文本变换函数 t_u（它从文本中均匀采样单个句子），因为 CLIP 预训练数据集中的许多（图像，文本）对只包含单个句子。我们还简化了图像变换函数 t_v。从调整大小后的图像中随机裁剪方形是训练期间使用的唯一数据增强。最后，控制 softmax 中 logit 范围的温度参数 τ 在训练期间作为对数参数化乘法标量直接优化，以避免作为超参数调整。
 
@@ -108,40 +110,49 @@ CLIP 在其他 2 个报告数据集上也优于 Visual N-Grams。在 aYahoo 上�
 类似于 GPT-3（Brown et al., 2020; Gao et al., 2020）周围的"提示工程"讨论，我们还观察到通过为每个任务定制提示文本可以显著提高零样本性能。以下是一些非详尽的示例。我们发现在几个细粒度图像分类数据集中，指定类别是有帮助的。例如，在 Oxford-IIIT Pets 上，使用 "A photo of a {label}, a type of pet." 有助于提供上下文，效果很好。同样，在 Food101 上指定食物类型，在 FGVC Aircraft 上指定飞机类型也有帮助。对于 OCR 数据集，我们发现将要识别的文本或数字用引号括起来可以提高性能。最后，我们发现在卫星图像分类数据集上，指定图像是这种形式是有帮助的，我们使用 "a satellite photo of a {label}." 的变体。
 
 我们还尝试了在多个零样本分类器上进行集合作为提高性能的另一种方式。这些分类器是通过使用不同的上下文提示（如 'A photo of a big {label}' 和 'A photo of a small {label}'）计算的。我们在嵌入空间而非概率空间上构建集成。这允许我们缓存一组平均文本嵌入，使得集成的计算成本在分摊到许多预测时与使用单个分类器相同。我们观察到在许多生成的零样本分类器上进行集成能够可靠地提高性能，并在大多数数据集上使用这种方法。在 ImageNet 上，我们集成了 80 个不同的上下文提示，这比上面讨论的单个默认提示又提高了 3.5% 的性能。综合考虑，提示工程和集成将 ImageNet 准确率提高了近 5%。在图 4 中，我们可视化了提示工程和集成如何改变一组 CLIP 模型的性能，与直接嵌入类别的无上下文基线方法（如 Li et al. (2017) 所做的）进行比较。
+![图4](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig4.png)
 
 #### 3.1.5. 零样本 CLIP 性能分析
 
 由于计算机视觉的任务无关零样本分类器尚未得到充分研究，CLIP 提供了一个有前途的机会来更好地理解这类模型。在本节中，我们对 CLIP 零样本分类器的各种性质进行了研究。第一个问题，我们简单地看一下零样本分类器的表现如何。为了提供上下文，我们将其与一个简单的现成基线进行比较：在规范的 ResNet-50 特征上拟合一个完全监督的、正则化的逻辑回归分类器。在图 5 中，我们在 27 个数据集上展示了这一比较。有关数据集和设置的详细信息，请参见附录 A。
+![图5](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig5.png)
 
 零样本 CLIP 在略多于一半的情况下优于此基线，在 27 个数据集中的 16 个上获胜。查看各个数据集揭示了一些有趣的行为。在细粒度分类任务上，我们观察到性能差异很大。在其中两个数据集 Stanford Cars 和 Food101 上，零样本 CLIP 比 ResNet-50 特征上的逻辑回归高出 20% 以上，而在另外两个数据集 Flowers102 和 FGVCAircraft 上，零样本 CLIP 低了 10% 以上。在 OxfordPets 和 Birdsnap 上，性能更加接近。我们怀疑这些差异主要是由于 WIT 和 ImageNet 之间每个任务监督量的不同。在"通用"对象分类数据集（如 ImageNet、CIFAR10/100、STL10 和 PascalVOC2007）上，性能相对相似，零样本 CLIP 在所有情况下都有轻微优势。在 STL10 上，CLIP 总体达到 99.3%，这似乎是一个新的最先进水平，尽管没有使用任何训练样本。零样本 CLIP 在两个衡量视频动作识别的数据集上显著优于 ResNet-50。在 Kinetics700 上，CLIP 比 ResNet-50 高出 14.5%。零样本 CLIP 在 UCF101 上也比 ResNet-50 的特征高 7.7%。我们推测这是因为自然语言为涉及动词的视觉概念提供了更广泛的监督，与 ImageNet 中以名词为中心的对象监督相比。
 
 观察零样本 CLIP 明显表现不佳的地方，我们看到零样本 CLIP 在几个专业、复杂或抽象任务上相当薄弱，如卫星图像分类（EuroSAT 和 RESISC45）、淋巴结肿瘤检测（PatchCamelyon）、合成场景中的对象计数（CLEVRCounts）、与自动驾驶相关的任务（如德国交通标志识别 GTSRB）以及识别到最近汽车的距离（KITTI Distance）。这些结果凸显了零样本 CLIP 在更复杂任务上的不足能力。相比之下，非专家人类可以稳健地执行其中几个任务，如计数、卫星图像分类和交通标志识别，表明有显著的改进空间。然而，我们注意到，对于学习器几乎没有先前经验的困难任务（如几乎所有人类和可能的 CLIP 都没有经验的淋巴结肿瘤分类），测量零样本迁移（而非少样本迁移）是否是有意义的评估尚不清楚。
 
 虽然将零样本性能与完全监督模型进行比较可以提供 CLIP 任务学习能力的上下文，但与少样本方法进行比较是更直接的比较，因为零样本是其极限。在图 6 中，我们可视化了零样本 CLIP 与许多图像模型（包括最佳公开可用的 ImageNet 模型、自监督学习方法和 CLIP 本身）特征上的少样本逻辑回归的比较情况。虽然直观地预期零样本会不如单样本，但我们发现零样本 CLIP 匹配了同一特征空间上 4-shot 逻辑回归的性能。这可能是因为零样本和少样本方法之间的一个重要区别。首先，CLIP 的零样本分类器是通过自然语言生成的，允许视觉概念被直接指定（"交流"）。相比之下，"正常"的有监督学习必须从训练样本中间接推断概念。缺乏上下文的基于样本的学习有一个缺点，即许多不同的假设可能与数据一致，特别是在单样本情况下。一张图像通常包含许多不同的视觉概念。虽然有能力的学习器能够利用视觉线索和启发式方法，例如假设所展示的概念是图像中的主要对象，但不能保证。
+![图6](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig6.png)
 
 零样本和少样本性能之间这种差异的一个潜在解决方案是将 CLIP 的零样本分类器作为少样本分类器权重的先验。虽然向生成的权重添加 L2 惩罚是这一想法的简单实现，但我们发现超参数优化通常会选择如此大的正则化值，以至于得到的少样本分类器"只是"零样本分类器。研究更好的方法将零样本迁移的优势与少样本学习的灵活性相结合是未来工作的一个有前途的方向。
 
 当将零样本 CLIP 与其他模型特征上的少样本逻辑回归进行比较时，零样本 CLIP 大致匹配我们评估套件中性能最佳的 16-shot 分类器的性能，该分类器使用在 ImageNet-21K 上训练的 BiT-M ResNet-152x2 的特征。我们确实在 JFT-300M 上训练的 BiT-L 模型性能会更好，但这些模型尚未公开发布。BiT-M ResNet-152x2 在 16-shot 设置中表现最佳有些令人惊讶，因为如第 3.2 节所分析的，Noisy Student EfficientNet-L2 在完全监督设置中在 27 个数据集上平均比它高出近 5%。
 
 除了研究零样本 CLIP 和少样本逻辑回归的平均性能外，我们还检查了个别数据集上的性能。在图 7 中，我们显示了在同一特征空间上的逻辑回归分类器需要多少个有标签样本才能匹配零样本 CLIP 性能的估计。由于零样本 CLIP 也是一个线性分类器，这估计了这种设置下零样本迁移的有效数据效率。为了免于训练数千个线性分类器，我们基于 1、2、4、8、16-shot（可能时）和完全监督线性分类器在每个数据集上性能的对数线性插值来估计有效数据效率。我们发现零样本迁移在每个数据集上的效率差异很大，从不到 1 个有标签样本到 184 个。两个数据集 Flowers102 和 EuroSAT 低于单样本模型。一半的数据集需要每类少于 5 个样本，中位数为 5.4。然而，平均估计数据效率为每类 20.8 个样本。这是由于 20% 的数据集在有监督分类器需要许多有标签样本才能匹配性能。在 ImageNet 上，零样本 CLIP 匹配了在同一特征空间上训练的 16-shot 线性分类器的性能。
+![图7](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig7.png)
 
 如果我们假设评估数据集足够大，以至于在其上训练的线性分类器的参数得到了很好的估计，那么，由于 CLIP 的零样本分类器也是一个线性分类器，完全监督分类器的性能大致设定了零样本迁移所能达到的上限。在图 8 中，我们在各数据集上比较了 CLIP 的零样本性能与完全监督线性分类器。虚线 y = x 代表一个"最优"零样本分类器，匹配其完全监督等效物的性能。对于大多数数据集，零样本分类器的性能仍然低于完全监督分类器 10% 到 25%，表明在改进 CLIP 的任务学习和零样本迁移能力方面仍有很大的提升空间。
+![图8](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig8.png)
 
 零样本性能与完全监督性能之间存在 0.82 的正相关（p 值 < 10⁻⁶），表明 CLIP 在连接底层表示和任务学习到零样本迁移方面相对一致。然而，零样本 CLIP 仅在 5 个数据集上接近完全监督性能：STL10、CIFAR10、Food101、OxfordPets 和 Caltech101。在这 5 个数据集上，零样本准确率和完全监督准确率都超过 90%。这表明 CLIP 可能对其底层表示也是高质量的任务的零样本迁移更有效。预测零样本性能作为完全监督性能函数的线性回归模型的斜率估计，完全监督性能每改善 1%，零样本性能改善 1.28%。然而，95 百分位置信区间仍然包含小于 1 的值（0.93-1.79）。
 
 在过去的几年中，深度学习系统的经验研究表明，性能是重要量（如训练计算量和数据集大小）的可预测函数（Hestness et al., 2017; Kaplan et al., 2020）。GPT 系列模型迄今在 1000 倍训练计算量增加中展示了零样本性能的一致改进。在图 9 中，我们检查了 CLIP 的零样本性能是否遵循类似的缩放模式。我们绘制了 5 个 ResNet CLIP 模型在 36 个不同数据集上的 39 个评估中的平均错误率，发现类似的对数-对数线性缩放趋势在 CLIP 中跨越了 44 倍的模型计算量范围内成立。虽然整体趋势是平滑的，但我们发现单个评估上的性能可能更加嘈杂。我们不确定这是由各个训练运行在子任务上的高方差（如 D'Amour et al. (2020) 所记录的）掩盖了稳步改善的趋势引起的，还是某些任务上的性能实际上是计算量的非单调函数。
+![图9](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig9.png)
 
 ### 3.2. 表示学习
 
 虽然我们在上一节中通过零样本迁移广泛分析了 CLIP 的任务学习能力，但更常见的做法是研究模型的表示学习能力。评估表示质量的方法有很多，对于"理想"表示应具备哪些属性也存在分歧（Locatello et al., 2020）。在从模型中提取的表示上拟合线性分类器并测量其在各种数据集上的性能是一种常见的方法。另一种方法是测量模型端到端微调的性能。这增加了灵活性，先前的工作已经令人信服地证明了微调在大多数图像分类数据集上优于线性分类（Kornblith et al., 2019; Zhai et al., 2019）。虽然微调的高性能出于实际原因激励了其研究，但我们仍然选择基于线性分类器的评估，原因如下。我们的工作专注于开发高性能的任务和数据集无关的预训练方法。微调由于在微调阶段将表示适应到每个数据集，可以补偿并在预训练阶段掩盖学习通用和鲁棒表示方面的失败。线性分类器由于其有限的灵活性，反而突出了这些失败并在开发过程中提供清晰的反馈。对于 CLIP，训练有监督线性分类器还有一个额外的好处，即与其零样本分类器所使用的方法非常相似，这使得在第 3.1 节中可以进行广泛的比较和分析。最后，我们旨在将 CLIP 与跨多个任务的全面现有模型集合进行比较。在 27 个不同数据集上研究 66 个不同模型需要调整 1782 个不同的评估。微调打开了更大的设计和超参数空间，这使得公平评估和计算比较多种技术变得困难，正如其他大规模实证研究中所讨论的（Lucic et al., 2018; Choi et al., 2019）。相比之下，线性分类器需要最少的超参数调整，并具有标准化的实现和评估程序。有关评估的更多详细信息，请参见附录 A。
 
 图 10 总结了我们的发现。为了尽量减少可能引起确认偏差或报告偏差担忧的选择效应，我们首先研究了 Kornblith et al. (2019) 的 12 个数据集评估套件上的性能。虽然小型 CLIP 模型如 ResNet-50 和 ResNet-101 优于其他在 ImageNet-1K 上训练的 ResNet（BiT-S 和原始模型），但它们不如在 ImageNet-21K 上训练的 ResNet（BiT-M）。这些小型 CLIP 模型也不如具有相似计算需求的 EfficientNet 系列中的模型。然而，使用 CLIP 训练的模型扩展性非常好，我们训练的最大模型（ResNet-50x64）在整体得分和计算效率上略微优于最佳现有模型（Noisy Student EfficientNet-L2）。我们还发现 CLIP Vision Transformer 的计算效率约为 CLIP ResNet 的 3 倍，这使我们能够在计算预算内达到更高的整体性能。这些结果定性地复制了 Dosovitskiy et al. (2020) 的发现，该发现报告了在足够大的数据集上训练时，Vision Transformer 比卷积网络更具计算效率。我们最好的整体模型是 ViT-L/14，它在我们的数据集上以更高的 336 像素分辨率微调了一个额外周期。该模型在此评估套件中平均优于最佳现有模型 2.6%。
+![图10](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig10.png)
 
 如图 21 定性所示，CLIP 模型学习的任务比以前在单个从随机初始化端到端训练的计算机视觉模型中所展示的更广泛。这些任务包括地理定位、光学字符识别、面部情绪识别和动作识别。这些任务都没有在 Kornblith et al. (2019) 的评估套件中衡量。这可以被认为是 Kornblith et al. (2019) 研究中偏向于与 ImageNet 重叠的任务的一种选择偏差。为了解决这个问题，我们还在更广泛的 27 个数据集评估套件上衡量性能。此评估套件详见附录 A，包括代表上述任务的数据集、German Traffic Signs Recognition Benchmark（Stallkamp et al., 2011）以及从 VTAB（Zhai et al., 2019）改编的其他几个数据集。
+![图21](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig21.png)
 
 在此更广泛的评估套件上，CLIP 的优势更加明显。所有 CLIP 模型，无论规模如何，在计算效率方面都优于所有评估的系统。最佳模型相对于先前系统的平均得分改进从 2.6% 增加到 5%。我们还发现自监督系统在我们更广泛的评估套件上表现明显更好。例如，虽然 SimCLRv2 在 Kornblith et al. (2019) 的 12 个数据集上平均仍然不如 BiT-M，但 SimCLRv2 在我们的 27 个数据集评估套件上优于 BiT-M。这些发现表明，继续扩大任务多样性和覆盖范围以更好地理解系统的"通用"性能是有价值的。我们怀疑沿着 VTAB 方向的额外评估工作将是有价值的。
 
 除了上述汇总分析之外，我们还在图 11 中可视化了最佳 CLIP 模型和我们评估套件中最佳模型在所有 27 个数据集上的逐数据集性能差异。CLIP 在 27 个数据集中的 21 个上优于 Noisy Student EfficientNet-L2。CLIP 在需要 OCR 的任务（SST2 和 HatefulMemes）、地理定位和场景识别（Country211、SUN397）以及视频中的动作识别（Kinetics700 和 UCF101）上改进最大。此外，CLIP 在细粒度汽车和交通标志识别（Stanford Cars 和 GTSRB）上也表现更好。这可能反映了 ImageNet 中监督过于狭窄的问题。GTSRB 上 14.7% 的改进可能表明 ImageNet-1K 存在问题，该数据集对所有交通和街道标志只有一个标签。这可能鼓励有监督表示压缩类别内部细节并损害细粒度下游任务的准确性。如前所述，CLIP 在几个数据集上仍然不如 EfficientNet。毫不奇怪，EfficientNet 相对于 CLIP 表现最好的数据集正是它所训练的数据集：ImageNet。EfficientNet 在低分辨率数据集如 CIFAR10 和 CIFAR100 上也略微优于 CLIP。我们怀疑这至少部分是由于 CLIP 中缺乏基于尺度的数据增强。EfficientNet 在 PatchCamelyon 和 CLEVRCounts 上也略好，这些数据集的整体性能对两种方法来说仍然很低。
+![图11](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig11.png)
 
 ### 3.3. 对自然分布偏移的鲁棒性
 
@@ -156,8 +167,10 @@ Taori et al. (2020) 是一项最近的综合研究，旨在量化和理解 Image
 ResNet-101 在这些自然分布偏移上评估时犯的错误是 ImageNet 验证集的 5 倍。令人鼓舞的是，Taori et al. (2020) 发现分布偏移下的准确率随着 ImageNet 准确率可预测地增加，并且可以很好地建模为 logit 变换准确率的线性函数。Taori et al. (2020) 利用这一发现提出，鲁棒性分析应区分有效鲁棒性和相对鲁棒性。有效鲁棒性衡量分布偏移下准确率的改进超出分布内和分布外准确率之间已记录关系所预测的程度。相对鲁棒性捕获分布外准确率的任何改进。Taori et al. (2020) 认为鲁棒性技术应旨在同时提高有效鲁棒性和相对鲁棒性。
 
 Taori et al. (2020) 中研究的几乎所有模型都在 ImageNet 数据集上训练或微调。回到本节引言中的讨论——训练或适应 ImageNet 数据集分布是观察到的鲁棒性差距的原因吗？直觉上，零样本模型不应该能够利用仅在特定分布上成立的虚假相关性或模式，因为它没有在该分布上训练。因此，有理由期望零样本模型具有更高的有效鲁棒性。在图 13 中，我们比较了零样本 CLIP 与现有 ImageNet 模型在自然分布偏移上的性能。所有零样本 CLIP 模型都大幅提高了有效鲁棒性，并将 ImageNet 准确率与分布偏移下准确率之间的差距缩小了多达 75%。
+![图13](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig13.png)
 
 虽然这些结果表明零样本模型可以更加鲁棒，但它们不一定意味着 ImageNet 上的有监督学习导致了鲁棒性差距。CLIP 的其他细节，如其大规模多样化的预训练数据集或使用自然语言监督，也可能导致更加鲁棒的模型，无论它们是零样本还是微调的。作为初步实验以潜在地开始缩小这一范围，我们还衡量了 CLIP 模型在通过在 ImageNet 训练集上拟合 L2 正则化逻辑回归分类器适应 ImageNet 分布后性能如何变化。我们在图 14 中可视化了性能从零样本分类器的变化情况。虽然将 CLIP 适应到 ImageNet 分布将其 ImageNet 准确率提高了 9.2% 至总体 85.4%，并且与 Mahajan et al. (2018) 的 2018 年 SOTA 准确率持平，但分布偏移下的平均准确率略有下降。
+![图14](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig14.png)
 
 看到 9.2% 的准确率提高（对应于大约 3 年的 SOTA 改进）未能转化为分布偏移下平均性能的任何提高是令人惊讶的。我们还在图 14 中逐数据集分解了零样本准确率和线性分类器准确率之间的差异，发现性能在一个数据集 ImageNetV2 上仍然显著提高。ImageNetV2 密切遵循了原始 ImageNet 数据集的创建过程，这表明来自有监督适应的准确率提高集中在 ImageNet 分布附近。性能在 ImageNet-R 上下降了 4.7%、在 ObjectNet 上下降了 3.8%、在 ImageNet Sketch 上下降了 2.8%、在 ImageNet-A 上下降了 1.9%。在另外两个数据集 Youtube-BB 和 ImageNet Vid 上的变化不显著。
 
@@ -166,6 +179,7 @@ Taori et al. (2020) 中研究的几乎所有模型都在 ImageNet 数据集上�
 我们还研究了灵活的零样本自然语言图像分类器所启用的另一种鲁棒性干预。7 个迁移数据集中的目标类别并不总是与 ImageNet 的类别完美对齐。两个数据集 Youtube-BB 和 ImageNet-Vid 由 ImageNet 的超类组成。这在尝试使用 ImageNet 模型的固定 1000 路分类器进行预测时提出了问题。Taori et al. (2020) 通过根据 ImageNet 类别层次结构对所有子类进行最大池化预测来处理这个问题。有时这种映射远非完美。对于 Youtube-BB 中的人类类别，通过池化棒球运动员、新郎和潜水员的 ImageNet 类别来进行预测。使用 CLIP，我们可以直接根据每个数据集的类别名称为每个数据集生成定制的零样本分类器。在图 14 中，我们看到这将平均有效鲁棒性提高了 5%，但仅集中在少数数据集上的大幅改进。奇怪的是，ObjectNet 上的准确率也提高了 2.3%。尽管该数据集被设计为与 ImageNet 类别密切重叠，但使用 ObjectNet 创建者为每个类别提供的名称仍然比使用 ImageNet 类别名称并在必要时池化预测有微小的帮助。
 
 虽然零样本 CLIP 提高了有效鲁棒性，但图 14 显示在完全有监督设置中这一好处几乎完全消失。为了更好地理解这种差异，我们研究了有效鲁棒性在从零样本到完全有监督的连续体上如何变化。在图 15 中，我们可视化了在最佳 CLIP 模型特征上的 0-shot、1-shot、2-shot、4-shot ...、128-shot 和完全有监督逻辑回归分类器的性能。我们看到，虽然少样本模型也比现有模型表现出更高的有效鲁棒性，但随着更多训练数据增加分布内性能，这种好处逐渐消退，对于完全有监督模型来说虽然不完全但基本消失了。此外，零样本 CLIP 比具有等效 ImageNet 性能的少样本模型明显更加鲁棒。
+![图15](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig15.png)
 
 ### 4. 与人类表现的比较
 
@@ -178,6 +192,7 @@ CLIP 与人类表现和人类学习相比如何？为了更好地理解人类在
 这表明仍有算法改进可以减少机器和人类样本效率之间的差距，正如 Lake et al. (2016) 和其他人所指出的。因为这些 CLIP 的少样本评估没有有效利用先验知识而人类利用了，我们推测找到一种将先验知识正确整合到少样本学习中的方法是 CLIP 算法改进的重要一步。据我们所知，使用高质量预训练模型特征上的线性分类器接近少样本学习的最先进水平（Tian et al., 2020），这表明最佳少样本机器学习方法和人类少样本学习之间存在差距。
 
 如果我们绘制人类准确率与 CLIP 零样本准确率的关系（图 16），我们看到对 CLIP 最难的问题对人类也很难。在错误一致的情况下，我们的假设是这至少由两个因素引起：数据集中的噪声（包括错误标注的图像）和分布外图像对人类和模型来说都很困难。
+![图16](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig16.png)
 
 ### 5. 数据重叠分析
 
@@ -192,6 +207,7 @@ CLIP 与人类表现和人类学习相比如何？为了更好地理解人类在
 3) 重叠量通常很小，因此我们还运行二项显著性检验，使用 Clean 上的准确率作为零假设，计算 Overlap 子集的单侧（更大）p 值。我们还计算 Dirty 上的 99.5% Clopper-Pearson 置信区间作为另一个检查。
 
 此分析的摘要在图 17 中呈现。在研究的 35 个数据集中，9 个数据集完全没有检测到重叠。这些数据集大多数是合成的或专门的，不太可能作为正常图像发布在互联网上（例如 MNIST、CLEVR 和 GTSRB），或者由于包含我们数据集创建日期之后的新数据而保证没有重叠（ObjectNet 和 Hateful Memes）。这证明了我们的检测器具有低误报率，这很重要，因为误报会低估我们分析中污染的影响。中位重叠为 2.2%，平均重叠为 3.2%。由于这种少量的重叠，整体准确率很少移动超过 0.1%，只有 7 个数据集超过此阈值。其中，只有 2 个在 Bonferroni 校正后具有统计学显著性。检测到的最大改进仅为 Birdsnap 上的 0.6%，该数据集具有第二大的重叠 12.1%。最大的重叠是 Country211 的 21.5%。这是因为它是由 YFCC100M 构建的，我们的预训练数据集包含其过滤子集。尽管有如此大的重叠，Country211 上的准确率仅增加了 0.2%。这可能是因为伴随示例的训练文本通常与下游评估衡量的特定任务无关。Country211 衡量地理定位能力，但检查这些重复项的训练文本显示它们通常不提及图像的位置。
+![图17](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig17.png)
 
 我们意识到我们的分析有两个潜在问题。首先，我们的检测器并不完美。虽然它在其代理训练任务上实现了接近 100% 的准确率，并且手动检查 + 阈值调整在找到的最近邻中实现了非常高的精度和良好的召回率，但我们无法在 4 亿个示例上检查其召回率。我们分析的另一个潜在混淆因素是底层数据分布在 Overlap 和 Clean 子集之间可能偏移。例如，在 Kinetics-700 上，许多"重叠"实际上是全黑的过渡帧。这解释了为什么 Kinetics-700 在 Overlap 上有明显的 20% 准确率下降。我们怀疑更微妙的分布偏移可能也存在。我们在 CIFAR-100 上注意到的一种可能性是，由于其图像的非常低的分辨率，许多重复项是小物体（如鸟类或飞机）的误报。准确率的变化可能反而由于重复项的类别分布或难度的变化。不幸的是，这些分布和难度偏移也可能掩盖过拟合的影响。
 
@@ -319,6 +335,12 @@ CLIP 的预训练任务优化文本-图像检索。这一研究领域可以追�
 
 我们要感谢数百万参与创建 CLIP 训练数据的人们。我们还要感谢 Susan Zhang 在 OpenAI 期间在图像条件语言模型方面的工作，Ishaan Gulrajani 捕获了伪代码中的错误，以及 Irene Solaiman、Miles Brundage 和 Gillian Hadfield 对论文更广泛影响部分的深思熟虑的反馈。我们也感谢 OpenAI 的加速和超级计算团队，他们为该项目使用的软件和硬件基础设施做出了关键工作。最后，我们还要感谢整个项目中使用的许多软件包的开发者，包括但不限于 Numpy（Harris et al., 2020）、SciPy（Virtanen et al., 2020）、ftfy（Speer, 2019）、TensorFlow（Abadi et al., 2016）、PyTorch（Paszke et al., 2019）、pandas（pandas development team, 2020）和 scikit-learn（Pedregosa et al., 2011）。
 
+![图1](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig1.png)
+![图12](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig12.png)
+![图18](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig18.png)
+![图19](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig19.png)
+![图20](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig20.png)
+![图22](.picture/2021-CLIP-Learning Transferable Visual Models From Natural Language Supervision-fig22.png)
 ### 参考文献
 
 [1] Abadi, M., Barham, P., Chen, J., Chen, Z., Davis, A., Dean, J., Devin, M., Ghemawat, S., Irving, G., Isard, M., et al. Tensorflow: A system for large-scale machine learning. In 12th USENIX symposium on operating systems design and implementation (OSDI 16), pp. 265–283, 2016.

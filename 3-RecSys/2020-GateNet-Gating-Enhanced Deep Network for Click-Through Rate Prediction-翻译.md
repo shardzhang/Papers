@@ -49,6 +49,7 @@
 
 我们可以在大多数当前DNN排序系统中找到两个常用组件：嵌入层和MLP隐藏层。我们旨在增强模型能力，并提出了名为GateNet的模型用于CTR预测任务。首先，我们提出了特征嵌入门层，它可以将嵌入特征转换为门感知嵌入特征，并有助于从特征级别选择显著的潜在信息。其次，我们还提出了隐藏门，它可以自适应地控制哪些潜在特征以及哪些相关的特征交互可以传递到下游层。带有特征嵌入门的DNN模型和带有隐藏门的DNN模型如图1的中部和右侧所示。在以下小节中，我们将详细描述GateNet中的特征嵌入层和隐藏门层。
 
+![图1](.picture/2020-GateNet-Gating-Enhanced Deep Network for Click-Through Rate Prediction-fig1.png)
 图1：我们提出的GateNet的架构。左图是标准DNN网络，中图是带有特征嵌入门的模型，右图是带有隐藏门的深度模型。
 
 ### 3.1 特征嵌入门
@@ -81,6 +82,7 @@ GE = [ge1, ge2, · · ·, gei, · · ·, gef] (3)
 
 通常的做法是使门输出一个标量，表示整个特征嵌入的重要性。为了学习特征嵌入中位级别的显著重要信息，我们可以使该门输出一个包含特征嵌入细粒度信息的向量。我们将这种嵌入门称为"位级"门，将普通门称为"向量级"门。向量级和位级的特征嵌入门如图2所示。
 
+![图2](.picture/2020-GateNet-Gating-Enhanced Deep Network for Click-Through Rate Prediction-fig2.png)
 图2：特征嵌入门。左图表示向量级特征嵌入门，右图是位级特征嵌入门。
 
 从图中可以看出，我们比较向量级特征门和位级特征门的差异如下：
@@ -99,6 +101,7 @@ a(l) = \sigma(W(l)a(l−1) + b(l)) (4)
 
 其中l是深度，\sigma是激活函数。W(l)、b(l)、a(l)分别是第l层的模型权重、偏置和输出。
 
+![图3](.picture/2020-GateNet-Gating-Enhanced Deep Network for Click-Through Rate Prediction-fig3.png)
 图3：隐藏门层
 
 与位级特征嵌入门类似，我们提出了可应用于隐藏层的隐藏门。如图3所示，我们按如下方式使用此门：

@@ -133,10 +133,12 @@ $$
 **物品基数** 对于某些特征，例如目标物品，模型考虑的独特物品数量 $I$ 可能远大于稀疏模块中可行的嵌入表大小 $H$ 。在这种情况下，映射函数 $f(x)$ 引入了碰撞：两个或多个原始ID将映射到同一行。映射函数 $f(x)$ 通常选择为简单哈希。由于初始原始ID在物品创建时随机生成，由此产生的碰撞本质上是随机的。这种随机碰撞会对嵌入的表示质量产生负面影响，并成为跨物品有效知识共享的障碍。
 
 **曝光倾斜** 对于目标物品特征，训练数据中的物品分布高度倾斜。图2显示，在我们的系统中，一小部分物品主导了物品曝光分布：按受欢迎程度排序物品时，前0.1%的"头部"物品拥有全部物品曝光的25%，接下来的5.5%的"躯干"物品拥有累计曝光的50%，而剩余的94.4%的"尾部"物品占据剩余的25%曝光。
+![图2](.picture/2025-Semantic IDs for Industrial Recommendation- Mitigating the Curse of Large and Dynamic ID Spaces-fig2.png)
 
 由于尾部物品的训练样本很少，学习泛化良好的嵌入表示 $e(x)$ 可能具有挑战性。随机哈希不允许头部和躯干物品有效地与语义相似的尾部物品共享知识，因为几个物品到单个嵌入的分配是随机的。
 
 **ID漂移** 现有的物品ID空间高度动态，大量旧物品退役（图3）和新物品进入系统。我们将系统中的这种物品分布漂移称为"原始ID漂移"。原始ID漂移现象源于在线推荐系统的性质，其中每天都有新广告创建，且大多数广告的生命周期相对较短。
+![图3](.picture/2025-Semantic IDs for Industrial Recommendation- Mitigating the Curse of Large and Dynamic ID Spaces-fig3.png)
 
 作为副产品，基于随机哈希的推荐模型会随时间经历严重的嵌入表示漂移：随着物品进入和退出系统，给定的嵌入 $e$ 在不同时间代表不同的物品。
 
@@ -272,6 +274,7 @@ RQ-VAE模型在Meta广告排序的内容理解（CU）模型上进行训练。CU
 ### 7.2 在线语义ID服务系统
 
 图4显示了实时语义ID特征的在线服务流水线。在广告创建时，我们处理广告内容信息并提供给CU模型。输出的CU嵌入随后通过RQ-VAE模型，该模型为每个原始ID计算语义ID信号。信号随后存储在实体数据存储（Entity Data Store）中。在特征生成阶段，目标物品原始ID和用户交互原始ID历史从实体数据存储中获取语义ID信号进行丰富，以产生语义特征。当服务请求到达时，预计算的特征被获取并传递给下游排序模型。
+![图4](.picture/2025-Semantic IDs for Industrial Recommendation- Mitigating the Curse of Large and Dynamic ID Spaces-fig4.png)
 
 ### 7.3 生产性能提升
 
@@ -295,6 +298,7 @@ $$
 $$
 
 使用语义ID更深层前缀带来的点击损失率降低总结在图5中。
+![图5](.picture/2025-Semantic IDs for Industrial Recommendation- Mitigating the Curse of Large and Dynamic ID Spaces-fig5.png)
 
 由于语义ID基于物品语义划分物品语料库，我们得出结论，预测相似性与语义相似性相关。这支持了第6.3节中的表示空间分析结果。此外，语义ID中码的分层结构有效捕捉物品语义的更细粒度细节：更深层的前缀单调地降低点击损失率。
 
@@ -316,6 +320,7 @@ $$
 
 我们展示了如何使用语义ID为物品表示创建稳定的ID空间，并提出了语义ID前缀n-gram，显著提升了语义ID在排序模型中的性能。在离线实验中，我们研究了训练好的排序模型，发现与随机哈希和独立嵌入基线相比，语义ID下嵌入表示不稳定性的有害影响得到了缓解。我们详细描述了在Meta广告推荐系统中语义ID特征的成功产品化，并展示了在线生产系统获得了显著的性能提升以及降低的下游广告投放方差。
 
+![图1](.picture/2025-Semantic IDs for Industrial Recommendation- Mitigating the Curse of Large and Dynamic ID Spaces-fig1.png)
 ## 参考文献
 
 Bo Chang, Changping Meng, He Ma, Shuo Chang, Yang Gu, Yajun Peng, Jingchen Feng, Yaping Zhang, Shuchao Bi, Ed H Chi, et al. 2024. Cluster Anchor Regularization to Alleviate Popularity Bias in Recommender Systems. In *Companion Proceedings of the ACM on Web Conference 2024*. 151–160.
@@ -404,3 +409,4 @@ PMA模块使用与Transformer模块相同的公式（公式7和8）形成，不�
 ### B 语义ID的点击分布
 
 语义ID空间中的点击分布（图6）明显比原始ID空间中的点击分布更少倾斜。注意，图2展示了累计曝光分布，而图6展示了点击的边际分布。
+![图6](.picture/2025-Semantic IDs for Industrial Recommendation- Mitigating the Curse of Large and Dynamic ID Spaces-fig6.png)

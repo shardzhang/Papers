@@ -40,6 +40,7 @@ Yiqun Liu, Kaushik Rangadurai, Yunzhong He, Siddarth Malreddy, Xunlong Gui, Xiao
 
 Facebook Marketplace^1 是一个全球性平台，使全球各地的企业和买家能够买卖商品。数以亿计的产品被列出待售，Marketplace为买家提供了一个探索、发现和购买所需商品的生态系统。我们的目标是提升Marketplace搜索引擎的质量和召回率，以便我们能够根据用户的文本查询展示正确的产品集合。参见图1中针对查询"hats"的Marketplace搜索引擎输出。
 
+![图1](.picture/2021-Que2Search-Fast and Accurate Query and Document Understanding for Search at Facebook-fig1.png)
 **图1：Facebook Marketplace 搜索结果页的截图。**
 
 ^1 http://www.facebook.com/marketplace
@@ -84,6 +85,7 @@ Que2Search通过引入多种建模技术在生产应用中展现了收益，包�
 
 ^2 https://pytorch.org/docs/stable/generated/torch.nn.EmbeddingBag.html
 
+![图2](.picture/2021-Que2Search-Fast and Accurate Query and Document Understanding for Search at Facebook-fig2.png)
 **图2：Que2Search架构——Facebook的可扩展查询与产品理解模型。**
 
 对于文档塔，我们拥有产品标题、描述和图像等输入特征。我们使用一个共享的6层XLM-R[7]编码器用于所有文本字段（如标题和描述）；共享编码器有助于在batch recall@1上取得改进（见表3）。我们还应用EmbeddingBag[24]分别对标题和描述的字符三-gram多类别特征进行编码，如前一段所述。每个文档附带可变数量的图像。我们为每张附带的图像取预训练的图像表示（Bell等人[2]），应用一个共享的MLP（Multilayer Perceptron，多层感知机）层和Deep Sets（Zaheer等人[29]）融合来获得图像通道表示。与查询塔相同，我们随后使用学习到的注意力权重融合来自不同特征通道的表示，得到文档的最终表示。
@@ -141,6 +143,7 @@ $$
 $$
 
 图3是我们某个模型训练实例的多阶段训练ROC AUC评估指标曲线，我们在第二阶段训练中看到了ROC AUC的提升。
+![图3](.picture/2021-Que2Search-Fast and Accurate Query and Document Understanding for Search at Facebook-fig3.png)
 
 ### 3.4 评估
 
@@ -148,6 +151,7 @@ $$
 
 **Batch recall@$K$：** 该指标衡量对角线元素 $\cos(q_i, d_i)$ 是否位于行 $\cos(q_i, d_j)$（$j \in [1, B]$）的前 $K$ 个分数中。该指标在训练期间易于计算，并且是模型优化的最接近指标，使我们能够快速迭代建模思路。
 
+![图4](.picture/2021-Que2Search-Fast and Accurate Query and Document Understanding for Search at Facebook-fig4.png)
 **图4：随机负例的生成。**
 
 **ROC AUC：** 在Facebook Marketplace中，我们定期收集人工评分数据以评估搜索引擎质量。人工评分评估针对公开可见的产品进行，查询数据在评估前经过去标识化和聚合处理。给定一组预选的搜索查询（数量通常为数千），我们抓取搜索引擎结果并将其发送给人工评分员进行评估：1表示满足查询搜索意图的相关文档，0表示不相关。这为我们提供了一个带有标签的（查询，文档）对评估数据集。以推断出的查询和文档嵌入的余弦相似度 $\cos(q, d)$ 作为分数，我们计算ROC AUC。ROC AUC在训练期间用作早停的验证指标，并在模型训练后用作离线评估指标。人工评分数据帮助我们评估对相关性和搜索质量的潜在影响。
@@ -225,6 +229,7 @@ $$
 
 我们现在描述Que2Search（Facebook面向Marketplace的大规模产品理解系统）部署的系统架构。Que2Search已部署到生产中，旨在对实时创建的产品进行操作。模型推理在称为Predictor[12]的机器集群上计算。Predictor提供了部署模型的功能以及使用一组输入特征调用模型的API。Predictor是一个云服务，可以相应地进行扩展。在调用Predictor时，查询嵌入在P99下1.5毫秒内计算完成，文档嵌入在7毫秒内计算完成。我们使用Unicorn[8]将产品嵌入与其他产品索引一起存储，用于搜索检索和排序。
 
+![图5](.picture/2021-Que2Search-Fast and Accurate Query and Document Understanding for Search at Facebook-fig5.png)
 **图5：Que2Search 的系统架构。**
 
 **文档端模型服务。** 在产品创建和更新时，将异步调用Predictor以生成其产品嵌入，嵌入向量将实时更新到搜索索引中，以准备产品用于检索和排序。换句话说，产品嵌入在搜索查询发出时已经预计算并索引，这使得跨大量产品候选计算查询-产品相似度变得可行。此外，Unicorn进一步对嵌入空间进行聚类和量化[16]以加速计算。我们的基础设施还支持对旧产品进行回填嵌入。在新模型部署后，通常需要不到24小时的时间将嵌入回填到足够多的文档到搜索索引中，以准备进行实验。

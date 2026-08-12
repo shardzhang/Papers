@@ -384,10 +384,17 @@ $$
 | 短视频理解 | 0.6031 | 0.6443 | **0.7300** |
 ---
 ## 图表描述
+![图1](.picture/2025-OneRecThink-In-Text Reasoning for Generative Recommendation-fig1.png)
 **图1：OneRec-Think统一对话、推理和推荐框架的示例。** 展示了模型如何根据用户对话、描述和推理进行交互式推荐，包括提示"描述视频"、"描述用户"和"思考与推荐"，以及不同rollout阶段的推理和推荐结果。
+![图2](.picture/2025-OneRecThink-In-Text Reasoning for Generative Recommendation-fig2.png)
 **图2：OneRec-Think的框架图。** 第一阶段，通过多任务预训练实现item级语义对齐。第二阶段，通过提示模型生成偏好推理过程来激活显式推理。第三阶段，通过基于推荐定制奖励的RL来细化推理路径。
+![图3](.picture/2025-OneRecThink-In-Text Reasoning for Generative Recommendation-fig3.png)
 **图3：上下文感知推荐适配的演示：** 我们的模型根据用户指令动态将推荐转向放松内容。用户说"我现在心情不好，请给我推一些轻松的内容"，模型通过推理后推荐了动画电影、宠物日常、自然风光等轻松视频。
+![图4](.picture/2025-OneRecThink-In-Text Reasoning for Generative Recommendation-fig4.png)
 **图4：细粒度兴趣推理的演示，** 展示了从用户行为分析到可解释推荐的端到端过程。三个案例分别展示了游戏、校园生活和二次元文化等不同兴趣的推理路径。
+![图5](.picture/2025-OneRecThink-In-Text Reasoning for Generative Recommendation-fig5.png)
 **图5：模型在不同推理步骤使用波束搜索时的推理过程演化，** 从广泛的兴趣匹配（左）到细粒度主题规约（中），推荐结果（右）显示与每个推理步骤的语义一致性。
+![图6](.picture/2025-OneRecThink-In-Text Reasoning for Generative Recommendation-fig6.png)
 **图6：item-文本交错推理的演示。** 展示了用户兴趣推理输出中itemtoken和文本token交错出现的模式，以及对应的英文推理内容。
+![图7](.picture/2025-OneRecThink-In-Text Reasoning for Generative Recommendation-fig7.png)
 **图7：短视频推荐场景的推理示例。** 第一个案例展示从游戏和硬件兴趣到显示器推荐的推理链；第二个案例展示从体育/军事内容到青春期叛逆沟通问题的深层需求推理。

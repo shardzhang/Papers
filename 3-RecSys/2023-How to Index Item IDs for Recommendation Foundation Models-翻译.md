@@ -149,6 +149,7 @@ IID为item使用单token索引，不假设关于item的任何先验信息，与R
 
 具体而言，我们基于训练集创建一个图，如图1(a)所示：每个item作为一个节点，两个item之间的边代表它们的共现关系（即两个item共同出现在用户的交互序列中），边权重表示共现频率（即两个item共同出现的用户交互序列数量）。图的邻接矩阵（图1(b)）表示item在共现频率方面的相似性，图的拉普拉斯矩阵（图1(c)）可以分解以实现谱聚类[21, 28]。谱聚类过程将item分组到聚类中，使得共享更多共现相似性的item被分到同一聚类中；每个聚类可以通过递归地在该大聚类内应用谱聚类过程进一步细分为更细粒度的聚类，从而形成层次化的聚类层级，如图1(a)所示。
 
+![图1](.picture/2023-How to Index Item IDs for Recommendation Foundation Models-fig1.png)
 **图1：基于谱矩阵分解的item共现图谱聚类示意图。(a) item共现图上的递归谱聚类；(b) 邻接矩阵；(c) 拉普拉斯矩阵。**
 
 更具体地说，谱聚类利用拉普拉斯矩阵的特征向量将节点分组到聚类中[21, 28]。它确保同一聚类内的item具有更高的相似性，而不同聚类的item表现出较低的相似性。我们使用Python scikit-learn包³中的标准谱聚类实现。我们不展开谱聚类算法的过多细节，因为它被认为是数据分析的教科书级算法[16]。然而，我们确实想讨论用于控制递归聚类过程的两个重要参数：(1) $N$：我们在聚类的每一层将item划分为 $N$ 个聚类；(2) $k$：最终聚类中允许的最大item数，作为递归聚类过程的停止标准，即当一个聚类包含最多 $k$ 个item时，我们将不再进一步缩减其大小。最后，聚类结果可以被制定为层次化的树结构，如图2所示。在该图中，每个非叶节点（图中的大黄色节点）代表在对应层创建的聚类，每个叶节点（小蓝色节点）代表对应最终聚类中的一个item。在下一子节中，我们将介绍如何基于层次化树结构创建item ID。
@@ -161,6 +162,7 @@ IID为item使用单token索引，不假设关于item的任何先验信息，与R
 
 我们首先为非叶节点分配token。非叶节点使用 $k$ 个独立token从 $\langle 0 \rangle$ 到 $\langle k-1 \rangle$ 逐层遍历整棵树进行枚举，如图2所示。一旦所有 $k$ 个token被使用，我们简单地从 $\langle 0 \rangle$ 重新开始。如前所述，每个父聚类节点有 $N$ 个子聚类节点。然而，如果 $N > k$，则我们没有足够的token来区分同一父节点下的不同子节点。因此，我们要求 $N \leq k$ 用于协同索引。结合逐层token分配过程，这可以保证同一父节点下的不同子节点被分配不同的token。
 
+![图2](.picture/2023-How to Index Item IDs for Recommendation Foundation Models-fig2.png)
 **图2：基于谱聚类树的协同索引（$N=4$，$k=20$）。**
 
 然后我们为叶节点（小蓝色节点）分配token，其中每个叶节点是一个item。这相当直接：对于每个最终聚类，我们从 $\langle 0 \rangle$ 开始为其每个子item节点分配独立的额外token。由于聚类过程确保每个最终聚类包含最多 $k$ 个item，因此 $k$ 个独立额外token足以区分同一最终聚类下的不同item。
@@ -171,6 +173,7 @@ IID为item使用单token索引，不假设关于item的任何先验信息，与R
 
 语义（基于内容的）索引（SemID）利用item元数据为item构建ID。如图3所示，item的类别形成层次化结构[36]，每个非叶节点（大黄色节点）代表一个类别，每个叶节点（小蓝色节点）代表一个item。每个非叶节点被分配一个独立的额外token，每个叶节点在其父节点下接收一个唯一的额外token。为创建item索引，非叶节点和叶节点的token沿从根到叶的路径拼接。以图3中加粗路径为例，该item的类别从粗粒度到细粒度为 $\langle Makeup \rangle$、$\langle Lips \rangle$、$\langle Lip\_Liners \rangle$，其叶节点token为 $\langle 5 \rangle$（用于区分该item与Lip Liners类别下的其他item），则该item被索引为 $\langle Makeup \rangle \langle Lips \rangle \langle Lip\_Liners \rangle \langle 5 \rangle$。
 
+![图3](.picture/2023-How to Index Item IDs for Recommendation Foundation Models-fig3.png)
 **图3：语义索引示例。**
 
 ### 4.4 混合索引
@@ -266,6 +269,7 @@ RID、TID和SID不涉及创建OOV token，因为它们的item索引由默认T5�
 
 CID涉及两个超参数：$N$ 和 $k$，其中 $N$ 是聚类每一层的聚类数，$k$ 是最终聚类中允许的最大item数。改变这些超参数会导致不同数量的独立额外token和不同的推荐性能。
 
+![图4](.picture/2023-How to Index Item IDs for Recommendation Foundation Models-fig4.png)
 **图4：CID在Beauty上关于 $N$（每层聚类数）和 $k$（最终聚类中允许的最大item数）的消融实验。**
 
 在图4中，我们展示了Beauty数据集上各种 $N$ 和 $k$ 组合的hit@10结果。当 $k=50$ 时，性能低于4.5%，显著低于基线和某些基本索引方法。然而，当 $k$ 大于100时，性能显著提升。
@@ -283,6 +287,7 @@ CID涉及两个超参数：$N$ 和 $k$，其中 $N$ 是聚类每一层的聚类�
 
 基于我们的观察，可以得出以下结论：(1) 极小的 $k$ 值无论选择哪个 $N$ 都会导致次优性能。当 $k=50$ 时，性能低于基线。这可归因于少量新token的有限表达能力，无法充分捕捉item的多样性。(2) 不同的 $k$ 和 $N$ 组合产生不同的ID长度（即ID中的token数）。我们计算了每个 $k$ 和 $N$ 超参数设置的平均ID长度，结果如图5（Beauty）和表7（所有数据集）所示。结合图4和5，以及表6和7，我们发现最优推荐结果通常在平均ID长度在3到4之间时观察到。例如，图5中的方框点显示了Beauty数据集上所有平均ID长度在3到4之间的情况，我们可以看到这些点也对应于图4中每条线上的最优性能。类似地，表6中的最佳或次佳结果在大多数情况下也对应于表7中3到4的ID长度。
 
+![图5](.picture/2023-How to Index Item IDs for Recommendation Foundation Models-fig5.png)
 **图5：Beauty上的CID平均长度。**
 
 **表7：不同参数下的平均ID长度。表中的粗体数字对应表6中的最佳结果（即表6中的粗体数字）。**

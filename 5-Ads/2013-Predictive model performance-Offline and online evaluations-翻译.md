@@ -303,6 +303,7 @@ Kumar 等人为联邦搜索开发了在线性能模拟方法[20]。与其使用�
 | 0.000100 | 100 | 9,999,000 | 0.000010 | 1.0000 | 1.0000 | 0.8499 | 10.0 |
 | 总计 | 1,200 | 11,288,000 | | | AUC | 0.9193 | |
 
+![图1](.picture/2013-Predictive model performance-Offline and online evaluations-fig1.png)
 > **图 1：赞助搜索和上下文广告的 ROC 曲线**
 
 图 1 绘制了赞助搜索和上下文广告的 pClick 模型的 ROC 曲线。如图所示，上下文广告模型的 AUC 分数比赞助搜索的 AUC 高约 3%，即使前者不太准确：赞助搜索的实际 $\frac{\mathrm{avg\ pClick}}{\mathrm{CTR}} = 1.02$ ，而上下文广告为 0.86。
@@ -311,6 +312,7 @@ Kumar 等人为联邦搜索开发了在线性能模拟方法[20]。与其使用�
 
 RIG 的一个问题是，与 AUC 一样，它也对评估数据的底层分布高度敏感。由于评估数据的 RIG 分数范围根据数据分布变化相当大，仅凭 RIG 分数可能无法判断预测模型有多好。
 
+![图2](.picture/2013-Predictive model performance-Offline and online evaluations-fig2.png)
 > **图 2：不同 CTR 样本数据上的 RIG 和 PE 分数：RIG 分数随 CTR 增加而下降。**
 
 图 2 说明了 RIG（实线）和 PE（虚线）在典型感兴趣 CTR 范围上如何变化。我们观察到，即使使用相同的预测模型，RIG 分数也会随着数据集 CTR 的增加而下降。图 2 中绘制的预测误差大致表明预测分数与真实 CTR 的接近程度。如预期，低 pClick 分数范围的点击预测误差更高。
@@ -334,10 +336,12 @@ RIG 的一个问题是，与 AUC 一样，它也对评估数据的底层分布�
 | | AUC | RIG | CY | Mainline CY |
 | model-2 指标 | 8.6% | 19.5% | -9.96% | -8.07% |
 
+![图3](.picture/2013-Predictive model performance-Offline and online evaluations-fig3.png)
 > **图 3：典型感兴趣 pClick 范围上对数损失的相对贡献**
 
 图 3 比较了两个点击预测模型（model-1 为基线，model-2 为测试）在典型感兴趣 pClick 分数范围内每个分位数的对数损失[4]。Model-2 在较低 pClick 分数范围的分位数上大幅高估了 pClick 分数，而在较高 pClick 分数的分位数上高估程度小得多。图 4 绘制了具有相似模式的相同数据的预测误差。
 
+![图4](.picture/2013-Predictive model performance-Offline and online evaluations-fig4.png)
 > **图 4：pClick 预测误差（PE）**
 
 在实践中，高范围 pClick 分数上的点击概率过度估计对在线性能的影响小于低 pClick 分数范围上的过度估计，因为高 pClick 分数范围的广告最可能被任何一个模型选择。一旦展示给用户，用户点击主要由广告位置和广告的相关性决定，而不是分配的 pClick 分数。

@@ -426,6 +426,7 @@ GLUE网站限制用户每天提交两次，以避免对私有测试数据过拟�
 ## 附录D 基准网站详情
 
 GLUE的在线平台使用React、Redux和TypeScript构建。我们使用Google Firebase进行数据存储，并在提交时使用Google Cloud Functions托管和运行评分脚本。图1显示了排行榜上我们的基线的可视化展示。
+![图1](.picture/2019-GLUE-A Multi-Task Benchmark and Analysis Platform for Natural Language Understanding-fig1.png)
 
 > 图1：基准网站排行榜。展开视图显示每个提交的额外详细信息，包括简要的文字描述和参数数量。
 

@@ -18,6 +18,7 @@
 
 ## 1 引言
 
+![图1](.picture/2019-MIND-Multi-Interest Network with Dynamic Routing for Recommendation at Tmall-fig1.png)
 **图1：左图：虚线矩形标记的区域是为天猫十亿级用户进行个性化展示的区域；右图：用户A与来自几个不同类别的产品交互，包括服装、体育和食品，而用户B与书籍、玩具和手机产品交互。**
 
 天猫是中国最大的企业对消费者（B2C，Business-to-Customer）电子商务平台，通过提供十亿级别的在线产品服务于十亿级别的用户。在2018年11月11日，著名的天猫全球购物节，商品交易总额（GMV）约为2130亿元，比2017年同日增长26.9%。随着用户和产品数量的持续增长，帮助每个用户找到他/她可能感兴趣的产品变得越来越重要。近年来，天猫在开发个性化推荐系统方面投入了大量精力，这显著促进了用户体验的优化和商业价值的提升。例如，手机天猫App首页（如图1（左）所示），约占天猫总流量的一半，已经部署了推荐系统来展示个性化产品以满足客户的个性化需求。
@@ -72,6 +73,7 @@ $$
 
 ### 3.2 嵌入与池化层
 
+![图2](.picture/2019-MIND-Multi-Interest Network with Dynamic Routing for Recommendation at Tmall-fig2.png)
 **图2：MIND总体架构。** MIND以用户行为及用户画像特征作为输入，输出用于推荐匹配阶段item检索的用户表示向量。输入层的ID特征通过嵌入层转换为嵌入，每个item的嵌入进一步经池化层平均。用户行为嵌入被输入多兴趣提取层，产生兴趣胶囊。通过将兴趣胶囊与用户画像嵌入拼接，并经多个ReLU层变换，得到用户表示向量。训练时，额外引入一个标签感知注意力层来指导训练过程。服务时，多个用户表示向量用于通过近似最近邻查找方式检索item。
 
 如图2所示，MIND的输入由三组组成：用户画像 $\mathcal{P}_u$ 、用户行为 $\mathcal{I}_u$ 和标签item $\mathcal{F}_i$ 。每组包含几个类别ID特征，这些ID特征具有极高的维度。例如，itemID的数量约为数十亿，因此我们采用广泛使用的嵌入技术将这些ID特征嵌入到低维稠密向量（即嵌入）中，这显著减少了参数数量并简化了学习过程。对于来自 $\mathcal{P}_u$ 的ID特征（性别、年龄等），对应的嵌入被拼接起来形成用户画像嵌入 $\mathbf{p}_u$ 。对于来自 $\mathcal{F}_i$ 的itemID以及其他已被证明对冷启动item有用的类别ID（品牌ID、店铺ID等），对应的嵌入进一步通过平均池化层形成标签item嵌入 $\mathbf{e}_i$ 。最后，对于来自用户行为 $\mathcal{I}_u$ 的item，收集对应的item嵌入形成用户行为嵌入 $\mathbf{E}_u = \{\mathbf{e}_j, j \in \mathcal{I}_u\}$ 。
@@ -248,6 +250,7 @@ $$
 
 通过在一组根据每个数据集的规模和数据分布预定义的参数上进行实验，进行嵌入向量维度 $d$ 和用户兴趣数量 $K$ 的超参数调优，并且每种方法都使用最佳超参数进行测试，以实现公平比较。
 
+![图3](.picture/2019-MIND-Multi-Interest Network with Dynamic Routing for Recommendation at Tmall-fig3.png)
 **图3：超参数的影响。** 上半部分表明MIND在不同 $\sigma$ 下可以获得相当的结果；下半部分表明MIND在更大的 $p$ 下表现更好。
 
 ### 4.2 超参数分析
@@ -262,6 +265,7 @@ $$
 
 我们通过将MIND部署在天猫首页处理真实流量一周来进行在线实验。为了公平比较，所有部署在匹配阶段的方法之后都跟随相同的排序流程。CTR（点击率），一种广泛使用的工业指标，用于衡量方法在服务在线流量时的性能。
 
+![图4](.picture/2019-MIND-Multi-Interest Network with Dynamic Routing for Recommendation at Tmall-fig4.png)
 **图4：一周内的在线CTR。具有5~7个兴趣的MIND在所有对比方法中表现最佳。MIND显著优于两个基线方法，即基于item的CF和YouTube DNN。**
 
 在线实验有两个基线方法。一个是基于item的协同过滤（CF，Collaborative Filtering），它是服务于大部分在线流量的基础匹配算法。另一个是YouTube DNN，它是众所周知的基于深度学习的匹配模型。我们在A/B测试框架中部署了所有对比方法，每种方法检索一千个候选item，然后送入排序阶段进行最终推荐。
@@ -272,6 +276,7 @@ $$
 
 #### 4.4.1 耦合系数
 
+![图5](.picture/2019-MIND-Multi-Interest Network with Dynamic Routing for Recommendation at Tmall-fig5.png)
 **图5：两个用户的耦合系数热力图。每一类行为在对应的兴趣上具有最大的耦合系数。用户C（上图）和用户D（下图）具有不同粒度的兴趣。**
 
 行为胶囊与兴趣胶囊之间的耦合系数量化了行为对兴趣的隶属程度。在本节中，我们将这些耦合系数可视化以展示兴趣提取过程是可解释的。
@@ -280,12 +285,14 @@ $$
 
 #### 4.4.2 item分布
 
+![图6](.picture/2019-MIND-Multi-Interest Network with Dynamic Routing for Recommendation at Tmall-fig6.png)
 **图6：与左侧示例用户行为相对应的、由每个兴趣召回的item分布。每个兴趣由一个坐标轴展示，其坐标为item与兴趣之间的相似度。点的大小与具有特定相似度的item数量成正比。**
 
 在服务时，通过最近邻搜索检索与用户兴趣相似的item。我们根据每个兴趣对应的相似度，可视化由每个兴趣召回的item的分布。图6展示了图5（上）中同一用户（用户C）的item分布。这些分布分别通过两种方法获得，其中上面4个坐标轴展示了基于MIND的4个兴趣召回的item，而最下面的坐标轴展示了基于YouTube DNN召回的item。item根据它们与兴趣的相似度散落在坐标轴上，相似度通过最小-最大归一化缩放到0~1并四舍五入到最近的0.5。一个点由落在特定范围内的item汇集而成，因此每个点的大小代表具有相应相似度的item数量。我们还展示了一些从所有候选中随机选取的item。正如预期的那样，MIND召回的item与相应的兴趣高度相关，而YouTube DNN召回的item沿着item类别变化很大，并且与用户行为的相似度较低。
 
 ## 5 系统部署
 
+![图7](.picture/2019-MIND-Multi-Interest Network with Dynamic Routing for Recommendation at Tmall-fig7.png)
 **图7：天猫推荐系统架构。**
 
 在本节中，我们描述MIND在天猫的实现和部署。一个由几个基础平台组成的典型工作流如图7所示，详细说明如下：

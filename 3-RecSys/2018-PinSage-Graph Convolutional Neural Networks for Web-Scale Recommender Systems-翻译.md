@@ -41,6 +41,7 @@
 
 
 在这些最新进展中，最突出的当属被称为图卷积网络（GCN）的深度学习架构的成功[19, 21, 24, 29]。GCN的核心思想是学习如何通过神经网络从局部图邻域中迭代地聚合特征信息（图1）。单个"卷积"操作转换并聚合来自节点一跳图邻域的特征信息，通过堆叠多个这样的卷积，信息可以在图的远端传播。与纯基于内容的深度模型（如循环神经网络[3]）不同，GCN同时利用了内容信息和图结构。基于GCN的方法在无数推荐系统基准测试中树立了新标准（参见[19]的综述）。然而，这些在基准任务上的收益尚未转化为实际生产环境中的性能提升。
+![图1](.picture/2018-PinSage-Graph Convolutional Neural Networks for Web-Scale Recommender Systems-fig1.png)
 
 
 主要的挑战在于将基于GCN的节点嵌入的训练和推理扩展到拥有数十亿节点和数百亿边的图。扩展GCN是困难的，因为其设计所依赖的许多核心假设在大数据环境下都不再成立。例如，所有现有的基于GCN的推荐系统都要求在训练过程中操作完整的图拉普拉斯矩阵——当底层图拥有数十亿节点且其结构不断变化时，这一假设是不可行的。
@@ -239,6 +240,7 @@ $$
 
 
 为了解决上述问题，对于每个正训练样本（即item对 $(q, i)$），我们添加"困难"负例，即与查询item $q$ 有些相关但不如正item $i$ 那么相关的item。我们称之为"困难负item"。它们是通过对图中的item根据其相对于查询item $q$ 的个性化PageRank分数进行排序生成的[14]。排名在2000-5000的item被随机采样为困难负item。如图2所示，困难负例比随机负例与查询更相似，因此对模型的排序更具挑战性，迫使模型学习以更细粒度区分item。
+![图2](.picture/2018-PinSage-Graph Convolutional Neural Networks for Web-Scale Recommender Systems-fig2.png)
 
 
 在整个训练过程中使用困难负item会使训练收敛所需的epoch数翻倍。为了帮助收敛，我们开发了一种课程训练方案[4]。在训练的第一个epoch中，不使用困难负item，这样算法可以快速找到参数空间中损失相对较小的区域。然后我们在后续的epoch中添加困难负item，使模型专注于学习如何区分高度相关的Pin和仅略微相关的Pin。在训练的第n个epoch中，我们为每个item的负item集添加 $n - 1$ 个困难负item。
@@ -250,6 +252,7 @@ $$
 
 
 我们观察到节点嵌入的推理非常适合MapReduce计算模型。图3详细描述了在Pinterest二分Pin-画板图上的数据流，其中我们假设输入（即"第0层"）节点是Pin/item（而第1层节点是画板/上下文）。MapReduce流水线有两个关键部分：
+![图3](.picture/2018-PinSage-Graph Convolutional Neural Networks for Web-Scale Recommender Systems-fig3.png)
 
 
 (1) 一个MapReduce作业用于将所有Pin投影到一个低维潜在空间，聚合操作将在此空间中执行（算法1，第1行）。
@@ -351,6 +354,7 @@ $$
 
 
 学习到的嵌入有效性的另一个指标是随机item嵌入对之间的距离分布广泛。如果所有item之间的距离大致相同（即距离紧密聚集），那么嵌入空间就没有足够的"分辨率"来区分不同相关性的item。图4绘制了使用注释嵌入、视觉嵌入和PinSage嵌入的item对之间的余弦相似度分布。这种随机item对之间的余弦相似度分布展示了PinSage的有效性，它具有最分散的分布。具体来说，PinSage嵌入的余弦相似度的峰度为0.43，而注释嵌入为2.49，视觉嵌入为1.20。
+![图4](.picture/2018-PinSage-Graph Convolutional Neural Networks for Web-Scale Recommender Systems-fig4.png)
 
 
 嵌入具有如此广泛分布的另一个重要优点是，它降低了后续LSH算法的碰撞概率，从而提高了在推荐过程中提供最近邻Pin的服务的效率。
@@ -371,9 +375,11 @@ $$
 
 
 表2显示了PinSage与4个基线的头对头比较结果。在用户有明确偏好的item中，约60%的偏好item由PinSage推荐。图5给出了推荐示例，并说明了不同方法的优势和劣势。左侧的图像代表查询item。右侧的每一行对应视觉嵌入基线、注释嵌入基线、Pixie和PinSage做出的前几名推荐。尽管视觉嵌入通常能很好地预测类别和视觉相似性，但它们偶尔会在图像语义方面犯大错误。在这个例子中，由于图像风格和外观相似，视觉信息将植物与食物混淆，将伐木与战争照片混淆。基于图的Pixie方法使用Pin到画板关系的图，它正确理解查询类别是"植物"，并推荐该大类别中的item。然而，它没有找到最相关的item。结合视觉/文本和图信息，PinSage能够找到在视觉上和主题上都与查询item相关的item。
+![图5](.picture/2018-PinSage-Graph Convolutional Neural Networks for Web-Scale Recommender Systems-fig5.png)
 
 
 此外，我们通过随机选择1000个item并计算PinSage嵌入的2D t-SNE坐标来可视化嵌入空间，如图6所示。我们观察到item嵌入的邻近性与内容的相似性很好地对应，同一类别的item被嵌入到空间的同一区域。值得注意的是，在视觉上不同但具有相同主题的item在嵌入空间中也彼此接近，从图底部描绘不同时尚相关item的示例可以看出。
+![图6](.picture/2018-PinSage-Graph Convolutional Neural Networks for Web-Scale Recommender Systems-fig6.png)
 
 ### 4.4 生产A/B测试
 

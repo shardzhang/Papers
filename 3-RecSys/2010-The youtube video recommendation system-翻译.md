@@ -38,6 +38,7 @@ YouTube成立于2005年2月，已迅速成长为全球最受欢迎的视频网�
 
 在本文中，我们介绍了我们的视频推荐系统，该系统基于已登录用户在YouTube网站上的先前活动向其提供个性化视频集（虽然推荐也以有限形式提供给未登录用户，但本文其余部分我们聚焦于已登录用户）。推荐出现在两个主要位置：YouTube首页（http://www.youtube.com）和"浏览"页面（http://www.youtube.com/videos）。图1展示了推荐在首页上呈现的示例。
 
+![图1](.picture/2010-The youtube video recommendation system-fig1.png)
 **图1：YouTube首页推荐模块的截图。**
 
 ### 1.1 目标
@@ -148,6 +149,7 @@ YouTube推荐系统的实际实现可分为三个主要部分：(1) 数据收集
 
 我们在21天内测量了这些部分的CTR。总体而言，我们发现基于共现的推荐在整个时期内平均表现比"最多观看"基线高207%，而"最多收藏"和"最高评分"的表现与"最多观看"基线相似或更低。图2展示了相对CTR在3周内的变化情况。
 
+![图2](.picture/2010-The youtube video recommendation system-fig2.png)
 **图2：3周内不同浏览页面类型的每日平均CTR。**
 
 

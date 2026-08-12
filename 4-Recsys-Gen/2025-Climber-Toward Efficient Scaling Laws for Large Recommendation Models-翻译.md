@@ -52,6 +52,7 @@ NetEase Cloud Music, Hangzhou, China
 受DeepSeek系列[3, 21, 22]（其显著提升了大型语言模型（LLM）开发的效率并降低了计算资源成本）的启发，我们旨在解决以下问题：我们如何以大幅降低的成本高效扩展推荐模型？
 
 为了获得见解，我们对两种主流模型——深度学习推荐模型（DLRM）[27]和Transformer模型——进行了工业规模的分析。在图1(a)中，我们展示了DLRM\*和Transformer的扩展曲线，并包含了一条理想扩展曲线（oracle曲线），其特点是更高的起点和更大的斜率。在图1(b)中，我们展示了从各种序列长度和层数组合的模拟中得出的AUC曲线，并引入了"性能区间"的概念，它代表了模型在等效FLOPs下的AUC变化范围。然而，我们的发现揭示了在推荐系统中应用Transformer时仍然存在一些问题：
+![图1](.picture/2025-Climber-Toward Efficient Scaling Laws for Large Recommendation Models-fig1.png)
 
 - **Transformer在FLOPs约束下的性能下降**：如图1(a)所示，交叉点对应的FLOPs为10^8.2。以此FLOPs值为界，DLRM和Transformer的性能比较显示出不同的趋势。当FLOPs超过10^8.2量级时，Transformer模型优于传统架构如DLRM。然而，当FLOPs小于10^8.2时，Transformer模型的表现不如DLRM。这凸显了对更高效模型的追求，即图1(a)中所示的理想曲线。理想曲线代表了一条具有更大截距和斜率的更高效扩展曲线，这使得模型即使在FLOPs有限的情况下也能实现更好的性能。
 
@@ -91,6 +92,7 @@ Wukong[40]探索了检索模型中的参数扩展，但依赖于对特征工程�
 为了解决推荐系统中的计算复杂度和扩展挑战，我们从推荐的角度提出了该模型。该模型将推荐特性融入Transformer架构中，同时具备资源感知的可扩展性。它从三个维度实现扩展：多尺度序列、多场景和多兴趣。
 
 我们的模型包含三个模块：多尺度序列提取（MSE）、自适应Transformer层（ATL）和逐位门控融合（BGF）。具体来说，MSE从用户生命周期序列生成多尺度序列。这些多尺度序列代表不同类型的子序列。每个子序列由一组堆叠的ATL组成的对应块进行处理，以进行兴趣提取。此外，我们将重要子序列的时间跨度扩展到覆盖用户的整个生命周期。ATL采用自适应温度系数来调整多场景中的注意力分布。最后，BGF通过逐位门控机制聚合来自自适应Transformer块的表示，实现多尺度序列之间的多兴趣融合。图2展示了详细的工作流程。
+![图2](.picture/2025-Climber-Toward Efficient Scaling Laws for Large Recommendation Models-fig2.png)
 
 #### 3.1.2 多尺度序列扩展
 
@@ -320,6 +322,7 @@ d} 分别表示逐位注意力矩阵和融合模块的输出。ATL（公式3中�
 在讨论模型可扩展性之前，我们正式定义FLOPs为 **C ∝ s \* l**，其中 s 表示序列长度，l 表示模型中的层数。在大规模场景下，即使对于更长的序列，注意力机制的二次计算复杂度仅占模型总FLOPs的一小部分[5, 13, 18]。因此，在我们的计算分析中，我们只关注 **C ∝ s \* l** 关系中序列长度 s 的线性部分，FLOPs可以通过TensorFlow的特定工具计算和验证。
 
 DLRM、Transformer和Climber的扩展曲线如图3(a)所示。虽然Transformer在FLOPs超过10^9时可以实现比DLRM更好的性能，但其在10^7到10^8之间的效率明显低于DLRM。与Transformer相比，Climber由于具有更高的起点和更大的斜率，展现出更理想的扩展曲线。当FLOPs低于10^7.5时，Climber的性能仍然弱于DLRM，但交叉点向左移动，使得Climber模型比Transformer更高效地实现性能转变。
+![图3](.picture/2025-Climber-Toward Efficient Scaling Laws for Large Recommendation Models-fig3.png)
 
 在该实验中，影响FLOPs的两个主要因素是层数和序列长度。对于Climber，我们分别在图3(b)和3(c)中展示了模型性能与层数以及序列长度之间的关系。当序列长度固定时，模型性能随层数的增加以类似幂律的方式提升；当层数固定时，模型性能也随序列长度的增加而类似提升。因此，我们提出的Climber模型在FLOPs、序列长度和层数方面均表现出扩展曲线，并且与Transformer相比具有更高效的扩展曲线。
 

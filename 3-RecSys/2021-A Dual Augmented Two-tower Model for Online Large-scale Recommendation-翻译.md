@@ -36,6 +36,7 @@
 
 在本文中，为了解决上述问题，我们提出了一种新颖的用于大规模推荐的检索模型，名为双重增强双塔模型（DAT，Dual Augmented Two-tower Model）。具体来说，我们设计了一种自适应模仿机制（AMM，Adaptive-Mimic Mechanism），为每个查询和item定制一个增强向量作为其内容特征。增强向量根据另一个塔对每个正标签样本的输出表示向量进行更新。通过这种方式，作为输入特征的增强向量携带了另一个塔的有价值信息，从而隐式地建模了两个塔之间的信息交互。我们还在训练阶段引入了类别对齐损失（CAL，Category Alignment Loss），以对齐来自不同类别的item表示。综合实验表明，我们的DAT特征具有两个主要优势：i). 它为检索任务中双塔模型的信息交互提供了更深入的见解；ii). 当类别分布极端不平衡时，它能产生更好的item表示。
 
+![图1](.picture/2021-A Dual Augmented Two-tower Model for Online Large-scale Recommendation-fig1.png)
 **图1：我们提出的双重增强双塔模型的网络架构**
 
 ## 2 模型架构
@@ -180,12 +181,14 @@ DAT和基线模型在两个数据集上的实验结果报告在表2中。最佳�
 
 DAT中的增强向量在建模信息交互中起着关键作用。为了分析维度的影响，我们研究了DAT在两个数据集上关于增强向量维度的性能。如图2所示，DAT在美团上的性能随着维度的增加而提高，而DAT在Amazon上的性能先提高后下降。这是由于两个数据集之间数据量的差异造成的。此外，无论维度如何，它总能取得更好的性能，这证明了增强向量的有效性。
 
+![图2](.picture/2021-A Dual Augmented Two-tower Model for Online Large-scale Recommendation-fig2.png)
 **图2：在两个数据集上，HR@100和MRR随增强向量维度的变化**
 
 ### 3.4 在线实验
 
 除了离线研究，我们还进行了在线实验，将DAT部署到一个日服务6000万用户的推荐系统中处理为期一周的真实流量。为了进行公平比较，检索阶段之后采用相同的排序流程。我们使用CTR（Click-Through Rate，点击率）和GMV（Gross Merchandise Volume，成交总额）这两个广泛使用的工业指标来衡量模型服务在线流量的性能。在线实验的基线方法是双塔模型，它是服务大部分在线流量的基础检索算法。每种方法检索出一百个候选item并馈送到排序阶段。图3显示了连续7天的在线结果。我们的模型以较大幅度优于基线，在CTR和GMV方面分别取得了4.17%和3.46%的总体平均提升。
 
+![图3](.picture/2021-A Dual Augmented Two-tower Model for Online Large-scale Recommendation-fig3.png)
 **图3：DAT与基线的在线性能**
 
 ## 4 结论

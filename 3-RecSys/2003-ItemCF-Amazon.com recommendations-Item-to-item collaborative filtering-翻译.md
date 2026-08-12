@@ -21,3 +21,5 @@
 
 个人收获：
 
+![图1](.picture/2003-ItemCF-Amazon.com recommendations-Item-to-item collaborative filtering-fig1.png)
+![图2](.picture/2003-ItemCF-Amazon.com recommendations-Item-to-item collaborative filtering-fig2.png)

@@ -38,6 +38,7 @@ DOI: 10.475/123 4
 
 商品之间存在两种非常重要的关系：替代关系和互补关系。替代商品是指那些可以互换的商品，如图1中展示的衬衫；而互补商品是指那些可能被额外购买的商品，如衬衫和裤子[16]。
 
+![图1](.picture/2020-Swing-Large Scale Product Graph Construction for Recommendation in E-commerce-fig1.png)
 **图1：不同商品之间关系类型的应用示例。**
 
 不同的上下文环境可能对推荐相关性有不同的要求或含义，因此需要不同的关系图来加速推荐。例如，在用户会话的不同阶段，用户的偏好可能有很大差异。如图1所示，当用户专注于衬衫且在会话中尚未购买任何衬衫时，用户可能更希望获得替代商品的推荐以供比较。一旦购买完成，替代商品的相关性就会降低，而一些互补商品（如裤子或夹克）会更具吸引力和相关性。
@@ -99,6 +100,7 @@ $$
 
 例如，假设有五个用户（Alice、Bob、Chris、David 和 Eric），他们全部都在淘宝上寻找 T 恤。如图 2(a) 所示，每一行代表一个用户及其点击的item。Alice 正在为她的男朋友挑选 T 恤。Bob 想为自己买一件流行的 T 恤。Chris 喜欢一个名为 Mucunsanshe 的特殊品牌。David 是 Michael Jackson 的狂热粉丝，只点击了一件 Michael Jackson 的 T 恤。而 Eric 正在寻找红色的 T 恤。他们都点击了商品 h。点击信息可以总结为图 2(b)，其中每个大写字母代表一个人（对应上述五个用户，我们简写为 A、B、C、D、E），每个小写字母代表一个被点击的商品。
 
+![图2](.picture/2020-Swing-Large Scale Product Graph Construction for Recommendation in E-commerce-fig2.png)
 **图2：Swing 分数计算的示例。**
 
 为简单且不失一般性，我们只展示同一类别（T 恤）中的商品。用户可能会点击任何item。例如，购买 T 恤后，Alice 可能会浏览并点击裙子给自己，而 David 可能会点击耳机，因为他是个音乐爱好者。
@@ -157,6 +159,7 @@ $$
 
 在淘宝推荐系统中，我们在自己的分布式平台——开放数据处理服务（Open Data Processing Service）¹ 上基于 Map-Reduce 编程框架开发了 Swing 的并行实现。详细流程如图 3 所示。
 
+![图3](.picture/2020-Swing-Large Scale Product Graph Construction for Recommendation in E-commerce-fig3.png)
 **图3：通过 MR 框架并行化实现 Swing。**
 
 具体来说，对于原始输入的用户点击矩阵，每一行是特定用户点击的item列表。在 Mapper 阶段，对于一行中用户 $i$ 点击的每个item，我们通过 $u_i$ 进行邻域广播，并输出键值对 < $i_{i1}, u_1 i_{12} \cdots i_{1n}$ >。然后在 Reducer 阶段，我们收集点击了item $i$ 的用户集合 $U_i$ ，以及 $U_i$ 中每个用户点击的item集合。最后按照算法 1 所述计算 Swing，以计算与 $item_i$ 最相似的item。
@@ -215,6 +218,7 @@ $$
 
 T 恤（男）和手机的相关类别概率分别如图 4(a) 和图 4(b) 所示。
 
+![图4](.picture/2020-Swing-Large Scale Product Graph Construction for Recommendation in E-commerce-fig4.png)
 **图4：通过 Max_drop 选择顶部相关类别的示例。**
 
 从这两个子图中，我们可以看到相关性分布中存在变化点。通过取最大相对下降点之前的类别，我们得到 T 恤（男）的 8 个顶部相关类别：休闲裤、牛仔裤、夹克、衬衫、低帮鞋、毛衣、卫衣、棉服，以及手机的 3 个紧密相关类别：手机壳、手机膜和移动电源。
@@ -317,6 +321,7 @@ $$
 
 我们提出了一种离线策略来评估不同技术的性能。基本思想是看从历史数据中挖掘出的关系在多大程度上命中（即匹配）未来的真实用户行为序列。例如，如图 5 所示，顶行是一个真实的用户点击序列。我们随机选择序列中的一个中间商品，如时间 T2 处的 A2，作为替代/相似商品推荐的种子商品。底行包含给定商品 A2 后推荐的相似商品。在这种情况下，推荐命中了 A3、A4 和 A5，命中数为 3。命中数越大，推荐质量越高。
 
+![图5](.picture/2020-Swing-Large Scale Product Graph Construction for Recommendation in E-commerce-fig5.png)
 **图5：离线评估示例。**
 
 给定一组针对用户 $i$ 的某种类型（点击或购买）的商品推荐 $predict_i$ ，以及一组已知的真实数据 $truth_i$ ，我们可以使用传统的评估指标进行离线评估，包括精确率（Precision）、召回率（Recall）和 MAP [3]。这些指标的定义如下：
@@ -377,6 +382,7 @@ $$
 
 我们在购买前场景中使用 Swing 算法和基线方法进行了 A/B 测试，结果如图 6 所示。
 
+![图6](.picture/2020-Swing-Large Scale Product Graph Construction for Recommendation in E-commerce-fig6.png)
 **图6：在购买前场景中通过 CTR、CVR 和 PPM 指标对 Swing 的在线评估。**
 
 我们发现 Swing 组在所有三个指标上均显著优于（p-value < 0.05）CF 组。具体来说，Swing 在 CTR 和 CVR 上相对于 CF 的平均相对提升分别高达 9.3% 和 17.6%。这意味着用户使用 Swing 发现了更感兴趣的商品，并且将点击行为转化为实际购买的概率显著提高。Swing 在 PPM 上平均提升了 20.3%。PPM 是电子商务推荐的关键指标，因此这一提升具有巨大的商业价值。
@@ -385,6 +391,7 @@ $$
 
 Surprise 算法部署在购买后场景中，评估结果显示在图 7 中。对于 Surprise 方法，我们还测试了另一个没有聚类级相关性分数的版本，即 $s(i,j) = s_1(i,j)$ ，表示为 Surprise-NCR。
 
+![图7](.picture/2020-Swing-Large Scale Product Graph Construction for Recommendation in E-commerce-fig7.png)
 **图7：在购买后场景中通过 CTR、CVR 和 PPM 指标对 Surprise 的在线评估。**
 
 从图中我们可以发现，Surprise 和 Surprise-NCR 在所有评估指标上都比原始的基于购买的 CF 有显著提升，这表明了顶部相关类别和基于时间的加权机制的重要性。同时，与 Surprise-NCR 相比，Surprise 平均实现了 27.9% 的 CTR 提升，这主要归功于更好的相关性估计及其生成更多商品推荐的能力。在 CVR 指标上，Surprise-NCR 与 Surprise 表现非常相似。我们的假设是，一旦用户点击了某个感兴趣的商品，购买意愿在很大程度上取决于商品本身的属性，而聚类级相关性分数并未捕捉到这一点。在 PPM 指标上，Surprise 分别比 Surprise-NCR 和原始的基于购买的 CF 平均高出 35% 和 183%。总之，Surprise 算法实现了最佳的商业效果。
@@ -393,6 +400,7 @@ Surprise 算法部署在购买后场景中，评估结果显示在图 7 中。�
 
 我们还在一个集成场景中对由 Swing（SW）和 Surprise（SP）构建的商品图进行了整体评估。推荐列表通过组合用户历史点击的替代商品和用户当前订单的互补商品生成。详细的评估结果显示在图 8 中。
 
+![图8](.picture/2020-Swing-Large Scale Product Graph Construction for Recommendation in E-commerce-fig8.png)
 **图8：在淘宝中通过 CTR、CVR 和 PPM 指标对混合应用的在线评估。**
 
 我们提出的方法组合在 CTR、CVR 和 PPM 上分别比原始的 CF + CF 平均高出 33.2%、26.7% 和 62.9%。这些结果进一步证明了我们提出方法的有效性。

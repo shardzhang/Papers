@@ -57,6 +57,7 @@ Qi Pi, Weijie Bian, Guorui Zhou, Xiaoqiang Zhu, Kun Gai. 2019. Practice on Long 
 * 我们提出了一个新颖的MIMN模型，通过两种设计——记忆利用正则化和记忆归纳单元——改进了原始的NTM架构，使其更适合用户兴趣学习。MIMN易于与UIC服务器一起实现，以增量方式更新每个用户的兴趣表示。
 * 我们在公共数据集和从阿里巴巴广告系统收集的工业数据集上进行了仔细的实验。我们还详细分享了部署所提出方案的实际问题经验。我们相信这将有助于推动社区进步。
 
+![图1](.picture/2019-MIMN-Practice on Long Sequential User Behavior Modeling for Click-Through Rate Prediction-fig1.png)
 **图1：阿里巴巴展示广告系统中序列用户行为数据的统计及相应的模型性能。**
 
 ---
@@ -87,6 +88,7 @@ Qi Pi, Weijie Bian, Guorui Zhou, Xiaoqiang Zhu, Kun Gai. 2019. Practice on Long 
 
 * **延迟约束。** 使用序列深度网络进行实时推理众所周知极具挑战性，尤其是在我们这样拥有海量请求的场景中。DIEN[30]在我们的系统中部署了几项技术来降低DIEN服务的延迟，达到了14ms，每个worker的QPS（Queries Per Second，每秒查询数）为500。然而，当用户行为长度达到1000时，DIEN在500 QPS下的延迟达到200ms。在我们的展示广告系统中，延迟限制为30ms（500 QPS），这是难以承受的。因此，在现有的系统架构下，无法获得长行为带来的收益。
 
+![图2](.picture/2019-MIMN-Practice on Long Sequential User Behavior Modeling for Click-Through Rate Prediction-fig2.png)
 **图2：用于CTR任务的实时预测（RTP）系统示意图。它通常由三个关键组件组成：特征管理模块、模型管理模块和预测服务器。（A）是我们RTP系统的上一个版本，（B）是使用所提出的UIC服务器更新后的版本。系统A和B之间的关键区别在于用户兴趣表示的计算：（i）在A中，它是相对于请求在预测服务器内执行的。（ii）在B中，它是相对于实时用户行为事件在UIC服务器中单独执行的。也就是说，它被解耦了，并且相对于流量请求是无延迟的。**
 
 ### 3.2 用户兴趣中心
@@ -140,6 +142,7 @@ $$
 
 其中 $E_t$ 是擦除矩阵，$A_t$ 是加法矩阵，$E_t = w_t^w \otimes e_t$，$A_t = w_t^w \otimes a_t$。这里 $\odot$ 和 $\otimes$ 分别表示点积和外积。
 
+![图3](.picture/2019-MIMN-Practice on Long Sequential User Behavior Modeling for Click-Through Rate Prediction-fig3.png)
 **图3：提出的MIMN模型的网络架构。MIMN由两个主要部分组成：（i）左侧子网络，专注于使用序列行为特征进行用户兴趣建模；（ii）右侧子网络，遵循传统的Embedding&MLP范式，将左侧子网络的输出和其他特征作为输入。MIMN的贡献在于左侧子网络，它受NTM模型启发，包含两个重要的记忆架构：a）基本的NTM记忆单元，具有标准的记忆读取和记忆写入操作；b）记忆归纳单元，基于先前学习的NTM记忆，使用多通道GRU捕获高阶信息。**
 
 ### 4.3 记忆利用正则化
@@ -176,6 +179,7 @@ $$
 
 其中 $M_t(i)$ 是NTM的第 $i$ 个记忆槽，$e_t$ 是行为嵌入向量。公式（9）显示MIU从原始行为输入和NTM模块中记忆的信息中捕获信息。这起到了归纳过程的作用，如图4所示。多通道记忆的GRU参数是共享的，不会增加参数量。
 
+![图4](.picture/2019-MIMN-Practice on Long Sequential User Behavior Modeling for Click-Through Rate Prediction-fig4.png)
 **图4：多通道记忆归纳过程。**
 
 ### 4.5 在线服务实现
@@ -186,6 +190,7 @@ MIMN在在线服务中的实现是直接的。正如第3.2节所介绍的，我�
 
 NTM和MIU模块都享有增量计算的好处。最新的记忆状态表示用户兴趣，并被更新到TAIR中用于实时CTR预测。当接收到新的用户行为事件时，UIC计算并更新用户兴趣表示到TAIR。通过这种方式，用户行为数据不需要被存储。大量长期用户行为数据可以从6T减少到我们系统中的2.7T。
 
+![图5](.picture/2019-MIMN-Practice on Long Sequential User Behavior Modeling for Click-Through Rate Prediction-fig5.png)
 **图5：在UIC服务器中使用NTM和MIU实现用户兴趣建模子网络。**
 
 **讨论。** UIC服务器和MIMN算法的协同设计使我们能够处理长度达数千的长序列用户行为数据。用户兴趣表示的UIC更新独立于整个模型计算，使其对实时CTR预测无延迟。MIMN提出以增量方式建模用户兴趣，无需像传统解决方案那样存储完整的用户行为序列。此外，MIMN设计了改进的记忆架构，实现了优越的模型性能。然而，它并非适用于所有情况。我们建议在以下应用中采用该方案：（i）丰富的用户行为数据，（ii）实时用户行为事件的流量规模不能显著超过实时CTR预测请求的流量规模。
@@ -271,6 +276,7 @@ a 对于工业数据集，item指广告。
 
 **记忆利用正则化。** 由于每个用户的兴趣强度不同以及记忆的随机初始化，基本NTM模型中存储的利用可能是不平衡的。这个问题会损害记忆的学习，使其无法充分利用有限的记忆存储。我们采用记忆利用正则化技巧来帮助解决这个问题。图6显示了记忆利用情况，验证了所提出正则化器的有效性。这种平衡效果也带来了模型性能的提升，如表4所示。
 
+![图6](.picture/2019-MIMN-Practice on Long Sequential User Behavior Modeling for Click-Through Rate Prediction-fig6.png)
 **图6：NTM中不同槽上的记忆利用率**
 
 **表4：MIMN在有/无记忆利用正则化和记忆归纳单元时的模型性能（AUC）比较**
@@ -301,6 +307,7 @@ b MIU代表记忆归纳单元（Memory Induction Unit）
 | MIMN (失步设置，一天内) | 0.6644 |
 | MIMN (使用大促数据训练) | 0.6627 |
 
+![图7](.picture/2019-MIMN-Practice on Long Sequential User Behavior Modeling for Click-Through Rate Prediction-fig7.png)
 **图7：实时CTR预测系统在不同用户行为序列长度下的系统性能，分别使用MIMN和DIEN模型服务。MIMN模型使用UIC服务器设计实现。**
 
 **在线A/B测试。** 我们已将提出的解决方案部署在阿里巴巴的展示广告系统中。从2019年3月30日到2019年5月10日，我们进行了严格的在线A/B测试实验来验证提出的MIMN模型。与DIEN（我们上一个产品模型）相比，MIMN实现了7.5%的CTR提升和6%的RPM（Revenue Per Mille，千次展示收入）提升。我们将此归因于所提出的协同设计方案能够从长序列行为数据中挖掘额外信息。

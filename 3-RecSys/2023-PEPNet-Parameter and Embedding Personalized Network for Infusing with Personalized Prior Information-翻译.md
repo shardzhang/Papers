@@ -44,6 +44,7 @@ Jianxin Chang, Chenbin Zhang, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and K
 1https://www.taobao.com/
 2https://www.kuaishou.com/
 
+![图2](.picture/2023-PEPNet-Parameter and Embedding Personalized Network for Infusing with Personalized Prior Information-fig2.png)
 图2：与多任务学习或多域学习相比，多任务和多域学习在实际应用中更为重要且更为复杂。
 
 由于不同场景中存在重叠的用户和item，多个域具有共性。并且不同目标在功能上相关，因此多个任务之间存在依赖关系。为每个域中的每个任务训练单独的模型，不仅在部署成本和迭代效率方面不可接受，而且未能利用全部数据，忽视数据之间的共性问题会导致次优性能。然而，将所有数据直接混合并使用统一模型进行训练，则忽略了域和任务之间的差异。无法对齐和融合具有不同语义和重要性的特征将导致域跷跷板[25]，因为用户行为和item候选在多个场景中的分布各不相同。由于不同目标具有不同的稀疏性且相互影响，无法平衡多个任务中相互依赖的目标会导致任务跷跷板[27]。
@@ -54,6 +55,7 @@ Jianxin Chang, Chenbin Zhang, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and K
 
 为了解决这个问题，我们提出了一种参数与嵌入个性化网络（PEPNet），用于多任务和多域推荐，它充分利用了任务之间的关系，并通过增强个性化来消除域偏差。与多任务学习[18, 27]和多域学习[13, 25]的现有工作相比，PEPNet是一种高效的即插即用网络。PEPNet将带有个性化先验信息的特征作为输入，通过门控机制动态缩放模型中的底层嵌入和顶层DNN（Deep Neural Network，深度神经网络）隐藏单元，分别称为域特定的EPNet和任务特定的PPNet。嵌入个性化网络（EPNet）在底层添加域特定的个性化信息以生成个性化嵌入门控。然后使用嵌入门控对来自多个域的原始嵌入进行个性化选择，得到个性化嵌入。参数个性化网络（PPNet）将用户和item的个性化信息与每个任务中DNN的输入连接起来，以获取个性化门控分数。然后与DNN隐藏单元逐元素相乘，对DNN参数进行个性化修改。通过将个性化先验信息映射到0到2之间的缩放权重，EPNet选择嵌入以融合多域中不同用户具有不同重要性的特征，PPNet修改DNN参数以平衡多任务中不同用户具有不同稀疏性的目标。
 
+![图1](.picture/2023-PEPNet-Parameter and Embedding Personalized Network for Infusing with Personalized Prior Information-fig1.png)
 图1：快手短视频场景与淘宝电商场景的对比。两者都针对不同域进行推荐。此外，快手中每个域执行多个任务，例如对短视频的点赞、关注、转发、收藏和评论。
 
 本工作的贡献总结如下：
@@ -108,6 +110,7 @@ $$
 
 从公式2和3可以看出，Gate NU利用先验信息 $\mathbf{x}$ 生成个性化门控 $\boldsymbol{\delta}$，自适应地控制先验信息的重要性，并使用超参数 $\gamma$ 进一步压缩和加倍有效信号。接下来，我们详细阐述如何在EPNet和PPNet中使用Gate NU，将重要的先验信息选择性注入模型的关键位置。
 
+![图3](.picture/2023-PEPNet-Parameter and Embedding Personalized Network for Infusing with Personalized Prior Information-fig3.png)
 图3：PEPNet由Gate NU、EPNet和PPNet组成。Gate NU是利用先验信息生成个性化门控并自适应放大有效信号的基本单元。EPNet对嵌入进行个性化选择，以融合多域中不同用户具有不同重要性的特征。PPNet对DNN参数进行个性化修改，以平衡多任务中不同用户具有不同稀疏性的目标。在多个域中估计同一组多目标。PEPNet参数少、收敛速度快，可以即插即用到任何网络中。
 
 #### 2.2.2 嵌入个性化网络（EPNet）
@@ -371,12 +374,14 @@ $$
 ### 3.3 消融研究（RQ2）
 
 为了进一步验证PEPNet模型中提出的子模块的有效性，我们比较了没有PPNet模块、没有EPNet模块、两个模块都没有以及完整模型的离线性能，如图4（a）所示。此外，我们研究了PEPNet作为即插即用模块在多任务和多域推荐问题之外的设置上的泛化能力。具体来说，我们在图4（b）中比较了PPNet对多任务和单域推荐的效果，在图4（c）中比较了EPNet对单任务和多域推荐的效果，在图4（d）中比较了将PPNet添加到单任务和单域模型的效果。
+![图4](.picture/2023-PEPNet-Parameter and Embedding Personalized Network for Infusing with Personalized Prior Information-fig4.png)
 
 图4（a）、（b）和（c）的结果显示了通过EPNet和PPNet捕捉跨域和跨任务信息的有效性。EPNet的嵌入个性化和PPNet的参数个性化可以分别带来进一步的性能提升。在图4（d）中，向单任务和单域模型添加纯参数个性化也能为通用推荐问题带来收益，这也说明了在推荐中建模个性化偏置的重要性。
 
 ### 3.4 超参数研究（RQ3）
 
 为了研究所提出模型中不同设置和实现的影响，我们进行了超参数实验。首先，我们在图5（a）中比较了EPNet在不同每个输入特征嵌入大小下的性能，以及在图5（b）中PPNet耦合的DNN层数的影响。其次，由于我们提出在Gate NU的Sigmoid上添加缩放因子以放大或压缩维度之间的差异，我们在图5（c）中评估了不同系数下的推荐性能。最后，我们研究了EPNet和PPNet中额外输入的作用，并在图5（d）中比较了移除输入、添加输入但移除反向传播（BP）以及添加输入和BP对性能的影响。
+![图5](.picture/2023-PEPNet-Parameter and Embedding Personalized Network for Infusing with Personalized Prior Information-fig5.png)
 
 从结果中，我们可以观察到EPNet在不同维度的嵌入下性能稳健，即使只有16的小维度也能保持优异的性能。随着DNN层数的增加，PPNet的性能变得更好，但超过一定层数后，过深的神经网络会导致过拟合。Gate NU中Sigmoid的系数在值为2时表现最佳，因为其输出范围是以1为中心的（0, 2），可以更好地平衡缩放效果。在EPNet和PPNet中添加通用输入并移除反向传播（BP）优于其他设置，这表明这种方式可以在不影响骨干网络的情况下更好地利用输入信息并建模用户个性化。
 

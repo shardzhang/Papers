@@ -77,6 +77,7 @@ Climber-Pilot 通过两个互补的设计选择实现了这一点。首先，它
 ### 3.1 框架概述
 
 在本节中，我们提出了一个新颖的序列推荐框架 Climber-Pilot，它遵循两阶段预训练和微调范式。在预训练阶段，模型通过下次item预测目标学习捕捉用户的未来兴趣表征。为了缓解生成式架构中固有的短视问题，我们提出了时间感知多item预测（Time-Aware Multi-Item Prediction）方法。随后，在微调阶段，模型使用条件化下一item预测方法进行优化。通过引入条件信号（例如音乐流派），我们引导模型学习细粒度子类别中的兴趣表征，从而实现定向召回。整体训练流程如图 1 所示。
+![图1](.picture/2026-Climber-Pilot-A Non-Myopic Generative Recommendation Model Towards Better Instruction-Following-fig1.png)
 
 ### 3.2 通用检索能力预训练
 
@@ -197,6 +198,7 @@ $$
 \times
 $$
 A100 GPU 组成的集群上使用 450 亿交互行为语料库训练模型，并通过 TensorRT [4] 框架部署推理服务。当用户发起请求时，系统同步获取行为序列和缓存的召回指令 $\{c_1, ..., c_P\}$ ，其中 $P$ 表示预计算指令的数量。
+![图2](.picture/2026-Climber-Pilot-A Non-Myopic Generative Recommendation Model Towards Better Instruction-Following-fig2.png)
 
 #### 3.4.1 预计算召回指令
 
@@ -266,6 +268,7 @@ $$
 
 其次，TAMIP 带来了双重优势：它显著提升了整体性能基线，同时保持了卓越的稳定性。我们将这一改进归因于时间感知掩码机制，它有效过滤了人为的批次内模式，迫使模型依赖真正的长期行为信号。
 
+![图3](.picture/2026-Climber-Pilot-A Non-Myopic Generative Recommendation Model Towards Better Instruction-Following-fig3.png)
 **图 3：TAMIP 缓解固有短视的有效性。我们在工业数据集上比较三种训练范式：NIP（红色）、MIP（橙色）和 TAMIP（蓝色）。TAMIP 曲线表现出卓越的长期稳定性。**
 （注：原文包含图 3，展示 NIP/MIP/TAMIP 在 HR@50、HR@20、HR@10 上随预测步数的变化曲线）
 
@@ -358,6 +361,7 @@ $$
 
 这些结果验证了我们的 CGSA 机制。通过过滤与指令无关的交互以确保准确性，同时选择性地关注上下文相关行为以保持个性化，Climber-Pilot 在单个统一模型中同时实现了准确性和个性化。
 
+![图4](.picture/2026-Climber-Pilot-A Non-Myopic Generative Recommendation Model Towards Better Instruction-Following-fig4.png)
 **图 4：展示 Climber-Pilot 指令跟随能力的案例研究。**
 （注：原文包含图 4，展示用户序列、预计算召回指令（Hip-Hop、Classic Hits），以及无约束检索与指令引导检索的结果对比。指令引导下，Hip-Hop 指令输出 Travis Scott、Kendrick Lamar、Drake 等，Classic Hits 指令输出 Daniel Powter、Westlife、Robbie Williams 等。）
 

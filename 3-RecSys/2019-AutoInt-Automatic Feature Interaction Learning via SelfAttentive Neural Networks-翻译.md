@@ -73,6 +73,7 @@
 
 CTR预测的一个直接解决方案是将 $\mathbf{x}$ 视为输入特征，使用现成的分类器如逻辑回归。然而，由于原始特征向量 $\mathbf{x}$ 非常稀疏且高维，模型将很容易过拟合。因此，将原始输入特征表示为低维连续空间是值得期望的。此外，如现有文献所示，利用更高阶的组合特征对于获得良好的预测性能至关重要[6, 8, 11, 23, 26, 32]。
 
+![图1](.picture/2019-AutoInt-Automatic Feature Interaction Learning via SelfAttentive Neural Networks-fig1.png)
 **图1：我们提出的AutoInt模型概述。嵌入层和交互层的细节分别如图2和图3所示。**
 
 具体地，我们将高阶组合特征定义如下：
@@ -93,6 +94,7 @@ CTR预测的一个直接解决方案是将 $\mathbf{x}$ 视为输入特征，使
 
 最后一个交互层的输出是输入特征的低维表示，它建模了高阶组合特征，并进一步通过Sigmoid函数用于估计点击率。接下来，我们将介绍我们提出的方法的细节。
 
+![图2](.picture/2019-AutoInt-Automatic Feature Interaction Learning via SelfAttentive Neural Networks-fig2.png)
 **图2：输入层和嵌入层示意图，其中类别型和数值型字段均由低维稠密向量表示。**
 
 ### 4.2 输入层
@@ -155,6 +157,7 @@ $$
 
 其中 $\mathbf{W}^{(h)}_{\text{Value}} \in \mathbb{R}^{d^{\prime} \times d}$ 。由于 $\tilde{\mathbf{e}}^{(h)}_{m}$ 是特征 $m$ 及其相关特征（在头 $h$ 下）的组合，它代表了我们方法学习到的一个新的组合特征。此外，一个特征也可能参与不同的组合特征，我们通过使用多个头来实现这一点，这些头创建不同的子空间并分别学习不同的特征交互。我们收集所有子空间中学习到的组合特征如下：
 
+![图3](.picture/2019-AutoInt-Automatic Feature Interaction Learning via SelfAttentive Neural Networks-fig3.png)
 **图3：交互层的架构。组合特征依赖于注意力权重 $\alpha^{(h)}_{m}$ 。**
 
 $$

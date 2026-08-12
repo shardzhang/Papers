@@ -1,29 +1,23 @@
 # 层次化结构化神经网络：面向大规模推荐的高效检索扩展
 
+> Kaushik Rangadurai, Siyang Yuan, Minhui Huang, Yiqun Liu, Golnaz Ghasemiesfeh, Yunchen Pu, Haiyu Lu, Xingfeng He, Fangzhou Xu, Andrew Cui, Vidhoon Viswanathan, Lin Yang, Liang Wang, Jiyan Yang, Chonglin Sun | Meta
 
-本文介绍了 层次化结构化神经网络：面向大规模推荐的高效检索扩展。核心内容：
+本文提出层次化结构化神经网络（HSNN），通过模块化神经网络（MoNN）混合体在层次化item索引上运行，**以次线性计算成本实现超越点积的复杂用户-item交互学习**。
 
+核心内容：
+
+- 双塔模型的点积交互难以捕捉复杂用户-item交互，且索引构建与表示学习分离导致不一致性
+- 提出MoNN模块化架构：用户塔+item塔+交互塔，支持交叉特征学习，灵活性控制各塔复杂度
+- 提出HSNN：多个不同复杂度MoNN在层次化索引上协调运行，索引节点下item共享计算，实现次线性扩展
+- 提出LTI算法基于梯度下降联合学习索引与MoNN，消除表示漂移和item漂移导致的不一致性
 
 关键发现：
 
+- HSNN相比双塔架构实现**1.46% NE增益和10%召回率提升**，基础设施成本仅4.5x
+- **联合优化（JOIM）相比分离索引学习带来0.15% NE增益**
+- Meta广告系统在线A/B测试中**HSNN带来2.57%在线指标增益**，已部署超2年
+
 ---
-
-
-> **Kaushik Rangadurai** krangadu@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Siyang Yuan** syyuan@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Minhui Huang** mhhuang@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Yiqun Liu** yiqliu@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Golnaz Ghasemiesfeh** golnazghasemi@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Yunchen Pu** pyc40@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Haiyu Lu** hylu@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Xingfeng He** xingfenghe@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Fangzhou Xu** fxu@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Andrew Cui** andycui97@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Vidhoon Viswanathan** vidhoon@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Lin Yang** ylin1@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Liang Wang** liangwang@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Jiyan Yang** chocjy@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
-**Chonglin Sun** clsun@meta.com *Meta Platforms Inc., Sunnyvale, CA, USA*
 
 ## 摘要
 
@@ -35,7 +29,7 @@
 
 ### 关键词
 
-深度检索，聚类，推荐系统
+deep retrieval, clustering, recommender systems
 
 ### ACM 引用格式
 
@@ -66,6 +60,7 @@ NeuMF [16]、DCN [38] 和 DHEN [44] 是先进的架构，但其计算复杂度�
 本节介绍一种称为模块化神经网络（Modular Neural Network, MoNN）的新模型架构，并展示 MoNN 是一种更强大的模型架构，能够在不同的基础设施约束下灵活运行，带来更好的性能。
 
 模块化神经网络（MoNN）增强了对复杂用户-item交互的学习，超越了单一的点积，同时保持高效率。如图 1 所示，它通过模块化设计实现这一目标，包含三个独立的模块：用户表示模块（用户塔）、item表示模块（item塔）以及用户与item之间的交互模块（交互塔）。MoNN 提供高度的灵活性，能够控制每个塔的复杂度，以有效平衡表达力和计算成本。
+![图1](.picture/2025-Hierarchical Structured Neural Network- Efficient Retrieval Scaling for Large Scale Recommendation-fig1.png)
 
 **用户塔（User Tower）。** 用户塔处理用户特征以生成固定大小的用户嵌入。这些特征可以是稠密特征（例如用户的点击次数）或稀疏特征（例如用户观看过的视频）。稀疏特征输入到嵌入表中，所有特征嵌入被拼接后输入到塔网络。用户塔输出大小为 `num_embed_user * dim_user` 的嵌入，在查询时计算。由于用户塔只需计算一次，并在大量item间共享，因此它可以具有非常高的复杂度。
 
@@ -76,20 +71,23 @@ NeuMF [16]、DCN [38] 和 DHEN [44] 是先进的架构，但其计算复杂度�
 **训练设置（Training Setup）。** MoNN 模型在大规模训练数据集上训练，使用点击和转化作为标签，曝光（非点击或转化）作为负样本，以及额外的无标签数据进行半监督学习以消除偏差。模型使用 O(1000) 量级的特征作为输入。模型针对多个任务进行优化，例如点击任务和转化任务。然后使用多任务交叉熵损失训练模型：
 
 $$
-$L_{sup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{t=1}$^{T} w_t ($y_{ti}$ \log(\hat{y}_{ti}) + (1 - $y_{ti}$)(\log(1 - \hat{y}_{ti}))) \qquad (1)
+L_{\text{sup}} = -\frac{1}{S} \sum_{i=1}^{S} \sum_{t=1}^{T} w_t \left( y_{ti} \log(\hat{y}_{ti}) + (1 - y_{ti})(\log(1 - \hat{y}_{ti})) \right) \qquad (1)
+$$
+L_{\text{sup}} = -\frac{1}{S} \sum_{i=1}^{S} \sum_{t=1}^{T} w_t \left( y_{ti} \log(\hat{y}_{ti}) + (1 - y_{ti})(\log(1 - \hat{y}_{ti})) \right) \qquad (1)
 $$
 
 $$
-$L_{unsup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{t=1}$^{T} distil(\hat{y}_{ti}, $y_{ti}$^{model}) \qquad (2)
+L_{\text{unsup}} = -\frac{1}{S} \sum_{i=1}^{S} \sum_{t=1}^{T} \text{distil}(\hat{y}_{ti}, y_{ti}^{\text{model}}) \qquad (2)
 $$
 
 $$
-L = $L_{sup}$ + $L_{unsup}$ \qquad (3)
+L = L_{\text{sup}} + L_{\text{unsup}} \qquad (3)
 $$
 
 其中 $w_t$ 是任务 $t$ 的权重， $t = 1,2,...T$ ，表示其在最终损失中的重要性。 $y_{ti} \in \{0,1\}$ 是样本 $i$ 在任务 $t$ 上的标签。 $\hat{y}_{ti}$ 是模型对样本 $i$ 在任务 $t$ 上的预测值， $y_{ti}^{model}$ 是由 MoNN 模型或更强的模型生成的软标签。 $S$ 是样本数量。
 
 **交互塔（Interaction Tower）。** 交互塔以 <用户, item> 交互特征（稠密和稀疏）为输入。其架构与用户塔和item塔类似，为每对 <用户, item> 产生一个大小为 `num_embed_interaction * dim_interaction` 的嵌入。为了最小化 <用户, item> 交互特征的计算成本，我们引入了基于倒排索引的交互特征（Inverted Index Based Interaction Features, I2IF），其中使用倒排索引对item信息进行索引，用户信息作为查询来执行高效的交叉计算。在图 2 所示的示例中，item类别特征（每个item的）保存在倒排索引中，用户特征（用户交互过的item类别）作为查询传递，以产生稠密的交互特征。I2IF 可以类似地用于生成稀疏交互特征。
+![图2](.picture/2025-Hierarchical Structured Neural Network- Efficient Retrieval Scaling for Large Scale Recommendation-fig2.png)
 
 **总架构（OverArch）。** 位于三个底层塔（用户塔、item塔和交互塔）之上的总架构组件以它们的输出为输入。它采用 DHEN 风格 [44] 的模型架构来生成 logit。值得注意的是，与传统的双塔模型不同，`dim_item`、`dim_user` 和 `dim_interaction` 可以不同，且 `num_embed_user`、`num_embed_interaction` 和 `num_embed_item` 可以大于 1。
 
@@ -109,6 +107,7 @@ $$
 然而，如果我们将item的基数降低 $K$ 倍（例如，构建一个item索引，每个索引节点包含 $K$ 个item），理论上可以在不增加服务成本的情况下，在检索中使用 $K$ 倍复杂度的模型。
 
 **启发示例（Motivating Example）。** 考虑一个包含 $C$ 个索引节点的item索引，每个节点包含 $K$ 个item。假设同一索引节点内的item主题相似，我们可以将候选选择的复杂度从 $O(K * C)$ 降低到 $O(K + T)$ ，其中 $T$ 是要返回的item数量。这使得可以采用更先进的神经网络（模型 1）来学习用户与item之间的复杂交互（在索引粒度级别）。相比之下，双塔模型（模型 2）仅限于通过单一的点积学习基本交互，缺乏任何 <用户, item> 交互特征。模型 1 和模型 2 的比较如图 3 所示。
+![图3](.picture/2025-Hierarchical Structured Neural Network- Efficient Retrieval Scaling for Large Scale Recommendation-fig3.png)
 
 虽然两种模型各有利弊，但模型 2 在item级别捕捉细粒度信号，而模型 1 利用先进的神经网络和更大的信号量在item索引级别运作。理想情况下，检索模型范式应结合两种方法的优势。
 
@@ -119,13 +118,14 @@ HSNN 包含两个主要组件：(1) 层次化索引；(2) 索引层次结构中�
 ### 3.1 模型架构
 
 HSNN 是在item层次结构上运行的模块化神经网络（MoNN）的混合体。虽然 HSNN 可以应用于 $N$ 层层次结构，但图 4 展示了一个 3 层 HSNN 模型的架构。在该架构中，HSNN 在具有三层的层次化索引上运作：L1 索引、L2 索引和 L3 索引。L1 索引在最粗的索引粒度上运作，能够利用具有最高复杂度（通过计算共享）和广泛交互特征（<用户, L1 索引节点>）的 MoNN 模型架构。另一方面，L $N$ 索引（本例中 N=3）在item粒度上运作，并利用具有最低复杂度和最少组 <用户, item> 交互特征的 MoNN 模型架构。三个 MoNN 模块通过集成层（ensemble layer）组合。这种方法允许最终预测利用多个不同模型复杂度的 MoNN，消费不同粒度的特征，从而实现更准确的预测。
+![图4](.picture/2025-Hierarchical Structured Neural Network- Efficient Retrieval Scaling for Large Scale Recommendation-fig4.png)
 
 **特征（Features）。** MoNN Small 在单个item级别处理特征，利用用户特征、item特征和 <用户, item> 交互特征。相比之下，MoNN Medium 和 MoNN Large 在更粗的粒度（分别为 L2 索引和 L1 索引）上运作，消费用户特征、索引节点特征和 <用户, 索引节点> 交互特征，其中索引节点由一个代表性item代替进行特征计算。关于代表性item选择的更多信息见算法 1。
 
 **损失函数（Loss Function）。** 有 $N$ 个监督损失，层次结构中每一层一个，其中包含 1 个 <用户, item> 监督损失和 (N-1) 个 <用户, 索引节点> 监督损失。每个损失还被校准，以确保模型不会低估或高估预测。如 MoNN 部分所述，使用多任务交叉熵损失来优化模型：
 
 $$
-$L_{sup}$ = -\frac{1}{S} \su$m_{i=1}$^{S} \su$m_{j=1}$^{N} \su$m_{t=1}$^{T} w_t ($y_{ti}$ \log(\hat{y}_{ti}^{L_j}) + (1 - $y_{ti}$)(\log(1 - \hat{y}_{ti}^{L_j}))) \qquad (4)
+L_{\text{sup}} = -\frac{1}{S} \sum_{i=1}^{S} \sum_{j=1}^{N} \sum_{t=1}^{T} w_t \left( y_{ti} \log(\hat{y}_{ti}^{L_j}) + (1 - y_{ti})(\log(1 - \hat{y}_{ti}^{L_j})) \right) \qquad (4)
 $$
 
 其中 $w_t$ 是任务 $t$ 的权重， $t = 1,2,...T$ ，表示其在最终损失中的重要性。 $y_{ti} \in \{0,1\}$ 是样本 $i$ 在任务 $t$ 上的标签。 $\hat{y}_{ti}^{L_j}$ 是模型对样本 $i$ 在任务 $t$ 上第 $L_j$ 层的预测值。 $S$ 是样本数量， $N$ 是 HSNN 的层数。
@@ -154,27 +154,28 @@ $$
 
 **算法 1：学习索引（LTI）**
 
-```
-输入: MoNN模型, 每层节点数(K)
-输出: mapping_item_index m 和 representative_item_index r
-
-1: 初始化索引嵌入 index {c_k}_{k=1}^K
-2: for batch中的每个j do
-3:   计算MoNN用户嵌入 u_j 和item嵌入 v_j
-4:   distance_item_index d(j,k) = ||v_j - c_k||_2
-5:   mapping_item_index m_j = argmin_k d(j,k)
-6:   affinity_item_index a_k = exp(-alpha * d(j,k)) / sum_{k'} exp(-alpha * d(j,k^{\prime}))
-7:   embedding_item_index c_bar = sum_k a_k * c_k
-8:   添加监督 logloss_index(y, <u_j, c_bar>)
-9: end for
-10: 初始化 representative_item_index
-11: for corpusV中的每个itemj do
-12:   for k in K do
-13:     representative_item_index_k r_k = j 如果 d(j,k) 比现有值更近
-14:   end for
-15: end for
-16: 发布 mapping_item_index m 和 representative_item_index r
-```
+$$
+\begin{aligned}
+&\textbf{输入:} \text{ MoNN模型, 每层节点数}(K) \\
+&\textbf{输出:} \text{ mapping\_item\_index } m \text{ 和 } representative\_item\_index \ r \\
+&1: \text{初始化索引嵌入 } \{c_k\}_{k=1}^K \\
+&2: \textbf{for } \text{batch中的每个} j \textbf{ do} \\
+&\quad 3: \text{ 计算MoNN用户嵌入 } u_j \text{ 和item嵌入 } v_j \\
+&\quad 4: \text{ distance\_item\_index } d(j,k) = \|v_j - c_k\|_2 \\
+&\quad 5: \text{ mapping\_item\_index } m_j = \arg\min_k \ d(j,k) \\
+&\quad 6: \text{ affinity\_item\_index } a_k = \frac{\exp(-\alpha \cdot d(j,k))}{\sum_{k'} \exp(-\alpha \cdot d(j,k'))} \\
+&\quad 7: \text{ embedding\_item\_index } \bar{c} = \sum_k a_k \cdot c_k \\
+&\quad 8: \text{ 添加监督 } \text{logloss\_index}(y, \langle u_j, \bar{c} \rangle) \\
+&\textbf{end for} \\
+&9: \text{ 初始化 } representative\_item\_index \\
+&10: \textbf{for } \text{语料库} V \text{中的每个item } j \textbf{ do} \\
+&\quad 11: \textbf{for } k \text{ in } K \textbf{ do} \\
+&\quad\quad 12: \text{ representative\_item\_index}_k \ r_k = j \text{ 如果 } d(j,k) \text{ 比现有值更近} \\
+&\quad \textbf{end for} \\
+&\textbf{end for} \\
+&13: \text{ 发布 mapping\_item\_index } m \text{ 和 } representative\_item\_index \ r
+\end{aligned}
+$$
 
 #### 3.2.2 残差学习（Residual Learning）
 
@@ -186,13 +187,13 @@ $$
 r_1 = v \qquad (5)
 $$
 $$
-r_n = $r_{n-1}$ - \bar{c}_{n-1} \qquad (6)
+r_n = r_{n-1} - \bar{c}_{n-1} \qquad (6)
 $$
 
 其中 $\bar{c}_{n-1}$ 是 embedding_item_index（算法 1 中的第 7 行）。在每个层级 $n$ ，量化后的item嵌入计算为 $q_n = \sum_{t=1}^{n-1} \bar{c}_t$ 。重构损失计算为：
 
 $$
-reconstruction\_loss = ||q_N - v||^2 \qquad (7)
+\text{reconstruction\_loss} = \|q_N - v\|^2 \qquad (7)
 $$
 
 残差的幅度在进一步向下层移动时逐渐减小。因此，较粗的索引层表达更一般的概念，而细粒度的索引层捕捉更详细的含义。
@@ -211,7 +212,7 @@ $$
 **Softmax 温度调度器（Softmax Temperature Scheduler）。** HSNN 在服务期间使用代表性item的特征（算法 1 第 13 行）。然而，在训练期间 LTI 算法使用软 <item, 索引节点> 分配。为缓解这种不一致，采用调度器，通过逐渐增加温度（alpha），从初始阶段的软分配过渡到后期的硬分配。较小的 alpha 值产生平衡的item-索引分配分布，而较大的 alpha 值导致偏斜的分布。调度器基于以下函数：
 
 $$
-alpha = max\_alpha * \left(\frac{current\_iter}{max\_iters}\right)^{exp} \qquad (8)
+\alpha = \alpha_{\max} \cdot \left(\frac{\text{current\_iter}}{\text{max\_iters}}\right)^{\text{exp}} \qquad (8)
 $$
 
 **平衡索引分布（Balanced Index Distribution）。** 索引学习常常受到聚类坍缩（cluster collapse）的影响，即模型仅使用有限子集的索引节点。平衡的索引分布对于启用具有高复杂度的神经网络模型至关重要。我们采用 FLOPs 正则化器来解决这个问题。其动机来自 Paria 等人 [31] 的工作，如果所有item被分配到同一个索引节点，或者 <item, 索引节点> 分配分布不平衡，则对模型进行惩罚。引入稀疏性损失以最小化分配均值的平方和。由于这对小批次敏感，将最近 $K$ 个批次的数据聚合在一起，对聚合后的软分配矩阵（ $K$ * batch_size, num_index_nodes）应用 FLOPs 正则化器。
@@ -283,6 +284,7 @@ MoNN Small 相对于双塔模型架构实现了 0.29% 的 NE 增益，突出了 
 ## 5 在线实验
 
 图 5 展示了 HSNN 在 Meta 广告中的生产部署。在查询时，用户塔被执行以生成用户嵌入，而item塔异步运行以索引item嵌入。<用户, item> 交互特征使用 I2IF 框架实时生成，输入到交互塔以实时产生交互嵌入。所有嵌入随后被传递到总架构和集成层，在查询时计算 logit。
+![图5](.picture/2025-Hierarchical Structured Neural Network- Efficient Retrieval Scaling for Large Scale Recommendation-fig5.png)
 
 HSNN 框架已在 Meta 广告检索系统中广泛部署超过 2 年。在部署 HSNN 之前，我们已将 MoNN Small 架构发布到生产环境中，因其基础设施成本相对较低。如表 4 所示，在线 A/B 测试表明 HSNN 带来了 2.57% 的在线广告指标增益（0.1% 的增益被认为是统计显著的）。
 
@@ -354,18 +356,19 @@ HSNN 服务算法在算法 2 中提供。HSNN 服务是逐层进行的。对于�
 
 **算法 2：HSNN 服务**
 
-```
-输入: MoNN模型, item-索引映射 m
-输出: Top k 个item
-
-1: for 每一层 i in N do
-2:   识别每个item的索引节点
-3:   使用索引节点中代表性item的特征，评估 MoNN 模型的 f(user, index-node)
-4:   将 MoNN 模型输出与之前 MoNN 模型的输出一起传递给集成层，得到 logit
-5:   从该层选择 top-k 个节点作为下一层的候选
-6: end for
-7: 发布 top-k 个item到排序阶段
-```
+$$
+\begin{aligned}
+&\textbf{输入:} \text{ MoNN模型, item-索引映射 } m \\
+&\textbf{输出:} \text{ Top } k \text{ 个item} \\
+&1: \textbf{for } \text{每一层 } i \text{ in } N \textbf{ do} \\
+&\quad 2: \text{ 识别每个item的索引节点} \\
+&\quad 3: \text{ 使用索引节点中代表性item的特征，评估 MoNN 模型的 } f(\text{user}, \text{index-node}) \\
+&\quad 4: \text{ 将 MoNN 模型输出与之前 MoNN 模型的输出一起传递给集成层，得到 logit} \\
+&\quad 5: \text{ 从该层选择 top-}k \text{ 个节点作为下一层的候选} \\
+&\textbf{end for} \\
+&6: \text{ 发布 top-}k \text{ 个item到排序阶段}
+\end{aligned}
+$$
 
 ---
 

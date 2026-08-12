@@ -108,6 +108,7 @@ $$
 \end{aligned}
 $$
 
+![图1](.picture/2018-DIN-Deep Interest Network for Click-Through Rate Prediction-fig1.png)
 **图1：阿里巴巴展示广告系统运行流程示意图，其中用户行为数据起重要作用。**
 
 ### 4.2 基础模型（Embedding&MLP）
@@ -155,6 +156,7 @@ $$
 
 其中 $\{\mathbf{e}_1, \mathbf{e}_2, \dots, \mathbf{e}_H\}$ 是长度为 $H$ 的用户 $U$ 行为的嵌入向量列表， $\mathbf{v}_A$ 是广告 $A$ 的嵌入向量。通过这种方式， $\mathbf{v}_U(A)$ 随不同广告而变化。 $a(\cdot)$ 是一个前馈网络，输出为激活权重，如图2所示。除了两个输入嵌入向量外， $a(\cdot)$ 还将它们的外积添加到后续网络中，这是帮助相关性建模的显式知识。
 
+![图2](.picture/2018-DIN-Deep Interest Network for Click-Through Rate Prediction-fig2.png)
 **图2：网络架构。左侧为基础模型（Embedding&MLP）的网络。属于同一商品的cate_id、shop_id和goods_id的嵌入向量被拼接起来，以表示用户行为中一个访问过的商品。右侧为我们提出的DIN模型。它引入了一个局部激活单元，通过该单元，用户兴趣的表示随不同候选广告自适应地变化。**
 
 公式(3)的局部激活单元与NMT任务中开发的注意力方法共享类似的思想。然而，与传统的注意力方法不同，公式(3)放松了 $\sum_i w_i = 1$ 的约束，旨在保留用户兴趣的强度。也就是说，放弃了对 $a(\cdot)$ 输出进行 softmax 归一化。相反， $\sum_i w_i$ 的值被视为某种程度上的激活用户兴趣强度的近似。例如，如果一个用户的历史行为包含 $90\%$ 的衣服和 $10\%$ 的电子产品。给定 T 恤和手机两个候选广告，T 恤激活了大部分属于衣服的历史行为，可能比手机获得更大的 $\mathbf{v}_U$ 值（更高的兴趣强度）。传统的注意力方法通过对 $a(\cdot)$ 的输出进行归一化，失去了对 $\mathbf{v}_U$ 数值尺度的分辨率。
@@ -213,6 +215,7 @@ $$
 
 其控制函数如图3右侧所示。在训练阶段， $\mathbb{E}[s]$ 和 $\text{Var}[s]$ 是每个小批量中输入的平均值和方差。在测试阶段， $\mathbb{E}[s]$ 和 $\text{Var}[s]$ 通过数据的移动平均值 $\mathbb{E}[s]$ 和 $\text{Var}[s]$ 计算。 $\epsilon$ 是一个小常数，在我们的实践中设置为 $10^{-8}$ 。
 
+![图3](.picture/2018-DIN-Deep Interest Network for Click-Through Rate Prediction-fig3.png)
 **图3：PReLU和Dice的控制函数。**
 
 Dice可以视为PReLU的推广。Dice的关键思想是根据输入数据的分布自适应地调整修正点，其值设置为输入的均值。此外，Dice在两个通道之间平滑地切换控制。当 $\mathbb{E}(s) = 0$ 且 $\text{Var}[s] = 0$ 时，Dice退化为PReLU。
@@ -313,6 +316,7 @@ a 除LR外，其他行使用PReLU作为激活函数。
 | 有goods_id特征+DiFacto正则化 | 0.5983 | 4.57% |
 | 有goods_id特征+MBA正则化 | 0.6031 | 9.68% |
 
+![图4](.picture/2018-DIN-Deep Interest Network for Click-Through Rate Prediction-fig4.png)
 **图4：BaseModel在Alibaba数据集上使用不同正则化的性能。使用细粒度goods_id特征且无正则化训练在第一个epoch后遇到严重的过拟合。所有正则化都显示出改进，其中我们提出的小批量感知正则化表现最佳。此外，使用goods_id特征的训练良好模型比不使用它们获得更高的AUC。这是由于细粒度特征包含更丰富的信息。**
 
 ### 6.6 Alibaba数据集上的模型比较结果
@@ -348,10 +352,12 @@ b 这些行使用dropout正则化。
 
 最后，我们进行案例研究以揭示DIN在Alibaba数据集上的内部结构。我们首先检查局部激活单元的有效性。图5展示了用户行为相对于候选广告的激活强度。正如预期，与候选广告相关性高的行为获得了高权重。
 
+![图5](.picture/2018-DIN-Deep Interest Network for Click-Through Rate Prediction-fig5.png)
 **图5：DIN中自适应激活的示意图。与候选广告相关性高的行为获得高激活权重。**
 
 然后我们可视化学习到的嵌入向量。以前面提到的年轻母亲为例，我们随机选择9个类别（连衣裙、运动鞋、包等）以及每个类别100个商品作为她的候选广告。图6展示了DIN学习到的商品嵌入向量的t-SNE可视化，其中相同形状的点对应相同类别。我们可以看到，相同类别的商品几乎属于同一个聚类，这清楚地展示了DIN嵌入的聚类特性。此外，我们根据预测值为表示候选广告的点着色。图6也是该母亲在嵌入空间中潜在候选商品的兴趣密度分布热力图。它显示DIN可以在特定用户的候选商品嵌入空间中形成多模态兴趣密度分布，以捕获其多样化兴趣。
 
+![图6](.picture/2018-DIN-Deep Interest Network for Click-Through Rate Prediction-fig6.png)
 **图6：DIN中商品嵌入向量的可视化。点的形状表示商品类别。点的颜色对应CTR预测值。**
 
 

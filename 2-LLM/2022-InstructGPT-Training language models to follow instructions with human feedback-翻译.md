@@ -24,6 +24,7 @@ arXiv:2203.02155v1 [cs.CL] 2022年3月4日
 我们通过训练语言模型按照用户的意图行事，在对齐方面取得了进展（Leike et al., 2018）。这既包括显式意图（如遵循指令），也包含隐式意图（如保持真实、不带有偏见、有毒或其他有害性）。使用Askell et al.（2021）的术语，我们希望语言模型是有帮助的（应帮助用户解决他们的任务）、诚实的（不应编造信息或误导用户）和无害的（不应对人或环境造成身体、心理或社会伤害）。我们在第3.6节详细阐述了这些标准的评估。
 
 我们专注于对齐语言模型的微调方法。具体来说，我们使用来自人类反馈的强化学习（RLHF; Christiano et al., 2017; Stiennon et al., 2020）来微调GPT-3，使其遵循广泛的书面指令（见图2）。该技术使用人类偏好作为奖励信号来微调我们的模型。我们首先雇佣了40名承包商，根据他们在筛选测试中的表现来标注我们的数据（详见第3.4节和附录B.1）。然后，我们在（主要是英语的）提交给OpenAI API的提示和一些标注人员编写的提示上，收集了人类编写的关于期望输出行为的演示数据集，并用它来训练我们的监督学习基线模型。接下来，我们在更大的一组API提示上，收集了模型输出之间的人类标注比较数据集。然后，我们在该数据集上训练一个奖励模型（RM），以预测我们的标注人员会更喜欢哪个模型输出。最后，我们使用这个RM作为奖励函数，并使用PPO算法（Schulman et al., 2017）微调我们的监督学习基线以最大化该奖励。我们在图2中说明了这个过程。该过程将GPT-3的行为与特定人群（主要是我们的标注人员和研究人员）声明的偏好对齐，而不是与任何更广泛的"人类价值观"概念对齐；我们将在第5.2节进一步讨论这一点。我们将得到的模型称为InstructGPT。
+![图2](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig2.png)
 
 我们主要通过让标注人员在由保留客户（不在训练数据中）提供的提示组成的测试集上，对模型输出的质量进行评分来评估模型。我们还在一系列公共NLP数据集上进行了自动评估。我们训练了三种模型规模（1.3B、6B和175B参数），所有模型均使用GPT-3架构。我们的主要发现如下：
 
@@ -176,32 +177,39 @@ $$
 ### 4.1 API分布上的结果
 
 **标注人员显著更喜欢InstructGPT的输出而非GPT-3的输出。** 在我们的提示测试集上，标注人员显著更喜欢各模型规模的InstructGPT输出。这些结果显示在图1中。我们发现GPT-3输出表现最差，通过使用精心设计的few-shot提示（GPT-3 (prompted)）可以获得显著的逐步改进，然后通过监督学习在演示上进行训练（SFT），最后通过使用PPO在比较数据上进行训练。在PPO期间添加预训练混合的更新不会导致标注人员偏好的大变化。为了说明我们收益的幅度：在直接比较中，175B InstructGPT输出在85\pm3%的情况下优于GPT-3输出，在71\pm4%的情况下优于few-shot GPT-3。
+![图1](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig1.png)
 
 我们还发现，在提交给API上的GPT-3模型的提示上评估时，我们的结果没有显著变化（见图3），尽管我们的PPO-ptx模型在更大的模型规模上表现略差。
+![图3](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig3.png)
 
 在图4中，我们展示了标注人员在几个更具体的维度上对InstructGPT输出给出了有利评价。具体来说，与GPT-3相比，InstructGPT输出在客户助手的上下文中更合适，更经常遵循指令中定义的显式约束（例如"用两段或更少的字数写你的答案"），更少完全无法遵循正确指令，并且在闭域任务中更少编造事实（"幻觉"）。这些结果表明InstructGPT模型比GPT-3更可靠、更易于控制。我们发现，我们的其他元数据类别在我们的API中出现频率过低，无法获得模型之间的统计显著差异。
+![图4](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig4.png)
 
 **我们的模型推广到了未产生任何训练数据的"保留"标注人员的偏好。** 保留的标注人员具有与我们用于产生训练数据的工作人员相似的排名偏好（见图3）。特别是，根据保留工作人员的评价，我们所有的InstructGPT模型仍然大大优于GPT-3基线。因此，我们的InstructGPT模型不仅仅是对训练标注人员偏好的过拟合。
 
 我们从奖励模型的泛化能力中看到了进一步的证据。我们进行了一项实验，将标注人员分为5组，并使用5折交叉验证（在4组上训练，在保留组上评估）训练了5个RM（使用3个不同的种子）。这些RM在预测保留组中标注人员的偏好方面的准确率为69.6\pm0.9%，相比它们在预测训练集中标注人员偏好方面的72.4\pm0.4%的准确率略有下降。
 
 **公共NLP数据集不能反映我们的语言模型的使用方式。** 在图5中，我们还将InstructGPT与在FLAN（Wei et al., 2021）和T0（Sanh et al., 2021）数据集上微调的175B GPT-3基线进行比较（详情见附录C）。我们发现这些模型表现优于GPT-3，与具有精心选择提示的GPT-3相当，但差于我们的SFT基线。这表明这些数据集不足以多样化以提高我们在API提示分布上的性能。在正面比较中，我们的175B InstructGPT模型输出优于我们的FLAN模型78\pm4%的时间，优于我们的T0模型79\pm4%的时间。这些模型的Likert分数见图5。
+![图5](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig5.png)
 
 我们认为我们的InstructGPT模型优于FLAN和T0有两个原因。首先，公共NLP数据集旨在捕捉易于用自动指标评估的任务，如分类、问答，以及某种程度上摘要和翻译。然而，分类和问答仅占API客户使用我们语言模型的一小部分（约18%），而开放式的生成和头脑风暴根据标注人员占我们提示数据集的约57%（见表1）。其次，公共NLP数据集很难获得非常高的输入多样性（至少在真实世界用户可能感兴趣使用的输入类型方面）。当然，NLP数据集中的任务确实代表了我们希望语言模型能够解决的一种指令类型，所以最广泛的指令遵循模型类型将结合两种数据集。
 
 ### 4.2 公共NLP数据集上的结果
 
 **InstructGPT模型在真实性方面展现出优于GPT-3的改进。** 根据在TruthfulQA数据集上的人类评估，我们的PPO模型在生成真实且信息丰富的输出方面与GPT-3相比显示出微小但显著的改进（见图6）。这是默认行为：我们的模型无需特别指示要说真话就能表现出改进的真实性。有趣的是，例外是我们的1.3B PPO-ptx模型，其表现略差于相同规模的GPT-3模型。当仅对非对抗性选择针对GPT-3的提示进行评估时，我们的PPO模型仍然显著比GPT-3更真实和信息丰富（尽管绝对改进下降了几个百分点）。
+![图6](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig6.png)
 
 遵循Lin et al.（2021），我们还给出了一个有帮助的"Instruction+QA"提示，指示模型在不确信正确答案时回应"I have no comment"。在这种情况下，我们的PPO模型倾向于真实但不提供信息，而不是自信地说出虚假信息；基线GPT-3模型在这方面表现不佳。
 
 我们在真实性方面的改进也由我们的PPO模型在API分布中的闭域任务上更少产生幻觉（即编造信息）这一事实所证明，我们在图4中展示了这一点。
 
 **InstructGPT在毒性方面相比GPT-3有微小改进，但在偏见方面没有。** 我们首先在RealToxicityPrompts数据集（Gehman et al., 2020）上评估我们的模型。我们通过两种方式做到这一点：通过Perspective API[8]运行模型样本以获得自动毒性评分（这是该数据集的标准评估程序），以及将这些样本发送给标注人员以获得关于绝对毒性、相对于提示的毒性、连续性和整体输出偏好的评分。我们根据提示毒性均匀采样该数据集中的提示，以便更好地评估模型在高输入毒性下的表现（见附录E中的图39）；这与该数据集的标准提示采样不同，因此我们的绝对毒性数字被高估了。
+![图39](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig39.png)
 
 [8] www.perspectiveapi.com
 
 我们的结果在图7中。我们发现，当被指示产生安全和尊重的输出（"尊重提示"）时，根据Perspective API，InstructGPT模型生成的输出毒性低于GPT-3。当去除尊重提示时（"无提示"），这一优势消失。有趣的是，当被明确提示产生有毒输出时，InstructGPT输出的毒性远高于GPT-3（见图39）。
+![图7](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig7.png)
 
 这些结果在我们的人类评估中得到确认：InstructGPT在"尊重提示"设置下毒性低于GPT-3，但在"无提示"设置下表现相似。我们在附录E中提供了扩展结果。总结：我们所有的模型都被评为比给定提示预期的毒性更低（它们在-1到1的尺度上获得负分，其中0表示"和预期差不多毒性"）。我们的SFT基线是所有模型中毒性最低的，但连续性和偏好排名也最低，这可能表明模型生成了非常短或退化的响应。
 
@@ -210,8 +218,11 @@ $$
 **我们可以通过修改RLHF微调过程来最小化公共NLP数据集上的性能回归。** 默认情况下，当我们在API分布上训练PPO模型时，它遭受了"对齐税"，因为在几个公共NLP数据集上的性能下降。我们希望有一个避免对齐税的对齐过程，因为对齐税会激励使用未对齐但在这些任务上更有能力的模型。
 
 在图29中，我们展示了在我们的PPO微调中添加预训练更新（PPO-ptx）减轻了所有数据集上的性能回归，甚至在HellaSwag上超过了GPT-3。PPO-ptx模型的性能在DROP、SQuADv2和翻译方面仍然落后于GPT-3；需要更多工作来研究和进一步消除这些性能回归。
+![图29](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig29.png)
 
 混合预训练更新比增加KL系数的更简单方案效果更好。在图33中，我们展示存在一个预训练混合系数的值，既可以逆转SQuADv2和DROP（我们用于测试的数据集）上的性能回归，又使验证奖励的减少最小化。相比之下，增加KL系数（图34）导致验证奖励显著下降，并且从未在DROP和SQuAD上完全恢复。将KL模型从PPO初始模型改为GPT-3得到类似结果。
+![图33](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig33.png)
+![图34](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig34.png)
 
 ### 4.3 定性结果
 
@@ -220,10 +231,12 @@ $$
 [9] 我们通常指示标注人员在缺少所需专业知识时跳过评估，尽管有时标注人员使用翻译服务来评估他们不会说的语言中的简单指令。
 
 我们没有定量跟踪这些行为，但在图8中展示了一些定性示例。我们的175B PPO-ptx模型能够可靠地回答关于代码的问题，并且也可以遵循其他语言的指令；然而，我们注意到即使指令是其他语言，它也经常产生英语输出。相比之下，我们发现GPT-3可以执行这些任务，但需要更仔细的提示设计，并且很少在这些领域遵循指令。
+![图8](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig8.png)
 
 **InstructGPT仍然会犯简单错误。** 在与我们的175B PPO-ptx模型交互中，我们注意到它仍然可能犯简单错误，尽管在许多不同语言任务上表现强劲。举几个例子：（1）当给出一个具有错误前提的指令时，模型有时会错误地假定前提为真；（2）模型可能过度回避；当给出一个简单问题时，它有时会说没有唯一答案，并给出多种可能的答案，即使根据上下文有一个相当清晰的答案；（3）当指令包含多个显式约束时（例如，"列出10部1930年代在法国拍摄的电影"）或当约束对语言模型来说可能具有挑战性时（例如，用指定的句子数写摘要），模型性能下降。
 
 我们在图9中展示了一些这些行为的示例。我们怀疑行为（2）部分是因为我们指示标注人员奖励认知谦逊；因此，他们可能倾向于奖励那些回避的输出，这被我们的奖励模型捕捉到了。我们怀疑行为（1）是因为训练集中很少有假设错误前提的提示，我们的模型不能很好地推广到这些示例。我们相信这两种行为都可以通过对抗性数据收集（Dinan et al., 2019b）大幅减少。
+![图9](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig9.png)
 
 ## 5 讨论
 
@@ -307,6 +320,42 @@ $$
 
 最后，我们要感谢我们的标注人员，没有他们这项工作就不可能完成：Meave Fryer, Sara Tirmizi, James Carroll, Jian Ouyang, Michelle Brothers, Conor Agnew, Joe Kwon, John Morton, Emma Duncan, Delia Randolph, Kaylee Weeks, Alexej Savreux, Siam Ahsan, Rashed Sorwar, Atresha Singh, Muhaiminul Rukshat, Caroline Oliveira, Juan Pablo Castaño Rendón, Atqiya Abida Anjum, Tinashe Mapolisa, Celeste Fejzo, Caio Oleskovicz, Salahuddin Ahmed, Elena Green, Ben Harmelin, Vladan Djordjevic, Victoria Ebbets, Melissa Mejia, Emill Jayson Caypuno, Rachelle Froyalde, Russell M. Bernandez, Jennifer Brillo, Jacob Bryan, Carla Rodriguez, Evgeniya Rabinovich, Morris Stuttard, Rachelle Froyalde, Roxanne Addison, Sarah Nogly, Chait Singh。
 
+![图10](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig10.png)
+![图11](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig11.png)
+![图12](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig12.png)
+![图13](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig13.png)
+![图14](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig14.png)
+![图15](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig15.png)
+![图16](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig16.png)
+![图17](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig17.png)
+![图18](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig18.png)
+![图19](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig19.png)
+![图20](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig20.png)
+![图21](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig21.png)
+![图22](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig22.png)
+![图23](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig23.png)
+![图24](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig24.png)
+![图25](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig25.png)
+![图26](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig26.png)
+![图27](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig27.png)
+![图28](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig28.png)
+![图30](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig30.png)
+![图31](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig31.png)
+![图32](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig32.png)
+![图35](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig35.png)
+![图36](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig36.png)
+![图37](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig37.png)
+![图38](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig38.png)
+![图40](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig40.png)
+![图41](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig41.png)
+![图42](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig42.png)
+![图43](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig43.png)
+![图44](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig44.png)
+![图45](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig45.png)
+![图46](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig46.png)
+![图47](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig47.png)
+![图48](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig48.png)
+![图49](.picture/2022-InstructGPT-Training language models to follow instructions with human feedback-fig49.png)
 ## 参考文献
 
 [1] Abramson, J., Ahuja, A., Barr, I., Brussee, A., Carnevale, F., Cassin, M., Chhaparia, R., Clark, S., Damoc, B., Dudzik, A., et al. (2020). Imitating interactive intelligence. arXiv preprint arXiv:2012.05672.

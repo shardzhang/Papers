@@ -90,6 +90,7 @@ $$
 
 其中 $\mathbf{v}_{l_b}$ 是预订 listing $l_b$ 的嵌入。对于探索性会话，更新仍通过优化目标 (3) 进行。图 1 展示了如何使用大小为 $2n + 1$ 的滑动窗口从第一个点击 listing 到预订 listing 学习 listing 嵌入的图形表示。在每一步中，中心 listing 的嵌入 $\mathbf{v}_l$ 被更新，使其预测上下文 listing $D_p$ 的嵌入 $\mathbf{v}_c$ 和预订 listing 的嵌入 $\mathbf{v}_{l_b}$ 。随着窗口滑动，一些 listing 进入和离开上下文集，而预订 listing 始终作为全局上下文保留在其中（虚线）。
 
+![图1](.picture/2018-Real-time Personalization using Embeddings for Search Ranking at Airbnb-fig1.png)
 > **图 1：Listing 嵌入的 Skip-gram 模型**
 
 **适应聚集搜索的训练。** 在线旅行预订网站的用户通常只在单一市场内搜索，即他们想要入住的位置。因此， $D_p$ 包含来自同一市场的 listing 的概率很高。另一方面，由于负例的随机采样， $D_n$ 很可能包含的 listing 大多与 $D_p$ 中的 listing 不在同一市场。在每一步中，对于给定的中心 listing $l$ ，正上下文主要由与 $l$ 同市场的 listing 组成，而负上下文主要由与 $l$ 不同市场的 listing 组成。我们发现这种不平衡导致学习到的市场内相似度次优。为解决此问题，我们提出添加一组随机负例 $D_{mn}$ ，从中心 listing $l$ 的市场中采样：
@@ -100,10 +101,13 @@ $$
 
 其中待学习的参数 $\theta$ 是 $\mathbf{v}_l$ 和 $\mathbf{v}_c^{\prime}$ ， $l, c \in V$ 。
 
+![图2](.picture/2018-Real-time Personalization using Embeddings for Search Ranking at Airbnb-fig2.png)
 > **图 2：加利福尼亚 listing 嵌入聚类**
 
+![图3](.picture/2018-Real-time Personalization using Embeddings for Search Ranking at Airbnb-fig3.png)
 > **图 3：使用嵌入的相似 listing**
 
+![图4](.picture/2018-Real-time Personalization using Embeddings for Search Ranking at Airbnb-fig4.png)
 > **图 4：嵌入评估工具**
 
 **冷启动 listing 嵌入。** 每天都有新房源由房东创建并在 Airbnb 上发布。此时这些 listing 没有嵌入，因为它们不在点击会话 $S$ 训练数据中。为新房源创建嵌入，我们提出利用其他 listing 的现有嵌入。在房源创建时，房东需要提供有关房源的信息，如位置、价格、listing 类型等。我们使用提供的元数据找到 3 个地理位置最近的（10 英里半径内）已有嵌入的 listing，这些 listing 与新房源类型相同（例如独立房间）且属于相同价格区间（例如每晚 $20 - $25）。然后，我们使用找到的 3 个 listing 的嵌入计算均值向量作为新房源的嵌入。使用此技术，我们能够覆盖 98% 以上的新房源。
@@ -194,6 +198,7 @@ $$
 \arg\max_{\theta} \sum_{(l_t, c) \in D_{\mathrm{book}}} \log \frac{1}{1 + e^{-\mathbf{v}_c^{\prime} \mathbf{v}_{l_t}}} + \sum_{(l_t, c) \in D_{\mathrm{neg}}} \log \frac{1}{1 + e^{\mathbf{v}_c^{\prime} \mathbf{v}_{l_t}}} \qquad (7)
 $$
 
+![图5](.picture/2018-Real-time Personalization using Embeddings for Search Ranking at Airbnb-fig5.png)
 > **图 5：Listing 类型和用户类型 Skip-gram 模型**
 
 图 5a（左侧）展示了此模型的图形表示，其中中心 item 代表 user_type（ $u_t$ ），更新按 (6) 进行。由于预订会话按定义主要包含来自不同市场的 listing，因此不需要像我们在第 3.1 节中那样从同一市场采样额外的负例来应对点击会话中的聚集搜索。
@@ -247,6 +252,7 @@ Listing 嵌入的维度设置为 $d = 32$ ，因为我们发现这是离线性�
 
 为了能够快速对优化函数、训练数据构建、超参数等的不同想法做出决策，我们需要一种快速比较不同嵌入的方法。评估训练嵌入的一种方式是测试它们在基于用户最近点击推荐用户会预订的 listing 方面有多好。更具体地说，假设我们给定最近点击的 listing 和需要排序的候选 listing，其中包含用户最终预订的 listing。通过计算点击 listing 和候选 listing 的嵌入之间的余弦相似度，我们可以对候选进行排序并观察预订 listing 的排名位置。
 
+![图6](.picture/2018-Real-time Personalization using Embeddings for Search Ranking at Airbnb-fig6.png)
 > **图 6：Listing 嵌入的离线评估**
 
 为了评估目的，我们使用大量此类搜索、点击和预订事件，其中排名已由搜索排序模型分配。在图 6 中，我们展示了离线评估结果，其中我们比较了几个版本的 $d = 32$ 嵌入在基于预订前的点击对预订 listing 排名方面的表现。预订 listing 的排名对导致预订的每次点击取平均值，最远回溯到预订前的 17 次点击，直到预订前的最后一次点击。较低的值意味着较高的排名。我们比较的嵌入版本为：1）d32：使用 (3) 训练，2）d32 book：使用预订作为全局上下文 (4) 训练，3）d32 book + neg：使用预订作为全局上下文和来自同一市场的显式负例 (5) 训练。可以观察到，搜索排序模型随着更多点击而变得更好，因为它使用了记忆化特征。还可以观察到，基于嵌入相似度重新排序 listing 将是有用的，特别是在搜索漏斗的早期阶段。最后，我们可以得出结论，d32 book + neg 优于其他两个嵌入版本。相同类型的图用于对超参数、数据构建等做出决策。
@@ -321,6 +327,7 @@ $$
 \mathrm{EmbLastLongClickSim}(l_i, H_{lc}) = \cos(\mathbf{v}_{l_i}, \mathbf{v}_{l_{\mathrm{last}}}) \qquad (11)
 $$
 
+![图7](.picture/2018-Real-time Personalization using Embeddings for Search Ranking at Airbnb-fig7.png)
 > **图 7：EmbClickSim、EmbSkipSim 和 UserTypeListTypeSim 的偏依赖图**
 
 **用户类型和 Listing 类型嵌入特征。** 我们遵循类似的过程引入基于用户类型和 listing 类型嵌入的特征。我们使用 5000 万用户预订会话为 50 万个用户类型和 50 万个 listing 类型训练了嵌入。嵌入维度为 $d = 32$ ，使用滑动窗口 $m = 5$ 在预订会话上训练。用户类型和 listing 类型嵌入被加载到搜索机器内存中，以便我们可以在线计算类型相似度。

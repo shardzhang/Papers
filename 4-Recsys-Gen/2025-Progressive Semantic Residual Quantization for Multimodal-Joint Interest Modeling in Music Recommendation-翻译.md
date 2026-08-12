@@ -93,6 +93,7 @@ Shijia Wang, Tianpei Ouyang, Qiang Xiao, Dongjing Wang, Yintao Ren, Songpei Xu, 
 
 • 我们提出了一个多码本交叉注意力网络用于多模态兴趣学习，同时捕捉模态特异性和跨模态关联。
 
+![图1](.picture/2025-Progressive Semantic Residual Quantization for Multimodal-Joint Interest Modeling in Music Recommendation-fig1.png)
 图1：子图1(b)展示了子图1(a)中歌曲的原始文本特征空间，通过PCA可视化。子图1(c)展示了传统残差量化中第二层的聚类结果。子图1(d)展示了使用所提出的PSRQ方法第二层的聚类结果。
 
 DJRockLullabyChoir (a) 原始体裁类别 (b) 文本表示空间 (c) 残差量化 (d) 渐进式语义残差量化
@@ -161,6 +162,7 @@ d}是第l层生成的聚类中心嵌入，k是K均值的聚类中心数，Neares
 
 在本节中，我们详细阐述我们框架的组成部分及其整体部署流程，如图3所示，包括两个阶段：特征工程和下游推荐模型训练。
 
+![图2](.picture/2025-Progressive Semantic Residual Quantization for Multimodal-Joint Interest Modeling in Music Recommendation-fig2.png)
 图2：子图2(a)和2(b)提供了RQ和PSRQ码本中语义ID检索过程的视觉比较。
 
 (a) RQ语义ID搜索
@@ -172,6 +174,7 @@ d}是第l层生成的聚类中心嵌入，k是K均值的聚类中心数，Neares
 :拼接
 语义ID = (3, 8, 1...)
 
+![图3](.picture/2025-Progressive Semantic Residual Quantization for Multimodal-Joint Interest Modeling in Music Recommendation-fig3.png)
 图3：我们推荐框架的整体工作流程。虽然第二阶段仅突出显示了核心交叉注意力组件，但我们还在模态联合和ID嵌入序列上进行了额外的序列建模。
 
 ### 4.1 渐进式语义残差量化

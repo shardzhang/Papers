@@ -29,6 +29,7 @@
 选择使用哪些 triplets 对于实现良好性能至关重要，受课程学习 (curriculum learning) [1] 的启发，我们提出了一种新颖的在线负例挖掘策略，确保随着网络训练，triplets 的难度持续增加。为了提高聚类精度，我们还探索了难正例挖掘技术，该技术鼓励同一个人 embeddings 形成球状簇。
 
 作为我们方法能够处理的惊人可变性的例证，参见图 1。图中显示的是来自 PIE [13] 的图像对，这些图像对以前被认为对人脸验证系统非常困难。
+![图1](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig1.png)
 
 本文其余部分的概述如下：第 2 节回顾了该领域的文献；第 3.1 节定义了 triplet loss，第 3.2 节描述了我们新颖的 triplet 选择和训练流程；第 3.3 节描述了所使用的模型架构。最后，在第 4 和第 5 节中，我们展示了我们 embeddings 的一些定量结果，并定性地探索了一些聚类结果。
 
@@ -55,6 +56,7 @@ Sun 等人 [14, 15] 提出了一个紧凑且因此计算相对廉价的网络。
 FaceNet 使用一个深度卷积网络。我们讨论了两种不同的核心架构：Zeiler & Fergus [22] 风格的网络和最近的 Inception [16] 类型的网络。这些网络的细节在第 3.3 节中描述。
 
 在给定模型细节并将其视为黑箱（见图 2）的情况下，我们方法最重要的部分在于整个系统的端到端学习。为此，我们采用了 triplet loss，它直接反映了我们在人脸验证、识别和聚类中希望实现的目标。也就是说，我们追求一个 embedding $f(x)$ ，从图像 $x$ 到特征空间 $\mathbb{R}^d$ ，使得同一身份的所有人脸（无论成像条件如何）之间的平方距离很小，而不同身份的一对人脸图像之间的平方距离很大。
+![图2](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig2.png)
 
 虽然我们没有直接与其他损失进行比较，例如 [14] 中方程 (2) 使用的使用正负对的损失，但我们认为 triplet loss 更适合人脸验证。动机是 [14] 中的损失鼓励一个身份的所有人脸被投影到 embedding 空间中的一个单点上。然而，triplet loss 试图在来自一个人的每对面部与所有其他面部之间强制设置一个边际。这允许一个身份的人脸生活在一个流形上，同时仍然强制距离并因此保持与其他身份的区分性。
 
@@ -63,6 +65,7 @@ FaceNet 使用一个深度卷积网络。我们讨论了两种不同的核心架
 ### 3.1. Triplet Loss
 
 Embedding 由 $f(x) \in \mathbb{R}^d$ 表示。它将图像 $x$ 嵌入到一个 $d$ 维欧几里得空间中。此外，我们将这个 embedding 约束在 $d$ 维超球面上，即 $\|f(x)\|_2 = 1$ 。这个损失在 [19] 中是在最近邻分类的背景下被提出的。在这里，我们想要确保一个特定人物的图像 $x_i^a$ （anchor）比任何其他人的图像 $x_i^n$ （negative）更接近同一人的所有其他图像 $x_i^p$ （positive）。这一点在图 3 中可视化。
+![图3](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig3.png)
 
 因此我们要求：
 
@@ -128,6 +131,7 @@ $$
 我们使用的第二类基于 GoogLeNet 风格的 Inception 模型 [16]。这些模型的参数少了 20 倍（大约 660 万到 750 万），FLOPS 少了多达 5 倍（在 5 亿到 16 亿之间）。其中一些模型的大小（深度和滤波器数量）被大幅缩减，以便可以在手机上运行。其中一个，NNS1，有 2600 万参数，每张图像仅需要 2.2 亿 FLOPS。另一个，NNS2，有 430 万参数和 2000 万 FLOPS。
 
 表 2 详细描述了 NN2，我们最大的网络。NN3 架构相同但输入尺寸缩小为 160x160。NN4 的输入尺寸仅为 96x96，因此大幅降低了 CPU 需求（2.85 亿 FLOPS vs NN2 的 16 亿 FLOPS）。除了减少的输入尺寸外，它在较高层中不使用 5x5 卷积，因为那时感受野已经太小了。通常我们发现，5x5 卷积可以在整个网络中移除而仅带来微小的精度下降。图 4 比较了我们所有的模型。
+![图4](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig4.png)
 
 ## 4. 数据集与评估
 
@@ -185,6 +189,7 @@ YouTube Faces DB [21] 是一个在人脸识别社区中越来越受欢迎的新�
 现在我们更详细地讨论我们选择的四种模型的性能。一方面，我们拥有传统的基于 Zeiler & Fergus 的架构，带有 $1 \times 1$ 卷积 [22, 9]（见表 1）。另一方面，我们有基于 Inception [16] 的模型，大幅减小了模型规模。总体而言，在最终性能上，两种架构的最佳模型表现相当。然而，我们的一些基于 Inception 的模型，如 NN3，在显著降低 FLOPS 和模型大小的同时，仍然取得了良好的性能。
 
 在我们的个人照片测试集上的详细评估如图 5 所示。虽然最大的模型与微小的 NNS2 相比在精度上取得了显著的提升，但后者可以在手机上以每张图像 30ms 的速度运行，并且仍然足够准确以用于人脸聚类。ROC 曲线在 FAR < $10^{-4}$ 处的急剧下降表明测试数据 groundtruth 中存在噪声标签。在极低的错误接受率下，单个错误标记的图像就可能对曲线产生显著影响。
+![图5](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig5.png)
 
 ### 5.3. 对图像质量的敏感性
 
@@ -209,6 +214,7 @@ YouTube Faces DB [21] 是一个在人脸识别社区中越来越受欢迎的新�
 2. 对提供的 LFW 缩略图运行专有的人脸检测器（类似于 Picasa [3]）。如果它无法对齐人脸（这发生在两张图像上），则使用 LFW 对齐。
 
 图 6 给出了所有失败案例的概览。它显示了顶部的错误接受以及底部的错误拒绝。当使用 (1) 中描述的固定中心裁剪时，我们达到了 98.87% \\pm 0.15 的分类精度，而当使用额外的人脸对齐 (2) 时，达到了创纪录的 99.63% \\pm 0.09 的均值标准误差。这比 [17] 中报告的 DeepFace 的错误减少了超过 7 倍，比 [15] 中报告的 DeepId2+ 的先前最佳结果减少了 30%。这是模型 NN1 的性能，但即使小得多的 NN3 也实现了没有统计显著差异的性能。
+![图6](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig6.png)
 
 ### 5.7. YouTube Faces DB 上的性能
 
@@ -217,6 +223,7 @@ YouTube Faces DB [21] 是一个在人脸识别社区中越来越受欢迎的新�
 ### 5.8. 人脸聚类
 
 我们紧凑的 embedding 适合用于将用户的个人照片聚类为具有相同身份的人群组。与纯粹的验证任务相比，聚类人脸所施加的分配约束带来了真正惊人的结果。图 7 显示了一个用户个人照片集中的一个示例聚类，使用凝聚聚类生成。它清楚地展示了对于遮挡、光照、姿态甚至年龄的惊人不变性。
+![图7](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig7.png)
 
 ## 6. 总结
 
@@ -231,14 +238,17 @@ YouTube Faces DB [21] 是一个在人脸识别社区中越来越受欢迎的新�
 在本节中，我们介绍谐波 embeddings (harmonic embeddings) 的概念。我们指的是由不同模型 $v1$ 和 $v2$ 生成的一组 embeddings，它们在可以相互比较的意义上是兼容的。
 
 这种兼容性极大地简化了升级路径。例如，在 embedding $v1$ 已经在一大组图像上计算完毕，而新的 embedding 模型 $v2$ 正在部署的场景中，这种兼容性确保了平滑过渡，无需担心版本不兼容问题。图 8 显示了在我们的 3G 数据集上的结果。可以看出，改进后的模型 NN2 显著优于 NN1，而 NN2 embeddings 与 NN1 embeddings 的比较则处于中间水平。
+![图8](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig8.png)
 
 ### 7.1. 谐波三元组损失 (Harmonic Triplet Loss)
 
 为了学习谐波 embedding，我们将 $v1$ 的 embeddings 与被学习的 $v2$ 的 embeddings 混合。这是在 triplet loss 内部完成的，并导致额外生成的 triplets，鼓励不同 embedding 版本之间的兼容性。图 9 可视化了贡献于 triplet loss 的 triplets 的不同组合。
+![图9](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig9.png)
 
 我们从一个独立训练的 NN2 初始化 $v2$ embedding，并使用鼓励兼容性的 triplet loss 从随机初始化重新训练最后一层（embedding 层）。首先只重新训练最后一层，然后我们继续使用谐波损失训练整个 $v2$ 网络。
 
 图 10 展示了这种兼容性在实践中可能如何工作的一种可能解释。绝大多数 $v2$ embeddings 可能被嵌入到相应的 $v1$ embedding 附近，然而，错误放置的 $v1$ embeddings 可以被轻微扰动，使得它们在 embedding 空间中的新位置提高了验证精度。
+![图10](.picture/2015-FaceNet-A Unified Embedding for Face Recognition and Clustering-fig10.png)
 
 ### 7.2. 总结
 

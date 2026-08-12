@@ -51,6 +51,7 @@
 ## 日志器
 ## 配置 命令行 配置文件 参数字典 指标
 
+![图1](.picture/2021-RecBole-Towards a Unified, Comprehensive and Efficient Framework for Recommendation Algorithms-fig1.png)
 **图1：我们的 RecBole 库的总体框架。**
 
 总之，我们的 RecBole 库的关键特性和能力总结为以下五个方面：
@@ -358,6 +359,7 @@ K 的二进制矩阵 C，这可以通过 PyTorch 提供的 gather() 函数高效
 
 **(c) 索引**
 
+![图2](.picture/2021-RecBole-Towards a Unified, Comprehensive and Efficient Framework for Recommendation Algorithms-fig2.png)
 **图 2：提出的 top-K item评估加速策略图示。这里， $u_0$ , …, $u_5$ 表示六个用户；黑色、蓝色和灰色框分别表示训练item、测试item和其他候选item。**
 
 #### 2.3.4 效率和可扩展性
@@ -373,6 +375,7 @@ K 的二进制矩阵 C，这可以通过 PyTorch 提供的 gather() 函数高效
 | BPR | 0.245s | 2.478s | 29.900s |
 | BPR_acc | 0.009s | 0.090s | 2.210s |
 
+![图3](.picture/2021-RecBole-Towards a Unified, Comprehensive and Efficient Framework for Recommendation Algorithms-fig3.png)
 **图 3：评估模型的架构和数据流。**
 
 ---
@@ -399,6 +402,7 @@ K 的二进制矩阵 C，这可以通过 PyTorch 提供的 gather() 函数高效
 
 (v) **训练和评估。** 一旦数据集和模型准备就绪，用户最终可以根据图 4 的第 (5) 行训练和评估模型。
 
+![图4](.picture/2021-RecBole-Towards a Unified, Comprehensive and Efficient Framework for Recommendation Algorithms-fig4.png)
 **图 4：我们库的示例使用流程。**
 
 #### 3.1.2 参数调优

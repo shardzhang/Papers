@@ -150,6 +150,12 @@ P5 提出了一个统一的文本到文本范式"推荐即语言处理"（RLP）
 
 ---
 
+![图1](.picture/2023-Recommendation as Language Processing (RLP)- A Unified Pretrain, Personalized Prompt & Predict Paradigm (P5)-fig1.png)
+![图2](.picture/2023-Recommendation as Language Processing (RLP)- A Unified Pretrain, Personalized Prompt & Predict Paradigm (P5)-fig2.png)
+![图3](.picture/2023-Recommendation as Language Processing (RLP)- A Unified Pretrain, Personalized Prompt & Predict Paradigm (P5)-fig3.png)
+![图4](.picture/2023-Recommendation as Language Processing (RLP)- A Unified Pretrain, Personalized Prompt & Predict Paradigm (P5)-fig4.png)
+![图5](.picture/2023-Recommendation as Language Processing (RLP)- A Unified Pretrain, Personalized Prompt & Predict Paradigm (P5)-fig5.png)
+![图6](.picture/2023-Recommendation as Language Processing (RLP)- A Unified Pretrain, Personalized Prompt & Predict Paradigm (P5)-fig6.png)
 ## 参考文献
 
 [1] Qingyao Ai et al. Multi-task learning. CIKM 2018.

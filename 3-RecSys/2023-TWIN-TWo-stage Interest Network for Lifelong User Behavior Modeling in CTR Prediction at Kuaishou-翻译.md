@@ -2,35 +2,35 @@
 
 > Jianxin Chang, Chenbin Zhang, Zhiyi Fu, Xiaoxue Zang, Lin Guan, Jing Lu, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, Kun Gai | Kuaishou
 
-本文介绍了 TWIN: 用于快手 CTR 预测中终身用户行为建模的两阶段兴趣网络。核心内容：
 
+
+本文提出两阶段兴趣网络（TWIN），**通过一致性保持GSU（CP-GSU）与精确搜索单元（ESU）共享完全相同的目标-行为相关性度量，解决了传统两阶段终身行为建模中GSU与ESU的不一致性问题**。
+
+核心内容：
+
+- 传统两阶段终身行为建模中，GSU使用的粗略相关性度量与ESU中的目标注意力（TA）不一致，导致遗漏高相关行为、检索出不相关行为
+- 提出TWIN：CP-GSU采用与ESU完全相同的MHTA结构和参数，使两个阶段成为"双胞胎"
+- 通过行为特征拆分（固有特征预计算缓存 + 交叉特征压缩为偏置项）突破TA计算瓶颈，将适用序列长度从$10^2$扩展到$10^4-10^5$
+- 在快手460亿规模工业数据集上的离线和在线实验验证有效性
 
 关键发现：
 
----
-
-
-**Jianxin Chang**, **Chenbin Zhang**, **Zhiyi Fu**, **Xiaoxue Zang**, **Lin Guan**, **Jing Lu\***,
-**Yiqun Hui**, **Dewei Leng**, **Yanan Niu**, **Yang Song**, **Kun Gai**
-
-快手科技，北京，中国
-changjianxin@kuaishou.com, zhangchenbin@kuaishou.com, fuzhiyi@kuaishou.com
-zangxiaoxue@kuaishou.com, guanlin03@kuaishou.com, lvjing06@kuaishou.com
-huiyiqun@kuaishou.com, lengdewei@kuaishou.com, niuyanan@kuaishou.com
-yangsong@kuaishou.com
-
-独立作者：gai.kun@qq.com
-
+- TWIN在AUC上比最佳对比模型（SIM Soft）提升**+0.29%**，GAUC提升**+0.51%**
+- 在线A/B测试中，相比SIM Soft观看时长提升**+1.4%~+2.8%**，相比SIM Hard提升**+3.7%~+6.2%**
+- 预计算缓存策略将计算瓶颈降低**99.3%**，成功部署服务3.46亿日活用户
+- GSU-ESU一致性从SIM Hard的40%命中率提升至TWIN的**94%命中率**
 
 ---
+
+
 
 ## 摘要
 
 终身用户行为建模，即从用户数月甚至数年的丰富历史行为中提取隐藏兴趣，在现代 CTR 预测系统中发挥着核心作用。传统算法大多遵循两个级联阶段：一个简单的通用搜索单元（GSU），用于对数万个长期行为进行快速粗略搜索；一个精确搜索单元（ESU），用于对 GSU 筛选出的少量候选进行有效的目标注意力（TA）计算。尽管高效，现有算法大多存在一个关键缺陷：**GSU 和 ESU 之间目标-行为相关性度量不一致**。这导致 GSU 通常会遗漏高相关行为，却检索出 ESU 认为不相关的行为。在这种情况下，无论注意力如何分配，ESU 中的 TA 都会偏离用户的真实兴趣，从而降低整体 CTR 预测精度。为了解决这种不一致性，我们提出了**两阶段兴趣网络（TWIN）**，其中我们的**一致性保持 GSU（CP-GSU）** 采用与 ESU 中 TA **完全相同的**目标-行为相关性度量，使两个阶段如同"双胞胎"。具体而言，为了突破 TA 的计算瓶颈并将其从 ESU 扩展到 GSU（即从行为长度 $10^2$ 扩展到 $10^4-10^5$ ），我们通过行为特征拆分构建了一种新颖的注意力机制。对于行为的视频固有特征，我们通过高效的预计算和缓存策略来计算其线性投影。对于用户-item交叉特征，我们将其压缩为注意力分数计算中的一维偏置项，以节省计算成本。两个阶段之间的一致性，加上 CP-GSU 中有效的基于 TA 的相关性度量，带来了 CTR 预测的显著性能提升。在快手的 460 亿规模真实生产数据集上的离线实验和在线 A/B 测试表明，TWIN 优于所有对比的 SOTA 算法。通过优化在线基础设施，我们将计算瓶颈降低了 **99.3%**，这促成了 TWIN 在快手的成功部署，每天服务于数亿活跃用户的主要流量。
 
-**CCS 概念**：信息系统 \rightarrow 学习排序；推荐系统；计算方法 \rightarrow 神经网络。
+**CCS 概念**：信息系统 $\rightarrow$ 学习排序；推荐系统；计算方法 $\rightarrow$ 神经网络。
 
-**关键词**：点击率预测；用户兴趣建模；长序列用户行为；推荐系统
+**关键词**：click-through rate prediction；user interest modeling；lifelong user behavior；recommender systems
 
 **ACM 引用格式**：
 Jianxin Chang, Chenbin Zhang, Zhiyi Fu, Xiaoxue Zang, Lin Guan, Jing Lu, Yiqun Hui, Dewei Leng, Yanan Niu, Yang Song, and Kun Gai. 2023. TWIN: Two-stage Interest Network for Lifelong User Behavior Modeling in CTR Prediction at Kuaishou. In *Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD '23), August 6–10, 2023, Long Beach, CA, USA*. ACM, New York, NY, USA, 10 pages. https://doi.org/10.1145/3580305.3599922
@@ -129,7 +129,7 @@ $$
 $$
  $\sigma(\cdot)$ 是 Sigmoid 函数，将 $f$ 的输出缩放到 (0,1)。模型通过最小化负对数似然来训练：
 $$
-\ell(D) = -\frac{1}{|D|} \su$m_{i=1}$^{|D|} \left[ y_i \log(\hat{y}_i) + (1-y_i) \log(1-\hat{y}_i) \right]. \qquad (2)
+\ell(D) = -\frac{1}{|D|} \sum_{i=1}^{|D|} \left[ y_i \log(\hat{y}_i) + (1-y_i) \log(1-\hat{y}_i) \right]. \qquad (2)
 $$
 为简洁起见，在以下各节中，当不会引起混淆时，我们将省略训练样本索引 $i$ 。
 
@@ -185,7 +185,7 @@ $$
 
 给定 $J$ 个交叉特征，每个特征的嵌入维度为 8（因为不是具有巨大词汇表的 ID 特征）。我们有 $C = 8J$ 。我们简化线性投影如下：
 $$
-K_c W_c \triangleq [$K_{c,1}$ \mathbf{w}_1^c, \ldots, $K_{c,J}$ \mathbf{w}_J^c], \qquad (5)
+K_c W_c \triangleq [K_{c,1} \mathbf{w}_1^c, \ldots, K_{c,J} \mathbf{w}_J^c], \qquad (5)
 $$
 其中 $K_{c,j} \in \mathbb{R}^{L \times 8}$ 是 $K_c$ 对应第 $j$ 个交叉特征的列切片， $\mathbf{w}_j^c \in \mathbb{R}^{8}$ 是其线性投影权重。使用这种简化的投影，我们将每个交叉特征压缩到一维，即 $K_c W_c \in \mathbb{R}^{L \times J}$ 。注意，这种简化投影等价于将 $W_c$ 限制为对角块矩阵。
 

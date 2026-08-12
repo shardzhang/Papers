@@ -37,6 +37,7 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 
 如图1所示，大多数瀑布流推荐系统基于云到端框架部署。当用户在瀑布流推荐系统场景中滚动时，移动端客户端首先向云服务器发起分页请求。然后，服务于云服务器的匹配和排序模型响应分页请求，生成一个排序后的item列表展示给用户。在这种情形下，当前基于云到端的瀑布流推荐系统存在以下局限：
 
+![图1](.picture/2020-EdgeRec-Recommender System on Edge in Mobile Taobao-fig1.png)
 **图1：流行的基于云到端的瀑布流推荐系统示意图。**
 
 • **系统反馈延迟（Delay for System Feedback）：** 由于云到端框架中的分页机制，云端的推荐系统无法在两个相邻分页请求之间及时调整推荐结果，从而无法满足用户变化的需求。以图1中的一个例子说明，用户点击了当前页面第5个位置的一件连衣裙，这反映了他/她对连衣裙类别的突发偏好。然而，云端的推荐系统无法对此做出响应，除非用户滚动到下一页，这因此无法及时满足他/她的需求并降低了用户体验。
@@ -70,6 +71,7 @@ Yu Gong, Ziwen Jiang, Yufei Feng, Binbin Hu, Kaiqi Zhao, Qingwen Liu, Wenwu Ou. 
 
 在图2中，我们展示了EdgeRec系统的概览。注意EdgeRec旨在与云端推荐系统协同工作而非替代它。主要模块和工作流程说明如下：
 
+![图2](.picture/2020-EdgeRec-Recommender System on Edge in Mobile Taobao-fig2.png)
 **图2：EdgeRec系统概览。左侧的模块部署在移动端淘宝客户端中，右侧的模块在云端提供服务。**
 
 **客户端原生模块（Client Native, CN）** 首先发起分页请求并缓存来自推荐系统服务器的候选item及其对应特征。在EdgeRec中，分页大小设置为50，与淘宝原始推荐系统保持一致以保持稳定性。同时，为给设备端重排序提供更多空间，来自推荐系统服务器的返回item数量设置为100³。然后，CN收集用户在曝光item上的行为并触发模型服务模块。在从模型服务模块接收到候选（即未曝光）item的排序结果后，CN调整item的UI展示。
@@ -218,6 +220,7 @@ $$
 \hat{\mathbf{B}}_{IPV} = \{\hat{\mathbf{b}}_{IPV}^i\}_{1 \leq i \leq n} = \text{CONCAT}(\hat{\mathbf{A}}_{IPV}, \hat{\mathbf{P}}_{IPV}) \qquad (8)
 $$
 
+![图4](.picture/2020-EdgeRec-Recommender System on Edge in Mobile Taobao-fig4.png)
 **图4：EdgeRec中所提出算法的网络架构。**
 
 ### 3.4 基于行为注意力网络的上下文感知重排序（Context-aware Reranking with Behavior Attention Networks）
@@ -308,6 +311,7 @@ EdgeRec已全面部署在移动端淘宝应用中并为数十亿用户提供服�
 
 此外，我们回顾了淘宝推荐系统中沿展示位置的在线平均item CTR。图5显示，部署EdgeRec后，当前页面末尾的CTR得到了大幅提升，这表明引入实时感知和实时反馈可以大大增加用户在推荐系统中的点击意愿，因为推荐系统能够及时满足用户的在线需求。
 
+![图5](.picture/2020-EdgeRec-Recommender System on Edge in Mobile Taobao-fig5.png)
 **图5：移动端淘宝推荐系统中沿展示位置的在线平均item CTR。**
 
 ⁶我们使用一种名为"分层分桶（hierarchical bucketing）"的策略，其中云服务器上的不同算法对于端侧的在线实验是透明的。
@@ -334,6 +338,7 @@ EdgeRec已全面部署在移动端淘宝应用中并为数十亿用户提供服�
 
 我们在移动端淘宝上进行了一个案例研究（图6），以展示HUBSM和CRBAN的有效性。总结来说，我们有以下观察：（1）用户在IPV中的动作揭示了他/她对该item的正向意图程度偏好，例如加购或咨询客服，而用户在IE中的动作通常推断对该item的负向意图，例如快速滚动或删除。这意味着HUBSM能够捕获用户对历史交互item的潜在正向和负向意图。（2）候选衬衫借助IPV中的两件类似衬衫被预测为正向，而候选帽子借助IE中的两个具有较低负向意图程度的相似交互item被预测为负向。这表明CRBAN能够建模候选item与用户行为上下文之间的交互，从而更好地指导目标item的预测。
 
+![图6](.picture/2020-EdgeRec-Recommender System on Edge in Mobile Taobao-fig6.png)
 **图6：移动端淘宝中的一个案例，用于说明我们提出的HUBSM和CRBAN模块的影响。**
 
 ---

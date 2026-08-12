@@ -55,6 +55,7 @@ Embedding, Gramian, Variance Reduction, Negative Sampling, Matrix Factorization,
 我们首先在第 2 节回顾预备知识，然后在第 3 节推导方法并进行分析。最后，我们在第 4 节进行大规模实验，在 Wikipedia 数据集上的分类任务和 MovieLens 数据集上的回归任务上进行验证。所有证明推迟到附录。
 
 <!-- 图1：内积嵌入模型，用于在 $\mathcal{X} \times \mathcal{Y}$ 上学习相似度函数 -->
+![图1](.picture/2018-Efficient training on very large corpora via gramian estimation-fig1.png)
 
 
 
@@ -250,10 +251,12 @@ $$
 $$
 
 如图 2 所示。我们可以观察到 SAGram 的两个变体产生最好的估计，SOGram 产生比采样更好的估计。我们还改变批量大小以评估其影响：将批量大小从 128 增加到 1024 改善了所有估计的质量，正如预期的那样。值得注意的是，$|B| = 128$ 的 SOGram 估计与 $|B| = 1024$ 的采样估计质量相当。
+![图2](.picture/2018-Efficient training on very large corpora via gramian estimation-fig2.png)
 
 <!-- 图2：SAGram、SOGram 和采样在共同轨迹 $(\theta^{(t)})$ 上的 Gram 矩阵估计误差 -->
 
 在图 3 中，我们通过比较不同学习率 $\alpha$ 的 SOGram 估计来评估 3.2 节讨论的偏差-方差权衡。我们观察到，对于初始迭代，较高的 $\alpha$ 值产生更好的估计，但随着训练的进行，较低的 $\alpha$ 的误差衰减到较低的值（特别注意所有图的交叉点）。这与命题 5 的结果一致：较高的 $\alpha$ 值诱导较高的方差，这在整个训练过程中持续存在，而较低的 $\alpha$ 值减少方差但引入偏差，这在早期迭代中最为明显，但随着轨迹收敛而减小。我们在附录 D 中进一步研究了较大数据集上的 SOGram 估计。
+![图3](.picture/2018-Efficient training on very large corpora via gramian estimation-fig3.png)
 
 <!-- 图3：不同 $\alpha$ 值下 SOGram 的 Gram 矩阵估计误差 -->
 
@@ -262,6 +265,7 @@ $$
 为了评估 Gram 矩阵估计质量对训练速度和泛化质量的影响，我们比较了批量采样和具有不同 Gram 矩阵学习率 $\alpha$ 的 SOGram 在每个数据集上的验证性能（我们不使用 SAGram，因为对于 1M 或更多语料库大小其内存成本过高）。我们估计 MAP@10，定期（每 5 分钟）对验证集中的左 item 与 50K 随机候选进行评分——在这个规模上详尽地评分所有候选成本过高，但这给出了合理的近似。
 
 结果报告在图 4 中。虽然 SOGram 在训练集上没有比基线采样方法提高 MAP，但它在较大集合上一致性地实现了最佳验证性能，且差距很大。训练和验证之间的这种差异可以解释为引力项 $g(\theta)$ 具有正则化效果，通过更好地估计该项，SOGram 改善了泛化。表 2 总结了最终验证 MAP 的相对改进。
+![图4](.picture/2018-Efficient training on very large corpora via gramian estimation-fig4.png)
 
 | 语言 | 采样 | SOGram (0.001) | SOGram (0.005) | SOGram (0.01) | SOGram (0.1) |
 |------|------|----------------|----------------|---------------|--------------|
@@ -360,6 +364,8 @@ $$
 每项 $(v_j \otimes v_j) u_i = v_j \langle v_j, u_i \rangle$ 仅仅是 $u_i$ 在 $v_j$ 上的投影（缩放 $\|v_j\|^2$）。因此 $g(\theta)$ 对 $u_i$ 的梯度是 $u_i$ 在每个右嵌入 $v_j$ 上的缩放投影的平均值，沿着负梯度方向移动简单地将 $u_i$ 移出具有高密度左嵌入的嵌入空间区域。这对应于引言中讨论的直觉：引力项 $g(\theta)$ 的目的正是将左右嵌入相互推开，以避免将不相似 item 的嵌入放置在彼此附近，这种现象称为嵌入空间的折叠（Folding）[29]。
 
 为了说明引力项对嵌入的这种效果，我们在图 5 中可视化了内积 $\langle u_i(\theta^{(t)}), v_j(\theta^{(t)}) \rangle$ 的分布，对于随机对 $(i, j)$ 和观察到的对 $(i = j)$，以及这些分布如何随着 $t$ 的增加而变化。图是针对第 4 节中描述的 Wikipedia en 模型生成的，使用 SOGram ($\alpha = 0.01$) 训练，引力系数 $\lambda = 10^{-2}$ 和 $\lambda = 10$。在两种情况下，观察到的对的分布保持集中在接近 1 的值附近，正如预期的那样（回想一下观察到的对的目标相似度为 1，即 Wikipedia 图中连接的页面对）。然而，随机对的分布非常不同：$\lambda = 10$ 时，分布迅速集中在接近 0 的值附近，而 $\lambda = 10^{-2}$ 时，分布更平坦，很大比例的对具有高内积。这表明较低的 $\lambda$，模型更可能折叠，即将不相关 item 的嵌入放置在彼此附近。这与图 6 中报告的验证 MAP 一致。$\lambda = 10^{-2}$ 时，验证 MAP 增长非常缓慢，并且比使用 $\lambda = 10$ 训练的模型小两个数量级。该图还表明当引力系数太大时，模型过度正则化，MAP 下降。
+![图5](.picture/2018-Efficient training on very large corpora via gramian estimation-fig5.png)
+![图6](.picture/2018-Efficient training on very large corpora via gramian estimation-fig6.png)
 
 <!-- 图5：使用不同引力系数 $\lambda$ 训练的 Wikipedia en 模型中，观察到的对（左）和随机对（右）的内积分布演变 -->
 
@@ -407,6 +413,7 @@ $$
 ### D. Gram 矩阵估计质量的进一步实验
 
 除了在 Wikipedia simple 上报告的实验（第 4 节），我们还在 Wikipedia en 上评估了 Gram 矩阵估计的质量。由于嵌入数量庞大，计算精确的 Gram 矩阵不再可行，因此我们使用 1M 嵌入的大样本来近似它。结果报告在图 7 中，显示了 Gram 矩阵估计 $\hat{G}_u$ 和真实 Gram 矩阵 $G_u$ 的大样本近似之间的归一化 Frobenius 距离。结果与 simple 上的实验相似：$\alpha$ 较低时，估计误差最初较高，但随着训练的进行衰减到较低的值，这可以用命题 5 中讨论的偏差-方差权衡来解释。
+![图7](.picture/2018-Efficient training on very large corpora via gramian estimation-fig7.png)
 
 权衡受真实 Gram 矩阵轨迹的影响：Gram 矩阵中较小的变化（由命题 5 中的参数 $\delta$ 捕获）诱导较小的偏差。特别地，改变主算法的学习率 $\eta$ 可以通过影响真实 Gram 矩阵的变化率来影响 Gram 矩阵估计的性能。为研究此效应，我们使用两个不同的学习率运行了相同的实验，$\eta = 0.01$（如第 4 节）和较低的学习率 $\eta = 0.002$。误差在两种情况下收敛到相似的值，但误差衰减在较小的 $\eta$ 时发生得更快，这与我们的分析一致。
 
@@ -427,6 +434,7 @@ $$
 **模型** 我们训练一个双塔神经网络模型，如图 1 所述，其中每个塔由一个输入层、一个隐藏层和输出嵌入维度 $k = 35$ 组成。左塔以唯一用户 ID 的独热编码作为输入，右塔以唯一电影 ID、电影发行年份和电影类型的词袋表示的独热编码作为输入。这些输入嵌入被连接并用作右塔的输入。
 
 **方法** 模型使用具有不同 $\alpha$ 值的 SOGram 和作为基线的采样进行训练。我们使用学习率 $\eta = 0.05$ 和引力系数 $\lambda = 1$。我们按照第 4 节中描述的相同程序测量训练集和验证集上的平均精度。结果在图 8 中给出。
+![图8](.picture/2018-Efficient training on very large corpora via gramian estimation-fig8.png)
 
 <!-- 图8：不同方法在 MovieLens 数据集上训练集（左）和验证集（右）上的 MAP@10 -->
 

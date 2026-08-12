@@ -28,6 +28,7 @@
 
 为了平衡效率和效果，大多数现代推荐系统采用级联排序策略 [6, 26, 34, 43]。如图 1(b) 所示，一个典型的级联排序系统采用三阶段流水线：召回 [6, 19, 54]、粗排 [28, 46] 和精排 [2, 3, 15, 16, 33, 52, 53]。每个阶段负责从接收到的item中选择 top-k item并将结果传递给下一阶段，共同平衡系统响应时间和排序精度。
 
+![图1](.picture/2025-OneRec-Unifying Retrieve and Rank with Generative Recommender and Iterative Preference Alignment-fig1.png)
 **图 1：(a) 我们提出的端到端生成统一架构。(b) 典型的级联排序系统，从下到上包括三个阶段：检索、粗排和精排。**
 
 尽管在实践中高效，但现有方法通常独立处理每个排序器，每个孤立阶段的效果作为后续排序阶段的上限，从而限制了整体排序系统的性能。尽管有多种努力 [11, 13, 18, 20, 34, 44] 通过使排序器之间能够交互来改善整体推荐性能，但它们仍然保持传统的级联排序范式。最近，基于生成式检索的推荐系统（GR）[36, 45, 51] 已成为一种有前景的范式，它通过自回归序列生成方式直接生成候选item的标识符。通过用量化的语义ID [24] 索引item来编码item语义，推荐器可以利用item内丰富的语义信息。GR 的生成性质使其适合通过束搜索解码直接选择候选item，并产生更多样化的推荐结果。然而，当前的生成模型仅作为检索阶段的选择器，其推荐精度尚未能与精心设计的多级级联排序器相匹配。
@@ -127,8 +128,10 @@ r^n_u = R(u, S^n_u)   (9)
 
 OneRec 已成功应用于真实工业场景。平衡稳定性和性能，我们部署 OneRec-1B 进行在线服务。如图 3 所示，我们的部署架构由三个核心组件组成：1）训练系统，2）在线服务系统，3）DPO 采样服务器。系统将收集到的交互日志作为训练数据处理，最初采用下一个token预测目标 L_NTP 训练种子模型。收敛后，我们添加 DPO 损失 L_DPO 进行偏好对齐，利用 XLA 和 bfloat16 混合精度训练来优化计算效率和内存利用率。训练好的参数同步到在线推理模块和 DPO 采样服务器，用于实时服务和基于偏好的数据选择。为了提升推理性能，我们实现了两个关键优化：键值缓存解码机制结合 float16 量化以减少 GPU 内存开销，以及束大小 128 的束搜索配置以平衡生成质量和延迟。此外，得益于 MoE 架构，推理期间仅激活 13% 的参数。
 
+![图2](.picture/2025-OneRec-Unifying Retrieve and Rank with Generative Recommender and Iterative Preference Alignment-fig2.png)
 **图 2：OneRec 的整体框架，包括两个阶段：(a) 会话训练阶段，使用会话级数据训练 OneRec；(b) IPA 阶段，使用自生成硬负样本进行迭代直接偏好优化。**
 
+![图3](.picture/2025-OneRec-Unifying Retrieve and Rank with Generative Recommender and Iterative Preference Alignment-fig3.png)
 **图 3：OneRec 的在线部署框架。**
 
 ---
@@ -195,10 +198,13 @@ $$
 | OneRec-1B | +1.21% | +5.01% |
 | OneRec-1B+IPA | +1.68% | +6.56% |
 
+![图4](.picture/2025-OneRec-Unifying Retrieve and Rank with Generative Recommender and Iterative Preference Alignment-fig4.png)
 **图 4：DPO 采样率 r_DPO 的消融研究。结果表明 1% 比例的 DPO 训练带来显著增益，但进一步增加采样率带来的改进有限。**
 
+![图5](.picture/2025-OneRec-Unifying Retrieve and Rank with Generative Recommender and Iterative Preference Alignment-fig5.png)
 **图 5：OneRec 的可扩展性。结果表明 OneRec 在参数扩展时持续受益于性能提升。**
 
+![图6](.picture/2025-OneRec-Unifying Retrieve and Rank with Generative Recommender and Iterative Preference Alignment-fig6.png)
 **图 6：语义 ID 各层 softmax 输出概率分布的可视化。红星代表具有最高奖励值的item的语义 ID。**
 
 ---

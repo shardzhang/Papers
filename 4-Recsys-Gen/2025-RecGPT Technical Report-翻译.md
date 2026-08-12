@@ -23,6 +23,7 @@
 
 目前，RecGPT 已全面部署在淘宝 App 的"猜你喜欢"场景中。在线实验表明，RecGPT 在所有利益相关者中取得了持续的性能提升：用户受益于增加的内容多样性和满意度（点击品类多样性 CICD +6.96%，用户停留时长 DT +4.82%），商家和平台获得更大的曝光和转化（点击率 CTR +6.33%，商品详情页浏览量 IPV +9.47%，日点击活跃用户数 DCAU +3.72%）。这些跨所有利益相关者的全面改进结果验证了以 LLM 驱动的以意图为中心的设计可以促进更可持续且互利的推荐生态系统。
 
+![图1](.picture/2025-RecGPT Technical Report-fig1.png)
 **图 1 | RecGPT 在淘宝 APP 首页"猜你喜欢"场景中的在线性能。左图显示了 RecGPT 相比基线系统在关键指标上的整体性能提升，包括点击率（CTR）、商品详情页浏览量（IPV）、日点击活跃用户数（DCAU）、用户点击品类多样性（CICD）和用户停留时长（DT）。右图展示了 RecGPT 和基线系统在不同流行度等级的产品分组上的 CTR 和页面浏览率（PVR）分布。为保护商业机密，商业指标（如 CTR 和 PVR）已进行归一化处理。**
 
 ---
@@ -36,6 +37,7 @@
 近年来大型语言模型（LLM）（Zhao et al., 2023）的出现，特别是那些具有强推理能力的模型，为超越纯粹的日志拟合推荐开辟了有希望的路径。得益于其广泛的世界知识、细粒度的语义理解和逐步推理能力，LLM 可以帮助准确、全面地分析用户的潜在兴趣，并显式推理用户为什么可能想要某个item。虽然越来越多的研究开始使用 LLM 来增强推荐系统，但大多数研究局限于小规模离线基准，无法应用于真实推荐环境（Wu et al., 2024; Zhao et al., 2024）。如何有效将 LLM 集成到大规摸工业推荐系统中，真正理解和挖掘用户意图——从而克服日志拟合推荐的局限性——仍然 largely 未被探索。
 
 为填补这一空白，我们引入 **RecGPT**，一个生产级框架，将三个推理 LLM 集成到工业推荐流水线的核心，形成"用户兴趣挖掘 $\to$ item标签预测 $\to$ item检索 $\to$ 解释生成"的闭环（图 2）。具体来说，RecGPT 首先使用**用户兴趣 LLM** 全面分析用户的终身行为历史，并显式生成简洁的自然语言当前兴趣画像。第二个**item标签 LLM** 然后基于这些兴趣进行推理，生成描述用户最可能寻找的item的细粒度item标签。这些标签被注入item检索阶段，将传统的用户-item双塔匹配器扩展为用户-item-标签三塔架构。因此，只有与推断的用户意图一致的item才被传递到下游的排序和重排序级联。通过将用户行为日志转化为动态更新的意图签名，RecGPT 将候选生成从协同过滤重塑为兴趣增强过程，改善了召回相关性和长尾覆盖，而无需改变下游基础设施。最后，**推荐解释 LLM** 为最终推荐的item附加缓存的、用户友好的自然语言解释，完成了从意图发现到透明交付的闭环。
+![图2](.picture/2025-RecGPT Technical Report-fig2.png)
 
 我们的主要贡献总结如下：
 
@@ -171,6 +173,13 @@ RecGPT 流水线由四个有序阶段组成，每个阶段由一个专门的 LLM
 
 ---
 
+![图3](.picture/2025-RecGPT Technical Report-fig3.png)
+![图4](.picture/2025-RecGPT Technical Report-fig4.png)
+![图5](.picture/2025-RecGPT Technical Report-fig5.png)
+![图6](.picture/2025-RecGPT Technical Report-fig6.png)
+![图7](.picture/2025-RecGPT Technical Report-fig7.png)
+![图8](.picture/2025-RecGPT Technical Report-fig8.png)
+![图9](.picture/2025-RecGPT Technical Report-fig9.png)
 ## 参考文献
 
 [1] Lü et al. Recommender systems. Physics Reports, 2012.

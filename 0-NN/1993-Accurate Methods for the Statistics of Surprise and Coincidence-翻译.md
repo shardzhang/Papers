@@ -68,6 +68,7 @@ abandonment, aerobics, alternating, altitude, amateur, appearance, assertion, ba
 这些度量背后的假设为何及如何不成立的细节主要对统计学家有价值，但结果本身对统计使用者（在本例中，是对词项计数感兴趣的人）很有意义。更具适用性的技术在文本分析中至关重要。下一节将描述这样一种技术；该技术的实现在后续章节中描述。
 
 （图1 正态分布和二项分布）
+![图1](.picture/1993-Accurate Methods for the Statistics of Surprise and Coincidence-fig1.png)
 
 ## 4 文本分析的二项分布 **
 
@@ -246,10 +247,13 @@ $$
 其中 $q_j = \frac{\sum_i k_{ji}}{\sum_{i,j} k_{ji}}$ （与上述多项分布情况相同），且 $n_i = \sum_j k_{ji}$ 。
 
 有趣的是，该表达式恰好是 Pearson $\chi^2$ 检验的统计量，尽管所示形式并非惯常写法。图 2 显示了该表达式与之前导出的精确二项对数似然比在 $p = 0.1$ 、 $n_1 = n_2 = 1000$ 且不同 $k_1$ 和 $k_2$ 取值下的良好一致性。
+![图2](.picture/1993-Accurate Methods for the Statistics of Surprise and Coincidence-fig2.png)
 
 另一方面，图 3 显示了当 $p = 0.01$ 、 $n_1 = 100$ 、 $n_2 = 10000$ 时 Pearson 统计量与对数似然比之间的分歧。注意纵坐标尺度的巨大变化。当 $k_1$ 大于基于 $k_2$ 观测值的期望值时，出现显著差异。 $n_1 < n_2$ 且 $\frac{k_1}{n_1} > \frac{k_2}{n_2}$ 的情况正是许多文本分析中最受关注的情形。
+![图3](.picture/1993-Accurate Methods for the Statistics of Surprise and Coincidence-fig3.png)
 
 对数似然比收敛于渐近分布的过程在图 4 中得到戏剧性的展示。图中较平滑的线是使用符号代数包计算的，代表理想的、自由度为 1 的累积 $\chi^2$ 分布。较粗糙的曲线是通过数值实验计算的，设 $p = 0.01$ 、 $n_1 = 100$ 、 $n_2 = 10000$ ，对应于图 3 中的情况。两者之间的紧密吻合表明，即使在正态 $\chi^2$ 度量与理想值严重偏离的范围内，似然比度量在六个数量级的显著性水平上仍能产生准确结果。
+![图4](.picture/1993-Accurate Methods for the Statistics of Surprise and Coincidence-fig4.png)
 
 （图 2：对数似然比与 Pearson $\chi^2$ 的比较）
 （图 3：对数似然比与 Pearson $\chi^2$ 的比较）

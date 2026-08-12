@@ -43,6 +43,7 @@ Display Advertising, Bid Optimization, Probability Estimation
 
 广告推动了新品牌的崛起并保持现有优质品牌永葆青春。在线广告[6, 9, 13, 14]是一种利用互联网作为媒介获取网站流量并定向向合适客户传递营销信息的营销策略，自20世纪90年代初以来经历了指数级增长。在线广告中的实时竞价（RTB，Real-Time Bidding）[15, 16, 22]技术允许广告主为每个单独的曝光出价。大量研究[23-26]已发现有效且高效的出价策略可以最大化一方（如广告主、消费者和中介平台）的单边经济剩余。
 
+![图1](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig1.png)
 **图1：淘宝移动应用首页展示的横幅和item CPC广告。**
 
 不仅仅是RTB系统，被《经济学人》[1]称为"全国最大在线市场"的淘宝，建立了世界上最先进的在线广告系统之一。在淘宝的移动应用和PC网站中，选定的广告在特定广告位呈现给用户。在本文中，我们聚焦于淘宝移动应用中不可或缺的CPC展示广告的出价优化问题。涉及的两种广告格式如下：
@@ -81,6 +82,7 @@ Display Advertising, Bid Optimization, Probability Estimation
 
 本节描述数据和信息在淘宝展示广告系统中的流动，如图2所示，这对于理解出价优化为何以及如何工作至关重要。每个系统组件和从最前端的页面浏览请求到最终展示所处理的事件序列如下所述：
 
+![图2](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig2.png)
 **图2：淘宝展示广告系统的星型架构及其中使用的所提出价优化策略。**
 
 前端服务器接收用户的页面浏览请求并分发给合并服务器，后者作为中央协调者在整个过程中与其他组件通信。合并服务器请求匹配服务器分析用户并根据广告主的用户定向需求获取特征标签列表。通过合并服务器，这些标签被传递给搜索节点（SN，Search Node）服务器，用于搜索特定的候选广告及其出价。在前述"猜你喜欢"中，候选数量从数千减少到约四百。然后，实时预测（RTP）服务器为来自SN的候选预测点击率（pCTR）和转化率（pCVR）。关于CTR预测[3, 11, 12]，我们使用混合逻辑回归（MLR，Mixture of Logistic Regression，也称为LS-PLM [8]）模型来处理特别高维（通常数亿维）、稀疏和二值化的特征。
@@ -115,6 +117,7 @@ $$
 
 **出价优化边界。** 公式(2)证明了 $\text{roi}_a$ 与 $E_u[p(c \mid u, a)]$ 之间的线性关系，即满足 $\frac{b_a^*}{b_a} \leq \frac{p(c \mid u, a)}{E_u[p(c \mid u, a)]}$ 的出价优化将防止ROI下降。结合考虑广告主获取优质流量的需求，我们制定以下出价优化原则：在ROI约束下提高出价以帮助广告主竞争优质流量（$\frac{p(c \mid u, a)}{E_u[p(c \mid u, a)]} \geq 1$），以及降低出价为低质量流量（$\frac{p(c \mid u, a)}{E_u[p(c \mid u, a)]} < 1$）节省成本。
 
+![图3](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig3.png)
 **图3：ROI约束下的出价优化范围（灰色区域）。**
 
 出价优化范围中质量和数量的权衡如图3灰色区域所示，基于 $p(c \mid u, a)$ 和 $E_u[p(c \mid u, a)]$ 的比值。注意存在一个固定阈值 $r_a$（例如40%），出于安全和业务设置考虑。下限对于避免某些广告主在优化ROI时可能获得很少流量的情况至关重要。
@@ -232,8 +235,10 @@ $$
 
 其中 $t_c$ 是校准阈值，实践中通常为0.012。大于 $t_c$ 的pCVR值将用公式(8)校准，这是一种直观的方式，旨在减少具有大pCVR值的广告的预测和实CVR之间的差距。校准后，我们可以从图4中看到差距在高pCVR区域显著下降。
 
+![图4](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig4.png)
 **图4：校准前后不同pCVR水平下预测和实CVR之间的差距（$t_c = 0.012$，2017年1月10日至16日）。**
 
+![图5](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig5.png)
 **图5：CTR和CVR预测模型的特征组成。**
 
 **整体OCPC策略。** 在算法2中，我们给出了整体OCPC策略的概述，从校准到排序。第1-4行的函数calibrate和calculateBoundary具有线性时间复杂度 $O(\|A\|)$。rank函数的时间复杂度为 $O(N \times \|A\| \times \log \|A\|)$。因此，OCPC策略的运行时性能瓶颈是排序阶段。考虑到 $\|A\|$（约数百个）和 $N$ 的典型值，实时性能对所提方法来说不是问题。
@@ -277,8 +282,10 @@ $$
 
 性能结果表明，作为所提OCPC机制前提的CTR和CVR预测模型是可行的。
 
+![图6](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig6.png)
 **图6：7天期间CTR和CVR模型的AUC和GAUC性能（2017年1月10日至16日）。**
 
+![图7](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig7.png)
 **图7：不同pCTR水平下预测和实CTR之间的差距（2017年1月10日至16日）。**
 
 ## 5 实验结果
@@ -299,6 +306,7 @@ $$
 
 Str 1是一种类似于[16]中提出的直观策略，试图优化广告主的ROI。其出价优化结果与 $p(c \mid u, a)$ 的关系如图8所示。Str 2是所提OCPC策略，还考虑了淘宝的GMV追求。使用pCVR和 $v$ 作为 $f(\cdot)$ 中 $\sigma(\cdot)$ 的参数，Str 2倾向于间接选择那些具有高GMV估计的广告。Str 3也尝试提升GMV，但采用eCPM之外的新排序机制。
 
+![图8](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig8.png)
 **图8：$\sigma(\cdot)$ 的曲线及Str 1在 $r_a = 0.4$ 时对应的出价调整比，不同 $w$ 值。**
 
 在给出结果之前，我们将详细介绍一些用于评估不同出价优化策略性能的指标。**RPM** 是每千次展示的广告收入指标，可以衡量广告平台的流量变现效率。**千次展示GMV**（GPM，GMV Per Mille）是每千次展示的商品交易总额，与广告主收入和淘宝的用户体验相关。**ROI** 衡量广告主的投资回报。**CTR**、**CVR** 和 **PPC**（Pay-Per-Click，每次点击付费）分别是平均点击率、转化率和每次点击费用。
@@ -368,12 +376,14 @@ Str 1是一种类似于[16]中提出的直观策略，试图优化广告主的RO
 
 在OCPC机制下，广告主可能还关心优化后的出价实际是多少。在图9中，我们展示了2017年2月19日展示广告的优化出价 $b_a^*$ 与设定出价 $b_a$ 的数值关系。我们将竞价记录按 $b_a^*/b_a$ 的值（范围从 $1-r_a$ 到 $1+r_a$）分为9组。从结果中，我们可以看到超过一半的展示属于第5组（即 $b_a^* = b_a$ 的中间组）。这是一个合理的观察，因为根据公式(4)，低质量流量的出价优化上限设为 $b_a$，且所提排序算法倾向于采用上限。
 
+![图9](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig9.png)
 **图9：优化出价与设定出价不同比例的展示比例。**
 
 **平台视角的性能。** 站在平台方，仅仅关注整体RPM、GPM和ROI结果是远远不够的。在淘宝广告系统中，广告item来自各种类别，如女装、家具或数码产品。每个类别都有其固有的CVR或ROI水平。存在整体GMV或ROI提升来自不同类别之间流量转移的可能性，这从长远来看并不好。因此，我们给出实验结果以捕获流量转移。
 
 PV比例变化的结果如图10所示。类别的PV比例是该类别PV与实验桶中总PV的比值。结果表明流量转移不太明显，所有变化都在 $\pm 10\%$ 以内（注意PV比例可能在不同桶中因算法不同而变化）。
 
+![图10](.picture/2019-Optimized Cost per Click in Taobao Display Advertising-fig10.png)
 **图10：前20个类别（按类别总广告花费排名）PV比例的变化。**
 
 类比广告主视角，我们也进行了实验展示类别视角的性能。表9中的结果表明17%的类别（占62%的PV）同时获得GPM和ROI提升。

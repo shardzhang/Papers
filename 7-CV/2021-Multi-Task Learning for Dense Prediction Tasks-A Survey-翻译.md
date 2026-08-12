@@ -44,6 +44,7 @@
 #### 2.1.2 深度学习方法
 
 深度学习中的 MTL 通常通过硬参数共享或软参数共享来执行。在硬参数共享中（图 2a），共享隐藏层在任务特定输出层之间共享。这种方法是最常见的 MTL 方法，因为它大大减少了参数数量。然而，它假设所有任务共享相同的底层表示，这可能不是最佳的。在软参数共享中（图 2b），每个任务有自己的网络，但对共享层之间的距离施加正则化约束。这种方法允许更多的灵活性，但增加了参数数量。
+![图2](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig2.png)
 
 <!-- 图 2：深度神经网络中的多任务学习历史上被细分为软参数和硬参数共享方案 -->
 
@@ -54,6 +55,7 @@
 #### 2.1.4 MTL 方法的新分类法
 
 在这项工作中，我们根据任务交互发生的位置对 MTL 方法进行分类（图 3）。编码器聚焦模型在共享编码器中促进任务交互，而解码器聚焦模型在任务特定解码器中促进任务交互。这种分类法提供了对不同 MTL 方法的更清晰理解。
+![图3](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig3.png)
 
 <!-- 图 3：在这项工作中，我们根据任务交互发生的位置区分编码器聚焦和解码器聚焦模型 -->
 
@@ -299,6 +301,13 @@ MTL 在以下情况下可能有害：
 
 ---
 
+![图1](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig1.png)
+![图4](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig4.png)
+![图5](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig5.png)
+![图6](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig6.png)
+![图7](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig7.png)
+![图8](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig8.png)
+![图9](.picture/2021-Multi-Task Learning for Dense Prediction Tasks-A Survey-fig9.png)
 ## 参考文献
 
 [1] L.-C. Chen, G. Papandreou, I. Kokkinos, K. Murphy, and A. L. Yuille, "Deeplab: Semantic image segmentation with deep convolutional nets, atrous convolution, and fully connected crfs," TPAMI, 2017.

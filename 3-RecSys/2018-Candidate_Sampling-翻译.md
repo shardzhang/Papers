@@ -5,6 +5,7 @@
 ---
 
 ## 摘要
+![示意图（第1页）](.picture/2018-Candidate_Sampling-page001.png)
 
 本文分享了候选采样（Candidate Sampling）的核心概念与方法。核心内容：
 - 从动机出发，说明正负样本数量悬殊时采样方法的必要性
@@ -26,6 +27,7 @@
 http://ml.dongbingfeng.cn
 
 ## 动机
+![示意图（第2页）](.picture/2018-Candidate_Sampling-page002.png)
 
 - 在有限的计算资源下，正样本与负样本之间存在巨大的数量悬殊。
 - CTR/CVR 预测模型。
@@ -37,6 +39,7 @@ http://ml.dongbingfeng.cn
 - DNN 信息检索模型。
 
 ## 几率
+![示意图（第3页）](.picture/2018-Candidate_Sampling-page003.png)
 
 - 定义
 
@@ -59,6 +62,7 @@ log\_odds(p) = logit(p) = \boldsymbol{w}^T\boldsymbol{x}
 $$
 
 ## 采样逻辑回归
+![示意图（第4页）](.picture/2018-Candidate_Sampling-page004.png)
 
 - 我们以分布 $Q(y|x)$ 采样得到负样本，并希望获得 $P(y|x)$
 
@@ -81,6 +85,7 @@ F(\boldsymbol{x}, y) = F'(\boldsymbol{x}, y) + \log Q(y|\boldsymbol{x}) = \bolds
 $$
 
 ## 采样Softmax
+![示意图（第5页）](.picture/2018-Candidate_Sampling-page005.png)
 
 - Softmax 训练过程
 
@@ -101,6 +106,7 @@ $$
 $$
 
 ## 重要性采样
+![示意图（第6页）](.picture/2018-Candidate_Sampling-page006.png)
 
 - 我们需要得到
 
@@ -132,6 +138,8 @@ $$
 其中 $J_T(\theta)$ 为对比目标函数。
 
 ## NCE 理论
+![示意图（第8页）](.picture/2018-Candidate_Sampling-page008.png)
+![示意图（第9页）](.picture/2018-Candidate_Sampling-page009.png)
 
 - 定义正样本的概率密度： $p_d(x_i) = p_{di}$ ；负样本的概率密度： $p_n(x_i) = p_{ni}$ ；带有参数 $\theta$ 的模型概率密度： $p_m(x_i) = p_{di}$ ； $N$ 为总样本数。
 
@@ -159,6 +167,7 @@ $$
 - 对比噪声分布的选择：例如高斯分布或均匀分布、高斯混合分布或 ICA 分布。
 
 ## 形式化定义
+![示意图（第10页）](.picture/2018-Candidate_Sampling-page010.png)
 
 - 我们面对一个多分类问题，每个训练样本 $(x_i, T_i)$ 由一个上下文 $x_i$ 和一个较小的目标类别集合 $T_i$ 组成，这些目标类别来自一个较大的候选类别全集 $L$ 。
 
@@ -173,6 +182,8 @@ $$
  $S_i$ 的随机选择可能依赖于也可能不依赖于 $x_i$ 和/或 $T_i$ 。
 
 ## 候选采样算法
+![示意图（第11页）](.picture/2018-Candidate_Sampling-page011.png)
+![示意图（第12页）](.picture/2018-Candidate_Sampling-page012.png)
 
 - **全Softmax**： $C_i = L$ ，计算所有类别的完整Softmax。
 - **负采样**： $C_i = T_i \cup S_i$ ，其中 $S_i$ 为从噪声分布中采样的负样本。
@@ -196,6 +207,7 @@ $$
   - **采样Softmax**：在Softmax中对候选集做归一化，并通过重要性权重修正梯度。
     - **重要性采样**：通过权重调整修正期望估计中的分布偏差。
 
+![示意图（第7页）](.picture/2018-Candidate_Sampling-page007.png)
 ## 参考文献
 
 
