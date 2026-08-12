@@ -1,24 +1,22 @@
-# Billion-scale Commodity Embedding for E-commerce Recommendation in Alibaba
+# 面向阿里巴巴电商推荐的亿级商品嵌入（EGES）
 
 > Jizhe Wang, Pipei Huang, Huan Zhao, Zhibo Zhang, Binqiang Zhao, Dik Lun Lee | Alibaba Group; HKUST
->
-> {jizhe.wjz, pipei.hpp}@alibaba-inc.com, hzhaoaf@cse.ust.hk, {shaobo.zzb, bingqiang.zhao}@alibaba-inc.com, dlee@cse.ust.hk
->
-> \* Pipei Huang 是通讯作者。
 
+本文提出EGES（Enhanced Graph Embedding with Side information）框架，**通过从用户行为历史构建商品图并融合辅助信息学习商品嵌入，解决十亿级电商推荐中的稀疏性和冷启动问题**。
 
-
-本文介绍了阿里巴巴在亿级商品嵌入（Billion-scale Commodity Embedding，EGES）方面的实践——一种基于图嵌入的电子商务推荐方法。它从用户行为历史构建商品图，学习所有商品的嵌入表示，并利用辅助信息缓解稀疏性和冷启动问题。核心内容：
+核心内容：
 
 - 从用户行为历史构建商品图，应用图嵌入方法（BGE）学习商品的低维表示
 - 提出带辅助信息的图嵌入（GES）与增强型带辅助信息的图嵌入（EGES），聚合商品嵌入和相应辅助信息
 - 在 XTensorflow（XTF）平台构建图嵌入系统，处理淘宝亿级数据
+- 在淘宝两阶段推荐框架的匹配阶段部署，为排序阶段生成高质量候选集
 
 关键发现：
 
-- 融入辅助信息的方法在离线实验中优于未融入辅助信息的方法
-- 在线 A/B 测试表明 CTR 相较于淘宝之前广泛使用的基于协同过滤的方法有所提升
-- 所提框架显著提高手机淘宝 App 的推荐性能，同时满足训练效率和即时服务的要求
+- EGES在Amazon数据集上AUC达到**0.9700**，比BGE提升**+4.00%**
+- EGES在淘宝数据集上AUC达到**0.9746**，比BGE提升**+10.8%**
+- 在线A/B测试中EGES的CTR始终优于BGE和传统CF方法，证明辅助信息加权聚合的有效性
+- 系统可在**6小时内**完成1500亿样本的全流程处理，满足双十一实时响应需求
 
 ---
 
