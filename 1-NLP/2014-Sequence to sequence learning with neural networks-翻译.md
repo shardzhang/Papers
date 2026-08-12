@@ -41,6 +41,8 @@
 
 LSTM的一个有用的特性是它能够学习将可变长度的输入句子映射到固定维度的向量表示。鉴于翻译往往是源句子的释义，翻译目标鼓励LSTM找到捕捉句子意义的句子表示，因为意义相近的句子彼此接近，而不同句子的意义则相距较远。定性评估支持这一说法，表明我们的模型对词序敏感，且对主动语态和被动语态相对不变。
 
+
+
 ## 2 模型
 
 循环神经网络（Recurrent Neural Network, RNN）[31, 28]是前馈神经网络在序列上的自然推广。给定一个输入序列 $(x_1, \ldots, x_T)$，标准RNN通过迭代以下方程计算一个输出序列 $(y_1, \ldots, y_T)$：
@@ -66,6 +68,8 @@ $$
 在此方程中，每个 $p(y_t | v, y_1, \ldots, y_{t-1})$ 分布由词汇表中所有单词上的softmax表示。我们使用Graves [10]中的LSTM公式。注意我们要求每个句子以特殊的句子结束符号“<EOS>”结尾，这使得模型能够定义所有可能长度序列上的分布。整体方案如图1所示，其中显示的LSTM计算“A”、“B”、“C”、“<EOS>”的表示，然后使用该表示计算“W”、“X”、“Y”、“Z”、“<EOS>”的概率。
 
 我们的实际模型与上述描述在三个方面有重要不同。首先，我们使用了两个不同的LSTM：一个用于输入序列，另一个用于输出序列，因为这样做在计算成本可忽略不计的情况下增加了模型参数数量，并且可以自然地同时训练多个语言对的LSTM [18]。其次，我们发现深度LSTM显著优于浅层LSTM，因此我们选择了具有四层的LSTM。第三，我们发现反转输入句子的词序极其有价值。因此，例如，LSTM被要求将句子 $c, b, a$ 映射到 $\alpha, \beta, \gamma$，而不是将句子 $a, b, c$ 映射到 $\alpha, \beta, \gamma$，其中 $\alpha, \beta, \gamma$ 是 $a, b, c$ 的翻译。这样，$a$ 与 $\alpha$ 接近，$b$ 与 $\beta$ 相当接近，依此类推，这一事实使得SGD容易在输入和输出之间“建立通信”。我们发现这种简单的数据转换大大提高了LSTM的性能。
+
+
 
 ## 3 实验
 
@@ -171,6 +175,8 @@ $$
 我们的模型 | Avec la crémation , il y a un " sentiment de violence contre le corps d' un être cher " , qui sera " réduit à une pile de cendres " en très peu de temps au lieu d' un processus de décomposition " qui accompagnera les étapes du deuil " .
 真实值 | Il y a , avec la crémation , " une violence faite au corps aimé " , qui va être " réduit à un tas de cendres " en très peu de temps , et non après un processus de décomposition , qui " accompagnerait les phases du deuil " .
 
+
+
 ## 4 相关工作
 
 关于神经网络在机器翻译中的应用有大量的工作。到目前为止，将RNN语言模型（RNN Language Model, RNNLM）[23]或前馈神经网络语言模型（Feedforward Neural Network Language Model, NNLM）[3]应用于机器翻译任务的最简单且最有效的方法是对强大的机器翻译基线系统的n-best列表进行重评分[22]，这可以可靠地提高翻译质量。
@@ -180,6 +186,8 @@ $$
 我们的工作与Kalchbrenner和Blunsom [18]密切相关，他们是第一个将输入句子映射到向量然后再映射回句子的人，尽管他们使用卷积神经网络将句子映射到向量，这会丢失单词的顺序。与这项工作类似，Cho等人[5]使用类似LSTM的RNN架构将句子映射到向量然后再映射回句子，尽管他们的主要重点是将神经网络集成到SMT系统中。Bahdanau等人[2]也尝试使用神经网络进行直接翻译，该神经网络使用注意力机制来克服Cho等人[5]在长句上遇到的性能不佳问题，并取得了令人鼓舞的结果。同样，Pouget-Abadie等人[26]试图通过以产生平滑翻译的方式翻译源句子的部分内容来解决Cho等人[5]的记忆问题，这类似于基于短语的方法。我们怀疑他们可以通过在反转源句子上训练网络来获得类似的改进。
 
 端到端训练也是Hermann等人[12]的重点，他们的模型使用前馈网络表示输入和输出，并将它们映射到空间中的相似点。然而，他们的方法无法直接生成翻译：要获得翻译，他们需要在预计算的句子数据库中查找最接近的向量，或者对句子进行重评分。
+
+
 
 ## 5 结论
 
@@ -191,9 +199,13 @@ $$
 
 最重要的是，我们证明了一种简单、直接且相对未优化的方法可以超越SMT系统，因此进一步的工作可能会带来更高的翻译准确性。这些结果表明，我们的方法可能在其他具有挑战性的序列到序列问题上表现良好。
 
+
+
 ## 6 致谢
 
 我们感谢Samy Bengio、Jeff Dean、Matthieu Devin、Geoffrey Hinton、Nal Kalchbrenner、Thang Luong、Wolfgang Macherey、Rajat Monga、Vincent Vanhoucke、Peng Xu、Wojciech Zaremba以及Google Brain团队提供的有益评论和讨论。
+
+
 
 ## 参考文献
 

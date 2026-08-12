@@ -1,6 +1,8 @@
-# AI编程助手（Claude Code）用得好不好，主要看你是不是行家
+# AI编程助手用得好不好，主要看你是不是行家
 
 > Anthropic 研究团队（Zoe Hitzig、Maxim Massenkoff、Eva Lyubich、Ryan Heller、Peter McCrory）| 2026年6月16日
+
+
 
 本文分享了一份关于"AI智能编程助手（Claude Code）"的真实使用报告。研究分析了约40万次真实使用会话，核心想回答一个问题：**不懂编程的人，能不能指挥AI干复杂的活儿？答案是：能，但前提是你得懂自己的专业领域。**
 
@@ -18,6 +20,8 @@
 
 ---
 
+
+
 ## 摘要（核心结论）
 
 1. **人定方向，AI干活**：在一次典型会话里，人做了约70%的"规划决策"（做什么），AI做了约80%的"执行决策"（怎么做）。
@@ -28,12 +32,14 @@
 
 ---
 
+
+
 ## 第一部分：为什么要研究这个问题？
 
 AI编程助手火得很快：
 
 - 2025年底以来，GitHub上活跃着编程智能体（coding agent）的项目占比**翻了一倍多**
-- Claude Code 用户平均每周用这个工具约**20小时**
+- Claude Code 用户平均每周用这个工具约 **20小时**
 
 由此带来两个关键问题：
 1. **没学过编程的人**，能不能指挥AI完成复杂的技术工作？
@@ -41,7 +47,7 @@ AI编程助手火得很快：
 
 这个报告用真实数据找答案：基于约**40万个交互会话**（来自约**23.5万人**，2025年10月到2026年4月）。数据全程经过隐私保护处理，不读具体会话内容，只统计聚合结果。
 
-**为什么关心这个？** 在Claude Code上发生的事，可能预示着未来知识工作的走向——当AI智能体渗透到编程之外的各类工作时，现在程序员身上发生的一切很可能重演。
+**为什么关心这个？** 在Claude Code上发生的事，可能**预示着未来知识工作的走向**—— **当AI智能体渗透到编程之外的各类工作时，现在程序员身上发生的一切很可能重演**。
 
 **三个核心发现（先行预告）：**
 
@@ -50,6 +56,8 @@ AI编程助手火得很快：
 3. 决定工具使用效果的是**领域专业能力**，不是编程水平
 
 ---
+
+
 
 ## 第二部分：人机怎么分工？
 
@@ -71,14 +79,21 @@ AI编程助手火得很快：
 
 **图1：Claude Code 会话都在干什么？（9种工作模式占比）**
 
-<img src=".picture/agentic-fig1.png" alt="agentic-fig1" style="zoom:50%;" />
+<img src=".picture/agentic-fig1.png" alt="agentic-fig1" style="zoom: 33%;" />
 
-这张横向条形图，按占比从高到低列出9种工作模式：
+这张横向条形图，按占比从高到低完整列出全部9种工作模式：
 
-- **修东西（26%）**和**建新东西（25%）**是两大头，加起来超过一半
-- **运行软件（17%）**排第三
-- **写文档/做演示（10%）**、**搞懂系统（7%）**、**规划改动（7%）**居中
-- **指挥其他AI/流水线（3%）**、**分析数据（3%）**、**测试代码（2%）**占比较小
+1. **修东西（Fixing something broken）** —— 26%
+2. **建新东西（Building something new）** —— 25%
+3. **运行软件（Operating software）** —— 17%
+4. **写文档/做演示（Writing docs and presentations）** —— 10%
+5. **搞懂系统（Understanding a system）** —— 7%
+6. **规划改动（Planning a change）** —— 7%
+7. **指挥其他AI/流水线（Orchestrating agents and pipelines）** —— 3%
+8. **分析数据（Analyzing data）** —— 3%
+9. **测试代码（Testing code）** —— 2%
+
+**两大头（1、2）加起来超过一半**，运行软件排第三，17%以后明显下降。
 
 **总结：** 会话主要围绕"修和建代码"，但"围绕代码的活"（运行、规划、文档）已经占了相当比例。
 
@@ -100,7 +115,7 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 **图2：规划决策 vs 执行决策，谁说了算？**
 
-<img src=".picture/agentic-fig2.png" alt="agentic-fig2" style="zoom:50%;" />
+<img src=".picture/agentic-fig2.png" alt="agentic-fig2" style="zoom: 33%;" />
 
 这张图展示了"Claude在决策中的占比"的分布情况：
 
@@ -133,7 +148,7 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 **表1：专业度分级的判断标准**
 
-<img src=".picture/agentic-fig3.png" alt="agentic-fig3" style="zoom:45%;" />
+<img src=".picture/agentic-fig3.png" alt="agentic-fig3" style="zoom: 33%;" />
 
 这张表格定义了5个等级。**左列是等级**，**中列是分类器看什么**，**右列是真实的代表性会话摘录**：
 
@@ -151,7 +166,7 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 **图3：用户越专业，AI每条指令干的活越多**
 
-<img src=".picture/agentic-fig4.png" alt="agentic-fig4" style="zoom:50%;" />
+<img src=".picture/agentic-fig4.png" alt="agentic-fig4" style="zoom: 33%;" />
 
 这张图有两个子图，横轴都是用户的专业度等级（1=新手 到 5=专家）：
 
@@ -182,7 +197,7 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 **图4：Claude Code 工作的构成和价值变化（2025年10月-2026年4月）**
 
-<img src=".picture/agentic-fig5.png" alt="agentic-fig5" style="zoom:50%;" />
+<img src=".picture/agentic-fig5.png" alt="agentic-fig5" style="zoom: 33%;" />
 
 这张图分左右两个面板：
 
@@ -202,6 +217,8 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 ---
 
+
+
 ## 第四部分：成不成，取决于人带来什么
 
 任务价值只是"帮助程度"的一种度量。另一种角度是看**成功率**。
@@ -215,7 +232,7 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 **表2：成功与失败的定义**
 
-<img src=".picture/agentic-fig6.png" alt="agentic-fig6" style="zoom:50%;" />
+<img src=".picture/agentic-fig6.png" alt="agentic-fig6" style="zoom: 33%;" />
 
 这张表格给出6个指标的精确定义和真实会话举例：
 
@@ -236,7 +253,7 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 **图5：专业度与会话结局**
 
-<img src=".picture/agentic-fig7.png" alt="agentic-fig7" style="zoom:50%;" />
+<img src=".picture/agentic-fig7.png" alt="agentic-fig7" style="zoom: 33%;" />
 
 这张图分三个面板，横轴都是专业度（1=新手 到 5=专家）：
 
@@ -263,7 +280,7 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 **图6：各职业做编程任务的成功率**
 
-<img src=".picture/agentic-fig8.png" alt="agentic-fig8" style="zoom:50%;" />
+<img src=".picture/agentic-fig8.png" alt="agentic-fig8" style="zoom: 33%;" />
 
 这张图统计"至少新增或修改一行代码"的会话，按用户职业分组，展示三个指标：
 
@@ -280,6 +297,8 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 - **管理职业的验证成功率最高**（略高于软件工程职业）——可能因为管理技能直接能迁移到"指挥AI"上；但也可能是度量方式的原因（验证部分依赖会话中的明确确认，管理者更习惯说"我要的就是这个"）
 
 ---
+
+
 
 ## 展望未来
 
@@ -304,20 +323,20 @@ AI理论上能做很自主的事（在基准测试上，前沿模型能连续自
 
 ---
 
-## 参考文献（原文保留）
 
+
+## 参考文献（BibTex Citation）
+
+```bibtex
 @online{hitzig2026agentic,
-
-  author = {Zoe Hitzig and Maxim Massenkoff and Eva Lyubich and Ryan
-Heller and Peter McCrory},
-
+  author = {Zoe Hitzig and Maxim Massenkoff and Eva Lyubich and Ryan Heller and Peter McCrory},
   title = {Agentic coding and persistent returns to expertise},
-
   date = {2026-06-16},
-
   year = {2026},
-
   url = {https://www.anthropic.com/research/research/claude-code-expertise},
 }
+```
 
-附录（Appendix）可在此获取。
+## 附录（Appendix）
+
+附录可在此处获取（请点击原文中的 "Available here" 链接）。
