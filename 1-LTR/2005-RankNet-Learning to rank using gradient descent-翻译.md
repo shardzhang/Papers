@@ -1,4 +1,4 @@
-# 使用梯度下降学习排序
+# RankNet: 使用梯度下降学习排序
 
 > Chris Burges, Tal Shaked, Erin Renshaw, Ari Lazier, Matt Deeds, Nicole Hamilton, Greg Hullender | Microsoft Research; Microsoft
 
@@ -232,9 +232,13 @@ $$
 
 我们提出了一种概率成本，用于训练系统使用成对训练样本学习排序函数。该方法可以用于任何可微函数；我们探索了使用神经网络公式 RankNet。RankNet 训练简单，在具有大量数据的真实排序问题上给出了出色的性能。将线性 RankNet 与其他线性系统比较，清楚地展示了使用我们的基于成对的成本函数连同梯度下降的好处；两层网络给出了进一步的改进。对于未来工作，探索将该方法扩展到使用其他机器学习方法作为排序函数将是有趣的；然而评估速度和简洁性是此类系统的关键约束。
 
+
+
 ## 致谢
 
 我们感谢 John Platt 和 Leon Bottou 的有益讨论，以及 Leon Wong 和 Robert Ragno 对本项目的支持。
+
+
 
 ## 参考文献
 
