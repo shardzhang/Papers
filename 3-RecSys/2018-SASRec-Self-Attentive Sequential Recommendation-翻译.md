@@ -1,44 +1,56 @@
-# Self-Attentive Sequential Recommendation
+# SASRec: Self-Attentive Sequential Recommendation
 
 > Wang-Cheng Kang, Julian McAuley | UC San Diego
 >
 > {wckang,jmcauley}@ucsd.edu
 
-本文提出了 SASRec，一种基于自注意力机制的序列推荐模型，能够像 RNN 一样捕获长期语义，同时像 MC 一样仅基于少量动作进行预测。核心内容：
+GRU4Rec
+
+本文提出了 SASRec，一种**基于 自注意力机制 的序列推荐模型**，能够**像 RNN 一样捕获长期语**义，同时像 MC（Markov Chain，马尔可夫链） 一样**仅基于少量动作**进行预测。核心内容：
 
 - 使用自注意力机制对用户历史行为序列建模，自适应地为每个时间步的历史 item 分配权重
 - 通过位置嵌入（Positional Embedding）、层归一化（Layer Normalization）、残差连接（Residual Connection）和 Dropout 等技术构建深层自注意力网络
 - 在稀疏和稠密数据集上均超越 MC/CNN/RNN 等现有方法，且训练速度比 CNN/RNN 方法快一个数量级
-- 注意力可视化显示模型能自适应处理不同密度的数据集，并能学习到有意义的 item 间模式
+- 注意力可视化显示模型能**自适应处理不同密度的数据集**，并能学习到有意义的 item 间模式
 
 关键发现：
 
-- SASRec 在稀疏和稠密数据集上均优于所有基线方法，平均 Hit Rate 提升 6.9%，NDCG 提升 9.6%
-- 在稀疏数据集上，模型倾向于关注最近几个 item；在稠密数据集上，模型会关注更长范围的 item
+- SASRec 在 稀疏 和 稠密数据集上均优于所有基线方法，平均 Hit Rate 提升 6.9%，NDCG 提升 9.6%
+- 在稀疏数据集上，模型倾向于关注 **最近几个 item**；在稠密数据集上，模型会关注 **更长范围的 item**
 - 训练速度是 Caser 的 11 倍以上，是 GRU4Rec+ 的 18 倍以上
 - 共享 item 嵌入显著优于非共享方案，残差连接和 Dropout 对性能有重要影响
 
 ---
 
+
+
 ## 摘要
 
-序列动态（Sequential dynamics）是许多现代推荐系统的关键特征，这类系统试图基于用户最近执行的动作来捕获其活动的"上下文"。为了捕获这些模式，主要有两类方法：马尔可夫链（MC）和循环神经网络（RNN）。马尔可夫链假设用户的下一个动作仅基于最后（或最后几个）动作即可预测，而 RNN 原则上能够发现更长程的语义。通常来说，基于 MC 的方法在极度稀疏的数据集上表现最佳——此时模型的简洁性至关重要，而 RNN 在数据更稠密的数据集上表现更好——此时可以承担更高的模型复杂度。我们工作的目标是在这两个目标之间取得平衡，通过提出一个基于自注意力的序列模型（SASRec），使其能够捕获长期语义（像 RNN 一样），同时利用注意力机制仅基于相对较少的动作进行预测（像 MC 一样）。在每个时间步，SASRec 从用户的历史行为中识别出哪些 item 是"相关的"，并用它们来预测下一个 item。广泛的实证研究表明，我们的方法在稀疏和稠密数据集上均优于各种最先进的序列模型（包括基于 MC/CNN/RNN 的方法）。此外，该模型比同类 CNN/RNN 模型快一个数量级。注意力权重的可视化还展示了我们的模型如何自适应地处理不同密度的数据集，并揭示了行为序列中有意义的模式。
+序列动态（Sequential dynamics）是许多现代推荐系统的关键特征，这类系统试图 **基于 用户最近执行的动作 来捕获其活动的"上下文"**。为了捕获这些模式，主要有两类方法：马尔可夫链（MC）和循环神经网络（RNN）。马尔可夫链假设用户的下一个动作仅基于最后（或最后几个）动作即可预测，而 RNN 原则上能够发现**更长程的语义**。通常来说，**基于 MC 的方法在极度稀疏的数据集上表现最佳——此时模型的简洁性至关重要，而 RNN 在数据更稠密的数据集上表现更好——此时可以承担更高的模型复杂度**。我们工作的目标是在这两个目标之间取得平衡，通过提出一个基于自注意力的序列模型（SASRec），使其能够捕获长期语义（像 RNN 一样），同时利用注意力机制 **仅基于相对较少的动作** 进行预测（像 MC 一样）。**在每个时间步，SASRec 从用户的历史行为中识别出哪些 item 是"相关的"，并用它们来预测下一个 item**。广泛的实证研究表明，我们的方法在稀疏和稠密数据集上均优于各种最先进的序列模型（包括基于 MC/CNN/RNN 的方法）。此外，该模型比同类 CNN/RNN 模型快一个数量级。注意力权重的可视化还展示了我们的模型如何 **自适应地处理不同密度的数据集**，并揭示了**行为序列中有意义的模式**。
+
+
 
 ## 1. 引言
 
-序列推荐系统的目标是将用户行为的个性化模型（基于历史活动）与基于用户最近动作的某种"上下文"概念相结合。从序列动态中捕获有用的模式具有挑战性，主要原因在于输入空间的维度会随着作为上下文的过去动作数量呈指数增长。因此，序列推荐研究主要关注如何简洁地捕获这些高阶动态。
+序列推荐系统的目标是将**用户行为的个性化模型**（基于历史活动）与基于用户**最近动作**的某种"上下文"概念相结合。从序列动态中捕获有用的模式具有挑战性，主要原因在于输入空间的维度会随着作为上下文的过去动作数量呈**指数增长**。因此，序列推荐研究主要关注如何简洁地捕获这些高阶动态。
 
 马尔可夫链（MC）是一个经典例子，它假设下一个动作仅取决于前一个动作（或前几个），并已被成功应用于刻画短程的 item 转移以进行推荐 [1]。另一类工作使用循环神经网络（RNN）通过隐藏状态汇总所有之前的动作，并用其预测下一个动作 [2]。
 
-这两种方法虽然在特定情况下表现强劲，但在某些数据类型上都有局限性。基于 MC 的方法通过做出强简化假设，在高稀疏性设置下表现良好，但可能无法捕获更复杂场景中的精细动态。相反，RNN 虽然表达力强，但在需要大量数据（尤其是稠密数据）之后才能超越更简单的基线模型。
+这两种方法虽然在特定情况下表现强劲，但在某些数据类型上都有局限性。基于 MC 的方法通过做出**强简化假设**，在高稀疏性设置下表现良好，但可能**无法捕获更复杂场景中的精细动态**。相反，RNN 虽然表达力强，但在需要大量数据（尤其是稠密数据）之后才能超越更简单的基线模型。
 
-最近，一种名为 Transformer 的新型序列模型在机器翻译任务上取得了最先进的性能和效率 [3]。与使用卷积或循环模块的现有序列模型不同，Transformer 完全基于一种称为"自注意力"（self-attention）的注意力机制，该机制非常高效，能够发现句子中单词之间的句法和语义模式。
+**最近，一种名为 Transformer 的新型序列模型在机器翻译任务上取得了最先进的性能和效率** [3]。与使用卷积 或 循环模块的现有序列模型不同，Transformer 完全基于一种称为"自注意力"（self-attention）的注意力机制，该机制非常高效，能够发现**句子中单词之间的句法和语义模式**。
 
-受此方法的启发，我们尝试将自注意力机制应用于序列推荐问题。我们希望这一思想能够解决上述两个问题：一方面能够像 RNN 一样从过去所有动作中提取上下文，另一方面能够像 MC 一样仅基于少量动作进行预测。具体来说，我们构建了一个基于自注意力的序列推荐模型（SASRec），该模型在每个时间步自适应地为历史 item 分配权重（图1）。
+受此方法的启发，我们尝试将自注意力机制应用于序列推荐问题。我们希望这一思想能够解决上述两个问题：一方面能够像 RNN 一样从过去所有动作中提取上下文，另一方面能够像 MC 一样仅基于少量动作进行预测。具体来说，我们构建了一个基于自注意力的序列推荐模型（SASRec），该模型**在每个时间步自适应地为历史 item 分配权重**（图1）。
 
-所提出的模型在多个基准数据集上显著优于最先进的基于 MC/CNN/RNN 的序列推荐方法。特别地，我们考察了性能随数据集稀疏度的变化，发现模型性能与上述模式高度吻合。由于自注意力机制，SASRec 在稠密数据集上倾向于考虑长程依赖，而在稀疏数据集上则更关注最近的活动。这对于自适应地处理不同密度的数据集至关重要。
+<img src="/Users/dazhang/PycharmProject/Papers/3-RecSys/.picture/image-20260813225116141.png" alt="image-20260813225116141" style="zoom: 50%;" />
 
-此外，SASRec 的核心组件（即自注意力块）适合并行加速，使得模型比 CNN/RNN 替代方案快一个数量级。我们还分析了 SASRec 的复杂度和可扩展性，进行了全面的消融研究以展示关键组件的影响，并通过可视化注意力权重定性揭示了模型的行为。
+图1：
+
+所提出的模型在多个基准数据集上显著优于最先进的基于 MC/CNN/RNN 的序列推荐方法。特别地，我们考察了性能随数据集稀疏度的变化，发现模型性能与上述模式高度吻合。**由于自注意力机制，SASRec 在稠密数据集上倾向于考虑长程依赖，而在稀疏数据集上则更关注最近的活动。**这对于自适应地处理不同密度的数据集至关重要。
+
+此外，SASRec 的核心组件（即自注意力块）**适合并行加速**，使得模型比 CNN/RNN 替代方案快一个数量级。我们还分析了 SASRec 的复杂度和可扩展性，进行了全面的消融研究以展示关键组件的影响，并**通过可视化注意力权重定性揭示了模型的行为**。
+
+
 
 ## 2. 相关工作
 
@@ -46,27 +58,29 @@
 
 ### 2.1 通用推荐
 
-推荐系统主要关注基于历史反馈（如点击、购买、点赞）对用户与 item 之间的兼容性进行建模。用户反馈可以是显式的（如评分）或隐式的（如点击、购买、评论）[4, 5]。由于难以解释"未观测到"（如未购买）的数据，对隐式反馈建模具有挑战性。为解决此问题，逐点（point-wise）[4] 和成对（pairwise）[5] 方法被提出来应对这些挑战。
+推荐系统主要关注基于历史反馈（如点击、购买、点赞）对**用户与 item 之间的兼容性**进行建模。用户反馈可以是显式的（如评分）或隐式的（如点击、购买、评论）[4, 5]。**由于难以解释"未观测到"（如未购买）的数据，对隐式反馈建模具有挑战性**。为解决此问题，逐点（point-wise）[4] 和成对（pairwise）[5] 方法被提出来应对这些挑战。
 
-矩阵分解（MF）方法试图发现用户偏好和 item 属性的 latent 维度，并通过用户嵌入与 item 嵌入之间的内积来估计交互 [6, 7]。此外，另一类工作基于 item 相似度模型（ISM），不显式地用 latent 因子对每个用户建模（如 FISM [8]）。它们学习一个 item 到 item 的相似度矩阵，并通过衡量目标 item 与用户历史交互过的 item 之间的相似度来估计用户对某个 item 的偏好。
+矩阵分解（MF）方法试图发现用户偏好和 item 属性的 latent 维度，并通过用户嵌入与 item 嵌入之间的内积来估计交互 [6, 7]。此外，另一类工作基于 **item 相似度模型**（ISM），不显式地用 latent 因子对每个用户建模（如 FISM [8]）。**它们学习一个 item 到 item 的相似度矩阵，并通过衡量目标 item 与用户历史交互过的 item 之间的相似度来估计用户对某个 item 的偏好。**
 
 近年来，由于深度学习在相关问题上的成功，各种深度学习技术被引入推荐系统 [9]。一类工作尝试使用神经网络提取 item 特征（如图像 [10, 11]、文本 [12, 13] 等）用于内容感知推荐。另一类工作尝试替代传统的 MF。例如，NeuMF [14] 通过多层感知机（MLP）估计用户偏好，AutoRec [15] 使用自编码器预测评分。
 
 ### 2.2 时间推荐
 
-追溯到 Netflix Prize 时期，时间推荐通过显式建模用户活动的时间戳，在各种任务上表现出了强劲的性能。TimeSVD++ [16] 通过将时间分为多个段，并在每个段中分别对用户和 item 建模，取得了优异的结果。这类模型对于理解具有显著（短期或长期）时间"漂移"的数据集至关重要（例如"过去 10 年电影偏好如何变化？"或"用户在下午 4 点会访问什么类型的商家？"等）[16, 17, 18]。序列推荐（或下一个 item 推荐）与这种设置略有不同，因为它只考虑动作的顺序，并建模与时间无关的序列模式。本质上，序列模型试图基于用户的近期活动建模其"上下文"，而非考虑时间模式本身。
+追溯到 Netflix Prize 时期，时间推荐通过显式建模用户活动的时间戳，在各种任务上表现出了强劲的性能。TimeSVD++ [16] 通过将时间分为多个段，并在每个段中分别对用户和 item 建模，取得了优异的结果。这类模型对于理解具有显著（短期或长期）时间"漂移"的数据集至关重要（例如"过去 10 年电影偏好如何变化？"或"用户在下午 4 点会访问什么类型的商家？"等）[16, 17, 18]。序列推荐（或下一个 item 推荐）与这种设置略有不同，因为它**只考虑动作的顺序，并建模与时间无关的序列模式**。**本质上，序列模型试图基于用户的近期活动建模其"上下文"，而非考虑时间模式本身。**
 
 ### 2.3 序列推荐
 
-许多序列推荐系统尝试建模 item-item 转移矩阵，以捕获连续 item 之间的序列模式。例如，FPMC 融合了一个 MF 项和一个 item-item 转移项，分别捕获长期偏好和短期转移 [1]。本质上，捕获的转移是一阶马尔可夫链（MC），而高阶 MC 假设下一个动作与之前的多个动作相关。由于最后一个访问的 item 通常是影响用户下一个动作的关键因素（即提供"上下文"），基于一阶 MC 的方法表现出强劲的性能，尤其是在稀疏数据集上 [19]。也有方法采用高阶 MC 来考虑更多之前的 item [20, 21]。特别地，卷积序列嵌入（Caser）——一种基于 CNN 的方法——将 L 个之前 item 的嵌入矩阵视为一张"图像"，并应用卷积操作来提取转移特征 [22]。
+许多序列推荐系统尝试建模 item-item 转移矩阵，以捕获连续 item 之间的序列模式。例如，FPMC 融合了一个 MF 项和一个 item-item 转移项，分别捕获长期偏好和短期转移 [1]。本质上，捕获的转移是一阶马尔可夫链（MC），而高阶 MC 假设下一个动作与之前的多个动作相关。由于最后一个访问的 item 通常是影响用户下一个动作的关键因素（即提供"上下文"），基于一阶 MC 的方法表现出强劲的性能，尤其是在稀疏数据集上 [19]。也有方法采用高阶 MC 来考虑更多之前的 item [20, 21]。特别地，**卷积序列嵌入（Caser）——一种基于 CNN 的方法——将 L 个之前 item 的嵌入矩阵视为一张"图像"，并应用卷积操作来提取转移特征 [22]。**
 
 除了基于 MC 的方法，另一类工作采用 RNN 对用户序列建模 [2, 23, 24, 25]。例如，GRU4Rec 使用门控循环单元（GRU）对点击序列建模以进行基于会话的推荐 [2]，其改进版本进一步提升了对 Top-N 推荐的性能 [26]。在每个时间步，RNN 将上一步的状态和当前动作作为输入。这些依赖关系使得 RNN 效率较低，不过已有技术如"会话并行"（session-parallelism）被提出来提高效率 [2]。
 
 ### 2.4 注意力机制
 
-注意力机制已被证明在各种任务中有效，如图像描述生成 [27] 和机器翻译 [28] 等。这些机制的核心思想是：序列输出（例如）依赖于模型应依次关注的输入中的某些"相关"部分。另一个好处是，基于注意力的方法通常更可解释。最近，注意力机制已被引入推荐系统 [29, 30, 31]。例如，注意力因子分解机（AFM）[30] 学习内容感知推荐中每个特征交互的重要性。
+注意力机制已被证明在各种任务中有效，如图像描述生成 [27] 和机器翻译 [28] 等。这些机制的核心思想是：序列输出（例如）依赖于模型应依次关注的输入中的某些"相关"部分。另一个好处是，基于注意力的方法通常更可解释。最近，注意力机制已被引入推荐系统 [29, 30, 31]。例如，注意力因子分解机（AFM）[30] 学习内容感知推荐中**每个特征交互的重要性**。
 
-然而，上述使用的注意力技术本质上是原始模型的附加组件（如 attention+RNN、attention+FM 等）。最近，一种纯基于注意力的序列到序列方法 Transformer [3] 在机器翻译任务上取得了最先进的性能和效率，而此前该领域由基于 RNN/CNN 的方法主导 [32, 33]。Transformer 模型严重依赖于所提出的"自注意力"模块来捕获句子中的复杂结构，并检索相关单词（在源语言中）以生成下一个单词（在目标语言中）。受 Transformer 启发，我们尝试构建一个基于自注意力方法的新型序列推荐模型，尽管序列推荐问题与机器翻译有很大不同，需要专门设计的模型。
+然而，上述使用的注意力技术**本质上是原始模型的附加组件**（如 attention+RNN、attention+FM 等）。最近，一种纯基于注意力的序列到序列方法 Transformer [3] 在机器翻译任务上取得了最先进的性能和效率，而此前该领域由基于 RNN/CNN 的方法主导 [32, 33]。Transformer 模型严重依赖于所提出的"自注意力"模块来捕获句子中的复杂结构，并检索相关单词（在源语言中）以生成下一个单词（在目标语言中）。受 Transformer 启发，我们尝试构建一个基于自注意力方法的新型序列推荐模型，尽管序列推荐问题与机器翻译有很大不同，需要专门设计的模型。
+
+
 
 ## 3. 方法
 
@@ -211,6 +225,8 @@ $$
 
 **基于 RNN 的推荐：** 另一类工作尝试使用 RNN 对用户行为序列建模 [2, 17, 26]。RNN 通常适合对序列建模，尽管最近的研究表明 CNN 和自注意力在某些序列设置中可以更强 [3, 44]。我们基于自注意力的模型可以从 item 相似度模型推导出来，这是序列建模用于推荐的一个合理替代方案。对于 RNN，除了它们在并行计算方面的低效率（第 3.6 节）外，它们的最大路径长度（从输入节点到相关输出节点）为 $O(n)$ 。相比之下，我们的模型具有 $O(1)$ 的最大路径长度，这有利于学习长程依赖关系 [45]。
 
+
+
 ## 4. 实验
 
 在本节中，我们介绍实验设置和实验结果。我们的实验旨在回答以下研究问题：
@@ -348,57 +364,108 @@ $$
 
 **item 之间的注意力：** 展示几个精心挑选的 item 之间的注意力权重可能不具有统计意义。为进行更广泛的比较，我们使用 MovieLens-1M（每部电影有多个类别），随机选择两个不相交的集合，每个集合包含来自 4 个类别（科幻片、爱情片、动画片和恐怖片）的 200 部电影。第一个集合用作查询，第二个集合用作键。图5展示了两个集合之间平均注意力权重的热力图。我们可以看到热力图近似为一个块对角矩阵，这意味着注意力机制能够识别相似的 item（例如共享同一类别的 item），并倾向于在它们之间分配更大的权重（而无需事先知道类别信息）。
 
+
+
 ## 5. 结论
 
 在这项工作中，我们提出了一种新颖的基于自注意力的序列模型 SASRec，用于下一个 item 推荐。SASRec 对整个用户序列进行建模（无需任何循环或卷积操作），并自适应地考虑已消费的 item 进行预测。在稀疏和稠密数据集上广泛的经验结果表明，我们的模型优于最先进的基线方法，并且比基于 CNN/RNN 的方法快一个数量级。未来，我们计划通过融入丰富的上下文信息（如停留时间、行为类型、位置、设备等）来扩展模型，并研究处理非常长序列（如点击）的方法。
 
+
+
 ## 参考文献
 
 [1] S. Rendle, C. Freudenthaler, and L. Schmidt-Thieme, "Factorizing personalized Markov chains for next-basket recommendation," in WWW, 2010.
-[2] B. Hidasi, A. Karatzoglou, L. Baltrunas, and D. Tikk, "Session-based recommendations with recurrent neural networks," in ICLR, 2016.
+
+[2] B. Hidasi, A. Karatzoglou, L. Baltrunas, and D. Tikk, "**Session-based recommendations with recurrent neural networks**," in ICLR, 2016.
+
 [3] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, and I. Polosukhin, "Attention is all you need," in NIPS, 2017.
-[4] Y. Hu, Y. Koren, and C. Volinsky, "Collaborative filtering for implicit feedback datasets," in ICDM, 2008.
+
+[4] Y. Hu, Y. Koren, and C. Volinsky, "**Collaborative filtering for implicit feedback datasets**," in ICDM, 2008.
+
 [5] S. Rendle, C. Freudenthaler, Z. Gantner, and L. Schmidt-Thieme, "BPR: Bayesian personalized ranking from implicit feedback," in UAI, 2009.
+
 [6] F. Ricci, L. Rokach, B. Shapira, and P. Kantor, Recommender systems handbook. Springer US, 2011.
+
 [7] Y. Koren and R. Bell, "Advances in collaborative filtering," in Recommender Systems Handbook. Springer, 2011.
+
 [8] S. Kabbur, X. Ning, and G. Karypis, "FISM: Factored item similarity models for top-n recommender systems," in SIGKDD, 2013.
-[9] S. Zhang, L. Yao, and A. Sun, "Deep learning based recommender system: A survey and new perspectives," arXiv, vol. abs/1707.07435, 2017.
+
+[9] S. Zhang, L. Yao, and A. Sun, "**Deep learning based recommender system: A survey and new perspectives**," arXiv, vol. abs/1707.07435, 2017.
+
 [10] S. Wang, Y. Wang, J. Tang, K. Shu, S. Ranganath, and H. Liu, "What your images reveal: Exploiting visual contents for point-of-interest recommendation," in WWW, 2017.
+
 [11] W. Kang, C. Fang, Z. Wang, and J. McAuley, "Visually-aware fashion recommendation and design with generative image models," in ICDM, 2017.
+
 [12] H. Wang, N. Wang, and D. Yeung, "Collaborative deep learning for recommender systems," in SIGKDD, 2015.
+
 [13] D. H. Kim, C. Park, J. Oh, S. Lee, and H. Yu, "Convolutional matrix factorization for document context-aware recommendation," in RecSys, 2016.
+
 [14] X. He, L. Liao, H. Zhang, L. Nie, X. Hu, and T. Chua, "Neural collaborative filtering," in WWW, 2017.
+
 [15] S. Sedhain, A. K. Menon, S. Sanner, and L. Xie, "AutoRec: Autoencoders meet collaborative filtering," in WWW, 2015.
+
 [16] Y. Koren, "Collaborative filtering with temporal dynamics," Communications of the ACM, 2010.
+
 [17] C. Wu, A. Ahmed, A. Beutel, A. J. Smola, and H. Jing, "Recurrent recommender networks," in WSDM, 2017.
+
 [18] L. Xiong, X. Chen, T.-K. Huang, J. Schneider, and J. G. Carbonell, "Temporal collaborative filtering with Bayesian probabilistic tensor factorization," in SDM, 2010.
+
 [19] R. He, W. Kang, and J. McAuley, "Translation-based recommendation," in RecSys, 2017.
+
 [20] R. He, C. Fang, Z. Wang, and J. McAuley, "Vista: A visually, socially, and temporally-aware model for artistic recommendation," in RecSys, 2016.
+
 [21] R. He and J. McAuley, "Fusing similarity models with Markov chains for sparse sequential recommendation," in ICDM, 2016.
+
 [22] J. Tang and K. Wang, "Personalized top-n sequential recommendation via convolutional sequence embedding," in WSDM, 2018.
+
 [23] H. Jing and A. J. Smola, "Neural survival recommender," in WSDM, 2017.
+
 [24] Q. Liu, S. Wu, D. Wang, Z. Li, and L. Wang, "Context-aware sequential recommendation," in ICDM, 2016.
+
 [25] A. Beutel, P. Covington, S. Jain, C. Xu, J. Li, V. Gatto, and E. H. Chi, "Latent cross: Making use of context in recurrent recommender systems," in WSDM, 2018.
+
 [26] B. Hidasi and A. Karatzoglou, "Recurrent neural networks with top-k gains for session-based recommendations," CoRR, vol. abs/1706.03847, 2017.
+
 [27] K. Xu, J. Ba, R. Kiros, K. Cho, A. C. Courville, R. Salakhutdinov, R. S. Zemel, and Y. Bengio, "Show, attend and tell: Neural image caption generation with visual attention," in ICML, 2015.
+
 [28] D. Bahdanau, K. Cho, and Y. Bengio, "Neural machine translation by jointly learning to align and translate," in ICLR, 2015.
+
 [29] J. Chen, H. Zhang, X. He, L. Nie, W. Liu, and T. Chua, "Attentive collaborative filtering: Multimedia recommendation with item- and component-level attention," in SIGIR, 2017.
+
 [30] J. Xiao, H. Ye, X. He, H. Zhang, F. Wu, and T. Chua, "Attentional factorization machines: Learning the weight of feature interactions via attention networks," in IJCAI, 2017.
+
 [31] S. Wang, L. Hu, L. Cao, X. Huang, D. Lian, and W. Liu, "Attention-based transactional context embedding for next-item recommendation," in AAAI, 2018.
+
 [32] Y. Wu, M. Schuster, Z. Chen, Q. V. Le, M. Norouzi, W. Macherey, M. Krikun, Y. Cao, Q. Gao, K. Macherey et al., "Google's neural machine translation system: Bridging the gap between human and machine translation," arXiv preprint arXiv:1609.08144, 2016.
+
 [33] J. Zhou, Y. Cao, X. Wang, P. Li, and W. Xu, "Deep recurrent models with fast-forward connections for neural machine translation," TACL, 2016.
+
 [34] M. D. Zeiler and R. Fergus, "Visualizing and understanding convolutional networks," in ECCV, 2014.
+
 [35] K. He, X. Zhang, S. Ren, and J. Sun, "Deep residual learning for image recognition," in CVPR, 2016.
+
 [36] L. J. Ba, R. Kiros, and G. E. Hinton, "Layer normalization," CoRR, vol. abs/1607.06450, 2016.
+
 [37] S. Ioffe and C. Szegedy, "Batch normalization: Accelerating deep network training by reducing internal covariate shift," in ICML, 2015.
+
 [38] N. Srivastava, G. E. Hinton, A. Krizhevsky, I. Sutskever, and R. Salakhutdinov, "Dropout: A simple way to prevent neural networks from overfitting," JMLR, 2014.
+
 [39] D. Warde-Farley, I. J. Goodfellow, A. C. Courville, and Y. Bengio, "An empirical analysis of dropout in piecewise linear networks," CoRR, vol. abs/1312.6197, 2013.
+
 [40] Y. Koren, R. Bell, and C. Volinsky, "Matrix factorization techniques for recommender systems," Computer, 2009.
+
 [41] D. P. Kingma and J. Ba, "Adam: A method for stochastic optimization," in ICLR, 2015.
+
 [42] D. Povey, H. Hadian, P. Ghahremani, K. Li, and S. Khudanpur, "A time-restricted self-attention layer for ASR," in ICASSP, 2018.
+
 [43] P. Wang, J. Guo, Y. Lan, J. Xu, S. Wan, and X. Cheng, "Learning hierarchical representation model for next basket recommendation," in SIGIR, 2015.
+
 [44] S. Bai, J. Z. Kolter, and V. Koltun, "An empirical evaluation of generic convolutional and recurrent networks for sequence modeling," CoRR, vol. abs/1803.01271, 2018.
+
 [45] S. Hochreiter, Y. Bengio, P. Frasconi, J. Schmidhuber et al., "Gradient flow in recurrent nets: the difficulty of learning long-term dependencies," 2001.
+
 [46] J. J. McAuley, C. Targett, Q. Shi, and A. van den Hengel, "Image-based recommendations on styles and substitutes," in SIGIR, 2015.
+
 [47] S. Feng, X. Li, Y. Zeng, G. Cong, Y. M. Chee, and Q. Yuan, "Personalized ranking metric embedding for next new POI recommendation," in IJCAI, 2015.
+
 [48] Y. Koren, "Factorization meets the neighborhood: A multifaceted collaborative filtering model," in SIGKDD, 2008.

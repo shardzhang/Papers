@@ -221,6 +221,8 @@ $$
 
 最后，我们注意到标准的训练和测试设置旨在评估模型预测未来用户行为的能力。然而，这不是推荐系统的目的，推荐系统力求将用户引导到其可能 otherwise 不会购买或消费的 item。在不使用深入的用户研究和调查的情况下，很难看到如何评估该目标。在我们的示例中，我们相信通过评估移除重看节目"简单"案例的方法，我们 somehow 更接近于试图捕捉用户发现新节目的理想。
 
+
+
 ## 参考文献
 
 [1] G. Adomavicius and A. Tuzhilin, "Towards the Next Generation of Recommender Systems: A Survey of the State-of-the-Art and Possible Extensions", IEEE Transactions on Knowledge and Data Engineering 17 (2005), 634–749.

@@ -1,4 +1,4 @@
-# Multi-Interest Network with Dynamic Routing for Recommendation at Tmall
+# MIND: Multi-Interest Network with Dynamic Routing for Recommendation at Tmall
 
 > Chao Li, Zhiyuan Liu, Mengmeng Wu, Yuchi Xu, Pipei Huang, Huan Zhao, Guoliang Kang, Qiwei Chen, Wei Li, Dik Lun Lee | Alibaba Group, Hong Kong University of Science and Technology, University of Technology Sydney
 

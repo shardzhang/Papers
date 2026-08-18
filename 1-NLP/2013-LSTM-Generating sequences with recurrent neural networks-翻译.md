@@ -1,4 +1,4 @@
-# 用循环神经网络生成序列
+# LSTM: 用循环神经网络生成序列
 
 > Alex Graves | University of Toronto
 

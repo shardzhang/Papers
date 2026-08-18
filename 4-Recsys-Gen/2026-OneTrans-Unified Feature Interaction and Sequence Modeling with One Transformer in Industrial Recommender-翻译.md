@@ -1,62 +1,49 @@
 # OneTrans: 统一特征交互与序列建模——工业级推荐中的单Transformer架构
 
-> haolei.pei@bytedance.com
+> Zhaoqi Zhang\*, Haolei Pei\*, Jun Guo\*, Tianyu Wang, Yufei Feng, Hui Sun, Shaowei Liu†, Aixin Sun† | 南洋理工大学（Nanyang Technological University）、字节跳动（ByteDance）
 
-## OneTrans: Unified Feature Interaction and Sequence Modeling with One Transformer in Industrial Recommender
-Haolei Pei∗
-本文介绍了 OneTrans: 统一特征交互与序列建模——工业级推荐中的单Transformer架构。核心内容：
+本文提出 OneTrans，用一个统一的 Transformer 主干网络同时完成用户行为序列建模与特征交互，彻底告别"先编码序列、再交互特征"的分立流水线。核心发现是——**在线 A/B 测试中每人 GMV 提升 5.68%、CTR AUC 提升 1.53%，且保持生产级延迟**。
+
+核心内容：
+
+- 现有推荐系统把序列建模（如 LONGER）与特征交互（如 Wukong、RankMixer）当作两个独立模块迭代，阻碍双向信息交换，也导致执行碎片化、延迟增加
+- OneTrans 用统一分词器把序列特征与非序列特征转成单一 token 序列，交给金字塔式堆叠的 OneTrans 块联合处理
+- 采用混合参数化：序列 token 共享一组 Q/K/V 与 FFN 权重，每个非序列 token 拥有 token 特定参数，保持其独特语义
+- 通过因果注意力 + 跨请求 KV 缓存实现中间表示预计算，显著降低训练与推理成本，并复用 FlashAttention、混合精度等 LLM 优化
+
 关键发现：
-Zhaoqi Zhang∗
-字节跳动
-南洋理工大学
-新加坡
-字节跳动
-新加坡
-zhaoqi.zhang@bytedance.com
-Jun Guo∗
-字节跳动
-新加坡
-jun.guo@bytedance.com
-Tianyu Wang
-字节跳动
-新加坡
-tianyu.wang01@bytedance.com
-Yufei Feng
-字节跳动
-中国杭州
-fengyihui@bytedance.com
-Hui Sun
-字节跳动
-中国杭州
-sunhui.sunh@bytedance.com
-Shaowei Liu†
-字节跳动
-新加坡
-liushaowei.nphard@bytedance.com
-Aixin Sun†
-南洋理工大学
-新加坡
-axsun@ntu.edu.sg
+
+- **在 291 亿曝光、2790 万用户的工业数据集上，OneTransS/L 在四个数据集指标上一致优于全部基线；OneTransL 相对 DCNv2+DIN 将 CTR AUC 提升 1.53%、CTR UAUC 提升 2.79%**
+- **在线 A/B 测试：Feeds 场景每人 GMV +5.685%、每人点击 +7.737%、每人订单 +4.351%，延迟反而降低 3.91%**
+- 消融显示：自动分割分词器优于手工分组、时间戳感知融合优于意图排序、token 特定参数优于共享投影；金字塔堆叠在固定 TFLOPs 预算下可支持约 1.75 倍更长的序列
+- 规模扩展呈现近乎对数线性规律，且 OneTrans 相比 RankMixer 扩展斜率更陡、参数与计算效率更高
+
+---
+
 ## 摘要
 在推荐系统中，扩展特征交互模块（如Wukong、RankMixer）或用户行为序列模块（如LONGER）已取得了显著成功。然而，这些工作通常沿着各自独立的轨道推进，这不仅阻碍了双向信息交换，还阻止了统一的优化和扩展。在本文中，我们提出了OneTrans，一个统一的Transformer主干网络，能够同时执行用户行为序列建模和特征交互。OneTrans采用统一的分词器，将序列属性和非序列属性转换为单一的token序列。堆叠的OneTrans块在相似的序列token之间共享参数，同时为非序列token分配token特定的参数。通过因果注意力和跨请求KV缓存，OneTrans实现了中间表示的预计算和缓存，显著降低了训练和推理过程中的计算成本。在工业级规模数据集上的实验结果表明，OneTrans能够随参数增加高效扩展，始终优于强基线，并在在线A/B测试中实现了每位用户GMV 5.68%的提升。
 **CCS概念**：• 信息系统 $\to$ 信息检索；推荐系统；
-**关键词**：推荐系统，排序模型，规模定律
-*这些作者贡献相同。
+**关键词**：Recommender System, Ranking Model, Scaling Laws
+\*这些作者贡献相同。
 †通讯作者。
 本作品采用知识共享署名4.0国际许可协议。
 Conference acronym 'XX, Woodstock, NY
 © 2025 版权归作者/权利人所有。
 ACM ISBN 978-1-4503-XXXX-X/18/06
 **ACM引用格式**：
-Zhaoqi Zhang, Haolei Pei, Jun Guo, Tianyu Wang, Yufei Feng, Hui Sun, Shaowei Liu, and Aixin Sun. 2025. OneTrans: 统一特征交互与序列建模——工业级推荐中的单Transformer架构. 见《请从权利确认邮件中填入正确的会议名称》(Conference acronym 'XX). ACM, 纽约, 美国, 9页.
+Zhaoqi Zhang, Haolei Pei, Jun Guo, Tianyu Wang, Yufei Feng, Hui Sun, Shaowei Liu, and Aixin Sun. 2025. OneTrans: Unified Feature Interaction and Sequence Modeling with One Transformer in Industrial Recommender. In Proceedings of Make sure to enter the correct conference title from your rights confirmation email (Conference acronym 'XX). ACM, New York, NY, USA, 9 pages.
 ## 1 引言
 推荐系统在各种信息服务中发挥着基础性作用，例如电子商务[9, 35]、流媒体[2, 20, 28]和社交网络[31, 32]。工业级推荐系统通常采用级联排序架构[6, 16, 22]。首先，召回阶段从十亿级语料库中选取数百个候选[13, 36]。然后，排序阶段对每个候选进行评分并返回Top-Kitem[11, 27, 28, 32, 37]。深度学习推荐模型（DLRM）[19]被广泛应用于工业级推荐器的排序阶段。
 本文将聚焦于排序阶段，遵循DLRM风格的排序范式。对于排序而言，主流方法围绕两个独立的模块进行迭代：(a) 序列建模，通过局部注意力或Transformer编码器将用户多行为序列编码为候选感知的表示[1, 14, 25, 35]；(b) 特征交互，通过因子分解、显式交叉网络或特征组上的注意力来学习非序列特征（如用户画像、item画像和上下文）之间的高阶交叉[11, 12, 27, 37]。如图1(a)所示，这些方法通常将用户行为编码为压缩的序列表示，然后将其与非序列特征拼接，并应用特征交互模块来学习更高阶的交互；本文将这种设计称为"编码-后-交互"流水线。
 大语言模型（LLM）的成功表明，扩展模型规模（如参数量、训练数据）能够带来可预测的性能提升[15]，这启发了推荐系统中的类似研究[1, 32, 37]。在特征交互方面，Wukong[32]堆叠了带线性压缩的因子分解机模块来捕捉高阶特征交互，并建立了规模定律；RankMixer[37]则通过硬件友好的token混合与token特定的前馈网络实现了良好的规模扩展。在序列建模方面，LONGER[1]将因果Transformer应用于长用户历史，并表明扩展深度和宽度能够带来单调的性能提升。尽管在实践中有效，但将序列建模和特征交互作为独立模块分离带来了两个主要局限性。首先，"编码-后-交互"流水线限制了双向信息流，限制了静态/上下文特征如何塑造序列表示[30]。其次，模块分离导致执行碎片化并增加延迟，而单一的Transformer风格主干网络可以复用LLM优化（如KV缓存、内存高效注意力和混合精度），从而实现更有效的扩展[13]。
 在本文中，我们提出OneTrans，一种创新的架构范式，采用统一的Transformer主干网络，联合执行用户行为序列建模和特征交互。如图1(b)所示，OneTrans在统一的主干网络内实现了双向信息交换。它采用统一的分词器，将序列特征（多样化的行为序列）和非序列特征（静态用户/item特征及上下文特征）转换为单一的token序列，然后由金字塔式堆叠的OneTrans块（一种为工业级推荐系统量身定制的Transformer变体）处理。为了适应推荐系统中多样化的token来源（与LLM中纯文本token不同），每个OneTrans块采用了类似于HiFormer[11]的混合参数化策略。具体来说，所有序列token（来自序列特征）共享一组Q/K/V和FFN权重，而每个非序列token（来自非序列特征）则获得token特定的参数以保持其独特的语义。
 与传统的"编码-后-交互"框架不同，OneTrans通过统一的因果Transformer主干网络消除了序列特征和非序列特征之间的架构障碍。这一方案使推荐系统的规模扩展与LLM实践保持一致：整个模型可以通过调整主干网络的深度和宽度进行扩展，同时无缝继承成熟的LLM优化技术，如FlashAttention[7]和混合精度训练[17]。
-图1：架构对比。(a) 传统的"编码-后-交互"流水线：对序列特征进行编码，合并非序列特征，然后送入后置的特征交互块。(b) OneTrans：在单个OneTrans（Transformer风格）堆栈中对序列和非序列特征进行联合建模。
-特别是，跨候选和跨请求的KV缓存[1]将会话的时间复杂度从O(C)降低到O(1)，使得大规模部署OneTrans成为可能。
+
+![图1](/Users/dazhang/PycharmProject/Papers/4-Recsys-Gen/.picture/2026-OneTrans-Unified Feature Interaction and Sequence Modeling with One Transformer in Industrial Recommender-fig1.png)
+
+**图 1：** 架构对比。(a) 传统的"编码-后-交互"流水线：对序列特征进行编码，合并非序列特征，然后送入后置的特征交互块。(b) OneTrans：在单个OneTrans（Transformer风格）堆栈中对序列和非序列特征进行联合建模。
+
+特别是，跨候选和跨请求的KV缓存[1]将会话的时间复杂度从 $O(C)$ 降低到 $O(1)$，使得大规模部署OneTrans成为可能。
 总之，我们的主要贡献有四个方面：(1) **统一框架**。我们提出了OneTrans，一个用于排序的单一Transformer主干网络，配备统一的分词器，将序列和非序列特征编码为一个token序列，以及一个统一的Transformer块，联合执行序列建模和特征交互。(2) **推荐系统定制化**。为了弥合LLM和推荐系统任务之间的差距，OneTrans引入了一种混合参数化方案，为多样化的非序列token分配token特定的参数，同时为所有序列token共享参数。(3) **高效训练和服务**。我们通过金字塔策略（逐步剪枝序列token）和跨请求KV缓存（跨候选复用用户侧计算）来提升效率。此外，我们采用LLM优化技术如FlashAttention、混合精度训练和半精度推理，以进一步减少内存和计算。(4) **扩展与部署**。OneTrans在模型规模增加时表现出近乎对数线性的性能提升，为实际生产数据中的规模定律提供了证据。在线部署时，它在保持生产级延迟的同时，实现了业务关键指标上的统计显著提升。
 ## 2 相关工作
 早期的推荐系统如DIN[35]及其会话感知变体DSIN[9]使用局部注意力来学习候选条件下的用户历史摘要，但将行为压缩为每个候选的固定长度向量，限制了长距离依赖建模[34]。自注意力方法如SASRec[14]、BERT4Rec[25]和BST[4]通过让每个位置关注整个历史来消除这一瓶颈，并通过双向掩码提高了样本效率。最近，随着推荐系统中规模定律[15]的不断探索，LONGER[1]通过高效注意力和服务友好型设计来面向超长行为历史，将序列建模推向工业级规模。然而，在主流流水线中，这些序列编码器通常与特征交互堆栈分离，导致后期融合而非与静态上下文特征的联合优化[30]。
@@ -64,59 +51,116 @@ Zhaoqi Zhang, Haolei Pei, Jun Guo, Tianyu Wang, Yufei Feng, Hui Sun, Shaowei Liu
 迄今为止，推荐系统的进展主要沿着两条独立的轨道推进：序列建模和特征交互。InterFormer[30]试图通过基于摘要的双向交叉架构来弥合这一差距，实现在两个组件之间的相互信号交换。然而，它仍然将它们作为独立模块维护，交叉架构引入了架构复杂性和执行碎片化。如果没有统一的主干网络进行联合建模和优化，将系统作为一个整体进行扩展仍然具有挑战性。
 最近关于生成式推荐系统（GR）的工作将推荐视为序列转导，并提出了高效的长上下文主干网络，如HSTU[31]。这一方向与依赖丰富非序列特征的DLRM是互补的。
 ## 3 方法
-在详细介绍我们的方法之前，我们简要描述任务设置。在级联的工业级推荐系统中，每次召回阶段为某个用户u返回一个候选集（通常包含数百个候选item）。然后排序模型对每个候选itemi预测一个分数：
-ŷ_u,i = f(i ⊕ NS, S; $\Theta$ )   (1)
-其中，NS是从用户、候选item和上下文中派生的一组非序列特征；S是来自用户的一组历史行为序列； $\Theta$ 是可训练参数。常见的任务预测包括点击率（CTR）和点击后转化率（CVR）。
-CTR_u,i = P(click=1 | NS, S; $\Theta$ ),   CVR_u,i = P(conv=1 | click=1, NS, S; $\Theta$ )   (2)
+在详细介绍我们的方法之前，我们简要描述任务设置。在级联的工业级推荐系统中，每次召回阶段为某个用户 $u$ 返回一个候选集（通常包含数百个候选 item）。然后排序模型对每个候选 item $i$ 预测一个分数：
+
+$$
+\hat{y}_{u,i} = f\left(i \oplus \text{NS}, S; \Theta\right) \qquad (1)
+$$
+
+其中，NS 是从用户、候选 item 和上下文中派生的一组非序列特征；$S$ 是来自用户的一组历史行为序列；$\Theta$ 是可训练参数。常见的任务预测包括点击率（CTR，Click-Through Rate）和点击后转化率（CVR，post-Click conversion Rate）。
+
+$$
+\text{CTR}_{u,i} = P(\text{click}=1 \mid \text{NS}, S; \Theta), \quad \text{CVR}_{u,i} = P(\text{conv}=1 \mid \text{click}=1, \text{NS}, S; \Theta) \qquad (2)
+$$
 ### 3.1 OneTrans框架概述
-如图2(a)所示，OneTrans采用统一的分词器，将序列特征S映射为Stoken（S-tokens），将非序列特征NS映射为NStoken（NS-tokens）。然后，金字塔式堆叠的Transformer在单个计算图中联合处理统一的token序列。我们记初始token序列为：
-X^(0) = [S-tokens ; NS-tokens] $\in$ R^(L_S + L_NS) $\times$ d   (3)
-该token序列通过拼接L_S个Stoken和L_NS个NStoken构建而成，所有token的维度均为d。注意，Stoken中包含可学习的[SEP]token，用于分隔不同类型的用户行为序列。如图2(b)所示，每个OneTrans块通过以下方式逐步精炼token状态：
-Z^(n) = MixedMHA(Norm(X^(n-1))) + X^(n-1)   (4)
-X^(n) = MixedFFN(Norm(Z^(n))) + Z^(n)   (5)
+如图2(a)所示，OneTrans采用统一的分词器，将序列特征 $S$ 映射为 S-token，将非序列特征 NS 映射为 NS-token。然后，金字塔式堆叠的Transformer在单个计算图中联合处理统一的token序列。我们记初始token序列为：
+
+$$
+X^{(0)} = [\text{S-tokens}; \text{NS-tokens}] \in \mathbb{R}^{(L_S + L_{NS}) \times d} \qquad (3)
+$$
+
+该token序列通过拼接 $L_S$ 个 S-token 和 $L_{NS}$ 个 NS-token 构建而成，所有 token 的维度均为 $d$。注意，S-token 中包含可学习的[SEP]token，用于分隔不同类型的用户行为序列。如图2(b)所示，每个OneTrans块通过以下方式逐步精炼token状态：
+
+$$
+Z^{(n)} = \text{MixedMHA}\left(\text{Norm}\left(X^{(n-1)}\right)\right) + X^{(n-1)} \qquad (4)
+$$
+
+$$
+X^{(n)} = \text{MixedFFN}\left(\text{Norm}\left(Z^{(n)}\right)\right) + Z^{(n)} \qquad (5)
+$$
 这里，MixedMHA（混合多头注意力）和MixedFFN（混合前馈网络）采用了混合参数化策略（见图2(c)），在序列token之间共享权重，同时在注意力和前馈层中为非序列token分配独立的参数。
 统一的因果掩码强制执行自回归约束，限制每个位置只能关注前面的token。具体来说，NStoken被允许关注整个Stoken历史，从而实现全面的跨token交互。通过堆叠这样的块，并对Stoken应用金字塔式的尾部截断，模型逐步将紧凑的高阶信息蒸馏到NStoken中。最终的token状态然后传递给任务特定的预测头。
 通过将非序列和序列特征统一为一个token序列，并用因果Transformer对其进行建模，OneTrans脱离了传统的"编码-后-交互"流水线。这种统一设计自然实现了：(i) 每个行为序列内的序列内交互，(ii) 跨多个序列的跨序列交互，(iii) item、用户和上下文特征之间的多源特征交互，以及(iv) 序列-特征交互，所有这些都在单个Transformer堆栈中完成。
 统一的方案使我们能够无缝继承成熟的LLM工程优化，包括KV缓存和内存高效注意力，从而显著降低推理延迟。我们认为这种统一的公式非常适合在单一、可扩展的架构中应对多序列和跨域推荐挑战。接下来，我们将详细描述设计。
+
+![图2](/Users/dazhang/PycharmProject/Papers/4-Recsys-Gen/.picture/2026-OneTrans-Unified Feature Interaction and Sequence Modeling with One Transformer in Industrial Recommender-fig2.png)
+
+**图 2：** 系统架构。(a) OneTrans 总览。序列（S，蓝色）和非序列（NS，橙色）特征被分别分词。在用户行为序列之间插入[SEP]后，统一的 token 序列被送入堆叠的 OneTrans 金字塔块，后者逐渐缩小 token 长度直至与非序列 token 数量匹配。(b) OneTrans 块：一个带 RMSNorm、混合因果注意力和混合 FFN 的因果预归一化Transformer块。(c) "混合"= 混合参数化：S token 共享一组 QKV/FFN 权重，而每个 NS token 拥有自己的 token 特定 QKV/FFN。
+
 ### 3.2 特征与分词
-为了构建初始token序列X^(0)，OneTrans首先应用特征预处理流水线，将所有原始特征输入映射为嵌入向量。这些嵌入然后被划分为：(i) 多行为序列子集和(ii) 表示用户、item或上下文特征的非序列子集。对每个子集应用独立的分词器。
+为了构建初始token序列 $X^{(0)}$，OneTrans首先应用特征预处理流水线，将所有原始特征输入映射为嵌入向量。这些嵌入然后被划分为：(i) 多行为序列子集和(ii) 表示用户、item或上下文特征的非序列子集。对每个子集应用独立的分词器。
 #### 3.2.1 非序列分词
-非序列特征NS包括数值输入（如价格、CTR）和类别输入（如用户ID、item类别）。所有特征要么被分桶编码，要么被独热编码，然后进行嵌入。由于工业级系统通常涉及数百个重要性各异的特征，控制非序列token数量（记为L_NS）有两种选择：
-**分组分词器（与RankMixer[37]对齐）**。特征被手动划分为语义组{g1, ..., g_L_NS}。每组被拼接并通过组特定的MLP：
-NS-tokens = [MLP1(concat(g1)), ..., MLP_L_NS(concat(g_L_NS))]   (6)
+非序列特征 NS 包括数值输入（如价格、CTR）和类别输入（如用户ID、item类别）。所有特征要么被分桶编码，要么被独热编码，然后进行嵌入。由于工业级系统通常涉及数百个重要性各异的特征，控制非序列 token 数量（记为 $L_{NS}$）有两种选择：
+**分组分词器（与RankMixer[37]对齐）**。特征被手动划分为语义组 $\{g_1, \ldots, g_{L_{NS}}\}$。每组被拼接并通过组特定的MLP：
+
+$$
+\text{NS-tokens} = \left[\text{MLP}_1(\text{concat}(g_1)), \ldots, \text{MLP}_{L_{NS}}(\text{concat}(g_{L_{NS}}))\right] \qquad (6)
+$$
+
 **自动分割分词器**。或者，所有特征被拼接并由单个MLP投影一次，然后进行分割：
-NS-tokens = split(MLP(concat(NS)), L_NS)   (7)
+
+$$
+\text{NS-tokens} = \text{split}\left(\text{MLP}(\text{concat}(\text{NS})), L_{NS}\right) \qquad (7)
+$$
+
 自动分割分词器相比分组方法减少了内核启动开销，因为它使用了单一的稠密投影。我们将通过实验评估这两种选择。
-最终，非序列分词产生L_NS个非序列token，每个维度为d。
+最终，非序列分词产生 $L_{NS}$ 个非序列 token，每个维度为 $d$。
 #### 3.2.2 序列分词
 OneTrans接受多行为序列作为输入：
-S = {S1, ..., Sn}   (8)
-每个序列Si由L_i个事件嵌入e组成，通过拼接itemID及其对应的辅助信息（如item类别和价格）构建而成：
-Si = [e_i1, ..., e_iL_i]   (9)
-多行为序列的原始维度可能不同。因此，对于每个序列Si，我们使用一个共享的投影MLP_i将其所有事件e_ij转换为统一的维度d：
-~S_i = [MLP_i(e_i1), ..., MLP_i(e_iL_i)] $\in$ R^(L_i $\times$ d)   (10)
-对齐后的序列~S_i通过以下两种规则之一合并为单个token序列：(1) **时间戳感知**：按时间交错所有事件，附带序列类型指示符；(2) **时间戳无关**：按事件影响度拼接序列，例如 购买 $\to$ 加购 $\to$ 点击，在序列之间插入可学习的[SEP]token。在后一种方案中，用户意图更强的行为被放置在序列更靠前的位置。消融实验结果表明，当时间戳可用时，时间戳感知规则优于影响度排序方案。
+
+$$
+S = \{S_1, \ldots, S_n\}, \quad S_i = \left[e_{i1}, \ldots, e_{iL_i}\right] \qquad (8)
+$$
+
+每个序列 $S_i$ 由 $L_i$ 个事件嵌入 $e$ 组成，通过拼接 item ID 及其对应的辅助信息（如 item 类别和价格）构建而成。
+
+多行为序列的原始维度可能不同。因此，对于每个序列 $S_i$，我们使用一个共享的投影 $\text{MLP}_i$ 将其所有事件 $e_{ij}$ 转换为统一的维度 $d$：
+
+$$
+\tilde{S}_i = \left[\text{MLP}_i(e_{i1}), \ldots, \text{MLP}_i(e_{iL_i})\right] \in \mathbb{R}^{L_i \times d} \qquad (9)
+$$
+
+对齐后的序列 $\tilde{S}_i$ 通过以下两种规则之一合并为单个 token 序列：(1) **时间戳感知**：按时间交错所有事件，附带序列类型指示符；(2) **时间戳无关**：按事件影响度拼接序列，例如 购买 $\to$ 加购 $\to$ 点击，在序列之间插入可学习的[SEP]token。在后一种方案中，用户意图更强的行为被放置在序列更靠前的位置。消融实验结果表明，当时间戳可用时，时间戳感知规则优于影响度排序方案。
 形式化地，我们有：
-S-Tokens = Merge(~S1, ..., ~Sn) $\in$ R^(L_S $\times$ d),   L_S = $\Sigma$ ^n_i=1 L_i + L_SEP   (11)
+
+$$
+\text{S-Tokens} = \text{Merge}\left(\tilde{S}_1, \ldots, \tilde{S}_n\right) \in \mathbb{R}^{L_S \times d}, \quad L_S = \sum_{i=1}^{n} L_i + L_{SEP} \qquad (10)
+$$
 ### 3.3 OneTrans块
-如图2(b)所示，每个OneTrans块是一个应用于归一化token序列的预层归一化因果Transformer：L_S个序列Stoken，后接L_NS个非序列NStoken。受异构特征组发现[11]的启发，我们对Transformer进行了轻量级修改以允许混合参数方案，见图2(c)。具体来说，同质的Stoken共享一组参数。而异构的NStoken（来源/语义各不相同）则获得token特定的参数。
+如图2(b)所示，每个OneTrans块是一个应用于归一化token序列的预层归一化因果Transformer：$L_S$ 个序列 S-token，后接 $L_{NS}$ 个非序列 NS-token。受异构特征组发现[11]的启发，我们对Transformer进行了轻量级修改以允许混合参数方案，见图2(c)。具体来说，同质的 S-token 共享一组参数。而异构的 NS-token（来源/语义各不相同）则获得 token 特定的参数。
 与LLM输入不同，推荐系统中的token序列将序列Stoken与值范围和统计量差异很大的多样化NStoken结合在一起。后层归一化设置可能会因这些差异而导致注意力坍塌和训练不稳定。为防止这种情况，我们对所有token应用RMSNorm[33]作为预层归一化，以对齐各token类型的尺度并稳定优化。
 #### 3.3.1 混合（共享/token特定）因果注意力
-OneTrans采用标准的多头注意力（MHA）以及因果注意力掩码；唯一的改变是Q/K/V的参数化方式。设x_i $\in$ R^d为第i个token。为了计算Q/K/V，我们对Stoken（i $\leq$ L_S）使用共享投影，对NStoken（i > L_S）使用L_NS个token特定的投影：
-(q_i, k_i, v_i) = (W^Q_i x_i, W^K_i x_i, W^V_i x_i)   (12)
-其中W^ $\Psi$ _i（ $\Psi$ $\in$ {Q, K, V}）遵循混合参数化方案：
-W^ $\Psi$ _i = { W^ $\Psi$ _S (i $\leq$ L_S, 共享于Stoken), W^ $\Psi$ _NS,i (i > L_S, token特定于NStoken) }   (13)
-注意力使用标准因果掩码，NStoken放置在Stoken之后。这导致了：(1) **S侧**。每个Stoken只关注前面的S位置。对于时间戳感知序列，每个事件以其历史为条件；对于时间戳无关序列（按意图排序，如 购买 $\to$ 加购 $\to$ 点击/曝光），因果掩码让高意图信号通知并过滤后面的低意图行为。(2) **NS侧**。每个NStoken关注整个S历史（本质上是序列证据的目标注意力聚合），以及前面的NStoken，增加了token级交互的多样性。(3) **金字塔支持**。在S侧和NS侧，因果掩码逐步将信息集中到后面的位置，自然支持逐层剪枝token的金字塔调度，稍后将详述。
+OneTrans采用标准的多头注意力（MHA，Multi-Head Attention）以及因果注意力掩码；唯一的改变是Q/K/V的参数化方式。设 $x_i \in \mathbb{R}^d$ 为第 $i$ 个 token。为了计算Q/K/V，我们对 S-token（$i \leq L_S$）使用共享投影，对 NS-token（$i > L_S$）使用 $L_{NS}$ 个 token 特定的投影：
+
+$$
+(q_i, k_i, v_i) = \left(W^Q_i x_i, W^K_i x_i, W^V_i x_i\right) \qquad (11)
+$$
+
+其中 $W^\Psi_i$（$\Psi \in \{Q, K, V\}$）遵循混合参数化方案：
+
+$$
+W^\Psi_i = \begin{cases} W^\Psi_S, & i \leq L_S \ \text{(shared for S-tokens)}, \\ W^\Psi_{NS,i}, & i > L_S \ \text{(token-specific for NS-tokens)} \end{cases} \qquad (12)
+$$
+
+注意力使用标准因果掩码，NS-token 放置在 S-token 之后。这导致了：(1) **S侧**。每个 S-token 只关注前面的 $S$ 位置。对于时间戳感知序列，每个事件以其历史为条件；对于时间戳无关序列（按意图排序，如 购买 $\to$ 加购 $\to$ 点击/曝光），因果掩码让高意图信号通知并过滤后面的低意图行为。(2) **NS侧**。每个 NS-token 关注整个 $S$ 历史（本质上是序列证据的目标注意力聚合），以及前面的 NS-token，增加了 token 级交互的多样性。(3) **金字塔支持**。在S侧和NS侧，因果掩码逐步将信息集中到后面的位置，自然支持逐层剪枝 token 的金字塔调度，稍后将详述。
 #### 3.3.2 混合（共享/token特定）FFN
-类似地，前馈网络遵循相同的参数化策略：为NStoken使用token特定的FFN，为Stoken使用共享的FFN：
-MixedFFN(x_i) = W2_i $\phi$ (W1_i x_i)   (14)
-这里W1_i和W2_i遵循公式(13)的混合参数化，即i $\leq$ L_S时共享，i > L_S时token特定。
+类似地，前馈网络遵循相同的参数化策略：为 NS-token 使用 token 特定的FFN，为 S-token 使用共享的FFN：
+
+$$
+\text{MixedFFN}(x_i) = W^2_i \phi\left(W^1_i x_i\right) \qquad (13)
+$$
+
+这里 $W^1_i$ 和 $W^2_i$ 遵循公式(12)的混合参数化，即 $i \leq L_S$ 时共享，$i > L_S$ 时 token 特定。
 总之，相对于标准的因果Transformer，OneTrans只改变了参数化方式：NStoken使用token特定的QKV和FFN；Stoken共享单组参数。单个因果掩码将序列联系在一起，允许NStoken聚合整个行为历史，同时保持高效的Transformer风格计算。
 ### 3.4 金字塔堆叠
 如第3.3节所述，因果掩码将信息集中到后面的位置。利用这种近期结构，我们采用金字塔调度：在每个OneTrans块层中，只有最近Stoken的子集发出查询，而键/值仍在整个序列上计算；查询集随着深度增加而缩小。
-设X = {x_i}^L_i=1为输入token列表，Q = {L-L'+1, ..., L}为尾部索引集，其中L' $\leq$ L。遵循公式(13)，我们将查询修改为i $\in$ Q：
-q_i = W^Q_i x_i, i $\in$ Q   (15)
-而键和值照常在整个序列{1, ..., L}上计算。注意力之后，只保留i $\in$ Q的输出，将token长度减少到L'，从而在各层之间形成金字塔层次结构。
+设 $X = \{x_i\}_{i=1}^L$ 为输入 token 列表，$Q = \{L-L'+1, \ldots, L\}$ 为尾部索引集，其中 $L' \leq L$。遵循公式(12)，我们将查询修改为 $i \in Q$：
+
+$$
+q_i = W^Q_i x_i, \quad i \in Q \qquad (14)
+$$
+
+而键和值照常在整个序列 $\{1, \ldots, L\}$ 上计算。注意力之后，只保留 $i \in Q$ 的输出，将 token 长度减少到 $L'$，从而在各层之间形成金字塔层次结构。
 该设计带来两个好处：(i) **渐进式蒸馏**：长行为历史被汇聚到少量尾部查询中，将容量集中在最信息量的事件上，并将信息整合到NStoken中；(ii) **计算效率**：注意力成本变为O(L L' d)，FFN随L'线性扩展。缩小查询集直接减少了FLOPs和激活内存。
 ### 3.5 训练与部署优化
 #### 3.5.1 跨请求KV缓存
@@ -124,7 +168,7 @@ q_i = W^Q_i x_i, i $\in$ Q   (15)
 **阶段I（S侧，每个请求一次）**。使用因果掩码处理所有Stoken，并缓存它们的键/值对和注意力输出。此阶段每个请求执行一次。
 **阶段II（NS侧，每个候选）**。对于每个候选，计算其NStoken，并对缓存的S侧键/值执行交叉注意力，随后是token特定的FFN层。特别地，候选特定的序列（如SIM[21]）通过池化预聚合成NStoken，因为它们无法复用共享的S侧缓存。
 KV缓存将S侧计算摊分到多个候选上，使得每个候选的工作量保持轻量，并消除了冗余计算，从而大幅提升吞吐量。
-由于用户行为序列是仅追加的，我们将KV缓存扩展到跨请求复用：每个新请求复用了之前的缓存，仅计算新增行为的增量键/值。这将每个请求的序列计算从O(L)降低到O( $\Delta$ L)，其中 $\Delta$ L是自上次请求以来的新行为数量。
+由于用户行为序列是仅追加的，我们将KV缓存扩展到跨请求复用：每个新请求复用了之前的缓存，仅计算新增行为的增量键/值。这将每个请求的序列计算从 $O(L)$ 降低到 $O(\Delta L)$，其中 $\Delta L$ 是自上次请求以来的新行为数量。
 #### 3.5.2 统一的LLM优化
 我们采用FlashAttention-2[8]通过分块和内核融合来减少普通注意力的I/O和二次激活占用，从而在训练和推理中获得更低的内存使用和更高的吞吐量。为进一步缓解内存压力，我们使用混合精度训练（BF16/FP16）[18]以及激活重计算[10]，后者丢弃部分前向激活并在反向传播期间重新计算。这种组合用适度的额外计算换取了大量的内存节省，使得在不改变架构的情况下能够使用更大的批次和更深的模型。
 ## 4 实验
@@ -149,7 +193,7 @@ KV缓存将S侧计算摊分到多个候选上，使得每个候选的工作量�
 #### 4.1.4 超参数设置
 我们报告两种配置：**OneTransS**使用6个堆叠的OneTrans块，宽度d=256，H=4个注意力头，目标参数约1亿。**OneTransL**扩展到8层，宽度d=384。
 输入通过统一的分词器处理（多行为序列的时间戳感知融合；非序列特征的自动分割分词器）以及启发式金字塔调度，该调度在每层将序列查询token的数量线性缩减：OneTransS从1190缩减到12；OneTransL从1500缩减到16。具体地，我们在各层间线性减少序列查询token数量，将每层的token数四舍五入到最近的32的倍数，并将顶层设置为与非序列token数量匹配。
-**优化与基础设施**。我们采用无双衰减的双优化器策略：稀疏嵌入使用Adagrad优化（ $\beta$ 1=0.1, $\beta$ 2=1.0），稠密参数使用RMSProp优化（lr=0.005, alpha=0.99999, momentum=0）。我们应用大规模Transformer训练中常用的稳定化技术，包括预层归一化[29]和全局梯度范数裁剪[23]。训练时每GPU批次大小设置为2048，稠密层梯度裁剪阈值为90，稀疏层为120。在线推理时，我们采用每GPU更小的批次大小100以平衡吞吐量和延迟。训练使用16块H100 GPU进行数据并行全归约。
+**优化与基础设施**。我们采用无双衰减的双优化器策略：稀疏嵌入使用Adagrad优化（$\beta_1 = 0.1, \beta_2 = 1.0$），稠密参数使用RMSProp优化（lr=0.005, alpha=0.99999, momentum=0）。我们应用大规模Transformer训练中常用的稳定化技术，包括预层归一化[29]和全局梯度范数裁剪[23]。训练时每GPU批次大小设置为2048，稠密层梯度裁剪阈值为90，稀疏层为120。在线推理时，我们采用每GPU更小的批次大小100以平衡吞吐量和延迟。训练使用16块H100 GPU进行数据并行全归约。
 ### 4.2 RQ1：性能评估
 我们以DCNv2+DIN为基准进行对比，这是我们场景中预扩展的生产基线（表2）。在"编码-后-交互"范式下，独立扩展任一组件都是有益的：升级特征交互模块（DCNv2 $\to$ Wukong $\to$ HiFormer $\to$ RankMixer）或序列建模模块（StackDIN $\to$ Transformer $\to$ LONGER）在CTR AUC/UAUC和CVR AUC上都能带来一致的提升。在我们的系统中，这些指标上超过+0.1%的提升被认为是有意义的，而超过+0.3%的提升通常对应在线A/B测试中的统计显著效果。然而，CVR UAUC由于每位用户样本量较小且波动性更高，需要谨慎对待。
 转向统一设计，OneTransS相对于基线提升了+1.13%/+1.77%（CTR AUC/UAUC）和+0.90%/+1.66%（CVR AUC/UAUC）。在可比的参数规模下，它还在相近的训练FLOPs下（2.64T vs 2.51T）优于RankMixer+Transformer，展示了统一建模的优势。进一步扩展，OneTransL实现了最大的整体提升：+1.53%/+2.79%（CTR AUC/UAUC）和+1.14%/+3.23%（CVR AUC/UAUC），显示出随模型容量增长的可预测质量提升。总之，在单一Transformer中统一序列建模和特征交互比独立扩展任一组件能带来更可靠且计算效率更高的改进。
@@ -172,12 +216,12 @@ KV缓存将S侧计算摊分到多个候选上，使得每个候选的工作量�
 **表3：输入设计和OneTrans块设计选择的影响，以OneTransS模型为参考**
 | 类型 | 变体 | CTR AUC $\uparrow$ | CTR UAUC $\uparrow$ | CVR(order) AUC $\uparrow$ | CVR(order) UAUC $\uparrow$ | 参数量(M) | TFLOPs |
 |------|------|-----------|-----------|------------------|-------------------|-----------|--------|
-| 输入 | 分组分词器 | -0.10% | -0.15% | -0.30% | -0.29% | 78 | 2.35 |
-| | 时间戳无关融合 | -0.09% | +0.00% | -0.22% | +0.01% | 91 | 2.64 |
-| | 时间戳无关融合无Septoken | -0.13% | -0.05% | -0.32% | +0.06% | 91 | 2.62 |
-| OneTrans块 | 共享参数 | -0.12% | -0.14% | -0.10% | -0.29% | 24 | 2.64 |
-| | 全注意力 | -0.20% | -0.03% | -0.21% | +0.06% | 91 | 2.64 |
-| | 无金字塔堆叠 | -0.29% | -0.04% | -0.33% | -0.42% | 92 | 8.08 |
+| 输入 | 分组分词器 | -0.10% | -0.30% | -0.12% | -0.10% | 78 | 2.35 |
+| | 时间戳无关融合 | -0.09% | -0.22% | -0.20% | -0.21% | 91 | 2.64 |
+| | 时间戳无关融合无Septoken | -0.13% | -0.32% | -0.29% | -0.33% | 91 | 2.62 |
+| OneTrans块 | 共享参数 | -0.15% | -0.29% | -0.14% | -0.29% | 24 | 2.64 |
+| | 全注意力 | +0.00% | +0.01% | -0.03% | +0.06% | 91 | 2.64 |
+| | 无金字塔堆叠 | -0.05% | +0.06% | -0.04% | -0.42% | 92 | 8.08 |
 总之，消融实验表明：(1) **自动分割分词器**相对于手动将非序列特征分组为token提供了明显优势，表明让模型自动构建非序列token比依赖人工定义的特征分组更有效；(2) **时间戳感知融合**在时间戳存在时优于基于意图的排序，表明时间顺序应优先于事件影响度；(3) 在时间戳无关融合下，可学习的[SEP]token帮助模型分隔序列；(4) **NStoken的token特定参数**优于共享投影，能够实现更好的特征区分；(5) 因果注意力和全注意力表现相似，但全注意力禁用了标准优化如KV缓存；(6) 在所有层保持完整长度token没有益处：OneTrans有效地将信息总结到少量尾部中，因此金字塔设计可以安全地剪枝查询以节省计算。此外，在固定TFLOPs预算下，金字塔设计相比全长设计支持近1.75倍的更长序列，更好地利用长度扩展带来的收益。
 ### 4.4 RQ3：系统效率
 为了量化第3.5节中的优化，我们在未优化的OneTransS基线上对其进行了消融，并在表4中报告训练/推理指标。
@@ -203,7 +247,10 @@ KV缓存将S侧计算摊分到多个候选上，使得每个候选的工作量�
 ### 4.5 RQ4：规模定律验证
 我们沿三个维度探索OneTrans的规模定律：(1) **长度** - 输入token序列长度，(2) **深度** - 堆叠块的数量，(3) **宽度** - 隐藏状态维度。
 如图3(a)所示，增加长度通过引入更多行为证据带来了最大的收益。在深度和宽度之间，我们观察到明显的权衡：增加深度通常比单纯增加宽度带来更大的性能提升，因为更深的堆栈能够提取更高阶的交互和更丰富的抽象表示。然而，更深的模型也会增加串行计算，而增加宽度更有利于并行化。因此，在深度和宽度之间的选择应平衡性能收益和在目标硬件预算下的系统效率。
-图3：(a) 权衡：FLOPs vs. $\Delta$ UAUC (b) 规模定律： $\Delta$ UAUC vs. FLOPs (对数)
+
+![图3](/Users/dazhang/PycharmProject/Papers/4-Recsys-Gen/.picture/2026-OneTrans-Unified Feature Interaction and Sequence Modeling with One Transformer in Industrial Recommender-fig3.png)
+
+**图 3：** 权衡与规模定律的比较。(a) 权衡：FLOPs vs. $\Delta$ UAUC。(b) 规模定律：$\Delta$ UAUC vs. FLOPs（对数）
 我们进一步通过同时加宽和加深OneTrans来分析规模定律行为，并作为对比，在RankMixer侧扩展RankMixer+Transformer基线直至1B参数；然后在对数坐标上绘制 $\Delta$ UAUC与训练FLOPs的关系。如图3(b)所示，OneTrans和RankMixer都表现出清晰的对数线性趋势，但OneTrans的斜率更陡，这可能是因为RankMixer中心的扩展缺乏统一主干网络，且其基于MoE的扩展主要加宽了FFN隐藏维度。这些结果共同表明，OneTrans在参数和计算方面更高效，为工业级部署提供了有利的性能-计算权衡。
 虽然我们可以在严格的在线p99延迟约束下部署OneTransL，但在该范围之外的显著扩展仍受在线效率的限制，我们将进一步的系统-模型协同优化留给未来的工作。
 ### 4.6 RQ5：在线A/B测试
@@ -213,8 +260,9 @@ KV缓存将S侧计算摊分到多个候选上，使得每个候选的工作量�
 **表6：在线A/B结果：OneTransL（实验组）vs. RankMixer+Transformer（对照组）。Click/u、Order/u、GMV/u为相对变化率（%）。延迟为端到端每次曝光相对变化 $\Delta$ %（越低越好）。*表示p<0.05，**表示p<0.01**
 | 场景 | gmv/u | order/u | click/u | 延迟(p99) $\downarrow$ |
 |------|-------|---------|---------|-----------|
-| Feeds | +5.685%** | +4.351%* | +7.737%** | -3.91% |
+| Feeds | +5.685%* | +4.351%* | +7.737%** | -3.91% |
 | Mall | +3.670%* | +2.577%** | +5.143%** | -3.26% |
+
 我们进一步观察到用户活跃天数增加了+0.748%，冷启动产品的订单量/用户显著提升了+13.59%，突显了所提出模型强大的泛化能力。
 ## 5 结论
 我们提出了OneTrans，一个用于个性化排序的统一Transformer主干网络，以取代传统的"编码-后-交互"范式。统一的分词器将序列和非序列属性转换为一个token序列，统一的Transformer块通过同质（序列）token的共享参数和异质（非序列）token的token特定参数，联合执行序列建模和特征交互。为了使统一堆栈在规模上保持高效，我们采用金字塔调度逐步剪枝序列token，以及跨请求KV缓存复用用户侧计算；该设计还受益于LLM风格的系统优化（如FlashAttention、混合精度）。通过大规模评估，OneTrans在宽度/深度增加时表现出近乎对数线性的性能提升，并在保持生产级延迟的同时带来了统计上显著的业务指标提升。我们相信，这种统一设计为扩展推荐系统提供了一条实用路径，同时复用了推动近期LLM进步的系统优化。

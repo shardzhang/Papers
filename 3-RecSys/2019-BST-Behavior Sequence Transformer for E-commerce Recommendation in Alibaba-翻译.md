@@ -1,6 +1,8 @@
-# Behavior Sequence Transformer for E-commerce Recommendation in Alibaba
+# BST: Behavior Sequence Transformer for E-commerce Recommendation in Alibaba
 
 > Qiwei Chen, Huan Zhao, Wei Li, Pipei Huang, Wenwu Ou | Alibaba Group
+
+
 
 本文提出了行为序列Transformer（BST，Behavior Sequence Transformer）模型，用于在阿里巴巴的电子商务推荐中捕获用户行为序列背后的序列信号。核心内容：
 
@@ -11,6 +13,8 @@
 关键发现：Transformer能通过自注意力机制捕获用户行为序列中item之间更复杂的"依赖关系"，从而显著提升点击率（CTR）预测性能，且其平均响应时间与WDL、DIN接近，保证了大规模推荐系统中复杂模型的部署可行性。
 
 ---
+
+
 
 ## 摘要
 
@@ -180,9 +184,13 @@ $$
 
 在本文中，我们介绍了如何将Transformer[13]应用于淘宝推荐的技术细节。通过利用捕获序列关系的强大能力，我们通过大量实验展示了Transformer在建模用户行为序列用于推荐方面的优越性。此外，我们还展示了在中国淘宝的生产环境中部署所提出模型的细节，该模型为全国数亿用户提供推荐服务。
 
+
+
 ## 6 致谢
 
 我们要感谢团队同事王继哲、李超、刘志远、许宇驰和吴萌萌在这项工作中的有益讨论和支持。我们非常感谢来自阿里巴巴分布式计算团队的刘金斌、郝姗姗和杨延春，以及来自阿里巴巴在线推理团队的刘侃和兰涛，他们帮助将模型部署到生产中。我们也感谢匿名审稿人的宝贵意见和建议，帮助提高了本文的质量。
+
+
 
 ## 参考文献
 
@@ -194,30 +202,30 @@ $$
 
 [4] Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova. 2018. Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805 (2018).
 
-[5] Mihajlo Grbovic and Haibin Cheng. 2018. Real-time personalization using embeddings for search ranking at Airbnb. In KDD. 311–320.
+[5] Mihajlo Grbovic and Haibin Cheng. 2018. **Real-time personalization using embeddings for search ranking at Airbnb**. In KDD. 311–320.
 
 [6] Huifeng Guo, Ruiming Tang, Yunming Ye, Zhenguo Li, and Xiuqiang He. 2017. DeepFM: a factorization-machine based neural network for CTR prediction. In IJCAI. 1725–1731.
 
-[7] Wang-Cheng Kang and Julian McAuley. 2018. Self-attentive sequential recommendation. In ICDM. 197–206.
+[7] Wang-Cheng Kang and Julian McAuley. 2018. **Self-attentive sequential recommendation**. In ICDM. 197–206.
 
-[8] Chao Li, Zhiyuan Liu, Mengmeng Wu, Yuchi Xu, Pipei Huang, Huan Zhao, Guoliang Kang, Qiwei Chen, Wei Li, and Dik Lun Lee. 2019. Multi-Interest Network with Dynamic Routing for Recommendation at Tmall.
+[8] Chao Li, Zhiyuan Liu, Mengmeng Wu, Yuchi Xu, Pipei Huang, Huan Zhao, Guoliang Kang, Qiwei Chen, Wei Li, and Dik Lun Lee. 2019. **Multi-Interest Network with Dynamic Routing for Recommendation at Tmall**.
 
-[9] Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. 2018. xDeepFM: Combining explicit and implicit feature interactions for recommender systems. In KDD. 1754–1763.
+[9] Jianxun Lian, Xiaohuan Zhou, Fuzheng Zhang, Zhongxia Chen, Xing Xie, and Guangzhong Sun. 2018. **xDeepFM: Combining explicit and implicit feature interactions for recommender systems**. In KDD. 1754–1763.
 
 [10] Yabo Ni, Dan Ou, Shichen Liu, Xiang Li, Wenwu Ou, Anxiang Zeng, and Luo Si. 2018. Perceive Your Users in Depth: Learning Universal User Representations from Multiple E-commerce Tasks. In KDD. 596–605.
 
-[11] Changhua Pei, Yi Zhang, Yongfeng Zhang, Fei Sun, Xiao Lin, Hanxiao Sun, Jian Wu, Peng Jiang, Wenwu Ou, and Dan Pei. 2019. Personalized Context-aware Re-ranking for E-commerce Recommender Systems. arXiv preprint arXiv:1904.06813 (2019).
+[11] Changhua Pei, Yi Zhang, Yongfeng Zhang, Fei Sun, Xiao Lin, Hanxiao Sun, Jian Wu, Peng Jiang, Wenwu Ou, and Dan Pei. 2019. **Personalized Context-aware Re-ranking for E-commerce Recommender Systems**. arXiv preprint arXiv:1904.06813 (2019).
 
-[12] Fei Sun, Jun Liu, Jian Wu, Changhua Pei, Xiao Lin, Wenwu Ou, and Peng Jiang. 2019. BERT4Rec: Sequential Recommendation with Bidirectional Encoder Representations from Transformer.
+[12] Fei Sun, Jun Liu, Jian Wu, Changhua Pei, Xiao Lin, Wenwu Ou, and Peng Jiang. 2019. **BERT4Rec: Sequential Recommendation with Bidirectional Encoder Representations from Transformer**.
 
 [13] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz Kaiser, and Illia Polosukhin. 2017. Attention is all you need. In NIPS. 5998–6008.
 
-[14] Chenglong Wang, Feijun Jiang, and Hongxia Yang. 2017. A hybrid framework for text modeling with convolutional rnn. In KDD. 2061–2069.
+[14] Chenglong Wang, Feijun Jiang, and Hongxia Yang. 2017. **A hybrid framework for text modeling with convolutional rnn**. In KDD. 2061–2069.
 
-[15] Jizhe Wang, Pipei Huang, Huan Zhao, Zhibo Zhang, Binqiang Zhao, and Dik Lun Lee. 2018. Billion-scale commodity embedding for e-commerce recommendation in alibaba. In KDD. 839–848.
+[15] Jizhe Wang, Pipei Huang, Huan Zhao, Zhibo Zhang, Binqiang Zhao, and Dik Lun Lee. 2018. **Billion-scale commodity embedding for e-commerce recommendation in alibaba**. In KDD. 839–848.
 
-[16] Ruoxi Wang, Bin Fu, Gang Fu, and Mingliang Wang. 2017. Deep & Cross Network for Ad Click Predictions. In Proceedings of the ADKDD'17 (ADKDD'17).
+[16] Ruoxi Wang, Bin Fu, Gang Fu, and Mingliang Wang. 2017. **Deep & Cross Network for Ad Click Predictions**. In Proceedings of the ADKDD'17 (ADKDD'17).
 
 [17] Guorui Zhou, Xiaoqiang Zhu, Chenru Song, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, and Kun Gai. 2018. Deep interest network for click-through rate prediction. In KDD. 1059–1068.
 
-[18] Han Zhu, Xiang Li, Pengye Zhang, Guozheng Li, Jie He, Han Li, and Kun Gai. 2018. Learning Tree-based Deep Model for Recommender Systems. In KDD. 1079–1088.
+[18] Han Zhu, Xiang Li, Pengye Zhang, Guozheng Li, Jie He, Han Li, and Kun Gai. 2018. **Learning Tree-based Deep Model for Recommender Systems**. In KDD. 1079–1088.

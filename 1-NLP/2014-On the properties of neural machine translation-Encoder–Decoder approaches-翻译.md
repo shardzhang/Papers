@@ -2,7 +2,9 @@
 
 > Kyunghyun Cho, Bart van Merriënboer, Dzmitry Bahdanau, Yoshua Bengio | Université de Montréal; Jacobs University
 
-本文分析了神经机器翻译（NMT）模型的性质，**通过RNN编码器-解码器和新提出的门控递归卷积神经网络（grConv），揭示NMT在短句上表现良好但随句子长度和未知词数量增加而性能下降的关键特性**。
+
+
+本文分析了神经机器翻译（NMT）模型的性质，**通过RNN编码器-解码器和新提出的门控递归卷积神经网络（grConv），揭示NMT在短句上表现良好但随 句子长度 和 未知词数量 增加而性能下降的关键特性**。
 
 核心内容：
 
@@ -19,6 +21,8 @@
 - grConv无需监督即可学习输入句子的语法结构，如自动识别"of the United States"等短语
 
 ---
+
+
 
 ## 摘要
 
@@ -184,9 +188,13 @@ grConv有2000个隐藏神经元，而RNNenc有1000个隐藏神经元。两种情
 
 除了通用神经机器翻译系统的性质外，我们观察到所提出的门控递归卷积神经网络（grConv）的一个有趣性质。发现grConv在没有语言句法结构监督的情况下模仿输入句子的语法结构。我们认为这一性质使其适合机器翻译以外的自然语言处理应用。
 
+
+
 ## 致谢
 
-作者感谢以下机构对研究资金和计算支持的支持：NSERC、Calcul Québec、Compute Canada、Canada Research Chairs和CIFAR。
+作者感谢以下机构对研究资金和计算支持的支持：NSERC、Calcul Québec、Compute Canada、Canada Research Chairs和**CIFAR**。
+
+
 
 ## 参考文献
 

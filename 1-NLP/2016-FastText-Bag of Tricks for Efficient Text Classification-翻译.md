@@ -1,4 +1,4 @@
-# 高效文本分类的技巧包
+# 高效文本分类的技巧
 
 > Armand Joulin, Edouard Grave, Piotr Bojanowski, Tomas Mikolov | Facebook AI Research
 
