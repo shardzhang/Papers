@@ -72,3 +72,295 @@ $$
 $$
 
 这里，第一项 $\sum_{(u,i) \in K} (r_{ui} - \mu - b_u - b_i)^2$ 致力于找到能拟合给定评分的 $b_u$ 和 $b_i$。正则项 $\lambda_1(\sum_u b_u^2 + \sum_i b_i^2)$ 通过惩罚参数的大小来避免过拟合。
+
+### 2.2 邻域模型
+
+CF 最常用的方法基于邻域模型。其原始形式几乎是所有早期 CF 系统共用的，是面向用户的；参见 [12] 获得很好的分析。这类面向用户的方法根据志趣相投用户的记录评分来估计未知评分。后来，类似的面向 item 的方法 [15, 21] 变得流行。在这些方法中，评分使用同一用户对相似 item 的已知评分来估计。更好的可扩展性和更高的精度使面向 item 的方法在许多情况下更受青睐 [2, 21, 22]。此外，面向 item 的方法更便于解释预测背后的推理。这是因为用户熟悉他们以前喜欢的 item，但不认识那些所谓的志趣相投的用户。因此，我们的重点是面向 item 的方法，但也可以通过交换用户和 item 的角色，以面向用户的方式开发并行的技术。
+
+大多数面向 item 的方法的核心是 item 之间的相似度度量。它通常基于皮尔逊相关系数 $\rho_{ij}$，衡量用户对 item $i$ 和 $j$ 评分相似的倾向。由于许多评分是未知的，一些 item 预计只共享少数共同评分者。相关系数的计算仅基于共同用户支持。因此，基于更大用户支持的相似度更可靠。一个合适的相似度度量，记为 $s_{ij}$，将是收缩后的相关系数：
+
+$$
+s_{ij} \overset{\text{def}}{=} \frac{n_{ij}}{n_{ij} + \lambda_2} \rho_{ij} \qquad (2)
+$$
+
+变量 $n_{ij}$ 表示同时对 $i$ 和 $j$ 评分的用户数。$\lambda_2$ 的典型值是 100。注意文献还建议了相似度度量的其他替代方案 [21, 22]。
+
+我们的目标是预测 $r_{ui}$——用户 $u$ 对 item $i$ 的未观测评分。使用相似度度量，我们识别出 $u$ 评过分的、与 $i$ 最相似的 $k$ 个 item。这 $k$ 个邻居组成的集合记为 $S_k(i; u)$。$r_{ui}$ 的预测值取相邻 item 评分的加权平均，同时通过基线估计调整用户和 item 效应：
+
+$$
+\hat{r}_{ui} = b_{ui} + \frac{\sum_{j \in S_k(i;u)} s_{ij}(r_{uj} - b_{uj})}{\sum_{j \in S_k(i;u)} s_{ij}} \qquad (3)
+$$
+
+这种形式的基于邻域的方法变得非常流行，因为它们直观且相对容易实现。然而，在最近的工作 [2] 中，我们对这种邻域方案提出了一些担忧。最值得注意的是，这些方法没有形式化模型的支撑。我们还质疑了相似度度量只孤立两个 item 之间的关系、而不分析完整邻居集合内交互的适用性。此外，(3) 中插值权重之和为 1 这一事实迫使方法完全依赖邻居，即使在邻域信息缺失的情况下（即用户 $u$ 没有对与 $i$ 相似的 item 评分）也是如此，而这时更可取的做法是依赖基线估计。
+
+这促使我们提出了一个更准确的邻域模型，克服了这些困难。给定邻居集合 $S_k(i; u)$，我们需要计算插值权重 $\{\theta^u_{ij} | j \in S_k(i; u)\}$，使其能实现如下形式的最佳预测规则：
+
+$$
+\hat{r}_{ui} = b_{ui} + \sum_{j \in S_k(i;u)} \theta^u_{ij}(r_{uj} - b_{uj}) \qquad (4)
+$$
+
+插值权重的推导可以通过估计 item 评分之间的所有内积来高效完成；完整描述参见 [2]。
+
+### 2.3 潜在因子模型
+
+潜在因子模型是协同过滤的一种替代方法，其更整体性的目标是发现解释观测评分的潜在特征；例子包括 pLSA [13]、神经网络 [18] 和潜在狄利克雷分配（Latent Dirichlet Allocation）[7]。我们将专注于由用户-item 评分矩阵上的奇异值分解（SVD）导出的模型。最近，SVD 模型因其吸引人的精度和可扩展性而流行起来。一个典型模型将每个用户 $u$ 关联一个用户因子向量 $p_u \in \mathbb{R}^f$，将每个 item $i$ 关联一个 item 因子向量 $q_i \in \mathbb{R}^f$。预测通过内积完成，即 $\hat{r}_{ui} = b_{ui} + p^T_u q_i$。更复杂的部分是参数估计。
+
+在信息检索中，利用 SVD 识别潜在语义因子已是成熟做法 [8]。然而，在 CF 领域应用 SVD 会因缺失评分占比高而带来困难。当矩阵知识不完整时，传统 SVD 是未定义的。此外，粗心地只处理相对少数已知条目极易过拟合。早期工作 [14, 20] 依赖填充（imputation）来填补缺失值，从而使矩阵完整、可以使用标准 SVD 程序。然而，填充可能过于昂贵而无法在大型数据集上应用，并且会因失真导致严重扭曲。近些的研究 [17, 19, 22] 通过只直接建模观测评分来避免这种情况，同时通过适当的正则化来防止过拟合。相关的优化问题如下：
+
+$$
+\min_{p_*, q_*, b_*} \sum_{(u,i) \in K} (r_{ui} - \mu - b_u - b_i - p_u^T q_i)^2 + \lambda_3 \left( \sum_u \|p_u\|^2 + \sum_i \|q_i\|^2 + \sum_u b_u^2 + \sum_i b_i^2 \right) \qquad (5)
+$$
+
+$\lambda_3$ 的一个典型值是 0.02。这一最小化可以通过随机梯度下降高效完成：对于每个给定的训练案例 $(u, i)$，系统预测 $\hat{r}_{ui}$，计算关联的预测误差 $e_{ui} \overset{\text{def}}{=} r_{ui} - \hat{r}_{ui}$，并沿梯度方向修改参数：
+
+$$
+\begin{aligned}
+b_u &\leftarrow b_u + \gamma \cdot (e_{ui} - \lambda_3 b_u) \\
+b_i &\leftarrow b_i + \gamma \cdot (e_{ui} - \lambda_3 b_i) \\
+p_u &\leftarrow p_u + \gamma \cdot (e_{ui} q_i - \lambda_3 p_u) \\
+q_i &\leftarrow q_i + \gamma \cdot (e_{ui} p_u - \lambda_3 q_i)
+\end{aligned}
+$$
+
+一个简单的梯度下降技术已被成功应用于求解 (5)。关于用 SVD 进行协同过滤的广泛讨论参见 [9]。
+
+### 2.4 Netflix 数据
+
+我们在 Netflix 数据上评估算法，该数据包含匿名 Netflix 客户进行的超过 1 亿条电影评分 [5]。我们不知道有任何公开可用的 CF 数据集在规模和质量上能与该数据集相提并论。为了保持与其他人发表结果的可比性，我们采用了 Netflix 设定的一些标准，具体如下。首先，结果质量通常用均方根误差（RMSE）衡量：
+
+$$
+\sqrt{\sum_{(u,i) \in TestSet} (r_{ui} - \hat{r}_{ui})^2 \; / \; |TestSet|}
+$$
+
+此外，我们在 Netflix 提供的测试集（也称为 Quiz 集）上报告结果，该测试集包含超过 140 万条近期评分。Netflix 将另外 140 万条近期评分编排成一个验证集，称为 Probe 集，我们将在第 6 节使用它。两个集合包含更多来自评分较少的用户的评分，因而更难预测。从某种意义上说，它们代表了 CF 系统的真实需求——系统需要从较旧的评分预测新的评分，并平等地对待所有用户，而不仅仅是重度评分者。
+
+Netflix 数据是持续进行的 Netflix 大奖赛（Netflix Prize）的一部分，其基准是 Netflix 的专有系统 Cinematch，该系统在测试集上取得了 0.9514 的 RMSE。大奖将颁给把这一 RMSE 压低到 0.8563（提升 10%）以下的团队。本工作报告的结果把测试集上的 RMSE 降到 0.887 左右，优于此前在该数据集上已发表的结果。
+
+### 2.5 隐式反馈
+
+如前所述，本工作的一个重要目标是设计能够整合显式和隐式用户反馈的模型。对于 Netflix 数据这样的数据集，隐式反馈最自然的选择是电影租赁历史，它无需用户显式提供评分即可告诉我们用户偏好。然而，我们没有这类数据。尽管如此，在 Netflix 数据集中确实存在一种不那么明显的隐式数据。该数据集不仅告诉我们评分值，还告诉我们用户对哪些电影评了分，无论他们对这些电影的评分如何。换句话说，用户通过选择发表意见并投出（高或低）评分，隐式地告诉了我们她的偏好。这把评分矩阵缩减成一个二值矩阵，其中"1"表示"评过分"，"0"表示"没评过分"。诚然，这种二值数据不像其他隐式反馈来源那样海量和独立。尽管如此，我们发现纳入这种隐式数据——它天然存在于每个基于评分的推荐系统中——能显著提升预测精度。一些先前的技术，如条件 RBM（Conditional RBMs）[18]，也利用了数据的这一二值视角。
+
+我们提出的模型不局限于某一种隐式数据。为了保持通用性，每个用户 $u$ 关联两个 item 集合：一个记为 $R(u)$，包含 $u$ 的所有有评分的 item；另一个记为 $N(u)$，包含 $u$ 提供过隐式偏好的所有 item。
+
+## 3 邻域模型
+
+在本节中，我们引入一个新的邻域模型，它允许高效的全局优化方案。该模型精度更高，并能整合隐式用户反馈。我们将通过不断的改进，逐步构建模型的各个组成部分。
+
+之前的模型围绕用户特定的插值权重展开——(4) 中的 $\theta^u_{ij}$，或 (3) 中的 $s_{ij} / \sum_{j \in S_k(i;u)} s_{ij}$——将 item $i$ 与用户特定邻域 $S_k(i; u)$ 中的 item 关联起来。为了促成全局优化，我们希望放弃这种用户特定的权重，转而采用与特定用户无关的全局权重。从 $j$ 到 $i$ 的权重记为 $w_{ij}$，将通过优化从数据中学习。模型的一个初步草图将每条评分 $r_{ui}$ 描述为如下方程：
+
+$$
+\hat{r}_{ui} = b_{ui} + \sum_{j \in R(u)} (r_{uj} - b_{uj}) w_{ij} \qquad (6)
+$$
+
+目前，(6) 与 (4) 看起来差别不大，区别在于我们声称 $w_{ij}$ 不是用户特定的。另一个区别——稍后将讨论——是我们在这里对 $u$ 评过的所有 item 求和，而 (4) 只对 $S_k(i; u)$ 的成员求和。
+
+让我们考虑这些权重的解释。通常，邻域模型中的权重代表联系未知评分与已知评分的插值系数。在这里，采用不同的视角是有用的：把权重看作对基线估计的偏移量。现在，残差 $r_{uj} - b_{uj}$ 被看作乘在这些偏移量上的系数。对于两个相关的 item $i$ 和 $j$，我们预期 $w_{ij}$ 会很高。因此，每当用户 $u$ 对 $j$ 的评分高于预期（$r_{uj} - b_{uj}$ 很高）时，我们希望通过加上 $(r_{uj} - b_{uj}) w_{ij}$ 来提高对 $u$ 的 $i$ 评分的估计。同样地，对于 $u$ 评分恰好符合预期的 item $j$（$r_{uj} - b_{uj}$ 接近零），或者对于已知对 $i$ 不具预测性的 item $j$（$w_{ij}$ 接近零），我们的估计不会偏离基线太多。这一视角建议对 (6) 做几处增强。首先，我们可以利用隐式反馈，它提供了学习用户偏好的另一种方式。为此，我们增加一组权重，并把 (6) 重写为：
+
+$$
+\hat{r}_{ui} = b_{ui} + \sum_{j \in R(u)} (r_{uj} - b_{uj}) w_{ij} + \sum_{j \in N(u)} c_{ij} \qquad (7)
+$$
+
+与 $w_{ij}$ 类似，$c_{ij}$ 是加到基线估计上的偏移量。对于两个 item $i$ 和 $j$，$u$ 对 $j$ 的隐式偏好让我们对 $r_{ui}$ 的估计加上 $c_{ij}$——如果 $j$ 对 $i$ 有预测性，预期 $c_{ij}$ 会很高。
+
+把权重看作全局偏移量、而不是用户特定的插值系数，这强调了缺失评分的影响。换句话说，用户的意见不仅由他评了什么形成，还由他没评什么形成。例如，假设一个电影评分数据集显示，给《指环王 3》高分评分的用户也给《指环王 1–2》打了高分。这将建立从《指环王 1–2》到《指环王 3》的高权重。现在，如果某个用户根本没有评《指环王 1–2》，他预测的《指环王 3》评分将受罚，因为一些必要的权重无法被加进和里。
+
+对于之前从 $\{r_{uj} - b_{uj} | j \in S_k(i; u)\}$ 插值 $r_{ui} - b_{ui}$ 的模型（(3)、(4)），保持 $b_{ui}$ 值与 $b_{uj}$ 值之间的兼容性是必要的。然而，这里我们不使用插值，因此可以解耦 $b_{ui}$ 和 $b_{uj}$ 的定义。相应地，一个更一般的预测规则将是 $\hat{r}_{ui} = \tilde{b}_{ui} + \sum_{j \in R(u)} (r_{uj} - b_{uj}) w_{ij} + \sum_{j \in N(u)} c_{ij}$。这里，$\tilde{b}_{ui}$ 表示其他方法（如潜在因子模型）对 $r_{ui}$ 的预测。我们在第 5 节中对此详细阐述。眼下，我们建议如下被证明工作良好的规则：
+
+$$
+\hat{r}_{ui} = \mu + b_u + b_i + \sum_{j \in R(u)} (r_{uj} - b_{uj}) w_{ij} + \sum_{j \in N(u)} c_{ij} \qquad (8)
+$$
+
+重要的是，$b_{uj}$ 保持为常数，按第 2.1 节所述推导。然而，$b_u$ 和 $b_i$ 变为参数，与 $w_{ij}$ 和 $c_{ij}$ 一样被优化。
+
+当前方案的特性是：它为提供了大量评分（高 $|R(u)|$）或大量隐式反馈（高 $|N(u)|$）的用户鼓励更大的对基线估计的偏离。总的来说，这对推荐系统是个好做法。我们愿意对得到充分建模的用户冒更多风险，为他们预测更古怪、更不常见的推荐。另一方面，我们对只提供了少量输入的用户建模不太有把握，此时我们宁愿保持靠近基线值的稳妥估计。然而，我们的经验表明，当前方案在某种程度上过度强调了重度评分者与几乎不评分者之间的二分法。当我们缓和这一行为、把预测规则替换为如下形式时，得到了更好的结果：
+
+$$
+\hat{r}_{ui} = \mu + b_u + b_i + |R(u)|^{-\frac{1}{2}} \sum_{j \in R(u)} (r_{uj} - b_{uj}) w_{ij} + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} c_{ij} \qquad (9)
+$$
+
+模型的复杂度可以通过修剪掉对应不太可能的 item-item 关系的参数来降低。记 $S_k(i)$ 为由相似度度量 $s_{ij}$ 确定的、与 $i$ 最相似的 $k$ 个 item 的集合。此外，定义 $R_k(i; u) \overset{\text{def}}{=} R(u) \cap S_k(i)$ 和 $N_k(i; u) \overset{\text{def}}{=} N(u) \cap S_k(i)$<sup>2</sup>。现在，在按 (9) 预测 $r_{ui}$ 时，预期最有影响力的权重将来自与 $i$ 相似的 item。因此，我们把 (9) 替换为：
+
+$$
+\hat{r}_{ui} = \mu + b_u + b_i + |R_k(i; u)|^{-\frac{1}{2}} \sum_{j \in R_k(i;u)} (r_{uj} - b_{uj}) w_{ij} + |N_k(i; u)|^{-\frac{1}{2}} \sum_{j \in N_k(i;u)} c_{ij} \qquad (10)
+$$
+
+当 $k = \infty$ 时，规则 (10) 与 (9) 重合。然而，对其他 $k$ 值，它提供了显著减少所涉变量数量的可能。这是我们的最终预测规则，它允许快速的在线预测。更多的计算工作发生在参数估计的预处理阶段。
+
+<sup>2</sup> 记号说明：对于其他邻域模型，使用 $S_k(i; u)$ 是有益的，它表示 $u$ 评过分的、与 $i$ 最相似的 $k$ 个 item。因此，如果 $u$ 至少评了 $k$ 个 item，我们总是有 $|S_k(i; u)| = k$，无论那些 item 与 $i$ 有多相似。然而，$|R_k(i; u)|$ 通常小于 $k$，因为某些与 $i$ 最相似的 item 没有被 $u$ 评分。
+
+新邻域模型的一个主要设计目标是促成先前邻域模型所缺少的高效全局优化过程。因此，模型参数通过求解与 (10) 关联的正则化最小二乘问题来学习：
+
+$$
+\min_{b_*, w_*, c_*} \sum_{(u,i) \in K} \left( r_{ui} - \mu - b_u - b_i - |N_k(i; u)|^{-\frac{1}{2}} \sum_{j \in N_k(i;u)} c_{ij} - |R_k(i; u)|^{-\frac{1}{2}} \sum_{j \in R_k(i;u)} (r_{uj} - b_{uj}) w_{ij} \right)^2 + \lambda_4 \left( \sum_u b_u^2 + \sum_i b_i^2 + \sum_{j \in R_k(i;u)} w_{ij}^2 + \sum_{j \in N_k(i;u)} c_{ij}^2 \right) \qquad (11)
+$$
+
+这个凸问题的最优解可以用标准线性代数软件包附带的（最小二乘）求解器获得。然而，我们发现下面这个简单的梯度下降求解器快得多。记预测误差 $r_{ui} - \hat{r}_{ui}$ 为 $e_{ui}$。我们遍历 $K$ 中所有已知评分。对于给定的训练案例 $r_{ui}$，我们沿梯度的反方向修改参数，得到：
+
+- $b_u \leftarrow b_u + \gamma \cdot (e_{ui} - \lambda_4 b_u)$
+- $b_i \leftarrow b_i + \gamma \cdot (e_{ui} - \lambda_4 b_i)$
+- 对每个 $j \in R_k(i; u)$：$w_{ij} \leftarrow w_{ij} + \gamma \cdot \left( |R_k(i; u)|^{-\frac{1}{2}} \cdot e_{ui} \cdot (r_{uj} - b_{uj}) - \lambda_4 w_{ij} \right)$
+- 对每个 $j \in N_k(i; u)$：$c_{ij} \leftarrow c_{ij} + \gamma \cdot \left( |N_k(i; u)|^{-\frac{1}{2}} \cdot e_{ui} - \lambda_4 c_{ij} \right)$
+
+元参数 $\gamma$（步长）和 $\lambda_4$ 由交叉验证确定。对 Netflix 数据我们用了 $\gamma = 0.005$、$\lambda_4 = 0.002$。训练数据上的典型迭代次数是 15。另一个重要参数是控制邻域大小的 $k$。我们的经验表明，增大 $k$ 总是有利于测试集上的精度。因此，$k$ 的选择应反映预测精度与计算成本之间的权衡。
+
+用新邻域模型在 Netflix 数据上的实验结果呈现在图 1 中。我们在不同的 $k$ 值下研究该模型。粉色曲线表明，精度随 $k$ 增大单调提升：RMSE 从 $k$ = 250 时的 0.9139 下降到 $k = \infty$ 时的 0.9002。（注意由于 Netflix 数据包含 17,770 部电影，$k = \infty$ 等价于 $k$ = 17,770，即探索所有 item-item 关系。）我们重复了不使用隐式反馈的实验，即从模型中剔除 $c_{ij}$ 参数。黄色曲线所绘的结果显示估计精度显著下滑，且下滑幅度随 $k$ 增大而扩大。这证明了把隐式反馈纳入模型的价值。
+
+作为对比，我们提供两个先前邻域模型的结果。第一个是基于相关性的邻域模型（遵循 (3)），它是文献中最流行的 CF 方法。我们把这个模型记为 CorNgbr。第二个是遵循 (4) 的较新模型 [2]，记为 WgtNgbr。对这两个模型，我们都尝试了最优的参数和邻域大小，分别是对 CorNgbr 取 20、对 WgtNgbr 取 50。结果由绿色和青色直线绘出。注意 $k$ 值（x 轴）与这些模型无关，因为它们不同的邻域概念使邻域大小不可比。显然，流行的 CorNgbr 方法明显不如其他邻域模型精确，尽管它的 0.9406 RMSE 仍好于已发表的 Netflix Cinematch RMSE（0.9514）。在另一边，只要 $k$ 至少为 500，我们的新模型即便与 WgtNgbr 相比也能交付更精确的结果。
+
+最后，让我们考虑运行时间。先前的邻域模型需要非常轻量的预处理，尽管 WgtNgbr [2] 为每个提供的预测需要求解一个小方程组。新模型确实涉及估计参数的预处理。然而，遵循规则 (10) 的在线预测是即时的。预处理时间随 $k$ 值增长。在单处理器 3.4GHz Pentium 4 PC 上测得的、Netflix 数据每迭代的典型运行时间如图 2 所示。
+
+## 4 重新审视潜在因子模型
+
+如第 2.3 节所述，潜在因子模型的一种流行方法由评分矩阵的 SVD 式低秩分解导出。每个用户 $u$ 关联一个用户因子向量 $p_u \in \mathbb{R}^f$，每个 item $i$ 关联一个 item 因子向量 $q_i \in \mathbb{R}^f$。预测通过如下规则完成：
+
+$$
+\hat{r}_{ui} = b_{ui} + p_u^T q_i \qquad (12)
+$$
+
+参数通过最小化关联的平方误差函数 (5) 来估计。Funk [9] 普及了梯度下降优化，许多其他人 [17, 18, 22] 也成功实践了它。此后，我们把这个基本模型称为"SVD"。我们希望扩展该模型以纳入隐式信息。沿袭 Paterek [17] 和上一节的工作，我们建议如下预测规则：
+
+$$
+\hat{r}_{ui} = b_{ui} + q_i^T \left( |R(u)|^{-\frac{1}{2}} \sum_{j \in R(u)} (r_{uj} - b_{uj}) x_j + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j \right) \qquad (13)
+$$
+
+这里，每个 item $i$ 关联三个因子向量 $q_i, x_i, y_i \in \mathbb{R}^f$。另一方面，我们不给用户提供显式参数化，而是通过他们偏好的 item 来表示用户。这样，先前的用户因子 $p_u$ 被替换为和式 $|R(u)|^{-\frac{1}{2}} \sum_{j \in R(u)} (r_{uj} - b_{uj}) x_j + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j$。这个新模型，此后称为"Asymmetric-SVD"（非对称 SVD），提供了几项好处：
+
+1. **更少的参数**。通常用户数比产品数大得多。因此，用 item 参数换用户参数降低了模型的复杂度。
+2. **新用户**。由于 Asymmetric-SVD 不对用户参数化，我们可以在用户向系统提供反馈后立即处理新用户，而无需重新训练模型并估计新参数。类似地，我们可以立即利用新评分来更新用户偏好。注意对于新的 item，我们确实需要学习新参数。有趣的是，用户与 item 之间的这种不对称性与常见实践吻合得很好：系统需要为期望优质服务的新用户提供即时推荐；另一方面，对系统而言较新的 item 要求一段等待期是合理的。顺带一提，值得指出的是，面向 item 的邻域模型也表现出相同的理想不对称性。
+3. **可解释性**。用户期望系统对其预测给出理由，而不是面对"黑盒"推荐。这不仅能丰富用户体验，还鼓励用户与系统互动、纠正错误印象并提高长期精度。事实上，解释自动化推荐的重要性已被广泛认识 [11, 23]。SVD 这类潜在因子模型在解释预测时面临真正的困难。毕竟，这些模型的关键是通过用户因子的中间层来抽象用户。这个中间层把计算出的预测与过去的用户行为分隔开，使解释复杂化。然而，新的 Asymmetric-SVD 模型在用户侧不采用任何抽象层。因此，预测是过去用户反馈的直接函数。这样的框架使我们能够识别出过去用户行为中哪些对计算出的预测影响最大，从而用最相关的行为解释预测。我们再次想指出，面向 item 的邻域模型享有同样的好处。
+4. **隐式反馈的高效整合**。预测精度通过也考虑隐式反馈而提高，它提供了用户偏好的额外指示。显然，对于提供隐式反馈远多于显式反馈的用户，隐式反馈变得越来越重要。相应地，在规则 (13) 中，随着 $|N(u)|$ 增大、我们拥有大量隐式反馈时，隐式视角变得更加主导。另一方面，当 $|R(u)|$ 增长、我们拥有许多显式观测时，显式视角变得更加重要。通常，单条显式输入比单条隐式输入更有价值。正确的转换比率——表示多少条隐式输入与一条显式输入等价——通过设定 $x_j$ 和 $y_j$ 参数的相对值，从数据中自动学习。
+
+一如既往，我们通过最小化与 (13) 关联的正则化平方误差函数来学习所涉参数的值：
+
+$$
+\min_{q_*, x_*, y_*, b_*} \sum_{(u,i) \in K} \left( r_{ui} - \mu - b_u - b_i - q_i^T \left( |R(u)|^{-\frac{1}{2}} \sum_{j \in R(u)} (r_{uj} - b_{uj}) x_j + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j \right) \right)^2 + \lambda_5 \left( \sum_u b_u^2 + \sum_i b_i^2 + \sum_i \|q_i\|^2 + \sum_{j \in R(u)} \|x_j\|^2 + \sum_{j \in N(u)} \|y_j\|^2 \right) \qquad (14)
+$$
+
+我们采用简单的梯度下降方案来求解。在 Netflix 数据上我们用了 30 次迭代，步长为 0.002，$\lambda_5$ = 0.04。
+
+一个重要的问题是：为了享有 Asymmetric-SVD 的上述好处，我们是否需要放弃一些预测精度？我们在 Netflix 数据上对此进行了评估。如表 1 所示，Asymmetric-SVD 的预测质量实际上比 SVD 略好。这一改进很可能要归功于对隐式反馈的考虑。这意味着我们可以在不牺牲预测精度的情况下享有 Asymmetric-SVD 提供的好处。如前所述，我们实际上没有 Netflix 数据集的独立隐式反馈。因此，我们预期对于能获得更优质隐式反馈类型（如租赁/购买历史）的现实系统，新的 Asymmetric-SVD 模型会带来更大的改进。然而，这仍有待实验证明。
+
+事实上，就隐式反馈的整合而言，通过对 (12) 做更直接的修改，我们可以得到更精确的结果，得到如下模型：
+
+$$
+\hat{r}_{ui} = b_{ui} + q_i^T \left( p_u + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j \right) \qquad (15)
+$$
+
+现在，用户 $u$ 被建模为 $p_u + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j$。我们使用一个自由用户因子向量 $p_u$，与 (12) 中很像，它从给定的显式评分中学习。这个向量由和式 $|N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j$ 补充，它代表隐式反馈的视角。我们把这个模型称为"SVD++"。最近有类似模型被讨论过 [3, 19]。模型参数通过梯度下降最小化关联的平方误差函数来学习。SVD++ 不提供先前提到的更少参数、方便处理新用户和容易解释结果的好处。这是因为我们确实用因子向量抽象了每个用户。然而，如表 1 所示，SVD++ 在预测精度方面显然有优势。实际上，据我们所知，它的结果比此前在 Netflix 数据上发表的任何方法都更精确。尽管如此，在下一节我们将描述一个集成模型，它提供更进一步的精度提升。
+
+| 模型 | 50 因子 | 100 因子 | 200 因子 |
+| --- | --- | --- | --- |
+| SVD | 0.9046 | 0.9025 | 0.9009 |
+| Asymmetric-SVD | 0.9037 | 0.9013 | 0.9000 |
+| SVD++ | 0.8952 | 0.8924 | 0.8911 |
+
+表 1：基于 SVD 的模型比较：预测精度由 Netflix 测试集上不同因子数量 ($f$) 下的 RMSE 度量。Asymmetric-SVD 相对已知的 SVD 模型提供了实用的优势，同时精度略有提升。最佳精度由 SVD++ 取得，它把隐式反馈直接并入 SVD 模型。
+
+## 5 集成模型
+
+第 3 节的新邻域模型基于一个正式模型，其参数通过求解最小二乘问题来学习。这种方法的一个优点是允许与基于类似结构的全局成本函数的其他方法轻松集成。如第 1 节所述，潜在因子模型与邻域模型很好地互补。因此，在本节中，我们将邻域模型与最精确的因子模型——SVD++——集成。组合模型把 (10) 和 (15) 的预测相加，从而让邻域和因子模型互相丰富，如下：
+
+$$
+\hat{r}_{ui} = \mu + b_u + b_i + q_i^T \left( p_u + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j \right) + |R_k(i; u)|^{-\frac{1}{2}} \sum_{j \in R_k(i;u)} (r_{uj} - b_{uj}) w_{ij} + |N_k(i; u)|^{-\frac{1}{2}} \sum_{j \in N_k(i;u)} c_{ij} \qquad (16)
+$$
+
+从某种意义上说，规则 (16) 为推荐提供了一个三层模型。第一层 $\mu + b_u + b_i$ 描述 item 和用户的一般属性，不涉及任何交互。例如，这一层可以说《第六感》这部电影是公认的好电影，而且我们的用户 Joe 的评分尺度趋于平均。下一层 $q_i^T \left( p_u + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j \right)$ 提供用户画像与 item 画像之间的交互。在我们的例子中，它可能发现《第六感》和 Joe 在"心理惊悚片"尺度上都得到高分。最后的"邻域层"贡献难以画像的细粒度调整，例如 Joe 给相关电影《天兆》打了低分。
+
+模型参数通过梯度下降最小化关联的正则化平方误差函数来确定。回忆 $e_{ui} \overset{\text{def}}{=} r_{ui} - \hat{r}_{ui}$。我们遍历 $K$ 中所有已知评分。对于给定训练案例 $r_{ui}$，我们沿梯度的反方向修改参数，得到：
+
+- $b_u \leftarrow b_u + \gamma_1 \cdot (e_{ui} - \lambda_6 b_u)$
+- $b_i \leftarrow b_i + \gamma_1 \cdot (e_{ui} - \lambda_6 b_i)$
+- $q_i \leftarrow q_i + \gamma_2 \cdot \left( e_{ui} \cdot \left( p_u + |N(u)|^{-\frac{1}{2}} \sum_{j \in N(u)} y_j \right) - \lambda_7 q_i \right)$
+- $p_u \leftarrow p_u + \gamma_2 \cdot \left( e_{ui} \cdot q_i - \lambda_7 p_u \right)$
+- 对每个 $j \in N(u)$：$y_j \leftarrow y_j + \gamma_2 \cdot \left( e_{ui} \cdot |N(u)|^{-\frac{1}{2}} \cdot q_i - \lambda_7 y_j \right)$
+- 对每个 $j \in R_k(i; u)$：$w_{ij} \leftarrow w_{ij} + \gamma_3 \cdot \left( |R_k(i; u)|^{-\frac{1}{2}} \cdot e_{ui} \cdot (r_{uj} - b_{uj}) - \lambda_8 w_{ij} \right)$
+- 对每个 $j \in N_k(i; u)$：$c_{ij} \leftarrow c_{ij} + \gamma_3 \cdot \left( |N_k(i; u)|^{-\frac{1}{2}} \cdot e_{ui} - \lambda_8 c_{ij} \right)$
+
+在 Netflix 数据上评估该方法时，我们使用了如下元参数值：$\gamma_1 = \gamma_2 = 0.007$，$\gamma_3 = 0.001$，$\lambda_6 = 0.005$，$\lambda_7 = \lambda_8 = 0.015$。每次迭代后把步长（$\gamma$ 们）乘以 0.9 是有益的。邻域大小 $k$ 设为 300。与纯邻域模型 (10) 不同，这里增大 $k$ 没有好处，因为增加邻居会覆盖更全局的信息，而这些信息潜在因子已经充分捕获。迭代过程运行约 30 遍直到收敛。表 2 总结了 Netflix 数据集上不同因子数量下的性能。再次说明，我们报告的是在 Pentium 4 PC 上处理 1 亿条 Netflix 评分的运行时间。通过耦合邻域和潜在因子模型，并恢复隐式反馈中的信号，结果精度超越其他方法。
+
+| 因子数 | 50 | 100 | 200 |
+| --- | --- | --- | --- |
+| RMSE | 0.8877 | 0.8870 | 0.8868 |
+| 时间/迭代 | 17 分钟 | 20 分钟 | 25 分钟 |
+
+表 2：集成模型的性能。通过组合互补的邻域与潜在因子模型，预测精度得到提升。增加因子数量有助于精度，但也增加了运行时间。
+
+回想与 SVD++ 不同，邻域模型和 Asymmetric-SVD 都允许直接解释它们的推荐，并且处理新用户时无需重新训练模型。因此，当可解释性优先于精度时，可以用非常类似的步骤把 Asymmetric-SVD 与邻域模型集成，从而提高单个模型的精度，同时仍然保持向终端用户解释推荐的能力。
+
+## 6 通过 top-K 推荐器进行评估
+
+到目前为止，我们遵循了 Netflix 数据集上以 RMSE 度量评估预测精度的常见做法。Netflix 测试数据上可达到的 RMSE 值落在一个相当狭窄的范围内。一个把 $r_{ui}$ 估计为电影 $i$ 的平均评分的简单预测规则，将得到 RMSE = 1.053。注意这个规则代表一种合理的"畅销榜"方法，即对所有用户给出相同的推荐。通过应用个性化，可以获得更精确的预测。这样，Netflix Cinematch 系统可以达到 0.9514 的 RMSE。在本文中，我们建议的方法把 RMSE 降低到 0.8870。事实上，通过混合几种解决方案，我们可以达到 0.8645 的 RMSE。尽管如此，在开赛 20 个月后，Netflix 大奖赛中活跃参与的 3,400 支团队中没有一支达到更低的 RMSE 水平，尽管赢得 100 万美元大奖的诱惑巨大。因此，可达到的 RMSE 范围似乎是压缩的：从朴素非个性化方法到已知最佳 CF 结果的差距不到 20%。推荐质量的成功改进取决于实现提升用户满意度这一难以捉摸的目标。因此，一个关键问题是：把 RMSE 降低（比如说）10% 应该对用户体验产生什么影响？例如，一个 RMSE 稍好的解决方案是否有可能带来完全不同且更好的推荐？这对证明推荐系统精度改进研究的合理性至关重要。我们想通过考察降低 RMSE 对实际情形的影响，为这个问题带来一些光明。
+
+推荐系统面临的一个常见情形是提供"top K 推荐"。也就是说，系统需要向用户建议 top K 产品。例如，向用户推荐少数几部据称对他最有吸引力的特定电影。我们想研究降低 RMSE 对 top K 推荐质量的影响。有点出乎意料的是，Netflix 数据集可以用来评估这一点。
+
+回忆除测试集外，Netflix 还提供了一个真实评分已公开的验证集。我们用验证集中的所有 5 星评分作为用户感兴趣电影的代理<sup>3</sup>。我们的目标是找出这些"有趣电影"在按某个用户的预测评分排序的电影全序中的相对位置。为此，对每个这样的电影 $i$（被用户 $u$ 打了 5 星），我们另外选择 1000 部随机电影，预测 $u$ 对 $i$ 和其他 1000 部电影的评分。最后，我们按预测评分降序排列这 1001 部电影。这模拟了系统需要从 1001 部可用电影中推荐电影的情形。这样，预测评分最高的那些电影将被推荐给用户 $u$。注意这 1000 部电影是随机的，其中一些可能对 $u$ 有兴趣，但大部分可能对 $u$ 没有兴趣。因此，最好的预期结果是 $i$（我们知道 $u$ 给它打了最高分 5 星）排在其余 1000 部随机电影之前，从而提升 top-K 推荐器的吸引力。$i$ 有 1001 种可能的排名，从最好情形——没有（0%）随机电影排在 $i$ 前面——到最坏情形——所有（100%）随机电影在排序中排在 $i$ 前面。总体而言，验证集包含 384,573 条 5 星评分。对其中每一条（分别地），我们抽取 1000 部随机电影，预测关联评分，并导出一个 0% 到 100% 之间的排名。然后分析这 384,573 个排名的分布。（注：由于数字 1000 是任意的，报告的结果是百分位（0%–100%），而不是绝对排名（0–1000）。）
+
+我们用这种方法评估了五种不同方法。第一种方法是我们前面提到的非个性化预测规则，它使用电影均值得到 RMSE = 1.053，此后记为 MovieAvg。第二种方法是基于相关性的邻域模型，它是 CF 文献中最流行的方法。如第 3 节所述，它在测试集上达到 0.9406 的 RMSE，名为 CorNgbr。第三种方法是 [2] 中改进的邻域方法，我们命名为 WgtNgbr，在测试集上可达 RMSE = 0.9107。第四种是带 100 个因子的 SVD 潜在因子模型，从而在测试集上达到表 1 报告的 RMSE = 0.9025。最后，我们考虑我们最精确的方法——带 100 个因子的集成模型，达到表 2 所示的 RMSE = 0.8870。
+
+<sup>3</sup> 在本研究中，验证集被排除在训练数据之外。
+
+图 3（上图）绘制了五种方法在 384,573 个被评估案例上计算出的百分位排名的累积分布。显然，所有方法都会胜过随机/恒定预测规则，后者会得到一条连接左下角和右上角的直线。图中还展示了按实力排序的方法次序。为了获得更好的理解，让我们放大 x 轴的头部，它代表 top-K 推荐。毕竟，为了进入 top-K 推荐，产品应该排在几乎所有其他产品之前。例如，如果考虑 600 个产品，其中 3 个将被建议给用户，只有排名 0.5% 或更低的产品才相关。从某种意义上说，把期望的 5 星电影放在前 5%、前 20% 还是前 80% 没有区别，因为它们都不够好到呈现给用户。相应地，图 3（下图）绘制了 0% 到 2% 之间的累积排名分布（即 1000 个中排名前 20 的 item）。
+
+如图所示，方法之间存在非常显著的差异。例如，集成方法把一部 5 星电影排在所有其他 1000 部电影之前（rank = 0%）的概率是 0.067。这比 MovieAvg 方法达到同样结果的概率好三倍多。此外，它比流行的 CorNgbr 达到同样结果的概率好 2.8 倍。另外两种方法 WgtNbr 和 SVD 达到同样结果的概率约为 0.043。实际的解释是，如果约 0.1% 的 item 被选中建议给用户，集成方法选中指定 5 星电影的概率显著更高。类似地，集成方法把 5 星电影排在至少 99.8% 的随机电影之前的概率为 0.157（rank ≤ 0.2%）。作为对比，MovieAvg 和 CorNgbr 达到同样效果的几率要小得多：分别是 0.050 和 0.065。其余两种方法 WgtNgbr 和 SVD 介于其间，概率分别为 0.107 和 0.115。因此，如果要从 500 部电影中建议一部，它是一部特定 5 星电影的概率在集成模型下明显更高。
+
+我们对结果感到鼓舞，甚至有些惊讶。显而易见，RMSE 的小幅改进转化为 top K 产品质量的显著提升。事实上，基于 RMSE 差异，我们没有预料到集成模型会在该测试中交付如此突出的改进。同样，我们也没有预料到流行的基于相关性的邻域方案表现如此之弱，它相比非个性化方案几乎没有改进。
+
+## 7 讨论
+
+本工作对协同过滤两种最流行的方法提出了改进。首先，我们提出了一个新的基于邻域的模型，它不像先前的邻域方法那样，而是基于对全局成本函数的正式优化。这带来预测精度的改进，同时保留了邻域方法的好处，如预测的可解释性和无需重新训练模型即可处理新用户的能力。第二，我们引入了对基于 SVD 的潜在因子模型的扩展，允许通过把隐式反馈整合进模型来改进精度。其中一个模型还提供了通常被认为属于邻域模型的好处，即解释推荐和无缝处理新用户的能力。此外，新的邻域模型使我们能够第一次导出结合邻域和潜在因子模型的集成模型。这有助于提高系统性能，因为邻域和潜在因子模型以不同层次处理数据并互相补充。
+
+推荐系统的质量通过多个维度表达，包括：精度、多样性、用意外推荐带来惊喜的能力、可解释性、恰当的 top-K 推荐和计算效率。其中一些标准相对容易度量，如本工作涉及的精度和效率。另一些方面则更难以捉摸、更难量化。我们提出了一种测量 top-K 推荐器成功与否的新方法，它对多数需要向每个用户建议少数产品的系统至关重要。值得注意的是，评估 top-K 推荐器显著锐化了方法之间的差异，超出了传统精度度量所能显示的。
+
+本工作之外的一个主要洞见是，推荐质量的改进取决于成功处理数据的不同方面。一个首要的例子是利用隐式用户反馈来扩展模型质量，我们的方法促进了这一点。这一评估基于一种非常有限的隐式反馈，即 Netflix 数据集内部可用的那种。这足以显示显著的改进，但还需要对更好的隐式反馈来源（如购买/租赁历史）做进一步实验。可以整合以提高预测质量的数据的其他方面是内容信息，如用户或产品的属性，或与评分关联的日期，这可能有助于解释用户偏好的转变。
+
+**致谢**
+
+作者感谢 Suhrid Balakrishnan、Robert Bell 和 Stephen North 提供的非常有益的评述。
+
+## 8 参考文献
+
+[1] G. Adomavicius and A. Tuzhilin, "Towards the Next Generation of Recommender Systems: A Survey of the State-of-the-Art and Possible Extensions", _IEEE Transactions on Knowledge and Data Engineering_ **17** (2005), 634–749.
+
+[2] R. Bell and Y. Koren, "Scalable Collaborative Filtering with Jointly Derived Neighborhood Interpolation Weights", _IEEE International Conference on Data Mining (ICDM'07)_, pp. 43–52, 2007.
+
+[3] R. Bell and Y. Koren, "Lessons from the Netflix Prize Challenge", _SIGKDD Explorations_ **9** (2007), 75–79.
+
+[4] R. M. Bell, Y. Koren and C. Volinsky, "Modeling Relationships at Multiple Scales to Improve Accuracy of Large Recommender Systems", _Proc. 13th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining_, 2007.
+
+[5] J. Bennet and S. Lanning, "The Netflix Prize", KDD Cup and Workshop, 2007. www.netflixprize.com.
+
+[6] J. Canny, "Collaborative Filtering with Privacy via Factor Analysis", _Proc. 25th ACM SIGIR Conf. on Research and Development in Information Retrieval (SIGIR'02)_, pp. 238–245, 2002.
+
+[7] D. Blei, A. Ng, and M. Jordan, "Latent Dirichlet Allocation", _Journal of Machine Learning Research_ **3** (2003), 993–1022.
+
+[8] S. Deerwester, S. Dumais, G. W. Furnas, T. K. Landauer and R. Harshman, "Indexing by Latent Semantic Analysis", _Journal of the Society for Information Science_ **41** (1990), 391–407.
+
+[9] S. Funk, "Netflix Update: Try This At Home", http://sifter.org/~simon/journal/20061211.html, 2006.
+
+[10] D. Goldberg, D. Nichols, B. M. Oki and D. Terry, "Using Collaborative Filtering to Weave an Information Tapestry", _Communications of the ACM_ **35** (1992), 61–70.
+
+[11] J. L. Herlocker, J. A. Konstan and J. Riedl, "Explaining Collaborative Filtering Recommendations", _Proc. ACM conference on Computer Supported Cooperative Work_, pp. 241–250, 2000.
+
+[12] J. L. Herlocker, J. A. Konstan, A. Borchers and John Riedl, "An Algorithmic Framework for Performing Collaborative Filtering", _Proc. 22nd ACM SIGIR Conference on Information Retrieval_, pp. 230–237, 1999.
+
+[13] T. Hofmann, "Latent Semantic Models for Collaborative Filtering", _ACM Transactions on Information Systems_ **22** (2004), 89–115.
+
+[14] D. Kim and B. Yum, "Collaborative Filtering Based on Iterative Principal Component Analysis", _Expert Systems with Applications_ **28** (2005), 823–830.
+
+[15] G. Linden, B. Smith and J. York, "Amazon.com Recommendations: Item-to-item Collaborative Filtering", _IEEE Internet Computing_ **7** (2003), 76–80.
+
+[16] D.W. Oard and J. Kim, "Implicit Feedback for Recommender Systems", _Proc. 5th DELOS Workshop on Filtering and Collaborative Filtering_, pp. 31–36, 1998.
+
+[17] A. Paterek, "Improving Regularized Singular Value Decomposition for Collaborative Filtering", _Proc. KDD Cup and Workshop_, 2007.
+
+[18] R. Salakhutdinov, A. Mnih and G. Hinton, "Restricted Boltzmann Machines for Collaborative Filtering", _Proc. 24th Annual International Conference on Machine Learning_, pp. 791–798, 2007.
+
+[19] R. Salakhutdinov and A. Mnih, "Probabilistic Matrix Factorization", _Advances in Neural Information Processing Systems 20 (NIPS'07)_, pp. 1257–1264, 2008.
+
+[20] B. M. Sarwar, G. Karypis, J. A. Konstan, and J. Riedl, "Application of Dimensionality Reduction in Recommender System – A Case Study", WEBKDD'2000.
+
+[21] B. Sarwar, G. Karypis, J. Konstan and J. Riedl, "Item-based Collaborative Filtering Recommendation Algorithms", _Proc. 10th International Conference on the World Wide Web_, pp. 285–295, 2001.
+
+[22] G. Takacs, I. Pilaszy, B. Nemeth and D. Tikk, "Major Components of the Gravity Recommendation System", _SIGKDD Explorations_ **9** (2007), 80–84.
+
+[23] N. Tintarev and J. Masthoff, "A Survey of Explanations in Recommender Systems", ICDE'07 Workshop on Recommender Systems and Intelligent User Interfaces, 2007.
