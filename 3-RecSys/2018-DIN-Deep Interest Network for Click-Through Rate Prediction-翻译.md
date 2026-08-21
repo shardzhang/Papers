@@ -1,4 +1,4 @@
-# Deep Interest Network for Click-Through Rate Prediction
+# DIN: Deep Interest Network for Click-Through Rate Prediction
 
 > Guorui Zhou, Chengru Song, Xiaoqiang Zhu, Ying Fan, Han Zhu, Xiao Ma, Yanghui Yan, Junqi Jin, Han Li, Kun Gai 
 >
@@ -6,16 +6,16 @@
 
 
 
-本文介绍了深度兴趣网络（DIN），该模型通过引入**局部激活单元**，根据给定候选广告自适应地从历史行为中学习用户兴趣的表示向量。核心内容：
+本文介绍了深度兴趣网络（DIN），该模型通过引入**局部激活单元**，根据给定 候选广告 自适应地从 历史行为中 学习**用户兴趣的表示向量**。核心内容：
 
 - 指出现有 Embedding&MLP 方法中 **使用固定长度向量表达用户多样化兴趣的局限性**
-- 提出 DIN 模型，通过局部激活单元实现自适应变化的用户兴趣表示
-- 开发小批量感知正则化（MBA） 和 数据自适应激活函数（Dice）两种训练技术
+- 提出 DIN 模型，通过局部激活单元实现**自适应变化**的用户兴趣表示
+- 开发 **小批量感知正则化**（MBA） 和 **数据自适应激活函数**（Dice）两种训练技术
 
 关键发现：
 
-- 局部激活单元使表示向量随不同广告变化，大幅提高模型表达能力
-- 小批量感知正则化有效防止大规模稀疏特征下的过拟合，在阿里巴巴数据集上带来 9.68% RelaImpr 提升
+- 局部激活单元使表示向量随不同广告变化，**大幅提高模型表达能力**
+- 小批量感知正则化 有效防止**大规模稀疏特征下的过拟合**，在阿里巴巴数据集上带来 9.68% RelaImpr 提升
 - 在线 A/B 测试中 DIN 贡献高达 10.0% CTR 和 3.8% RPM 提升
 
 ---

@@ -6,6 +6,8 @@
 >
 > 邮箱：yingl@netflix.com、shradhasehgal7@gmail.com、arjunr@netflix.com、rein.houthooft@gmail.com、yzhu@netflix.com、arastogi@netflix.com
 
+
+
 本文介绍了 GenRec——Netflix 自研的 LLM 支撑推荐排序器：用自带基础 LLM 做两阶段训练（Phase 1 打底 + Phase 2 高频后训练），把用户历史、item 元数据和上下文直接"文本化"成提示喂给解码器模型，在**一个前向传播内给整个 Netflix 目录打分排序**。核心发现是——**只用生产系统约 1/40 的 Phase-2 标注数据和输入信号，GenRec 就在线上 A/B 测试和离线指标上取得统计显著提升，LLM 原生推荐是走通的路**。
 
 核心内容：
