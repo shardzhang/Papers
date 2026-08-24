@@ -1,6 +1,8 @@
-# 面向阿里巴巴电商推荐的亿级商品嵌入（EGES）
+# EGES: 面向阿里巴巴电商推荐的亿级商品嵌入
 
 > Jizhe Wang, Pipei Huang, Huan Zhao, Zhibo Zhang, Binqiang Zhao, Dik Lun Lee | Alibaba Group; HKUST
+
+
 
 本文提出EGES（Enhanced Graph Embedding with Side information）框架，**通过从用户行为历史构建商品图并融合辅助信息学习商品嵌入，解决十亿级电商推荐中的稀疏性和冷启动问题**。
 

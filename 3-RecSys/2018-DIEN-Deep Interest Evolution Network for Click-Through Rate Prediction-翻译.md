@@ -1,4 +1,4 @@
-# Deep Interest Evolution Network for Click-Through Rate Prediction
+# DIEN: Deep Interest Evolution Network for Click-Through Rate Prediction
 
 > Guorui Zhou, Na Mou, Ying Fan, Qi Pi, Weijie Bian, Chang Zhou, Xiaoqiang Zhu, Kun Gai | Alibaba Group
 >
@@ -25,6 +25,8 @@
 - DIEN 已在淘宝展示广告系统中部署，CTR 提升 20.7%，eCPM 提升 17.1%
 
 ---
+
+
 
 ## 摘要
 
@@ -279,7 +281,6 @@ $$
 
 基于使用AUGRU获得的模型，我们进一步探索辅助损失的效果。在公开数据集中，辅助损失中使用的负样本从商品集中随机采样，排除相应评论中出现的商品。对于工业数据集，展示但未被点击的广告作为负样本。如图2所示，整体损失 $L$ 和辅助损失 $L_{aux}$ 保持相似的下降趋势，这意味着CTR预测的全局损失和兴趣表示的辅助损失都发挥了作用。
 
-![图2](.picture/2018-DIEN-Deep Interest Evolution Network for Click-Through Rate Prediction-fig2.png)
 **图2: 公开数据集上的学习曲线。 $\alpha$ 设为1。**
 *(a) Books (b) Electronics*
 
